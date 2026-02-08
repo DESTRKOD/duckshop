@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<title>Авторизация</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+<style>
+/* ===== БАЗОВЫЕ СТИЛИ (ТОЧНО КАК В ОСНОВНОМ ФАЙЛЕ) ===== */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: linear-gradient(180deg, #0b3c91 0%, #1565c0 55%, #42a5f5 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== ЭКРАН АВТОРИЗАЦИИ ===== */
+.auth-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 320px;
+}
+
+/* ===== LOTTIE АНИМАЦИЯ ===== */
+.sticker {
+  width: 200px;
+  height: 200px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 480px) {
+  .sticker {
+    width: 160px;
+    height: 160px;
+  }
+}
+
+/* ===== ЗАГОЛОВОК ===== */
+.title {
+  margin: 0 0 25px 0;
+  font-size: 24px;
+  font-weight: 800;
+  color: #fff;
+  text-align: center;
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 22px;
+    margin-bottom: 20px;
+  }
+}
+
+/* ===== КНОПКИ ТОЧНО КАК "ПРОДОЛЖИТЬ" В ОСНОВНОМ ФАЙЛЕ ===== */
+.button {
+  width: 100%;
+  max-width: 280px;
+  margin: 8px 0; /* Уменьшил отступы между кнопками */
+  padding: 18px 0;
+  font-size: 18px;
+  font-weight: 800;
+  background: #fff;
+  color: #0b3c91;
+  border-radius: 18px;
+  border: none;
+  box-shadow: 0 16px 36px rgba(0,0,0,.45);
+  cursor: pointer;
+  user-select: none;
+  transition: transform .12s ease, box-shadow .12s ease;
+  outline: none;
+}
+
+/* Эффект нажатия (ТОЧНО КАК В ОСНОВНОМ ФАЙЛЕ) */
+.button:active {
+  transform: translateY(6px) scale(.9);
+  box-shadow: 0 6px 14px rgba(0,0,0,.35);
+}
+
+.button:disabled {
+  background: #cccccc;
+  color: #666666;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: 0 8px 20px rgba(0,0,0,.25) !important;
+}
+
+/* ===== ТЕКСТ ПОД КНОПКАМИ ===== */
+.telegram-note {
+  margin-top: 15px;
+  color: rgba(255,255,255,0.8);
+  font-size: 14px;
+  text-align: center;
+  max-width: 280px;
+  line-height: 1.4;
+}
+
+@media (max-width: 480px) {
+  .telegram-note {
+    font-size: 13px;
+  }
+}
+
+/* ===== СТАТУСНЫЕ СООБЩЕНИЯ ===== */
+.status-message {
+  margin-top: 15px;
+  padding: 12px 16px;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  display: none;
+  width: 100%;
+  max-width: 280px;
+  box-sizing: border-box;
+}
+
+.status-loading {
+  background: rgba(255,255,255,0.1);
+  color: white;
+  border-left: 4px solid #4fc3f7;
+}
+
+.status-success {
+  background: rgba(0,200,83,0.15);
+  color: white;
+  border-left: 4px solid #00c853;
+}
+
+.status-error {
+  background: rgba(255,45,85,0.15);
+  color: white;
+  border-left: 4px solid #ff2d55;
+}
+
+/* ===== АДАПТИВНОСТЬ ===== */
+@media (max-width: 360px) {
+  .auth-screen {
+    padding: 15px;
+  }
+  
+  .title {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+  
+  .button {
+    padding: 16px 0;
+    font-size: 16px;
+    max-width: 260px;
+    margin: 6px 0; /* Еще меньше на маленьких экранах */
+  }
+  
+  .telegram-note {
+    font-size: 12px;
+    max-width: 260px;
+  }
+}
+</style>
+</head>
+
+<body>
+<div class="auth-screen">
+  <!-- Lottie анимация -->
+  <div id="lottie-animation" class="sticker"></div>
+  
+  <!-- Заголовок -->
+  <div class="title">Авторизуйтесь в магазине</div>
+  
+  <!-- Кнопка регистрации -->
+  <button class="button" id="registerBtn">Зарегистрироваться</button>
+  
+  <!-- Кнопка входа -->
+  <button class="button" id="loginBtn">Войти</button>
+  
+  <!-- Кнопка возврата -->
+  <button class="button" id="backBtn">Вернуться в магазин</button>
+  
+  <!-- Текст про Telegram -->
+  <div class="telegram-note">* потребуется Telegram</div>
+  
+  <!-- Статусные сообщения -->
+  <div class="status-message status-loading" id="loadingMessage">
+    ⏳ Открываем Telegram...
+  </div>
+  
+  <div class="status-message status-success" id="successMessage">
+    ⏳ Переходим в Telegram для завершения...
+  </div>
+  
+  <div class="status-message status-error" id="errorMessage"></div>
+</div>
+
+<script>
+const API_URL = 'https://duck-shop-sever.onrender.com';
+const SITE_URL = 'https://DESTRKOD.github.io/duck2';
+const USER_KEY = 'duck_user_v1'; 
+
+// Элементы
+const registerBtn = document.getElementById('registerBtn');
+const loginBtn = document.getElementById('loginBtn');
+const backBtn = document.getElementById('backBtn');
+const loadingMessage = document.getElementById('loadingMessage');
+const successMessage = document.getElementById('successMessage');
+const errorMessage = document.getElementById('errorMessage');
+
+let currentToken = null;
+let checkInterval = null;
+
+// Инициализация Lottie анимации
+function initLottieAnimation() {
+  try {
+    lottie.loadAnimation({
+      container: document.getElementById('lottie-animation'),
+      renderer: 'svg',
+      loop: true,
+      autoplay: true,
+      path: 'reg_log.json'
+    });
+  } catch (e) {
+    console.log('Lottie анимация не загружена');
+    document.getElementById('lottie-animation').innerHTML = '🔐';
+  }
+}
+
+// Показать/скрыть статусные сообщения
+function showStatus(type, message = '') {
+  loadingMessage.style.display = 'none';
+  successMessage.style.display = 'none';
+  errorMessage.style.display = 'none';
+  
+  switch(type) {
+    case 'loading':
+      loadingMessage.style.display = 'block';
+      break;
+    case 'success':
+      successMessage.style.display = 'block';
+      break;
+    case 'error':
+      errorMessage.textContent = message;
+      errorMessage.style.display = 'block';
+      break;
+  }
+}
+
+// Очистить интервал проверки
+function clearCheckInterval() {
+  if (checkInterval) {
+    clearInterval(checkInterval);
+    checkInterval = null;
+  }
+}
+
+// Назад в магазин
+backBtn.addEventListener('click', () => {
+  window.location.href = `${SITE_URL}/main.html`;
+});
+
+// Функция для открытия Telegram
+function openTelegram(link) {
+  // Пробуем открыть в новом окне/вкладке
+  const newWindow = window.open(link, '_blank');
+  
+  // Если блокировщик всплывающих окон заблокировал, показываем инструкцию
+  if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+    showStatus('error', '❌ Не удалось открыть Telegram. Пожалуйста, откройте ссылку вручную.');
+    
+    // Создаем ссылку для ручного открытия
+    const manualLink = document.createElement('a');
+    manualLink.href = link;
+    manualLink.target = '_blank';
+    manualLink.textContent = 'Нажмите здесь чтобы открыть Telegram';
+    manualLink.style.color = 'white';
+    manualLink.style.textDecoration = 'underline';
+    manualLink.style.marginTop = '10px';
+    manualLink.style.display = 'block';
+    
+    errorMessage.appendChild(manualLink);
+  }
+}
+
+// Проверка статуса авторизации
+async function checkAuthStatus(token, button) {
+  try {
+    const response = await fetch(`${API_URL}/api/auth/check/${token}`);
+    const data = await response.json();
+    
+    if (data.success && data.authenticated) {
+      // Останавливаем проверку
+      clearCheckInterval();
+      
+      // Сохраняем данные пользователя с ОДИНАКОВЫМ ключом
+      localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+      console.log('✅ Пользователь сохранен:', data.user.username);
+      
+      // Включаем кнопку обратно
+      button.disabled = false;
+      
+      // Немедленно перенаправляем в магазин
+      window.location.href = `${SITE_URL}/main.html`;
+      
+      return true;
+      
+    } else if (data.success && data.expired) {
+      clearCheckInterval();
+      button.disabled = false;
+      showStatus('error', '❌ Время ожидания истекло. Попробуйте снова.');
+      return false;
+    }
+    
+    return false;
+    
+  } catch (checkError) {
+    console.error('Ошибка проверки статуса:', checkError);
+    return false;
+  }
+}
+
+// Общая функция авторизации
+async function handleAuth(endpoint, button) {
+  // Очищаем предыдущую проверку
+  clearCheckInterval();
+  
+  // Визуальная обратная связь
+  button.disabled = true;
+  
+  showStatus('loading');
+  
+  try {
+    const response = await fetch(`${API_URL}/api/auth/${endpoint}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    });
+    
+    const data = await response.json();
+    
+    if (data.success && data.telegramLink) {
+      // Сохраняем токен
+      currentToken = data.token;
+      
+      // Показываем сообщение о переходе в Telegram
+      showStatus('success');
+      
+      // Ждем 1 секунду и открываем Telegram
+      setTimeout(() => {
+        openTelegram(data.telegramLink);
+      }, 1000);
+      
+      // Начинаем проверку статуса
+      checkInterval = setInterval(async () => {
+        const success = await checkAuthStatus(currentToken, button);
+        if (success) {
+          clearCheckInterval();
+        }
+      }, 2000); // Проверяем каждые 2 секунды
+      
+      // Ограничиваем время ожидания 3 минутами
+      setTimeout(() => {
+        if (checkInterval) {
+          clearCheckInterval();
+          button.disabled = false;
+          showStatus('error', '❌ Время ожидания истекло. Попробуйте снова.');
+        }
+      }, 3 * 60 * 1000);
+      
+    } else {
+      button.disabled = false;
+      showStatus('error', `❌ ${data.error || 'Ошибка получения ссылки на Telegram'}`);
+    }
+  } catch (err) {
+    button.disabled = false;
+    showStatus('error', '❌ Ошибка соединения с сервером');
+    console.error('Ошибка авторизации:', err);
+  }
+}
+
+// Регистрация
+registerBtn.addEventListener('click', () => {
+  handleAuth('start-register', registerBtn);
+});
+
+// Вход
+loginBtn.addEventListener('click', () => {
+  handleAuth('start-login', loginBtn);
+});
+
+// Инициализация при загрузке
+document.addEventListener('DOMContentLoaded', () => {
+  initLottieAnimation();
+  
+  // Проверяем токен в URL (если вернулись из Telegram)
+  const urlParams = new URLSearchParams(window.location.search);
+  const authToken = urlParams.get('auth');
+  
+  if (authToken) {
+    verifyAuthToken(authToken);
+  }
+});
+
+// Функция проверки токена (если пришли с параметром auth)
+async function verifyAuthToken(token) {
+  try {
+    showStatus('loading', '⏳ Проверяем авторизацию...');
+    
+    const response = await fetch(`${API_URL}/api/auth/check/${token}`);
+    const data = await response.json();
+    
+    if (data.success && data.authenticated) {
+      // Сохраняем данные пользователя с ОДИНАКОВЫМ ключом
+      localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+      console.log('✅ Пользователь сохранен через токен:', data.user.username);
+      
+      // Убираем параметры из URL
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, '', newUrl);
+      
+      // Немедленно перенаправляем в магазин
+      window.location.href = `${SITE_URL}/main.html`;
+    } else {
+      showStatus('error', '❌ Токен недействителен');
+    }
+  } catch (error) {
+    console.error('Ошибка проверки токена:', error);
+    showStatus('error', '❌ Ошибка проверки авторизации');
+  }
+}
+
+// Очистка при закрытии страницы
+window.addEventListener('beforeunload', () => {
+  clearCheckInterval();
+});
+</script>
+</body>
+</html>
