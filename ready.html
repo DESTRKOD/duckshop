@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<title>Заказ готов</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+
+<style>
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: linear-gradient(180deg, #0b3c91 0%, #1565c0 55%, #42a5f5 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+}
+
+.sticker {
+  width: 220px;
+  height: 220px;
+  margin-bottom: 30px;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 800;
+  color: #fff;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.order-number {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffd700;
+  margin: 10px 0 30px 0;
+  padding: 14px 24px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 14px;
+  text-align: center;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.8; }
+  50% { opacity: 1; }
+  100% { opacity: 0.8; }
+}
+
+.message {
+  color: rgba(255,255,255,0.9);
+  text-align: center;
+  max-width: 400px;
+  margin: 20px 0 40px 0;
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+.button {
+  margin-top: 20px;
+  padding: 18px 48px;
+  font-size: 20px;
+  font-weight: 800;
+  background: #fff;
+  color: #0b3c91;
+  border-radius: 18px;
+  border: none;
+  cursor: pointer;
+  transition: transform .12s ease, box-shadow .12s ease;
+  box-shadow: 0 16px 36px rgba(0,0,0,.45);
+  width: 100%;
+  max-width: 300px;
+}
+
+.button:hover {
+  transform: translateY(-2px);
+}
+
+.info-box {
+  background: rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 20px;
+  margin-top: 30px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.info-title {
+  color: #fff;
+  font-weight: 700;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.info-text {
+  color: rgba(255,255,255,0.8);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.loading {
+  color: rgba(255,255,255,0.8);
+  margin-top: 20px;
+  text-align: center;
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 26px;
+  }
+  
+  .sticker {
+    width: 180px;
+    height: 180px;
+  }
+  
+  .order-number {
+    font-size: 18px;
+    padding: 12px 20px;
+  }
+  
+  .message {
+    font-size: 16px;
+  }
+  
+  .button {
+    padding: 16px 32px;
+    font-size: 18px;
+  }
+  
+  .info-box {
+    padding: 16px;
+  }
+}
+</style>
+</head>
+
+<body>
+<div class="screen">
+  <div id="animOrderReady" class="sticker"></div>
+  <div class="title">Заказ готов!</div>
+  <div class="order-number" id="orderNumber">Заказ #...</div>
+  
+  <div class="message" id="statusMessage">
+    Ваш заказ успешно обработан. Вскоре вы получите свой товар!
+  </div>
+  
+  <div class="loading" id="loading">Проверяем статус заказа...</div>
+  
+  <button class="button" id="backToShop">Вернуться в магазин</button>
+  
+  <div class="info-box">
+    <div class="info-title">Что дальше?</div>
+    <div class="info-text">
+      Информация о заказе была отправлена на ваш email. 
+      Если у вас есть вопросы, свяжитесь с поддержкой.
+    </div>
+  </div>
+</div>
+
+<script>
+const API_URL = 'https://duck-shop-sever.onrender.com';
+
+// Получаем order_id из URL
+const urlParams = new URLSearchParams(window.location.search);
+const orderId = urlParams.get('order');
+
+// Если нет order_id, показываем ошибку
+if (!orderId) {
+  document.getElementById('orderNumber').textContent = 'Ошибка: номер заказа не указан';
+  document.getElementById('statusMessage').textContent = 'Не удалось найти заказ.';
+} else {
+  document.getElementById('orderNumber').textContent = `Заказ #${orderId}`;
+}
+
+// Загружаем анимацию
+lottie.loadAnimation({
+  container: document.getElementById('animOrderReady'),
+  renderer: 'svg',
+  loop: true,
+  autoplay: true,
+  path: 'order_ready.json'
+});
+
+// Кнопка возврата в магазин
+document.getElementById('backToShop').addEventListener('click', () => {
+  // Возвращаемся на главную страницу магазина
+  window.location.href = 'main.html';
+});
+
+// Проверка статуса заказа (если пользователь попал сюда напрямую)
+async function checkOrderStatus() {
+  if (!orderId) return;
+  
+  try {
+    const response = await fetch(`${API_URL}/api/order-status/${orderId}`);
+    const data = await response.json();
+    
+    if (data.success) {
+      if (data.status === 'completed') {
+        // Заказ действительно готов
+        document.getElementById('loading').style.display = 'none';
+      } else {
+        // Заказ еще не готов, показываем сообщение об ожидании
+        document.getElementById('statusMessage').textContent = 
+          'Ваш заказ еще обрабатывается. Пожалуйста, подождите...';
+        document.getElementById('loading').style.display = 'block';
+        
+        // Проверяем снова через 5 секунд
+        setTimeout(checkOrderStatus, 5000);
+      }
+    }
+  } catch (error) {
+    console.error('Ошибка проверки статуса:', error);
+    document.getElementById('loading').style.display = 'none';
+  }
+}
+
+// Инициализация
+document.addEventListener('DOMContentLoaded', () => {
+  // Скрываем loading через 3 секунды (если заказ уже должен быть готов)
+  setTimeout(() => {
+    document.getElementById('loading').style.display = 'none';
+  }, 3000);
+  
+  // Проверяем статус заказа
+  checkOrderStatus();
+});
+</script>
+</body>
+</html>
