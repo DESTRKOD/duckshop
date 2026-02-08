@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<title>Мой профиль - Duck Shop</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+
+<style>
+/* ===== БАЗОВЫЕ СТИЛИ ===== */
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: linear-gradient(180deg, #0b3c91 0%, #1565c0 55%, #42a5f5 100%);
+  overflow-x: hidden;
+}
+
+/* ===== ЭКРАНЫ ===== */
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 0;
+  transform: translateY(16px);
+  pointer-events: none;
+  transition: opacity .35s ease, transform .35s ease;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.screen.active {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.screen.leaving {
+  opacity: 0;
+  transform: translateY(-40px);
+}
+
+/* ===== ЗАГРУЗКА ===== */
+#loading .sticker {
+  width: 200px;
+  height: 200px;
+  margin: auto;
+}
+
+#loading .title {
+  color: white;
+  font-size: 24px;
+  font-weight: 800;
+  text-align: center;
+  margin-top: 20px;
+}
+
+/* ===== ПРОФИЛЬ ===== */
+.profile-screen {
+  padding: 0;
+}
+
+.profile-header {
+  width: 100%;
+  padding: 20px;
+  text-align: center;
+  background: linear-gradient(180deg, #0b3c91, #124fa5);
+  color: white;
+  box-sizing: border-box;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+
+.profile-avatar {
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  color: white;
+  font-weight: 900;
+  overflow: hidden;
+}
+
+.profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.profile-name {
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.profile-id {
+  font-size: 16px;
+  color: rgba(255,255,255,0.9);
+  margin-bottom: 5px;
+}
+
+.profile-username {
+  font-size: 14px;
+  color: rgba(255,255,255,0.7);
+  margin-bottom: 20px;
+}
+
+.profile-content {
+  flex: 1;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+/* ===== СЕКЦИИ ===== */
+.profile-section {
+  background: rgba(255,255,255,0.1);
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.section-title {
+  color: white;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.section-title span:last-child {
+  font-size: 14px;
+  color: rgba(255,255,255,0.7);
+  font-weight: 600;
+}
+
+/* ===== ИСТОРИЯ ЗАКАЗОВ ===== */
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.order-item {
+  background: rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 15px;
+  transition: transform 0.2s ease, background 0.2s ease;
+  cursor: pointer;
+}
+
+.order-item:hover {
+  background: rgba(255,255,255,0.12);
+  transform: translateY(-2px);
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.order-id {
+  color: #ffd700;
+  font-weight: 700;
+  font-size: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+}
+
+.order-date {
+  color: rgba(255,255,255,0.7);
+  font-size: 13px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.order-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.order-total {
+  color: white;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.order-status {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.order-status.completed {
+  background: #4CAF50;
+  color: white;
+}
+
+.order-status.pending {
+  background: #ffd700;
+  color: #333;
+}
+
+.order-status.failed {
+  background: #ff6b6b;
+  color: white;
+}
+
+.order-items {
+  font-size: 12px;
+  color: rgba(255,255,255,0.7);
+  margin: 5px 0;
+  font-weight: 500;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ===== НЕТ ЗАКАЗОВ ===== */
+.no-orders {
+  text-align: center;
+  color: rgba(255,255,255,0.6);
+  padding: 30px 0;
+}
+
+.no-orders div:first-child {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.no-orders div:nth-child(2) {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.no-orders div:last-child {
+  font-size: 13px;
+  color: rgba(255,255,255,0.5);
+}
+
+/* ===== КНОПКИ ===== */
+.profile-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 30px;
+}
+
+.profile-btn {
+  flex: 1;
+  height: 50px;
+  border-radius: 14px;
+  border: none;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.profile-btn:active {
+  transform: scale(.98);
+}
+
+.btn-logout {
+  background: rgba(255,255,255,0.1);
+  color: white;
+}
+
+.btn-back {
+  background: white;
+  color: #0b3c91;
+}
+
+/* ===== АВТОРИЗАЦИЯ ===== */
+.auth-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 20px;
+}
+
+.auth-title {
+  font-size: 28px;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 10px;
+}
+
+.auth-subtitle {
+  font-size: 16px;
+  color: rgba(255,255,255,0.8);
+  margin-bottom: 30px;
+  max-width: 400px;
+}
+
+.auth-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+  max-width: 300px;
+}
+
+.auth-btn {
+  height: 56px;
+  border-radius: 16px;
+  border: none;
+  font-weight: 700;
+  font-size: 18px;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.auth-btn:active {
+  transform: scale(.98);
+}
+
+.btn-login {
+  background: white;
+  color: #0b3c91;
+}
+
+.btn-register {
+  background: rgba(255,255,255,0.1);
+  color: white;
+  border: 2px solid rgba(255,255,255,0.3);
+}
+
+.telegram-btn {
+  background: #0088cc;
+  color: white;
+}
+
+.telegram-btn svg {
+  width: 24px;
+  height: 24px;
+  fill: white;
+}
+
+.auth-link {
+  margin-top: 20px;
+  color: rgba(255,255,255,0.7);
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.auth-link:hover {
+  text-decoration: underline;
+}
+
+/* ===== ОШИБКА ===== */
+.error-screen {
+  text-align: center;
+  color: white;
+  padding: 40px 20px;
+}
+
+.error-icon {
+  font-size: 60px;
+  margin-bottom: 20px;
+}
+
+.error-title {
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.error-text {
+  font-size: 16px;
+  color: rgba(255,255,255,0.8);
+  margin-bottom: 30px;
+  max-width: 400px;
+}
+
+/* ===== АДАПТАЦИЯ ===== */
+@media (max-width: 480px) {
+  .profile-header {
+    padding: 15px;
+  }
+  
+  .profile-avatar {
+    width: 80px;
+    height: 80px;
+    font-size: 32px;
+    margin-bottom: 15px;
+  }
+  
+  .profile-name {
+    font-size: 20px;
+  }
+  
+  .profile-id {
+    font-size: 14px;
+  }
+  
+  .profile-username {
+    font-size: 13px;
+  }
+  
+  .profile-content {
+    padding: 15px;
+  }
+  
+  .profile-section {
+    padding: 15px;
+  }
+  
+  .order-item {
+    padding: 12px;
+  }
+  
+  .profile-actions {
+    flex-direction: column;
+  }
+  
+  .section-title {
+    font-size: 16px;
+  }
+  
+  .order-id {
+    font-size: 14px;
+  }
+  
+  .order-date {
+    font-size: 12px;
+  }
+  
+  .order-total {
+    font-size: 14px;
+  }
+  
+  .auth-title {
+    font-size: 24px;
+  }
+  
+  .auth-subtitle {
+    font-size: 14px;
+  }
+  
+  .auth-btn {
+    height: 50px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 360px) {
+  .profile-avatar {
+    width: 70px;
+    height: 70px;
+    font-size: 28px;
+  }
+  
+  .profile-name {
+    font-size: 18px;
+  }
+  
+  .order-header {
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .order-date {
+    align-self: flex-start;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ЗАГРУЗКА -->
+<div id="loading" class="screen active">
+  <div class="sticker" id="loadingAnim"></div>
+  <div class="title">Загрузка профиля...</div>
+</div>
+
+<!-- АВТОРИЗАЦИЯ -->
+<div id="auth" class="screen">
+  <div class="auth-screen">
+    <div class="sticker" id="authAnim"></div>
+    <div class="auth-title">Вход в аккаунт</div>
+    <div class="auth-subtitle">Авторизуйтесь, чтобы просмотреть историю заказов и управлять профилем</div>
+    
+    <div class="auth-buttons">
+      <button class="auth-btn btn-login" id="loginBtn">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+        </svg>
+        Войти в аккаунт
+      </button>
+      
+      <button class="auth-btn btn-register" id="registerBtn">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+        </svg>
+        Создать аккаунт
+      </button>
+      
+      <a href="https://t.me/duck_shop_auth_bot" class="auth-btn telegram-btn" target="_blank">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.06-.2-.07-.06-.17-.04-.24-.02-.1.02-1.79 1.14-5.06 3.34-.48.33-.92.49-1.31.48-.43-.01-1.27-.24-1.89-.44-.76-.24-1.37-.37-1.32-.78.03-.2.25-.4.66-.61 2.56-1.12 4.28-1.85 5.15-2.21 2.43-1 2.93-1.18 3.26-1.18.07 0 .24.02.35.12.1.09.13.21.14.33.01.1.01.32.01.52z"/>
+        </svg>
+        Открыть Telegram бота
+      </a>
+    </div>
+    
+    <a href="main.html" class="auth-link">← Вернуться в магазин</a>
+  </div>
+</div>
+
+<!-- ПРОФИЛЬ -->
+<div id="profile" class="screen profile-screen">
+  <div class="profile-header">
+    <div class="profile-avatar" id="profileAvatar">U</div>
+    <div class="profile-name" id="profileName">Пользователь</div>
+    <div class="profile-id" id="profileId">TG ID: ...</div>
+    <div class="profile-username" id="profileUsername">@username</div>
+  </div>
+  
+  <div class="profile-content">
+    <div class="profile-section">
+      <div class="section-title">
+        <span>📦 История заказов</span>
+        <span id="ordersCount">0 заказов</span>
+      </div>
+      <div class="orders-list" id="ordersList">
+        <!-- Заказы будут вставлены здесь -->
+      </div>
+    </div>
+    
+    <div class="profile-actions">
+      <button class="profile-btn btn-logout" id="logoutBtn">
+        <svg viewBox="0 0 24 24" width="20" height="20">
+          <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" fill="currentColor"/>
+        </svg>
+        Выйти
+      </button>
+      <button class="profile-btn btn-back" id="backToShopBtn">
+        <svg viewBox="0 0 24 24" width="20" height="20">
+          <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" fill="currentColor"/>
+        </svg>
+        В магазин
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ОШИБКА -->
+<div id="error" class="screen error-screen">
+  <div class="error-icon">⚠️</div>
+  <div class="error-title" id="errorTitle">Ошибка загрузки</div>
+  <div class="error-text" id="errorText">Не удалось загрузить данные профиля. Проверьте подключение к интернету и попробуйте снова.</div>
+  <div class="profile-actions" style="margin-top: 20px;">
+    <button class="profile-btn btn-back" id="retryBtn">Повторить</button>
+    <button class="profile-btn btn-back" onclick="location.href='main.html'">В магазин</button>
+  </div>
+</div>
+
+<script>
+// ===== КОНСТАНТЫ =====
+const API_URL = 'https://duck-shop-sever.onrender.com';
+const USER_KEY = 'duck_user_v1';
+
+// ===== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ =====
+let currentUser = null;
+let currentAuthToken = null;
+let authCheckInterval = null;
+
+// ===== УТИЛИТЫ =====
+function fmtRub(n) {
+  return `${n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} ₽`;
+}
+
+function getPluralEnding(number) {
+  if (number % 10 === 1 && number % 100 !== 11) {
+    return '';
+  } else if ([2, 3, 4].includes(number % 10) && ![12, 13, 14].includes(number % 100)) {
+    return 'а';
+  } else {
+    return 'ов';
+  }
+}
+
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('ru-RU', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+}
+
+// ===== LOTTIE АНИМАЦИИ =====
+function loadLottieAnimations() {
+  try {
+    // Анимация загрузки
+    if (document.getElementById('loadingAnim')) {
+      lottie.loadAnimation({
+        container: document.getElementById('loadingAnim'),
+        renderer: 'svg',
+        loop: true,
+        autoplay: true,
+        path: 'https://assets10.lottiefiles.com/packages/lf20_puciaevh.json'
+      });
+    }
+    
+    // Анимация авторизации
+    if (document.getElementById('authAnim')) {
+      lottie.loadAnimation({
+        container: document.getElementById('authAnim'),
+        renderer: 'svg',
+        loop: true,
+        autoplay: true,
+        path: 'https://assets10.lottiefiles.com/packages/lf20_6xfqjauy.json'
+      });
+    }
+  } catch (error) {
+    console.warn('Ошибка загрузки анимаций:', error);
+  }
+}
+
+// ===== УПРАВЛЕНИЕ ЭКРАНАМИ =====
+function showScreen(id) {
+  const screens = ['loading', 'auth', 'profile', 'error'];
+  screens.forEach(screen => {
+    document.getElementById(screen).classList.remove('active', 'leaving');
+  });
+  
+  const screen = document.getElementById(id);
+  if (screen) {
+    screen.classList.add('active');
+  }
+}
+
+// ===== РАБОТА С ПОЛЬЗОВАТЕЛЕМ =====
+function loadUser() {
+  try {
+    const userData = localStorage.getItem(USER_KEY);
+    if (userData) {
+      return JSON.parse(userData);
+    }
+  } catch (error) {
+    console.error('Ошибка загрузки пользователя:', error);
+  }
+  return null;
+}
+
+function saveUser(user) {
+  try {
+    localStorage.setItem(USER_KEY, JSON.stringify(user));
+  } catch (error) {
+    console.error('Ошибка сохранения пользователя:', error);
+  }
+}
+
+function clearUser() {
+  localStorage.removeItem(USER_KEY);
+  currentUser = null;
+}
+
+// ===== АВТОРИЗАЦИЯ =====
+async function startLogin() {
+  try {
+    const response = await fetch(`${API_URL}/api/auth/start-login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    });
+    
+    const data = await response.json();
+    
+    if (data.success && data.telegramLink) {
+      currentAuthToken = data.token;
+      window.open(data.telegramLink, '_blank');
+      
+      // Начинаем проверку статуса авторизации
+      startAuthChecking();
+      
+      return true;
+    } else {
+      showError('Ошибка входа', data.error || 'Неизвестная ошибка');
+      return false;
+    }
+  } catch (error) {
+    console.error('Ошибка начала входа:', error);
+    showError('Ошибка сети', 'Не удалось подключиться к серверу');
+    return false;
+  }
+}
+
+async function startRegister() {
+  try {
+    const response = await fetch(`${API_URL}/api/auth/start-register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    });
+    
+    const data = await response.json();
+    
+    if (data.success && data.telegramLink) {
+      currentAuthToken = data.token;
+      window.open(data.telegramLink, '_blank');
+      
+      // Начинаем проверку статуса авторизации
+      startAuthChecking();
+      
+      return true;
+    } else {
+      showError('Ошибка регистрации', data.error || 'Неизвестная ошибка');
+      return false;
+    }
+  } catch (error) {
+    console.error('Ошибка начала регистрации:', error);
+    showError('Ошибка сети', 'Не удалось подключиться к серверу');
+    return false;
+  }
+}
+
+function startAuthChecking() {
+  if (authCheckInterval) clearInterval(authCheckInterval);
+  
+  authCheckInterval = setInterval(async () => {
+    if (!currentAuthToken) {
+      clearInterval(authCheckInterval);
+      return;
+    }
+    
+    try {
+      const response = await fetch(`${API_URL}/api/auth/check/${currentAuthToken}`);
+      const data = await response.json();
+      
+      if (data.success && data.authenticated && data.user) {
+        // Авторизация успешна
+        clearInterval(authCheckInterval);
+        currentUser = data.user;
+        saveUser(data.user);
+        currentAuthToken = null;
+        loadProfileData();
+      } else if (data.expired) {
+        // Токен истек
+        clearInterval(authCheckInterval);
+        currentAuthToken = null;
+        showError('Время истекло', 'Ссылка для авторизации истекла. Пожалуйста, попробуйте снова.');
+      }
+    } catch (error) {
+      console.error('Ошибка проверки авторизации:', error);
+    }
+  }, 2000); // Проверяем каждые 2 секунды
+}
+
+// ===== ЗАГРУЗКА ПРОФИЛЯ =====
+async function loadProfileData() {
+  if (!currentUser) {
+    showScreen('auth');
+    return;
+  }
+  
+  showScreen('loading');
+  
+  try {
+    // Загружаем данные профиля
+    const response = await fetch(`${API_URL}/api/auth/profile?userId=${currentUser.id}`);
+    const data = await response.json();
+    
+    if (data.success && data.user) {
+      // Обновляем данные пользователя
+      currentUser = { ...currentUser, ...data.user };
+      saveUser(currentUser);
+      
+      // Обновляем UI профиля
+      updateProfileUI(currentUser);
+      
+      // Загружаем заказы
+      await loadOrders(data.orders || []);
+      
+      showScreen('profile');
+    } else {
+      throw new Error(data.error || 'Ошибка загрузки профиля');
+    }
+  } catch (error) {
+    console.error('Ошибка загрузки профиля:', error);
+    showError('Ошибка загрузки', 'Не удалось загрузить данные профиля. Попробуйте позже.');
+  }
+}
+
+function updateProfileUI(user) {
+  // Аватар
+  const avatar = document.getElementById('profileAvatar');
+  if (user.avatarUrl) {
+    avatar.innerHTML = `<img src="${user.avatarUrl}" alt="${user.username}" onerror="this.style.display='none'; this.parentElement.textContent='${user.username.charAt(0).toUpperCase()}'">`;
+  } else if (user.username) {
+    avatar.textContent = user.username.charAt(0).toUpperCase();
+  }
+  
+  // Имя
+  document.getElementById('profileName').textContent = user.username || 'Пользователь';
+  
+  // Telegram ID
+  document.getElementById('profileId').textContent = `TG ID: ${user.tgId || '...'}`;
+  
+  // Username
+  const usernameElement = document.getElementById('profileUsername');
+  if (user.telegramUsername) {
+    usernameElement.textContent = `@${user.telegramUsername}`;
+    usernameElement.style.display = 'block';
+  } else {
+    usernameElement.style.display = 'none';
+  }
+}
+
+async function loadOrders(orders) {
+  const ordersList = document.getElementById('ordersList');
+  const ordersCount = document.getElementById('ordersCount');
+  
+  if (!ordersList || !ordersCount) return;
+  
+  if (orders.length === 0) {
+    ordersCount.textContent = '0 заказов';
+    ordersList.innerHTML = `
+      <div class="no-orders">
+        <div>📭</div>
+        <div>У вас пока нет заказов</div>
+        <div>Совершите первую покупку чтобы начать историю!</div>
+      </div>
+    `;
+    return;
+  }
+  
+  ordersCount.textContent = `${orders.length} заказ${getPluralEnding(orders.length)}`;
+  
+  // Сортируем заказы по дате (новые сверху)
+  orders.sort((a, b) => new Date(b.date) - new Date(a.date));
+  
+  ordersList.innerHTML = orders.map(order => {
+    let statusText = '';
+    let statusClass = '';
+    
+    switch(order.status) {
+      case 'completed':
+        statusText = 'Завершен';
+        statusClass = 'completed';
+        break;
+      case 'failed':
+        statusText = 'Отменен';
+        statusClass = 'failed';
+        break;
+      case 'pending':
+      default:
+        statusText = 'В обработке';
+        statusClass = 'pending';
+    }
+    
+    // Форматируем ID для отображения
+    const displayId = order.id.startsWith('temp_') 
+      ? order.id.replace('temp_', 'ВРЕМ-') 
+      : order.id;
+    
+    return `
+      <div class="order-item" onclick="window.location.href='moreorder.html?order=${order.id}'">
+        <div class="order-header">
+          <div class="order-id">Заказ #${displayId}</div>
+          <div class="order-date">${formatDate(order.date)}</div>
+        </div>
+        <div class="order-details">
+          <div class="order-total">${fmtRub(order.total)}</div>
+          <div class="order-status ${statusClass}">${statusText}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ===== ОБРАБОТКА ОШИБОК =====
+function showError(title, message) {
+  document.getElementById('errorTitle').textContent = title;
+  document.getElementById('errorText').textContent = message;
+  showScreen('error');
+}
+
+// ===== ОБРАБОТЧИКИ СОБЫТИЙ =====
+document.getElementById('loginBtn').addEventListener('click', startLogin);
+document.getElementById('registerBtn').addEventListener('click', startRegister);
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  clearUser();
+  showScreen('auth');
+});
+document.getElementById('backToShopBtn').addEventListener('click', () => {
+  window.location.href = 'main.html';
+});
+document.getElementById('retryBtn').addEventListener('click', () => {
+  if (currentUser) {
+    loadProfileData();
+  } else {
+    showScreen('auth');
+  }
+});
+
+// ===== ПРОВЕРКА АВТОРИЗАЦИИ ПРИ ЗАГРУЗКЕ =====
+function checkInitialAuth() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const authToken = urlParams.get('auth');
+  
+  if (authToken) {
+    // Убираем параметр из URL
+    const newUrl = window.location.pathname;
+    window.history.replaceState({}, '', newUrl);
+    
+    // Проверяем токен
+    verifyAuthToken(authToken);
+  } else {
+    // Проверяем сохраненного пользователя
+    currentUser = loadUser();
+    if (currentUser) {
+      loadProfileData();
+    } else {
+      showScreen('auth');
+    }
+  }
+}
+
+async function verifyAuthToken(token) {
+  try {
+    const response = await fetch(`${API_URL}/api/auth/check/${token}`);
+    const data = await response.json();
+    
+    if (data.success && data.authenticated && data.user) {
+      currentUser = data.user;
+      saveUser(data.user);
+      loadProfileData();
+    } else {
+      showError('Ошибка авторизации', 'Не удалось войти в аккаунт. Пожалуйста, попробуйте снова.');
+    }
+  } catch (error) {
+    console.error('Ошибка проверки токена:', error);
+    showError('Ошибка сети', 'Не удалось подключиться к серверу');
+  }
+}
+
+// ===== ИНИЦИАЛИЗАЦИЯ =====
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('🚀 Инициализация профиля...');
+  
+  loadLottieAnimations();
+  
+  // Показываем загрузку на 0.5 секунды для плавного перехода
+  setTimeout(() => {
+    checkInitialAuth();
+  }, 500);
+});
+
+// Очистка интервала при закрытии страницы
+window.addEventListener('beforeunload', () => {
+  if (authCheckInterval) {
+    clearInterval(authCheckInterval);
+  }
+});
+</script>
+</body>
+</html>
