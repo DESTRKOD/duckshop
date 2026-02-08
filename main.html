@@ -1341,7 +1341,7 @@ function show(id) {
       if (id === 'menu') {
         const cardsContainer = document.getElementById('cardsContainer');
         if (cardsContainer) {
-          cardsContainer.innerHTML = '<div style="color: white; text-align: center; padding: 60px; font-size: 18px;">⌛ Загрузка товаров...</div>';
+          cardsContainer.innerHTML = '<div style="color: white; text-align: center; padding: 60px; font-size: 18px;">Загрузка товаров...</div>';
           setTimeout(() => {
             if (PRODUCTS.length === 0) {
               loadProducts();
@@ -1359,7 +1359,7 @@ function show(id) {
     if (id === 'menu') {
       const cardsContainer = document.getElementById('cardsContainer');
       if (cardsContainer) {
-        cardsContainer.innerHTML = '<div style="color: white; text-align: center; padding: 60px; font-size: 18px;">⌛ Загрузка товаров...</div>';
+        cardsContainer.innerHTML = '<div style="color: white; text-align: center; padding: 60px; font-size: 18px;">Загрузка товаров...</div>';
         setTimeout(() => {
           if (PRODUCTS.length === 0) {
             loadProducts();
@@ -1471,13 +1471,13 @@ function sortProductsForMobile(products) {
 }
 
 async function loadProducts() {
-  console.log('📦 Загрузка товаров с сервера...');
+  console.log('Загрузка товаров с сервера...');
   
   try {
     const response = await fetch(`${API_URL}/api/products`);
     
     if (!response.ok) {
-      console.log('⚠️ Сервер недоступен, использую запасные товары');
+      console.log(' Сервер недоступен');
       PRODUCTS = [...DEFAULT_PRODUCTS];
       renderProducts();
       return;
