@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<title>Ожидание выполнения заказа</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+
+<style>
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: linear-gradient(180deg, #0b3c91 0%, #1565c0 55%, #42a5f5 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 500px;
+  width: 100%;
+  padding: 20px;
+}
+
+.sticker {
+  width: 200px;
+  height: 200px;
+  margin-bottom: 30px;
+}
+
+@media (max-width: 480px) {
+  .sticker {
+    width: 180px;
+    height: 180px;
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 360px) {
+  .sticker {
+    width: 160px;
+    height: 160px;
+  }
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 20px;
+  line-height: 1.2;
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 28px;
+    margin-bottom: 15px;
+  }
+}
+
+@media (max-width: 360px) {
+  .title {
+    font-size: 24px;
+  }
+}
+
+.message-container {
+  background: rgba(255,255,255,0.1);
+  border-radius: 20px;
+  padding: 25px 30px;
+  margin: 20px 0 30px 0;
+  width: 100%;
+  max-width: 450px;
+  box-sizing: border-box;
+}
+
+.message {
+  color: rgba(255,255,255,0.95);
+  font-size: 18px;
+  line-height: 1.6;
+  text-align: center;
+  margin: 0;
+}
+
+@media (max-width: 480px) {
+  .message {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  
+  .message-container {
+    padding: 20px;
+    margin: 15px 0 25px 0;
+  }
+}
+
+.order-number {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffd700;
+  margin: 20px 0;
+  padding: 12px 20px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 12px;
+  text-align: center;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.8; }
+  50% { opacity: 1; }
+  100% { opacity: 0.8; }
+}
+
+@media (max-width: 480px) {
+  .order-number {
+    font-size: 16px;
+    padding: 10px 16px;
+    margin: 15px 0;
+  }
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 25px 0;
+  padding: 14px 24px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 14px;
+  color: rgba(255,255,255,0.9);
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #FF9800;
+  animation: pulse 2s infinite;
+}
+
+.loading-text {
+  color: rgba(255,255,255,0.9);
+}
+
+@media (max-width: 480px) {
+  .status-indicator {
+    padding: 12px 20px;
+    font-size: 15px;
+    margin: 20px 0;
+  }
+}
+</style>
+</head>
+
+<body>
+<div class="screen">
+  <div id="animWaitingOrder" class="sticker"></div>
+  
+  <div class="title">Ожидание выполнения заказа</div>
+  
+  <div class="order-number" id="orderNumber">Заказ #...</div>
+  
+  <div class="message-container">
+    <p class="message">Ваш заказ сейчас выполняется, пожалуйста, подождите немного. Как только заказ будет готов, вы получите соответствующее уведомление.</p>
+  </div>
+  
+  <div class="status-indicator">
+    <div class="status-dot"></div>
+    <div class="loading-text">Заказ в обработке</div>
+  </div>
+</div>
+
+<script>
+const API_URL = 'https://duck-shop-sever.onrender.com';
+
+// Получаем order_id из URL
+const urlParams = new URLSearchParams(window.location.search);
+const orderId = urlParams.get('order');
+
+// Если нет order_id, показываем ошибку
+if (!orderId) {
+  document.getElementById('orderNumber').textContent = 'Ошибка: номер заказа не указан';
+} else {
+  document.getElementById('orderNumber').textContent = `Заказ #${orderId}`;
+}
+
+// Загружаем анимацию
+lottie.loadAnimation({
+  container: document.getElementById('animWaitingOrder'),
+  renderer: 'svg',
+  loop: true,
+  autoplay: true,
+  path: 'waiting.json'
+});
+
+// Проверка статуса заказа
+let checkInterval = null;
+
+async function checkOrderStatus() {
+  if (!orderId) return;
+  
+  try {
+    const response = await fetch(`${API_URL}/api/order-status/${orderId}`);
+    const data = await response.json();
+    
+    if (data.success) {
+      // 1. Если заказ завершен - перенаправляем на ready.html
+      if (data.status === 'completed') {
+        clearInterval(checkInterval);
+        window.location.href = `ready.html?order=${orderId}`;
+      }
+      // 2. Если код был отмечен как неверный - перенаправляем на bad_enter_code.html
+      else if (data.hasCode === false && data.wrongAttempts > 0) {
+        clearInterval(checkInterval);
+        window.location.href = `bad_enter_code.html?order=${orderId}`;
+      }
+      // 3. Если превышено количество попыток - показываем сообщение
+      else if (data.maxAttemptsReached) {
+        clearInterval(checkInterval);
+        alert('Превышено количество попыток ввода кода. Свяжитесь с поддержкой.');
+      }
+    }
+  } catch (error) {
+    console.error('Ошибка проверки статуса:', error);
+  }
+}
+
+// Автоматическая проверка каждые 3 секунды
+function startPolling() {
+  if (checkInterval) clearInterval(checkInterval);
+  checkOrderStatus(); // Первая проверка сразу
+  checkInterval = setInterval(checkOrderStatus, 3000);
+}
+
+// Инициализация
+document.addEventListener('DOMContentLoaded', () => {
+  startPolling();
+  
+  // Остановить polling при уходе со страницы
+  window.addEventListener('beforeunload', () => {
+    if (checkInterval) clearInterval(checkInterval);
+  });
+});
+</script>
+</body>
+</html>
