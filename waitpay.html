@@ -226,6 +226,8 @@ const paymentLink = document.getElementById('paymentLink');
 const backButton = document.getElementById('backButton');
 const loadingDots = document.getElementById('loadingDots');
 
+let productsCache = [];
+
 function loadAnimation() {
   try {
     lottie.loadAnimation({
@@ -250,6 +252,19 @@ function getUser() {
     return userData ? JSON.parse(userData) : null;
   } catch {
     return null;
+  }
+}
+
+async function loadProducts() {
+  try {
+    const response = await fetch(`${API_URL}/api/products`);
+    if (response.ok) {
+      const data = await response.json();
+      if (data.success && data.products) {
+        productsCache = data.products;
+      }
+    }
+  } catch (error) {
   }
 }
 
@@ -281,7 +296,9 @@ function displayOrderInfo(orderData) {
   
   let itemsHtml = '<strong>Состав заказа:</strong><br>';
   Object.entries(orderData.items || {}).forEach(([id, qty]) => {
-    itemsHtml += `Товар ${id} ×${qty}<br>`;
+    const product = productsCache.find(p => p.id === id);
+    const productName = product ? product.name : `Товар ${id}`;
+    itemsHtml += `${productName} ×${qty}<br>`;
   });
   
   orderItems.innerHTML = itemsHtml;
@@ -320,6 +337,8 @@ async function processPayment() {
     if (!orderData) {
       throw new Error('Не удалось получить данные заказа. Пожалуйста, вернитесь в магазин и попробуйте снова.');
     }
+    
+    await loadProducts();
     
     displayOrderInfo(orderData);
     
