@@ -206,18 +206,13 @@ html, body {
   text-transform: uppercase;
 }
 
-.order-status.completed {
-  background: #4CAF50;
-  color: white;
-}
-
-.order-status.pending {
+.order-status.working {
   background: #ffd700;
   color: #333;
 }
 
-.order-status.failed {
-  background: #ff6b6b;
+.order-status.completed {
+  background: #4CAF50;
   color: white;
 }
 
@@ -239,17 +234,22 @@ html, body {
   padding: 30px 0;
 }
 
-.no-orders div:first-child {
-  font-size: 24px;
-  margin-bottom: 10px;
+.no-orders-icon {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 15px;
+  background-image: url('https://i.imgur.com/8Q5w6zR.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
-.no-orders div:nth-child(2) {
+.no-orders-text {
   font-size: 16px;
   margin-bottom: 5px;
 }
 
-.no-orders div:last-child {
+.no-orders-subtext {
   font-size: 13px;
   color: rgba(255,255,255,0.5);
 }
@@ -296,8 +296,13 @@ html, body {
 }
 
 .error-icon {
-  font-size: 60px;
-  margin-bottom: 20px;
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 20px;
+  background-image: url('https://i.imgur.com/TdWbh8z.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 .error-title {
@@ -411,7 +416,7 @@ html, body {
   <div class="profile-content">
     <div class="profile-section">
       <div class="section-title">
-        <span>📦 История заказов</span>
+        <span>История заказов</span>
         <span id="ordersCount">0 заказов</span>
       </div>
       <div class="orders-list" id="ordersList">
@@ -436,7 +441,7 @@ html, body {
 </div>
 
 <div id="error" class="screen error-screen">
-  <div class="error-icon">⚠️</div>
+  <div class="error-icon"></div>
   <div class="error-title" id="errorTitle">Ошибка загрузки</div>
   <div class="error-text" id="errorText">Не удалось загрузить данные профиля. Проверьте подключение к интернету и попробуйте снова.</div>
   <div class="profile-actions" style="margin-top: 20px;">
@@ -489,7 +494,6 @@ function loadLottieAnimations() {
       });
     }
   } catch (error) {
-    console.warn('Ошибка загрузки анимаций:', error);
   }
 }
 
@@ -512,7 +516,6 @@ function loadUser() {
       return JSON.parse(userData);
     }
   } catch (error) {
-    console.error('Ошибка загрузки пользователя:', error);
   }
   return null;
 }
@@ -521,7 +524,6 @@ function saveUser(user) {
   try {
     localStorage.setItem(USER_KEY, JSON.stringify(user));
   } catch (error) {
-    console.error('Ошибка сохранения пользователя:', error);
   }
 }
 
@@ -555,7 +557,6 @@ async function loadProfileData() {
       throw new Error(data.error || 'Ошибка загрузки профиля');
     }
   } catch (error) {
-    console.error('Ошибка загрузки профиля:', error);
     showError('Ошибка загрузки', 'Не удалось загрузить данные профиля. Попробуйте позже.');
   }
 }
@@ -587,39 +588,34 @@ async function loadOrders(orders) {
   
   if (!ordersList || !ordersCount) return;
   
-  if (orders.length === 0) {
+  const completedOrders = orders.filter(order => order.status === 'completed' || order.status === 'working');
+  
+  if (completedOrders.length === 0) {
     ordersCount.textContent = '0 заказов';
     ordersList.innerHTML = `
       <div class="no-orders">
-        <div>📭</div>
-        <div>У вас пока нет заказов</div>
-        <div>Совершите первую покупку чтобы начать историю!</div>
+        <div class="no-orders-icon"></div>
+        <div class="no-orders-text">У вас пока нет заказов</div>
+        <div class="no-orders-subtext">Совершите первую покупку чтобы начать историю!</div>
       </div>
     `;
     return;
   }
   
-  ordersCount.textContent = `${orders.length} заказ${getPluralEnding(orders.length)}`;
+  ordersCount.textContent = `${completedOrders.length} заказ${getPluralEnding(completedOrders.length)}`;
   
-  orders.sort((a, b) => new Date(b.date) - new Date(a.date));
+  completedOrders.sort((a, b) => new Date(b.date) - new Date(a.date));
   
-  ordersList.innerHTML = orders.map(order => {
+  ordersList.innerHTML = completedOrders.map(order => {
     let statusText = '';
     let statusClass = '';
     
-    switch(order.status) {
-      case 'completed':
-        statusText = 'Завершен';
-        statusClass = 'completed';
-        break;
-      case 'failed':
-        statusText = 'Отменен';
-        statusClass = 'failed';
-        break;
-      case 'pending':
-      default:
-        statusText = 'В обработке';
-        statusClass = 'pending';
+    if (order.status === 'completed') {
+      statusText = 'Завершен';
+      statusClass = 'completed';
+    } else {
+      statusText = 'В работе';
+      statusClass = 'working';
     }
     
     const displayId = order.id.startsWith('temp_') 
@@ -698,14 +694,11 @@ async function verifyAuthToken(token) {
       showError('Ошибка авторизации', 'Не удалось войти в аккаунт. Пожалуйста, попробуйте снова.');
     }
   } catch (error) {
-    console.error('Ошибка проверки токена:', error);
     showError('Ошибка сети', 'Не удалось подключиться к серверу');
   }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('🚀 Инициализация профиля...');
-  
   loadLottieAnimations();
   
   setTimeout(() => {
