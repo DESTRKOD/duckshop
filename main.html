@@ -4,14 +4,12 @@
 <meta charset="UTF-8" />
 <title>Duck Shop</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 
 <style>
-/* ===== БАЗОВЫЕ СТИЛИ ===== */
 html, body {
   margin: 0;
   width: 100%;
@@ -21,7 +19,6 @@ html, body {
   overflow: hidden;
 }
 
-/* ===== ЭКРАНЫ ===== */
 .screen, .menu {
   position: absolute;
   inset: 0;
@@ -63,7 +60,6 @@ html, body {
   margin-bottom: 20px;
 }
 
-/* ===== КНОПКА ===== */
 .button {
   margin-top: 20px;
   padding: 20px 56px;
@@ -95,7 +91,6 @@ html, body {
   box-shadow: 0 8px 20px rgba(0,0,0,.25) !important;
 }
 
-/* ===== ШАПКА МЕНЮ ===== */
 .menu { 
   justify-content: flex-start; 
   padding: 0;
@@ -126,7 +121,6 @@ html, body {
   flex: 1;
 }
 
-/* Кнопка входа/профиля */
 .auth-btn {
   position: relative;
   min-width: 44px;
@@ -163,7 +157,6 @@ html, body {
   flex-shrink: 0;
 }
 
-/* Кнопка корзины */
 .cart-btn {
   position: relative;
   width: 44px;
@@ -212,7 +205,6 @@ html, body {
   box-shadow: 0 8px 18px rgba(0,0,0,.25);
 }
 
-/* ===== КАРТОЧКИ ТОВАРОВ ===== */
 .menu-scroll {
   flex: 1;
   width: 100%;
@@ -244,7 +236,6 @@ html, body {
   box-shadow: 0 18px 36px rgba(0,0,0,.35);
 }
 
-/* 🎁 ПОДАРОК */
 .gift {
   position: absolute;
   top: 10px;
@@ -259,7 +250,6 @@ html, body {
   display:block;
 }
 
-/* ===== ВЕРХ (КАРТИНКА) ===== */
 .shop-top {
   position: relative;
   flex: 0 0 60%;
@@ -283,7 +273,6 @@ html, body {
   display: block;
 }
 
-/* Бейдж "NEW" */
 .new-badge {
   position: absolute;
   top: 8px;
@@ -321,7 +310,6 @@ html, body {
   -webkit-box-orient: vertical;
 }
 
-/* Кнопка покупки */
 .shop-buy {
   min-width: 140px;
   height: 44px;
@@ -360,7 +348,6 @@ html, body {
   white-space: nowrap;
 }
 
-/* ===== ОФОРМЛЕНИЕ ЗАКАЗА ===== */
 .checkout-screen .title {
   margin-bottom: 24px;
 }
@@ -392,7 +379,6 @@ html, body {
   border-top: 2px solid rgba(255,255,255,0.2);
 }
 
-/* ===== НОМЕР ЗАКАЗА ===== */
 .order-number {
   font-size: 18px;
   font-weight: 700;
@@ -425,27 +411,28 @@ html, body {
   width: 100%;
 }
 
-/* ===== ССЫЛКА ОПЛАТЫ ===== */
-.payment-link {
-  display: inline-block;
-  margin-top: 30px;
-  padding: 18px 40px;
-  font-size: 20px;
-  font-weight: 900;
-  background: #00c853;
-  color: white;
-  border-radius: 20px;
-  text-decoration: none;
-  box-shadow: 0 12px 30px rgba(0,200,83,0.4);
-  transition: transform .2s ease, box-shadow .2s ease;
+.row-two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-bottom: 18px;
 }
 
-.payment-link:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 16px 40px rgba(0,200,83,0.5);
+.row-centered {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 18px;
 }
 
-/* ===== КОРЗИНА (МОДАЛКА) ===== */
+.row-centered .shop-card {
+  width: calc(50% - 9px);
+}
+
+.empty-card {
+  visibility: hidden;
+  pointer-events: none;
+}
+
 .cart-overlay {
   position: fixed;
   inset: 0;
@@ -680,30 +667,6 @@ html, body {
   color: #fff; 
 }
 
-/* ===== ДЕСКТОПНАЯ ВЕРСИЯ ===== */
-.row-two {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 18px;
-  margin-bottom: 18px;
-}
-
-.row-centered {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 18px;
-}
-
-.row-centered .shop-card {
-  width: calc(50% - 9px);
-}
-
-.empty-card {
-  visibility: hidden;
-  pointer-events: none;
-}
-
-/* ===== МОБИЛЬНАЯ АДАПТАЦИЯ ===== */
 @media (max-width: 768px) {
   .menu-header {
     padding: 14px 16px;
@@ -768,11 +731,6 @@ html, body {
   .cart-btn svg {
     width: 20px;
     height: 20px;
-  }
-  
-  .input-field {
-    padding: 14px 16px;
-    font-size: 16px;
   }
   
   .button {
@@ -918,26 +876,22 @@ html, body {
 
 <body>
 
-<!-- ПРИВЕТСТВИЕ -->
 <div id="hello" class="screen active">
   <div id="animHello" class="sticker"></div>
   <div class="title">Добро пожаловать</div>
   <div class="button" id="continueBtn">Продолжить</div>
 </div>
 
-<!-- ЗАГРУЗКА -->
 <div id="load" class="screen">
   <div id="animDownload" class="sticker"></div>
   <div class="title">Загрузка…</div>
 </div>
 
-<!-- ИНТРО -->
 <div id="intro" class="screen">
   <div id="animMain" class="sticker"></div>
   <div class="title">Магазин Duck Shop</div>
 </div>
 
-<!-- МАГАЗИН -->
 <div id="menu" class="menu">
   <div class="menu-header">
     <div class="menu-header-title">Магазин Duck Shop</div>
@@ -960,11 +914,9 @@ html, body {
   </div>
 
   <div class="menu-scroll" id="cardsContainer">
-    <!-- Товары будут вставлены сюда -->
   </div>
 </div>
 
-<!-- ОЖИДАНИЕ ВЫПОЛНЕНИЯ -->
 <div id="waiting" class="screen">
   <div id="animWaiting" class="sticker"></div>
   <div class="title">Ожидайте выполнения</div>
@@ -974,7 +926,6 @@ html, body {
   <div class="order-number" id="waitingOrderNumber"></div>
 </div>
 
-<!-- ОФОРМЛЕНИЕ ЗАКАЗА -->
 <div id="checkout" class="screen checkout-screen">
   <div id="animCheckout" class="sticker"></div>
   <div class="title">Оформление заказа</div>
@@ -990,17 +941,6 @@ html, body {
   <button class="button" id="backToMenu" style="margin-top: 12px; background: rgba(255,255,255,0.2); color: white;">Вернуться в меню</button>
 </div>
 
-<!-- ОПЛАТА (редирект на Bilee) -->
-<div id="payment" class="screen">
-  <div class="sticker"></div>
-  <div class="title">Перенаправляем на оплату...</div>
-  <div style="margin-top: 20px; color: rgba(255,255,255,0.8); text-align: center; max-width: 400px;">
-    Если перенаправление не произошло автоматически, нажмите кнопку ниже
-  </div>
-  <a href="#" class="payment-link" id="manualPaymentLink" target="_blank">Перейти к оплате</a>
-</div>
-
-<!-- НЕУСПЕШНАЯ ОПЛАТА -->
 <div id="badPay" class="screen">
   <div id="animBadPay" class="sticker"></div>
   <div class="title">Оплата не прошла</div>
@@ -1008,7 +948,6 @@ html, body {
   <button class="button" id="toMenuFromBadPay">Вернуться в меню</button>
 </div>
 
-<!-- КОРЗИНА -->
 <div class="cart-overlay" id="cartOverlay" aria-hidden="true">
   <div class="cart-sheet" role="dialog" aria-modal="true">
     <div class="cart-head">
@@ -1033,12 +972,10 @@ html, body {
 </div>
 
 <script>
-// ===== КОНСТАНТЫ =====
 const API_URL = 'https://duck-shop-sever.onrender.com';
 const CART_KEY = 'duck_cart_v1';
-const USER_KEY = 'duck_user_v1'; // ОДИНАКОВЫЙ ключ с reg_log.html
+const USER_KEY = 'duck_user_v1';
 
-// ===== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ =====
 let PRODUCTS = [];
 let productsCheckInterval = null;
 let cart = {};
@@ -1046,7 +983,6 @@ let currentOrderId = null;
 let currentPaymentUrl = null;
 let currentUser = null;
 
-// ===== ФУНКЦИИ ДЛЯ КОРЗИНЫ =====
 function loadCart(){
   try {
     const raw = localStorage.getItem(CART_KEY);
@@ -1077,20 +1013,17 @@ function fmtRub(n){
   return `${n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} ₽`;
 }
 
-// ===== LOTTIE АНИМАЦИИ =====
 function loadAllLottieAnimations() {
   try {
-    // ИСПОЛЬЗУЕМ ВАШИ ЛОКАЛЬНЫЕ ФАЙЛЫ LOTTIE
     const animations = {
-      hello: 'hello.json',                    // Ваш файл hello.json
-      download: 'download.json',              // Ваш файл download.json
-      main: 'main.json',                      // Ваш файл main.json
+      hello: 'hello.json',
+      download: 'download.json',
+      main: 'main.json',
       waiting: 'https://assets2.lottiefiles.com/packages/lf20_puciaevh.json',
-      checkout: 'checkout.json',              // Ваш файл checkout.json
+      checkout: 'checkout.json',
       badPay: 'https://assets2.lottiefiles.com/packages/lf20_dews0pqv.json'
     };
     
-    // Загрузка анимации приветствия
     if (document.getElementById('animHello')) {
       try {
         lottie.loadAnimation({
@@ -1101,12 +1034,10 @@ function loadAllLottieAnimations() {
           path: animations.hello
         });
       } catch (error) {
-        console.warn('Не удалось загрузить анимацию hello:', error);
         document.getElementById('animHello').innerHTML = '<div style="color: white; font-size: 50px; text-align: center;">👋</div>';
       }
     }
     
-    // Загрузка анимации загрузки
     if (document.getElementById('animDownload')) {
       try {
         lottie.loadAnimation({
@@ -1117,12 +1048,10 @@ function loadAllLottieAnimations() {
           path: animations.download
         });
       } catch (error) {
-        console.warn('Не удалось загрузить анимацию download:', error);
         document.getElementById('animDownload').innerHTML = '<div style="color: white; font-size: 50px; text-align: center;">⌛</div>';
       }
     }
     
-    // Загрузка главной анимации
     if (document.getElementById('animMain')) {
       try {
         lottie.loadAnimation({
@@ -1133,12 +1062,10 @@ function loadAllLottieAnimations() {
           path: animations.main
         });
       } catch (error) {
-        console.warn('Не удалось загрузить анимацию main:', error);
         document.getElementById('animMain').innerHTML = '<div style="color: white; font-size: 50px; text-align: center;">🏪</div>';
       }
     }
     
-    // Загрузка анимации ожидания
     if (document.getElementById('animWaiting')) {
       try {
         lottie.loadAnimation({
@@ -1149,12 +1076,10 @@ function loadAllLottieAnimations() {
           path: animations.waiting
         });
       } catch (error) {
-        console.warn('Не удалось загрузить анимацию waiting:', error);
         document.getElementById('animWaiting').innerHTML = '<div style="color: white; font-size: 50px; text-align: center;">⏳</div>';
       }
     }
     
-    // Загрузка анимации оформления заказа
     if (document.getElementById('animCheckout')) {
       try {
         lottie.loadAnimation({
@@ -1165,12 +1090,10 @@ function loadAllLottieAnimations() {
           path: animations.checkout
         });
       } catch (error) {
-        console.warn('Не удалось загрузить анимацию checkout:', error);
         document.getElementById('animCheckout').innerHTML = '<div style="color: white; font-size: 50px; text-align: center;">🛒</div>';
       }
     }
     
-    // Загрузка анимации неудачной оплаты
     if (document.getElementById('animBadPay')) {
       try {
         lottie.loadAnimation({
@@ -1181,16 +1104,10 @@ function loadAllLottieAnimations() {
           path: animations.badPay
         });
       } catch (error) {
-        console.warn('Не удалось загрузить анимацию badPay:', error);
         document.getElementById('animBadPay').innerHTML = '<div style="color: white; font-size: 50px; text-align: center;">❌</div>';
       }
     }
-    
-    console.log('🎬 Lottie анимации загружены');
   } catch (error) {
-    console.warn('⚠️ Ошибка загрузки Lottie анимаций:', error);
-    
-    // Если анимации не загрузились, показываем заглушки
     document.querySelectorAll('.sticker').forEach(sticker => {
       if (!sticker.innerHTML || sticker.innerHTML.trim() === '') {
         sticker.innerHTML = '<div style="color: white; font-size: 50px; text-align: center;">🎁</div>';
@@ -1199,17 +1116,14 @@ function loadAllLottieAnimations() {
   }
 }
 
-// ===== АВТОРИЗАЦИЯ =====
 function loadUser() {
   try {
     const userData = localStorage.getItem(USER_KEY);
     if (userData) {
       const user = JSON.parse(userData);
-      console.log('📋 Загружен пользователь:', user.username);
       return user;
     }
   } catch (error) {
-    console.error('Ошибка загрузки пользователя:', error);
   }
   return null;
 }
@@ -1217,9 +1131,7 @@ function loadUser() {
 function saveUser(user) {
   try {
     localStorage.setItem(USER_KEY, JSON.stringify(user));
-    console.log('💾 Пользователь сохранен:', user.username);
   } catch (error) {
-    console.error('Ошибка сохранения пользователя:', error);
   }
 }
 
@@ -1227,7 +1139,6 @@ function clearUser() {
   localStorage.removeItem(USER_KEY);
   currentUser = null;
   updateAuthButton();
-  console.log('🚪 Пользователь вышел');
 }
 
 function updateAuthButton() {
@@ -1236,11 +1147,9 @@ function updateAuthButton() {
   
   if (!authBtn || !authBtnText) return;
   
-  // Удаляем старые обработчики
   authBtn.onclick = null;
   
   if (currentUser) {
-    // Пользователь авторизован - кнопка "Профиль"
     if (window.innerWidth <= 768 && currentUser.username) {
       const shortName = currentUser.username.length > 6 
         ? currentUser.username.substring(0, 6) + '...' 
@@ -1256,36 +1165,26 @@ function updateAuthButton() {
       e.preventDefault();
       window.location.href = 'profile.html';
     };
-    
-    console.log('✅ Кнопка: "Профиль"');
   } else {
-    // Пользователь не авторизован - кнопка "Войти"
     authBtnText.textContent = 'Войти';
     authBtn.onclick = function(e) {
       e.preventDefault();
       window.location.href = 'reg_log.html';
     };
-    
-    console.log('❌ Кнопка: "Войти"');
   }
 }
 
-// ===== ПРОВЕРКА АВТОРИЗАЦИИ ПРИ ЗАГРУЗКЕ =====
 function checkAuthFromURL() {
   const urlParams = new URLSearchParams(window.location.search);
   const authToken = urlParams.get('auth');
   
   if (authToken) {
-    console.log('🔑 Токен найден в URL:', authToken);
     verifyAuthToken(authToken);
   } else {
-    // Проверяем сохраненного пользователя
     currentUser = loadUser();
     if (currentUser) {
-      console.log('👤 Пользователь из localStorage:', currentUser.username);
       updateAuthButton();
     } else {
-      console.log('👤 Нет пользователя в localStorage');
       updateAuthButton();
     }
   }
@@ -1293,7 +1192,6 @@ function checkAuthFromURL() {
 
 async function verifyAuthToken(token) {
   try {
-    console.log('🔐 Проверяем токен...');
     const response = await fetch(`${API_URL}/api/auth/check/${token}`);
     const data = await response.json();
     
@@ -1301,31 +1199,25 @@ async function verifyAuthToken(token) {
       currentUser = data.user;
       saveUser(currentUser);
       
-      // Убираем параметр из URL
       const newUrl = window.location.pathname;
       window.history.replaceState({}, '', newUrl);
       
-      console.log('✅ Токен валиден, пользователь:', currentUser.username);
       updateAuthButton();
       
-      // Показываем уведомление
       setTimeout(() => {
         alert(`✅ Добро пожаловать, ${currentUser.username}!`);
       }, 500);
       
     } else {
-      console.log('❌ Токен недействителен');
       updateAuthButton();
     }
   } catch (error) {
-    console.error('❌ Ошибка проверки токена:', error);
     updateAuthButton();
   }
 }
 
-// ===== ПЕРЕКЛЮЧЕНИЕ ЭКРАНОВ =====
 function show(id) {
-  const ids = ['hello', 'load', 'intro', 'menu', 'waiting', 'checkout', 'payment', 'badPay'];
+  const ids = ['hello', 'load', 'intro', 'menu', 'waiting', 'checkout', 'badPay'];
   const current = ids.map(x => document.getElementById(x)).find(el => el.classList.contains('active'));
   const next = document.getElementById(id);
 
@@ -1372,7 +1264,6 @@ function show(id) {
   }
 }
 
-// ===== КНОПКА "ПРОДОЛЖИТЬ" =====
 document.getElementById('continueBtn').addEventListener('pointerdown', function() {
   this.classList.add('pressed');
 });
@@ -1393,7 +1284,6 @@ document.getElementById('continueBtn').addEventListener('click', function() {
   }, 2500);
 });
 
-// ===== ТОВАРЫ =====
 const DEFAULT_PRODUCTS = [
   { id: "c30", name: "30 кристаллов", price: 200, image_url: "https://i.imgur.com/s4K0WIP.png", is_gift: false },
   { id: "c80", name: "80 кристаллов", price: 550, image_url: "https://i.imgur.com/XbnZKDb.png", is_gift: false },
@@ -1471,13 +1361,10 @@ function sortProductsForMobile(products) {
 }
 
 async function loadProducts() {
-  console.log('Загрузка товаров с сервера...');
-  
   try {
     const response = await fetch(`${API_URL}/api/products`);
     
     if (!response.ok) {
-      console.log(' Сервер недоступен');
       PRODUCTS = [...DEFAULT_PRODUCTS];
       renderProducts();
       return;
@@ -1491,15 +1378,12 @@ async function loadProducts() {
       const missingDefaultProducts = DEFAULT_PRODUCTS.filter(p => !serverProductIds.has(p.id));
       
       PRODUCTS = [...serverProducts, ...missingDefaultProducts];
-      console.log(`✅ Загружено ${serverProducts.length} товаров с сервера + ${missingDefaultProducts.length} запасных`);
       renderProducts();
     } else {
-      console.log('⚠️ Сервер вернул пустой список, использую запасные товары');
       PRODUCTS = [...DEFAULT_PRODUCTS];
       renderProducts();
     }
   } catch (error) {
-    console.error('❌ Ошибка загрузки товаров:', error);
     PRODUCTS = [...DEFAULT_PRODUCTS];
     renderProducts();
   }
@@ -1605,8 +1489,6 @@ function renderProducts() {
       }
     });
   }
-  
-  console.log(`📱 Отрисовано ${productsToShow.length} товаров (${isMobile ? 'мобильная' : 'десктоп'} версия)`);
 }
 
 window.addEventListener('resize', () => {
@@ -1618,7 +1500,6 @@ window.addEventListener('resize', () => {
   }
 });
 
-// ===== КОРЗИНА =====
 function updateBadge(){
   const n = cartCount();
   const cartBadge = document.getElementById('cartBadge');
@@ -1735,7 +1616,6 @@ document.getElementById('checkoutBtn').addEventListener('click', () => {
   showCheckout();
 });
 
-// ===== ОФОРМЛЕНИЕ ЗАКАЗА =====
 function showCheckout() {
   const total = cartSum();
   const checkoutSummary = document.getElementById('checkoutSummary');
@@ -1788,46 +1668,23 @@ document.getElementById('backToMenu').addEventListener('click', () => {
   show('menu');
 });
 
-// ===== ОПЛАТА =====
 document.getElementById('proceedToPay').addEventListener('click', async () => {
   const total = cartSum();
   if (total < 10 || total > 10000) return;
   
   try {
-    const response = await fetch(`${API_URL}/api/create-order`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        items: cart,
-        total: total,
-        userId: currentUser ? currentUser.id : null
-      })
-    });
+    const orderData = {
+      items: cart,
+      total: total,
+      userId: currentUser ? currentUser.id : null,
+      timestamp: Date.now()
+    };
+    localStorage.setItem('pending_order', JSON.stringify(orderData));
     
-    const data = await response.json();
+    window.location.href = 'waitpay.html';
     
-    if (data.success && data.paymentUrl) {
-      currentOrderId = data.orderId;
-      currentPaymentUrl = data.paymentUrl;
-      
-      updateOrderNumberElements(currentOrderId);
-      
-      show('payment');
-      document.getElementById('manualPaymentLink').href = data.paymentUrl;
-      
-      // Очищаем корзину
-      clearCart();
-      
-      setTimeout(() => {
-        window.open(data.paymentUrl, '_blank');
-      }, 1000);
-      
-    } else {
-      alert('Ошибка при создании заказа: ' + (data.error || 'неизвестная ошибка'));
-    }
   } catch (error) {
-    console.error('❌ Ошибка:', error);
-    alert('Ошибка соединения с сервером');
+    alert('Ошибка при переходе к оплате');
   }
 });
 
@@ -1845,16 +1702,12 @@ function updateOrderNumberElements(orderId) {
       element.textContent = orderNumber;
     }
   });
-  
-  console.log(`Обновлены номера заказов: ${orderNumber}`);
 }
 
-// ===== КНОПКИ ВОЗВРАТА =====
 document.getElementById('toMenuFromBadPay').addEventListener('click', () => {
   show('menu');
 });
 
-// ===== ОБРАБОТКА ВОЗВРАТА ИЗ ОПЛАТЫ =====
 function checkPaymentResult() {
   const urlParams = new URLSearchParams(window.location.search);
   const status = urlParams.get('payment');
@@ -1870,21 +1723,17 @@ function checkPaymentResult() {
   }
 }
 
-// ===== ОЧИСТКА КОРЗИНЫ =====
 document.getElementById('clearCart').addEventListener('click', () => {
   clearCart();
 });
 
-// ===== ИНИЦИАЛИЗАЦИЯ =====
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('🚀 Инициализация магазина...');
-  
   cart = loadCart();
   currentUser = loadUser();
   
   loadAllLottieAnimations();
   updateBadge();
-  checkAuthFromURL(); // ВАЖНО: проверяем авторизацию
+  checkAuthFromURL();
   checkPaymentResult();
   
   if (PRODUCTS.length === 0) {
@@ -1895,8 +1744,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function startAutoRefreshProducts() {
-  console.log('🚀 Запуск автообновления товаров');
-  
   if (productsCheckInterval) clearInterval(productsCheckInterval);
   
   if (PRODUCTS.length === 0) {
@@ -1906,7 +1753,6 @@ function startAutoRefreshProducts() {
   }
   
   productsCheckInterval = setInterval(() => {
-    console.log('🔄 Автообновление товаров...');
     loadProducts();
   }, 10000);
 }
