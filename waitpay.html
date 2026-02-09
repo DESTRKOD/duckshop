@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Обработка оплаты - Duck Shop</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: linear-gradient(180deg, #0b3c91 0%, #1565c0 55%, #42a5f5 100%);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  overflow: hidden;
+}
+
+.container {
+  text-align: center;
+  max-width: 500px;
+  width: 100%;
+}
+
+.sticker {
+  width: 200px;
+  height: 200px;
+  margin: 0 auto 30px;
+}
+
+.title {
+  color: white;
+  font-size: 32px;
+  font-weight: 900;
+  margin-bottom: 20px;
+}
+
+.message {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 18px;
+  line-height: 1.5;
+  margin-bottom: 30px;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.order-info {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 20px;
+  margin: 20px 0;
+  color: white;
+  font-size: 16px;
+}
+
+.order-number {
+  font-size: 22px;
+  font-weight: 900;
+  color: #ffd700;
+  margin-bottom: 10px;
+}
+
+.order-total {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.order-items {
+  font-size: 14px;
+  opacity: 0.9;
+  margin-top: 15px;
+  text-align: left;
+}
+
+.payment-link {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 18px 40px;
+  font-size: 20px;
+  font-weight: 900;
+  background: #00c853;
+  color: white;
+  border-radius: 20px;
+  text-decoration: none;
+  box-shadow: 0 12px 30px rgba(0, 200, 83, 0.4);
+  transition: transform .2s ease, box-shadow .2s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.payment-link:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 40px rgba(0, 200, 83, 0.5);
+}
+
+.payment-link:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.error-message {
+  background: rgba(255, 107, 107, 0.1);
+  border-radius: 12px;
+  padding: 15px;
+  margin: 20px 0;
+  color: #ff6b6b;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.back-button {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 14px 30px;
+  font-size: 16px;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border-radius: 16px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+}
+
+.back-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.loading-dots {
+  color: white;
+  font-size: 24px;
+  margin-top: 20px;
+}
+
+.loading-dots span {
+  animation: dots 1.5s infinite;
+  opacity: 0;
+}
+
+.loading-dots span:nth-child(1) { animation-delay: 0s; }
+.loading-dots span:nth-child(2) { animation-delay: 0.3s; }
+.loading-dots span:nth-child(3) { animation-delay: 0.6s; }
+
+@keyframes dots {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+@media (max-width: 480px) {
+  .sticker {
+    width: 150px;
+    height: 150px;
+  }
+  
+  .title {
+    font-size: 26px;
+  }
+  
+  .message {
+    font-size: 16px;
+  }
+  
+  .payment-link {
+    padding: 16px 30px;
+    font-size: 18px;
+  }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div id="animation" class="sticker"></div>
+  
+  <h1 class="title" id="pageTitle">Перенаправляем на оплату...</h1>
+  
+  <div class="message" id="pageMessage">
+    Подготавливаем ваш заказ и создаём платёжную ссылку
+  </div>
+  
+  <div class="order-info" id="orderInfo" style="display: none;">
+    <div class="order-number" id="orderNumber"></div>
+    <div class="order-total" id="orderTotal"></div>
+    <div class="order-items" id="orderItems"></div>
+  </div>
+  
+  <div class="error-message" id="errorMessage" style="display: none;"></div>
+  
+  <a href="#" class="payment-link" id="paymentLink" target="_blank" style="display: none;">
+    Перейти к оплате
+  </a>
+  
+  <button class="back-button" id="backButton" style="display: none;">Вернуться в магазин</button>
+  
+  <div class="loading-dots" id="loadingDots">
+    <span>.</span>
+    <span>.</span>
+    <span>.</span>
+  </div>
+</div>
+
+<script>
+const API_URL = 'https://duck-shop-sever.onrender.com';
+const USER_KEY = 'duck_user_v1';
+
+const animationEl = document.getElementById('animation');
+const pageTitle = document.getElementById('pageTitle');
+const pageMessage = document.getElementById('pageMessage');
+const orderInfo = document.getElementById('orderInfo');
+const orderNumber = document.getElementById('orderNumber');
+const orderTotal = document.getElementById('orderTotal');
+const orderItems = document.getElementById('orderItems');
+const errorMessage = document.getElementById('errorMessage');
+const paymentLink = document.getElementById('paymentLink');
+const backButton = document.getElementById('backButton');
+const loadingDots = document.getElementById('loadingDots');
+
+function loadAnimation() {
+  try {
+    lottie.loadAnimation({
+      container: animationEl,
+      renderer: 'svg',
+      loop: true,
+      autoplay: true,
+      path: 'download.json'
+    });
+  } catch (error) {
+    animationEl.innerHTML = '<div style="color: white; font-size: 80px; text-align: center;">⏳</div>';
+  }
+}
+
+function fmtRub(n) {
+  return `${n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} ₽`;
+}
+
+function getUser() {
+  try {
+    const userData = localStorage.getItem(USER_KEY);
+    return userData ? JSON.parse(userData) : null;
+  } catch {
+    return null;
+  }
+}
+
+function getPendingOrder() {
+  try {
+    const orderData = localStorage.getItem('pending_order');
+    if (!orderData) {
+      throw new Error('Данные заказа не найдены');
+    }
+    
+    const order = JSON.parse(orderData);
+    
+    const now = Date.now();
+    if (now - order.timestamp > 5 * 60 * 1000) {
+      throw new Error('Данные заказа устарели');
+    }
+    
+    return order;
+  } catch (error) {
+    return null;
+  }
+}
+
+function displayOrderInfo(orderData) {
+  const total = orderData.total || 0;
+  
+  orderNumber.textContent = 'Заказ обрабатывается...';
+  orderTotal.textContent = `Сумма: ${fmtRub(total)}`;
+  
+  let itemsHtml = '<strong>Состав заказа:</strong><br>';
+  Object.entries(orderData.items || {}).forEach(([id, qty]) => {
+    itemsHtml += `Товар ${id} ×${qty}<br>`;
+  });
+  
+  orderItems.innerHTML = itemsHtml;
+  orderInfo.style.display = 'block';
+}
+
+async function createOrder(orderData, user) {
+  try {
+    const response = await fetch(`${API_URL}/api/create-order`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        items: orderData.items,
+        total: orderData.total,
+        userId: user ? user.id : null
+      })
+    });
+    
+    const data = await response.json();
+    
+    if (!data.success) {
+      throw new Error(data.error || 'Ошибка сервера');
+    }
+    
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function processPayment() {
+  try {
+    const user = getUser();
+    const orderData = getPendingOrder();
+    
+    if (!orderData) {
+      throw new Error('Не удалось получить данные заказа. Пожалуйста, вернитесь в магазин и попробуйте снова.');
+    }
+    
+    displayOrderInfo(orderData);
+    
+    pageMessage.textContent = 'Создаём ваш заказ...';
+    
+    const result = await createOrder(orderData, user);
+    
+    if (result.success && result.paymentUrl) {
+      orderNumber.textContent = `Заказ #${result.orderId}`;
+      pageTitle.textContent = 'Переход к оплате';
+      pageMessage.textContent = 'Ваш заказ успешно создан. Сейчас вы будете перенаправлены на страницу оплаты...';
+      
+      paymentLink.href = result.paymentUrl;
+      paymentLink.style.display = 'inline-block';
+      
+      setTimeout(() => {
+        window.open(result.paymentUrl, '_blank');
+        
+        pageMessage.textContent = 'Открыта страница оплаты. Пожалуйста, завершите платёж в открывшейся вкладке.';
+        loadingDots.style.display = 'none';
+      }, 2000);
+      
+      localStorage.removeItem('pending_order');
+      
+      localStorage.setItem('last_order', JSON.stringify({
+        orderId: result.orderId,
+        paymentUrl: result.paymentUrl,
+        timestamp: Date.now()
+      }));
+      
+    } else {
+      throw new Error('Не удалось получить ссылку для оплаты');
+    }
+    
+  } catch (error) {
+    pageTitle.textContent = 'Ошибка обработки';
+    pageMessage.textContent = 'Произошла ошибка при создании заказа';
+    errorMessage.textContent = error.message || 'Неизвестная ошибка';
+    errorMessage.style.display = 'block';
+    
+    backButton.style.display = 'inline-block';
+    loadingDots.style.display = 'none';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  loadAnimation();
+  
+  backButton.addEventListener('click', function() {
+    window.location.href = 'main.html';
+  });
+  
+  setTimeout(() => {
+    processPayment();
+  }, 500);
+});
+</script>
+</body>
+</html>
