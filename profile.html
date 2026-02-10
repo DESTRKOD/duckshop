@@ -216,16 +216,9 @@ html, body {
   color: white;
 }
 
-.order-items {
-  font-size: 12px;
-  color: rgba(255,255,255,0.7);
-  margin: 5px 0;
-  font-weight: 500;
-  line-height: 1.3;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+.order-status.canceled {
+  background: #f44336;
+  color: white;
 }
 
 .no-orders {
@@ -453,7 +446,7 @@ html, body {
 <script>
 const API_URL = 'https://duck-shop-sever.onrender.com';
 const USER_KEY = 'duck_user_v1';
-const SHOP_URL = 'https://destrkod.github.io/duckshop/main.html';
+const SHOP_URL = 'main.html';
 
 let currentUser = null;
 
@@ -480,6 +473,30 @@ function formatDate(dateString) {
     hour: '2-digit',
     minute: '2-digit'
   });
+}
+
+function getDisplayStatus(status, paymentStatus) {
+  if (status === 'completed') {
+    return { text: 'Завершен', class: 'completed' };
+  }
+  
+  if (status === 'canceled') {
+    return { text: 'Отменен', class: 'canceled' };
+  }
+  
+  if (status === 'new' && paymentStatus === 'confirmed') {
+    return { text: 'В работе', class: 'working' };
+  }
+  
+  if (status === 'waiting' || status === 'confirmed') {
+    return { text: 'В работе', class: 'working' };
+  }
+  
+  if (status === 'pending' || status === 'waiting_code_request') {
+    return { text: 'В работе', class: 'working' };
+  }
+  
+  return { text: 'В работе', class: 'working' };
 }
 
 function loadLottieAnimations() {
@@ -588,9 +605,7 @@ async function loadOrders(orders) {
   
   if (!ordersList || !ordersCount) return;
   
-  const completedOrders = orders.filter(order => order.status === 'completed' || order.status === 'working');
-  
-  if (completedOrders.length === 0) {
+  if (orders.length === 0) {
     ordersCount.textContent = '0 заказов';
     ordersList.innerHTML = `
       <div class="no-orders">
@@ -602,35 +617,40 @@ async function loadOrders(orders) {
     return;
   }
   
-  ordersCount.textContent = `${completedOrders.length} заказ${getPluralEnding(completedOrders.length)}`;
+  const filteredOrders = orders.filter(order => {
+    const displayStatus = getDisplayStatus(order.status, order.paymentStatus);
+    return displayStatus.text !== 'В работе' || 
+           (order.status !== 'new' || order.paymentStatus === 'confirmed');
+  });
   
-  completedOrders.sort((a, b) => new Date(b.date) - new Date(a.date));
+  if (filteredOrders.length === 0) {
+    ordersCount.textContent = '0 заказов';
+    ordersList.innerHTML = `
+      <div class="no-orders">
+        <div class="no-orders-icon"></div>
+        <div class="no-orders-text">У вас пока нет завершенных заказов</div>
+        <div class="no-orders-subtext">После завершения оплаты заказы появятся здесь</div>
+      </div>
+    `;
+    return;
+  }
   
-  ordersList.innerHTML = completedOrders.map(order => {
-    let statusText = '';
-    let statusClass = '';
-    
-    if (order.status === 'completed') {
-      statusText = 'Завершен';
-      statusClass = 'completed';
-    } else {
-      statusText = 'В работе';
-      statusClass = 'working';
-    }
-    
-    const displayId = order.id.startsWith('temp_') 
-      ? order.id.replace('temp_', 'ВРЕМ-') 
-      : order.id;
+  ordersCount.textContent = `${filteredOrders.length} заказ${getPluralEnding(filteredOrders.length)}`;
+  
+  filteredOrders.sort((a, b) => new Date(b.date) - new Date(a.date));
+  
+  ordersList.innerHTML = filteredOrders.map(order => {
+    const displayStatus = getDisplayStatus(order.status, order.paymentStatus);
     
     return `
       <div class="order-item" onclick="window.location.href='moreorder.html?order=${order.id}'">
         <div class="order-header">
-          <div class="order-id">Заказ #${displayId}</div>
+          <div class="order-id">Заказ #${order.id}</div>
           <div class="order-date">${formatDate(order.date)}</div>
         </div>
         <div class="order-details">
           <div class="order-total">${fmtRub(order.total)}</div>
-          <div class="order-status ${statusClass}">${statusText}</div>
+          <div class="order-status ${displayStatus.class}">${displayStatus.text}</div>
         </div>
       </div>
     `;
