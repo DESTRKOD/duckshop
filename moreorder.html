@@ -7,7 +7,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 
 <style>
-/* ===== БАЗОВЫЕ СТИЛИ (ТОЧНО КАК В ДРУГИХ ФАЙЛАХ) ===== */
 html, body {
   margin: 0;
   padding: 0;
@@ -18,7 +17,6 @@ html, body {
   overflow-x: hidden;
 }
 
-/* ===== ХЕДЕР ===== */
 .order-header {
   width: 100%;
   padding: 16px 20px;
@@ -36,7 +34,6 @@ html, body {
   z-index: 100;
 }
 
-/* СТРЕЛКА НАЗАД */
 .back-arrow {
   width: 40px;
   height: 40px;
@@ -72,7 +69,6 @@ html, body {
   flex: 1;
 }
 
-/* ===== ОСНОВНОЙ КОНТЕНТ ===== */
 .order-content {
   padding: 20px;
   box-sizing: border-box;
@@ -80,7 +76,6 @@ html, body {
   height: calc(100% - 72px);
 }
 
-/* ===== СЕКЦИИ ЗАКАЗА ===== */
 .order-section {
   background: rgba(255,255,255,0.1);
   border-radius: 20px;
@@ -118,7 +113,6 @@ html, body {
   filter: brightness(0) invert(1);
 }
 
-/* ===== ИНФОРМАЦИЯ О ЗАКАЗЕ ===== */
 .order-info-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -200,7 +194,6 @@ html, body {
   filter: brightness(0) invert(1);
 }
 
-/* СТАТУСЫ */
 .status-badge {
   display: inline-block;
   padding: 6px 12px;
@@ -236,7 +229,11 @@ html, body {
   color: white;
 }
 
-/* АКТИВНЫЙ ЗАКАЗ - ВЫДЕЛЕНИЕ */
+.status-refund {
+  background: #9c27b0;
+  color: white;
+}
+
 .active-order {
   border-left: 4px solid #4fc3f7;
   border-right: 4px solid #4fc3f7;
@@ -257,7 +254,6 @@ html, body {
   z-index: 1;
 }
 
-/* ===== ТОВАРЫ (КАК В КОРЗИНЕ) ===== */
 .order-items {
   display: flex;
   flex-direction: column;
@@ -329,7 +325,6 @@ html, body {
   min-width: 40px;
 }
 
-/* ===== ИТОГО ===== */
 .order-total-section {
   background: rgba(255,255,255,0.1);
   border-radius: 20px;
@@ -356,6 +351,23 @@ html, body {
   font-weight: 900;
 }
 
+.refund-row {
+  background: rgba(156, 39, 176, 0.2);
+  border-radius: 10px;
+  padding: 10px;
+  margin-top: 10px;
+  border: 1px solid rgba(156, 39, 176, 0.4);
+}
+
+.refund-row .total-label {
+  color: #e1bee7;
+}
+
+.refund-row .total-value {
+  color: #ce93d8;
+  font-weight: 800;
+}
+
 .final-total {
   border-top: 2px solid rgba(255,255,255,0.2);
   padding-top: 15px;
@@ -371,7 +383,6 @@ html, body {
   color: #ffd700;
 }
 
-/* ===== КНОПКА "ВЕРНУТЬСЯ К ОФОРМЛЕНИЮ" ===== */
 .continue-button-container {
   margin-top: 25px;
   padding-top: 20px;
@@ -416,7 +427,6 @@ html, body {
   font-size: 20px;
 }
 
-/* ===== ЗАГРУЗКА И ОШИБКИ ===== */
 .loading-screen, .error-screen {
   display: flex;
   flex-direction: column;
@@ -453,7 +463,6 @@ html, body {
   max-width: 400px;
 }
 
-/* ===== НЕТ ЗАКАЗА ===== */
 .no-order {
   text-align: center;
   padding: 60px 20px;
@@ -478,7 +487,6 @@ html, body {
   margin-bottom: 30px;
 }
 
-/* ===== АДАПТАЦИЯ ===== */
 @media (max-width: 768px) {
   .order-header {
     padding: 14px 16px;
@@ -595,19 +603,16 @@ html, body {
 
 <body>
 
-<!-- ХЕДЕР СТРЕЛКОЙ -->
 <div class="order-header">
   <a href="profile.html" class="back-arrow">←</a>
   <div class="order-title" id="orderTitle">Загрузка...</div>
 </div>
 
-<!-- ЭКРАН ЗАГРУЗКИ -->
 <div id="loading" class="loading-screen" style="display: flex;">
   <div class="loading-anim" id="loadingAnim"></div>
   <div class="loading-text">Загрузка заказа...</div>
 </div>
 
-<!-- ЭКРАН ОШИБКИ -->
 <div id="error" class="error-screen" style="display: none;">
   <div class="error-icon">⚠️</div>
   <div class="error-title" id="errorTitle">Ошибка</div>
@@ -615,7 +620,6 @@ html, body {
   <button class="back-arrow" onclick="window.location.href='profile.html'">← Вернуться</button>
 </div>
 
-<!-- НЕТ ЗАКАЗА -->
 <div id="noOrder" class="no-order" style="display: none;">
   <div class="no-order-icon">📭</div>
   <div class="no-order-title">Заказ не найден</div>
@@ -623,10 +627,8 @@ html, body {
   <a href="profile.html" class="back-arrow" style="display: inline-flex; text-decoration: none; color: white;">← Вернуться в профиль</a>
 </div>
 
-<!-- ОСНОВНОЙ КОНТЕНТ -->
 <div id="content" class="order-content" style="display: none;">
   
-  <!-- ОСНОВНАЯ ИНФОРМАЦИЯ -->
   <div class="order-section" id="orderInfoSection">
     <div class="section-title">
       <div class="section-icon">
@@ -680,7 +682,6 @@ html, body {
     </div>
   </div>
   
-  <!-- СОСТАВ ЗАКАЗА -->
   <div class="order-section">
     <div class="section-title">
       <div class="section-icon">
@@ -690,15 +691,20 @@ html, body {
     </div>
     
     <div class="order-items" id="orderItems">
-      <!-- Товары будут вставлены здесь -->
     </div>
   </div>
   
-  <!-- ИТОГО -->
   <div class="order-total-section">
     <div class="total-row">
       <div class="total-label">Сумма заказа</div>
       <div class="total-value" id="orderSubtotal">-</div>
+    </div>
+    
+    <div id="refundRow" style="display: none;">
+      <div class="total-row refund-row">
+        <div class="total-label">К возврату</div>
+        <div class="total-value" id="orderRefund">-</div>
+      </div>
     </div>
     
     <div class="total-row final-total">
@@ -707,7 +713,6 @@ html, body {
     </div>
   </div>
   
-  <!-- КНОПКА "ВЕРНУТЬСЯ К ОФОРМЛЕНИЮ" (ТОЛЬКО ДЛЯ АКТИВНЫХ ЗАКАЗОВ) -->
   <div class="continue-button-container" id="continueButtonContainer" style="display: none;">
     <button class="continue-button" id="continueOrderBtn">
       <span class="button-icon">↻</span>
@@ -717,17 +722,14 @@ html, body {
 </div>
 
 <script>
-// ===== КОНСТАНТЫ =====
 const API_URL = 'https://duck-shop-sever.onrender.com';
 const USER_KEY = 'duck_user_v1';
 
-// ===== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ =====
 let currentUser = null;
 let currentOrder = null;
 let allProducts = [];
 let orderStage = '';
 
-// ===== УТИЛИТЫ =====
 function fmtRub(n) {
   if (!n) return '0 ₽';
   return `${n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} ₽`;
@@ -754,7 +756,8 @@ function getStatusText(status) {
     'waiting': 'Ожидает выполнения',
     'completed': 'Завершен',
     'canceled': 'Отменен',
-    'failed': 'Неудачный'
+    'failed': 'Неудачный',
+    'manyback': 'Оформлен возврат'
   };
   return statusMap[status] || status;
 }
@@ -767,7 +770,8 @@ function getStatusClass(status) {
     'waiting': 'status-pending',
     'completed': 'status-completed',
     'canceled': 'status-canceled',
-    'failed': 'status-failed'
+    'failed': 'status-failed',
+    'manyback': 'status-refund'
   };
   return statusMap[status] || 'status-pending';
 }
@@ -777,7 +781,6 @@ function isActiveOrder(status) {
   return activeStatuses.includes(status);
 }
 
-// ===== ФУНКЦИЯ КОПИРОВАНИЯ =====
 function initCopyButton() {
   const copyBtn = document.getElementById('copyOrderIdBtn');
   const orderIdText = document.getElementById('orderId').textContent;
@@ -786,7 +789,6 @@ function initCopyButton() {
     try {
       await navigator.clipboard.writeText(orderIdText);
       
-      // Визуальная обратная связь
       const originalHTML = copyBtn.innerHTML;
       copyBtn.innerHTML = '<img src="https://i.imgur.com/6eB3VQz.png" alt="Скопировано" class="copy-icon">';
       copyBtn.classList.add('copied');
@@ -798,7 +800,6 @@ function initCopyButton() {
       
     } catch (error) {
       console.error('Ошибка копирования:', error);
-      // Fallback для старых браузеров
       const textArea = document.createElement('textarea');
       textArea.value = orderIdText;
       document.body.appendChild(textArea);
@@ -806,7 +807,6 @@ function initCopyButton() {
       document.execCommand('copy');
       document.body.removeChild(textArea);
       
-      // Визуальная обратная связь для fallback
       copyBtn.classList.add('copied');
       setTimeout(() => {
         copyBtn.classList.remove('copied');
@@ -815,7 +815,6 @@ function initCopyButton() {
   });
 }
 
-// ===== LOTTIE АНИМАЦИЯ =====
 function initLottieAnimation() {
   try {
     lottie.loadAnimation({
@@ -831,7 +830,6 @@ function initLottieAnimation() {
   }
 }
 
-// ===== УПРАВЛЕНИЕ ЭКРАНАМИ =====
 function showScreen(id) {
   const screens = ['loading', 'error', 'noOrder', 'content'];
   screens.forEach(screen => {
@@ -846,7 +844,6 @@ function showError(title, message) {
   showScreen('error');
 }
 
-// ===== ЗАГРУЗКА ДАННЫХ =====
 async function loadProducts() {
   try {
     const response = await fetch(`${API_URL}/api/products`);
@@ -909,19 +906,14 @@ function loadUser() {
   return null;
 }
 
-// ===== ОТОБРАЖЕНИЕ ДАННЫХ =====
 function displayOrder(order) {
-  // Заголовок
   document.getElementById('orderTitle').textContent = `Заказ #${order.id}`;
   document.getElementById('orderId').textContent = order.id;
   
-  // Дата
   document.getElementById('orderDate').textContent = formatDateTime(order.date);
   
-  // Email
   document.getElementById('orderEmail').textContent = order.email || 'Не указан';
   
-  // Статус
   const statusText = getStatusText(order.status);
   const statusClass = getStatusClass(order.status);
   document.getElementById('orderStatusText').textContent = statusText;
@@ -929,23 +921,24 @@ function displayOrder(order) {
   badge.textContent = order.status;
   badge.className = `status-badge ${statusClass}`;
   
-  // Выделяем активный заказ
   if (isActiveOrder(order.status)) {
     document.getElementById('orderInfoSection').classList.add('active-order');
   }
   
-  // Инициализируем кнопку копирования
   initCopyButton();
   
-  // Товары
   displayOrderItems(order.items || {});
   
-  // Суммы
   const subtotal = calculateSubtotal(order.items || {});
   const total = order.total || subtotal;
   
   document.getElementById('orderSubtotal').textContent = fmtRub(subtotal);
   document.getElementById('orderTotal').textContent = fmtRub(total);
+  
+  if (order.refundAmount && order.refundAmount > 0) {
+    document.getElementById('refundRow').style.display = 'block';
+    document.getElementById('orderRefund').textContent = fmtRub(order.refundAmount);
+  }
   
   showScreen('content');
 }
@@ -995,22 +988,18 @@ function displayOrderItems(items) {
   }
 }
 
-// ===== ОБРАБОТКА КНОПКИ "ВЕРНУТЬСЯ К ОФОРМЛЕНИЮ" =====
 async function setupContinueButton(orderId) {
   const continueContainer = document.getElementById('continueButtonContainer');
   const continueBtn = document.getElementById('continueOrderBtn');
   const continueText = document.getElementById('continueButtonText');
   
-  // Определяем этап заказа
   const stageData = await determineOrderStage(orderId);
   
-  if (!stageData || !stageData.stage || stageData.stage === 'completed' || stageData.stage === 'unknown') {
-    // Заказ завершен или неизвестен - скрываем кнопку
+  if (!stageData || !stageData.stage || stageData.stage === 'completed' || stageData.stage === 'unknown' || stageData.stage === 'canceled' || stageData.stage === 'refund_processed') {
     continueContainer.style.display = 'none';
     return;
   }
   
-  // Настраиваем кнопку в зависимости от этапа
   let buttonText = 'Вернуться к оформлению';
   
   switch(stageData.stage) {
@@ -1033,18 +1022,14 @@ async function setupContinueButton(orderId) {
   
   continueText.textContent = buttonText;
   
-  // Показываем кнопку
   continueContainer.style.display = 'block';
   
-  // Обработчик нажатия
   continueBtn.onclick = function() {
     window.location.href = stageData.redirectUrl;
   };
 }
 
-// ===== ОСНОВНАЯ ИНИЦИАЛИЗАЦИЯ =====
 async function init() {
-  // Загружаем пользователя
   currentUser = loadUser();
   
   if (!currentUser) {
@@ -1052,7 +1037,6 @@ async function init() {
     return;
   }
   
-  // Получаем ID заказа из URL
   const urlParams = new URLSearchParams(window.location.search);
   const orderId = urlParams.get('order');
   
@@ -1061,10 +1045,8 @@ async function init() {
     return;
   }
   
-  // Загружаем товары
   await loadProducts();
   
-  // Загружаем данные заказа
   currentOrder = await loadOrderData(orderId);
   
   if (!currentOrder) {
@@ -1072,20 +1054,16 @@ async function init() {
     return;
   }
   
-  // Отображаем заказ
   displayOrder(currentOrder);
   
-  // Настраиваем кнопку "Вернуться к оформлению" (если заказ активный)
   if (isActiveOrder(currentOrder.status)) {
     await setupContinueButton(orderId);
   }
 }
 
-// ===== ОБРАБОТЧИК ЗАГРУЗКИ =====
 document.addEventListener('DOMContentLoaded', () => {
   initLottieAnimation();
   
-  // Ждем немного для плавности
   setTimeout(() => {
     init();
   }, 500);
