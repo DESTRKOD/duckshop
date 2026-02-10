@@ -2,13 +2,14 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8" />
-<title>Мой профиль - Duck Shop</title>
+<title>Детали заказа - Duck Shop</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 
 <style>
 html, body {
   margin: 0;
+  padding: 0;
   width: 100%;
   height: 100%;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
@@ -16,109 +17,66 @@ html, body {
   overflow-x: hidden;
 }
 
-.screen {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  opacity: 0;
-  transform: translateY(16px);
-  pointer-events: none;
-  transition: opacity .35s ease, transform .35s ease;
-  padding: 20px;
-  box-sizing: border-box;
-  overflow-y: auto;
-}
-
-.screen.active {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-
-.screen.leaving {
-  opacity: 0;
-  transform: translateY(-40px);
-}
-
-#loading .sticker {
-  width: 200px;
-  height: 200px;
-  margin: auto;
-}
-
-#loading .title {
-  color: white;
-  font-size: 24px;
-  font-weight: 800;
-  text-align: center;
-  margin-top: 20px;
-}
-
-.profile-screen {
-  padding: 0;
-}
-
-.profile-header {
+.order-header {
   width: 100%;
-  padding: 20px;
-  text-align: center;
+  padding: 16px 20px;
+  font-size: 22px;
+  font-weight: 900;
+  color: #fff;
   background: linear-gradient(180deg, #0b3c91, #124fa5);
-  color: white;
+  display: flex;
+  align-items: center;
+  gap: 15px;
   box-sizing: border-box;
   box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
-.profile-avatar {
-  width: 100px;
-  height: 100px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 50%;
-  margin: 0 auto 20px;
+.back-arrow {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: rgba(255,255,255,.14);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 40px;
+  cursor: pointer;
+  transition: all 0.15s ease;
   color: white;
-  font-weight: 900;
-  overflow: hidden;
-}
-
-.profile-avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
-}
-
-.profile-name {
   font-size: 24px;
+  font-weight: 900;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.back-arrow:hover {
+  background: rgba(255,255,255,.20);
+  transform: translateX(-2px);
+}
+
+.back-arrow:active {
+  transform: scale(.95);
+}
+
+.order-title {
+  font-size: 18px;
   font-weight: 800;
-  margin-bottom: 8px;
-}
-
-.profile-id {
-  font-size: 16px;
-  color: rgba(255,255,255,0.9);
-  margin-bottom: 5px;
-}
-
-.profile-username {
-  font-size: 14px;
-  color: rgba(255,255,255,0.7);
-  margin-bottom: 20px;
-}
-
-.profile-content {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   flex: 1;
-  width: 100%;
+}
+
+.order-content {
   padding: 20px;
   box-sizing: border-box;
   overflow-y: auto;
+  height: calc(100% - 72px);
 }
 
-.profile-section {
+.order-section {
   background: rgba(255,255,255,0.1);
   border-radius: 20px;
   padding: 20px;
@@ -132,289 +90,479 @@ html, body {
   margin-bottom: 15px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 10px;
 }
 
-.section-title span:last-child {
-  font-size: 14px;
+.section-title span:first-child {
+  font-size: 20px;
+}
+
+.section-icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.section-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
+.order-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.info-item {
+  background: rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 15px;
+}
+
+.info-label {
   color: rgba(255,255,255,0.7);
+  font-size: 13px;
   font-weight: 600;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.orders-list {
+.info-value {
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.order-id-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.order-id-text {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.copy-btn {
+  background: rgba(255,255,255,0.1);
+  border: none;
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  margin-left: 8px;
+}
+
+.copy-btn:hover {
+  background: rgba(255,255,255,0.2);
+  transform: translateY(-1px);
+}
+
+.copy-btn:active {
+  transform: scale(0.95);
+}
+
+.copy-btn.copied {
+  background: rgba(76, 175, 80, 0.3);
+}
+
+.copy-icon {
+  width: 16px;
+  height: 16px;
+  filter: brightness(0) invert(1);
+}
+
+.status-text {
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 2px 0;
+}
+
+.active-order {
+  border-left: 4px solid #4fc3f7;
+  border-right: 4px solid #4fc3f7;
+  position: relative;
+}
+
+.active-order::before {
+  content: "🔄 Активный";
+  position: absolute;
+  top: -10px;
+  right: 20px;
+  background: #4fc3f7;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  z-index: 1;
+}
+
+.order-items {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.order-item {
+.order-item-card {
   background: rgba(255,255,255,0.08);
-  border-radius: 12px;
+  border-radius: 16px;
   padding: 15px;
+  display: grid;
+  grid-template-columns: 70px 1fr auto;
+  gap: 15px;
+  align-items: center;
   transition: transform 0.2s ease, background 0.2s ease;
-  cursor: pointer;
 }
 
-.order-item:hover {
+.order-item-card:hover {
   background: rgba(255,255,255,0.12);
   transform: translateY(-2px);
 }
 
-.order-item.grayed {
-  background: rgba(150, 150, 150, 0.15);
-  opacity: 0.7;
-}
-
-.order-item.grayed:hover {
-  background: rgba(150, 150, 150, 0.2);
-}
-
-.order-item.grayed .order-id {
-  color: #aaa;
-}
-
-.order-item.grayed .order-date {
-  color: rgba(200, 200, 200, 0.7);
-}
-
-.order-item.grayed .order-total {
-  color: #ccc;
-}
-
-.order-header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 8px;
-  align-items: flex-start;
-  gap: 10px;
-}
-
-.order-id {
-  color: #ffd700;
-  font-weight: 700;
-  font-size: 15px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  flex: 1;
-  cursor: pointer;
-  text-decoration: underline;
-  text-decoration-color: rgba(255, 215, 0, 0.5);
-}
-
-.order-date {
-  color: rgba(255,255,255,0.7);
-  font-size: 13px;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-.order-details {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 10px;
-}
-
-.order-total {
-  color: white;
-  font-weight: 700;
-  font-size: 16px;
-}
-
-.order-status {
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.order-status.working {
-  background: #ffd700;
-  color: #333;
-}
-
-.order-status.completed {
-  background: #4CAF50;
-  color: white;
-}
-
-.order-status.canceled {
-  background: #f44336;
-  color: white;
-}
-
-.order-status.refund {
-  background: #9c27b0;
-  color: white;
-}
-
-.no-orders {
-  text-align: center;
-  color: rgba(255,255,255,0.6);
-  padding: 30px 0;
-}
-
-.no-orders-icon {
-  width: 60px;
-  height: 60px;
-  margin: 0 auto 15px;
-  background-image: url('https://i.imgur.com/8Q5w6zR.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-}
-
-.no-orders-text {
-  font-size: 16px;
-  margin-bottom: 5px;
-}
-
-.no-orders-subtext {
-  font-size: 13px;
-  color: rgba(255,255,255,0.5);
-}
-
-.profile-actions {
-  display: flex;
-  gap: 12px;
-  margin-top: 30px;
-}
-
-.profile-btn {
-  flex: 1;
-  height: 50px;
+.item-image {
+  width: 70px;
+  height: 70px;
   border-radius: 14px;
-  border: none;
-  font-weight: 700;
-  font-size: 16px;
-  cursor: pointer;
-  transition: transform 0.15s ease;
+  background: linear-gradient(180deg, #1b3fd6 0%, #2f6bff 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
 }
 
-.profile-btn:active {
-  transform: scale(.98);
+.item-image img {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+  display: block;
 }
 
-.btn-logout {
-  background: rgba(255,255,255,0.1);
+.item-info {
+  min-width: 0;
+}
+
+.item-name {
   color: white;
+  font-weight: 900;
+  font-size: 15px;
+  line-height: 1.2;
+  margin-bottom: 5px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.btn-back {
-  background: white;
-  color: #0b3c91;
+.item-sub {
+  color: rgba(255,255,255,0.7);
+  font-size: 13px;
+  font-weight: 600;
 }
 
-.error-screen {
+.item-quantity {
+  color: white;
+  font-size: 16px;
+  font-weight: 800;
   text-align: center;
+  min-width: 40px;
+}
+
+.order-total-section {
+  background: rgba(255,255,255,0.1);
+  border-radius: 20px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.total-label {
   color: white;
-  padding: 40px 20px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.total-value {
+  color: white;
+  font-size: 20px;
+  font-weight: 900;
+}
+
+.refund-row {
+  background: rgba(156, 39, 176, 0.2);
+  border-radius: 10px;
+  padding: 10px;
+  margin-top: 10px;
+  border: 1px solid rgba(156, 39, 176, 0.4);
+}
+
+.refund-row .total-label {
+  color: #e1bee7;
+}
+
+.refund-row .total-value {
+  color: #ce93d8;
+  font-weight: 800;
+}
+
+.final-total {
+  border-top: 2px solid rgba(255,255,255,0.2);
+  padding-top: 15px;
+  margin-top: 15px;
+}
+
+.final-total .total-label {
+  font-size: 18px;
+}
+
+.final-total .total-value {
+  font-size: 24px;
+  color: #ffd700;
+}
+
+.continue-button-container {
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.continue-button {
+  width: 100%;
+  padding: 18px 24px;
+  font-size: 18px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #4fc3f7, #2196f3);
+  color: white;
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  box-shadow: 0 8px 20px rgba(33, 150, 243, 0.3);
+}
+
+.continue-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 25px rgba(33, 150, 243, 0.4);
+}
+
+.continue-button:active {
+  transform: translateY(0);
+}
+
+.continue-button:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none;
+}
+
+.button-icon {
+  font-size: 20px;
+}
+
+.loading-screen, .error-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 40px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.loading-anim {
+  width: 150px;
+  height: 150px;
+  margin-bottom: 20px;
 }
 
 .error-icon {
-  width: 60px;
-  height: 60px;
-  margin: 0 auto 20px;
-  background-image: url('https://i.imgur.com/TdWbh8z.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
+  font-size: 60px;
+  margin-bottom: 20px;
 }
 
-.error-title {
-  font-size: 24px;
+.loading-text, .error-title {
+  color: white;
+  font-size: 22px;
   font-weight: 800;
   margin-bottom: 10px;
 }
 
 .error-text {
-  font-size: 16px;
   color: rgba(255,255,255,0.8);
+  font-size: 16px;
   margin-bottom: 30px;
   max-width: 400px;
 }
 
-@media (max-width: 480px) {
-  .profile-header {
-    padding: 15px;
-  }
-  
-  .profile-avatar {
-    width: 80px;
-    height: 80px;
-    font-size: 32px;
-    margin-bottom: 15px;
-  }
-  
-  .profile-name {
+.no-order {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.no-order-icon {
+  font-size: 50px;
+  margin-bottom: 20px;
+  color: rgba(255,255,255,0.5);
+}
+
+.no-order-title {
+  color: white;
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.no-order-text {
+  color: rgba(255,255,255,0.7);
+  font-size: 16px;
+  margin-bottom: 30px;
+}
+
+@media (max-width: 768px) {
+  .order-header {
+    padding: 14px 16px;
     font-size: 20px;
   }
   
-  .profile-id {
-    font-size: 14px;
+  .back-arrow {
+    width: 36px;
+    height: 36px;
+    font-size: 22px;
   }
   
-  .profile-username {
-    font-size: 13px;
+  .order-content {
+    padding: 16px;
   }
   
-  .profile-content {
-    padding: 15px;
+  .order-section {
+    padding: 16px;
   }
   
-  .profile-section {
-    padding: 15px;
+  .order-info-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
   }
   
-  .order-item {
+  .order-item-card {
+    grid-template-columns: 60px 1fr auto;
+    gap: 12px;
     padding: 12px;
   }
   
-  .profile-actions {
-    flex-direction: column;
+  .item-image {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .item-name {
+    font-size: 14px;
+  }
+  
+  .item-quantity {
+    font-size: 15px;
+  }
+  
+  .continue-button {
+    padding: 16px 20px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .order-header {
+    padding: 12px 14px;
+  }
+  
+  .order-title {
+    font-size: 16px;
+  }
+  
+  .back-arrow {
+    width: 34px;
+    height: 34px;
+    font-size: 20px;
   }
   
   .section-title {
     font-size: 16px;
   }
   
-  .order-id {
-    font-size: 14px;
+  .info-value {
+    font-size: 15px;
   }
   
-  .order-date {
-    font-size: 12px;
+  .final-total .total-label {
+    font-size: 16px;
   }
   
-  .order-total {
-    font-size: 14px;
+  .final-total .total-value {
+    font-size: 20px;
+  }
+  
+  .continue-button {
+    font-size: 15px;
   }
 }
 
 @media (max-width: 360px) {
-  .profile-avatar {
-    width: 70px;
-    height: 70px;
-    font-size: 28px;
+  .order-content {
+    padding: 12px;
   }
   
-  .profile-name {
-    font-size: 18px;
+  .order-section {
+    padding: 14px;
+    border-radius: 16px;
   }
   
-  .order-header {
-    flex-direction: column;
-    gap: 5px;
+  .order-item-card {
+    grid-template-columns: 50px 1fr auto;
+    gap: 10px;
+    padding: 10px;
   }
   
-  .order-date {
-    align-self: flex-start;
+  .item-image {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .item-name {
+    font-size: 13px;
   }
 }
 </style>
@@ -422,140 +570,279 @@ html, body {
 
 <body>
 
-<div id="loading" class="screen active">
-  <div class="sticker" id="loadingAnim"></div>
-  <div class="title">Загрузка профиля...</div>
+<div class="order-header">
+  <a href="profile.html" class="back-arrow">←</a>
+  <div class="order-title" id="orderTitle">Загрузка...</div>
 </div>
 
-<div id="profile" class="screen profile-screen">
-  <div class="profile-header">
-    <div class="profile-avatar" id="profileAvatar">U</div>
-    <div class="profile-name" id="profileName">Пользователь</div>
-    <div class="profile-id" id="profileId">TG ID: ...</div>
-    <div class="profile-username" id="profileUsername">@username</div>
+<div id="loading" class="loading-screen" style="display: flex;">
+  <div class="loading-anim" id="loadingAnim"></div>
+  <div class="loading-text">Загрузка заказа...</div>
+</div>
+
+<div id="error" class="error-screen" style="display: none;">
+  <div class="error-icon">⚠️</div>
+  <div class="error-title" id="errorTitle">Ошибка</div>
+  <div class="error-text" id="errorText"></div>
+  <button class="back-arrow" onclick="window.location.href='profile.html'">← Вернуться</button>
+</div>
+
+<div id="noOrder" class="no-order" style="display: none;">
+  <div class="no-order-icon">📭</div>
+  <div class="no-order-title">Заказ не найден</div>
+  <div class="no-order-text">Запрашиваемый заказ не существует или у вас нет доступа к нему</div>
+  <a href="profile.html" class="back-arrow" style="display: inline-flex; text-decoration: none; color: white;">← Вернуться в профиль</a>
+</div>
+
+<div id="content" class="order-content" style="display: none;">
+  
+  <div class="order-section" id="orderInfoSection">
+    <div class="section-title">
+      <div class="section-icon">
+        <img src="https://cdn-icons-png.flaticon.com/512/69/69544.png" alt="Информация">
+      </div>
+      <span>Основная информация</span>
+    </div>
+    
+    <div class="order-info-grid">
+      <div class="info-item">
+        <div class="info-label">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Russian_number_sign.png" alt="ID" style="width: 14px; height: 14px; filter: brightness(0) invert(0.7);">
+          Номер заказа
+        </div>
+        <div class="info-value">
+          <div class="order-id-container">
+            <span class="order-id-text" id="orderId">-</span>
+            <button class="copy-btn" id="copyOrderIdBtn" title="Скопировать номер заказа">
+              <img src="https://i.pinimg.com/originals/ff/a4/84/ffa48433cacc0a64f19124cf1b53cbf0.png" alt="Копировать" class="copy-icon">
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="info-item">
+        <div class="info-label">
+          <img src="https://cdn-icons-png.flaticon.com/512/747/747310.png" alt="Дата" style="width: 14px; height: 14px; filter: brightness(0) invert(0.7);">
+          Дата покупки
+        </div>
+        <div class="info-value" id="orderDate">-</div>
+      </div>
+      
+      <div class="info-item">
+        <div class="info-label">
+          <img src="https://cdn-icons-png.flaticon.com/512/88/88042.png" alt="Email" style="width: 14px; height: 14px; filter: brightness(0) invert(0.7);">
+          Email
+        </div>
+        <div class="info-value" id="orderEmail">-</div>
+      </div>
+      
+      <div class="info-item">
+        <div class="info-label">
+          <img src="https://images.icon-icons.com/3870/PNG/512/notification_status_icon_243707.png" alt="Статус" style="width: 14px; height: 14px; filter: brightness(0) invert(0.7);">
+          Статус
+        </div>
+        <div class="info-value">
+          <span id="orderStatusText">-</span>
+        </div>
+      </div>
+    </div>
   </div>
   
-  <div class="profile-content">
-    <div class="profile-section">
-      <div class="section-title">
-        <span>История заказов</span>
-        <span id="ordersCount">0 заказов</span>
+  <div class="order-section">
+    <div class="section-title">
+      <div class="section-icon">
+        <img src="https://cdn-icons-png.flaticon.com/512/6686/6686716.png" alt="Корзина">
       </div>
-      <div class="orders-list" id="ordersList">
+      <span>Состав заказа</span>
+    </div>
+    
+    <div class="order-items" id="orderItems">
+    </div>
+  </div>
+  
+  <div class="order-total-section">
+    <div class="total-row">
+      <div class="total-label">Сумма заказа</div>
+      <div class="total-value" id="orderSubtotal">-</div>
+    </div>
+    
+    <div id="refundRow" style="display: none;">
+      <div class="total-row refund-row">
+        <div class="total-label">К возврату</div>
+        <div class="total-value" id="orderRefund">-</div>
       </div>
     </div>
     
-    <div class="profile-actions">
-      <button class="profile-btn btn-logout" id="logoutBtn">
-        <svg viewBox="0 0 24 24" width="20" height="20">
-          <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" fill="currentColor"/>
-        </svg>
-        Выйти
-      </button>
-      <button class="profile-btn btn-back" id="backToShopBtn">
-        <svg viewBox="0 0 24 24" width="20" height="20">
-          <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" fill="currentColor"/>
-        </svg>
-        В магазин
-      </button>
+    <div class="total-row final-total">
+      <div class="total-label">Итого к оплате</div>
+      <div class="total-value" id="orderTotal">-</div>
     </div>
   </div>
-</div>
-
-<div id="error" class="screen error-screen">
-  <div class="error-icon"></div>
-  <div class="error-title" id="errorTitle">Ошибка загрузки</div>
-  <div class="error-text" id="errorText">Не удалось загрузить данные профиля. Проверьте подключение к интернету и попробуйте снова.</div>
-  <div class="profile-actions" style="margin-top: 20px;">
-    <button class="profile-btn btn-back" id="retryBtn">Повторить</button>
-    <button class="profile-btn btn-back" onclick="location.href='main.html'">В магазин</button>
+  
+  <div class="continue-button-container" id="continueButtonContainer" style="display: none;">
+    <button class="continue-button" id="continueOrderBtn">
+      <span class="button-icon">↻</span>
+      <span id="continueButtonText">Вернуться к оформлению</span>
+    </button>
   </div>
 </div>
 
 <script>
 const API_URL = 'https://duck-shop-sever.onrender.com';
 const USER_KEY = 'duck_user_v1';
-const SHOP_URL = 'main.html';
 
 let currentUser = null;
+let currentOrder = null;
+let allProducts = [];
+let orderStage = '';
 
 function fmtRub(n) {
+  if (!n) return '0 ₽';
   return `${n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} ₽`;
 }
 
-function getPluralEnding(number) {
-  if (number % 10 === 1 && number % 100 !== 11) {
-    return '';
-  } else if ([2, 3, 4].includes(number % 10) && ![12, 13, 14].includes(number % 100)) {
-    return 'а';
-  } else {
-    return 'ов';
-  }
-}
-
-function formatDate(dateString) {
+function formatDateTime(dateString) {
+  if (!dateString) return 'Неизвестно';
   const date = new Date(dateString);
   return date.toLocaleDateString('ru-RU', {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',
     hour: '2-digit',
-    minute: '2-digit'
+    minute: '2-digit',
+    second: '2-digit'
   });
 }
 
-function getDisplayStatus(status, paymentStatus, refundAmount) {
-  if (status === 'completed') {
-    return { text: 'Завершен', class: 'completed' };
-  }
-  
-  if (status === 'canceled') {
-    return { text: 'Отменен', class: 'canceled' };
-  }
-  
-  if (status === 'manyback') {
-    return { text: 'Возврат', class: 'refund' };
-  }
-  
-  if (status === 'new' && paymentStatus === 'confirmed') {
-    return { text: 'В работе', class: 'working' };
-  }
-  
-  if (status === 'waiting' || status === 'confirmed') {
-    return { text: 'В работе', class: 'working' };
-  }
-  
-  if (status === 'pending' || status === 'waiting_code_request') {
-    return { text: 'В работе', class: 'working' };
-  }
-  
-  return { text: 'В работе', class: 'working' };
+function getStatusText(status) {
+  const statusMap = {
+    'new': 'Новый',
+    'pending': 'Ожидает оплаты',
+    'confirmed': 'Оплачен',
+    'waiting': 'Ожидает выполнения',
+    'completed': 'Завершен',
+    'canceled': 'Отменен',
+    'failed': 'Неудачный',
+    'manyback': 'Оформлен возврат'
+  };
+  return statusMap[status] || status;
 }
 
-function loadLottieAnimations() {
-  try {
-    if (document.getElementById('loadingAnim')) {
-      lottie.loadAnimation({
-        container: document.getElementById('loadingAnim'),
-        renderer: 'svg',
-        loop: true,
-        autoplay: true,
-        path: 'https://assets10.lottiefiles.com/packages/lf20_puciaevh.json'
-      });
+function isActiveOrder(status) {
+  const activeStatuses = ['new', 'pending', 'confirmed', 'waiting_code_request', 'waiting'];
+  return activeStatuses.includes(status);
+}
+
+function initCopyButton() {
+  const copyBtn = document.getElementById('copyOrderIdBtn');
+  const orderIdText = document.getElementById('orderId').textContent;
+  
+  copyBtn.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(orderIdText);
+      
+      const originalHTML = copyBtn.innerHTML;
+      copyBtn.innerHTML = '<img src="https://i.imgur.com/6eB3VQz.png" alt="Скопировано" class="copy-icon">';
+      copyBtn.classList.add('copied');
+      
+      setTimeout(() => {
+        copyBtn.innerHTML = originalHTML;
+        copyBtn.classList.remove('copied');
+      }, 2000);
+      
+    } catch (error) {
+      console.error('Ошибка копирования:', error);
+      const textArea = document.createElement('textarea');
+      textArea.value = orderIdText;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      
+      copyBtn.classList.add('copied');
+      setTimeout(() => {
+        copyBtn.classList.remove('copied');
+      }, 2000);
     }
+  });
+}
+
+function initLottieAnimation() {
+  try {
+    lottie.loadAnimation({
+      container: document.getElementById('loadingAnim'),
+      renderer: 'svg',
+      loop: true,
+      autoplay: true,
+      path: 'https://assets10.lottiefiles.com/packages/lf20_puciaevh.json'
+    });
   } catch (error) {
+    console.log('Lottie анимация не загружена');
+    document.getElementById('loadingAnim').innerHTML = '⏳';
   }
 }
 
 function showScreen(id) {
-  const screens = ['loading', 'profile', 'error'];
+  const screens = ['loading', 'error', 'noOrder', 'content'];
   screens.forEach(screen => {
-    document.getElementById(screen).classList.remove('active', 'leaving');
+    document.getElementById(screen).style.display = 'none';
   });
-  
-  const screen = document.getElementById(id);
-  if (screen) {
-    screen.classList.add('active');
+  document.getElementById(id).style.display = id === 'content' ? 'block' : 'flex';
+}
+
+function showError(title, message) {
+  document.getElementById('errorTitle').textContent = title;
+  document.getElementById('errorText').textContent = message;
+  showScreen('error');
+}
+
+async function loadProducts() {
+  try {
+    const response = await fetch(`${API_URL}/api/products`);
+    const data = await response.json();
+    
+    if (data.success && data.products) {
+      allProducts = data.products;
+      console.log(`✅ Загружено ${allProducts.length} товаров`);
+    } else {
+      console.log('⚠️ Не удалось загрузить товары');
+    }
+  } catch (error) {
+    console.error('❌ Ошибка загрузки товаров:', error);
+  }
+}
+
+async function loadOrderData(orderId) {
+  try {
+    const response = await fetch(`${API_URL}/api/order-details/${orderId}`);
+    const data = await response.json();
+    
+    if (data.success && data.order) {
+      return data.order;
+    }
+    
+    return null;
+  } catch (error) {
+    console.error('Ошибка загрузки заказа:', error);
+    return null;
+  }
+}
+
+async function determineOrderStage(orderId) {
+  try {
+    const response = await fetch(`${API_URL}/api/order-stage/${orderId}`);
+    const data = await response.json();
+    
+    if (data.success) {
+      return {
+        stage: data.stage,
+        redirectUrl: data.redirectUrl
+      };
+    }
+    return null;
+  } catch (error) {
+    console.error('Ошибка определения этапа заказа:', error);
+    return null;
   }
 }
 
@@ -566,201 +853,167 @@ function loadUser() {
       return JSON.parse(userData);
     }
   } catch (error) {
+    console.error('Ошибка загрузки пользователя:', error);
   }
   return null;
 }
 
-function saveUser(user) {
-  try {
-    localStorage.setItem(USER_KEY, JSON.stringify(user));
-  } catch (error) {
+function displayOrder(order) {
+  document.getElementById('orderTitle').textContent = `Заказ #${order.id}`;
+  document.getElementById('orderId').textContent = order.id;
+  
+  document.getElementById('orderDate').textContent = formatDateTime(order.date);
+  
+  document.getElementById('orderEmail').textContent = order.email || 'Не указан';
+  
+  const statusText = getStatusText(order.status);
+  document.getElementById('orderStatusText').textContent = statusText;
+  
+  if (isActiveOrder(order.status)) {
+    document.getElementById('orderInfoSection').classList.add('active-order');
+  }
+  
+  initCopyButton();
+  
+  displayOrderItems(order.items || {});
+  
+  const subtotal = calculateSubtotal(order.items || {});
+  const total = order.total || subtotal;
+  
+  document.getElementById('orderSubtotal').textContent = fmtRub(total);
+  document.getElementById('orderTotal').textContent = fmtRub(total);
+  
+  if (order.refundAmount && order.refundAmount > 0) {
+    document.getElementById('refundRow').style.display = 'block';
+    document.getElementById('orderRefund').textContent = fmtRub(order.refundAmount);
+  }
+  
+  showScreen('content');
+}
+
+function calculateSubtotal(items) {
+  let subtotal = 0;
+  for (const [productId, quantity] of Object.entries(items)) {
+    const product = allProducts.find(p => p.id === productId);
+    if (product) {
+      subtotal += product.price * quantity;
+    }
+  }
+  return subtotal;
+}
+
+function displayOrderItems(items) {
+  const container = document.getElementById('orderItems');
+  container.innerHTML = '';
+  
+  if (!items || Object.keys(items).length === 0) {
+    container.innerHTML = `
+      <div style="color: rgba(255,255,255,0.6); text-align: center; padding: 30px;">
+        Нет информации о товарах
+      </div>
+    `;
+    return;
+  }
+  
+  for (const [productId, quantity] of Object.entries(items)) {
+    const product = allProducts.find(p => p.id === productId);
+    
+    const itemHtml = `
+      <div class="order-item-card">
+        <div class="item-image">
+          <img src="${product ? product.image_url : 'https://i.imgur.com/s4K0WIP.png'}" 
+               alt="${product ? product.name : 'Товар'}">
+        </div>
+        <div class="item-info">
+          <div class="item-name">${product ? product.name : `Товар ${productId}`}</div>
+          <div class="item-sub">${fmtRub(product ? product.price : 0)} × ${quantity} шт.</div>
+        </div>
+        <div class="item-quantity">${quantity}</div>
+      </div>
+    `;
+    
+    container.innerHTML += itemHtml;
   }
 }
 
-function clearUser() {
-  localStorage.removeItem(USER_KEY);
-  currentUser = null;
+async function setupContinueButton(orderId) {
+  const continueContainer = document.getElementById('continueButtonContainer');
+  const continueBtn = document.getElementById('continueOrderBtn');
+  const continueText = document.getElementById('continueButtonText');
+  
+  const stageData = await determineOrderStage(orderId);
+  
+  if (!stageData || !stageData.stage || stageData.stage === 'completed' || stageData.stage === 'unknown' || stageData.stage === 'canceled' || stageData.stage === 'refund_processed') {
+    continueContainer.style.display = 'none';
+    return;
+  }
+  
+  let buttonText = 'Вернуться к оформлению';
+  
+  switch(stageData.stage) {
+    case 'email_required':
+      buttonText = 'Ввести email →';
+      break;
+    case 'waiting_code_request':
+      buttonText = 'Ожидание запроса кода →';
+      break;
+    case 'code_required':
+      buttonText = 'Ввести код →';
+      break;
+    case 'waiting_execution':
+      buttonText = 'Ожидание выполнения →';
+      break;
+    case 'support_needed':
+      buttonText = 'Связь с поддержкой →';
+      break;
+  }
+  
+  continueText.textContent = buttonText;
+  
+  continueContainer.style.display = 'block';
+  
+  continueBtn.onclick = function() {
+    window.location.href = stageData.redirectUrl;
+  };
 }
 
-async function loadProfileData() {
+async function init() {
+  currentUser = loadUser();
+  
   if (!currentUser) {
-    window.location.href = 'reg_log.html';
+    showError('Ошибка доступа', 'Вы не авторизованы');
     return;
   }
   
-  showScreen('loading');
-  
-  try {
-    const response = await fetch(`${API_URL}/api/auth/profile?userId=${currentUser.id}`);
-    const data = await response.json();
-    
-    if (data.success && data.user) {
-      currentUser = { ...currentUser, ...data.user };
-      saveUser(currentUser);
-      
-      updateProfileUI(currentUser);
-      
-      await loadOrders(data.orders || []);
-      
-      showScreen('profile');
-    } else {
-      throw new Error(data.error || 'Ошибка загрузки профиля');
-    }
-  } catch (error) {
-    showError('Ошибка загрузки', 'Не удалось загрузить данные профиля. Попробуйте позже.');
-  }
-}
-
-function updateProfileUI(user) {
-  const avatar = document.getElementById('profileAvatar');
-  if (user.avatarUrl) {
-    avatar.innerHTML = `<img src="${user.avatarUrl}" alt="${user.username}" onerror="this.style.display='none'; this.parentElement.textContent='${user.username.charAt(0).toUpperCase()}'">`;
-  } else if (user.username) {
-    avatar.textContent = user.username.charAt(0).toUpperCase();
-  }
-  
-  document.getElementById('profileName').textContent = user.username || 'Пользователь';
-  
-  document.getElementById('profileId').textContent = `TG ID: ${user.tgId || '...'}`;
-  
-  const usernameElement = document.getElementById('profileUsername');
-  if (user.telegramUsername) {
-    usernameElement.textContent = `@${user.telegramUsername}`;
-    usernameElement.style.display = 'block';
-  } else {
-    usernameElement.style.display = 'none';
-  }
-}
-
-async function loadOrders(orders) {
-  const ordersList = document.getElementById('ordersList');
-  const ordersCount = document.getElementById('ordersCount');
-  
-  if (!ordersList || !ordersCount) return;
-  
-  if (orders.length === 0) {
-    ordersCount.textContent = '0 заказов';
-    ordersList.innerHTML = `
-      <div class="no-orders">
-        <div class="no-orders-icon"></div>
-        <div class="no-orders-text">У вас пока нет заказов</div>
-        <div class="no-orders-subtext">Совершите первую покупку чтобы начать историю!</div>
-      </div>
-    `;
-    return;
-  }
-  
-  const filteredOrders = orders.filter(order => {
-    const displayStatus = getDisplayStatus(order.status, order.paymentStatus, order.refundAmount);
-    return displayStatus.text !== 'В работе' || 
-           (order.status !== 'new' || order.paymentStatus === 'confirmed');
-  });
-  
-  if (filteredOrders.length === 0) {
-    ordersCount.textContent = '0 заказов';
-    ordersList.innerHTML = `
-      <div class="no-orders">
-        <div class="no-orders-icon"></div>
-        <div class="no-orders-text">У вас пока нет завершенных заказов</div>
-        <div class="no-orders-subtext">После завершения оплаты заказы появятся здесь</div>
-      </div>
-    `;
-    return;
-  }
-  
-  ordersCount.textContent = `${filteredOrders.length} заказ${getPluralEnding(filteredOrders.length)}`;
-  
-  filteredOrders.sort((a, b) => new Date(b.date) - new Date(a.date));
-  
-  ordersList.innerHTML = filteredOrders.map(order => {
-    const displayStatus = getDisplayStatus(order.status, order.paymentStatus, order.refundAmount);
-    const isGrayed = order.status === 'canceled' || order.status === 'manyback';
-    const grayedClass = isGrayed ? 'grayed' : '';
-    
-    return `
-      <div class="order-item ${grayedClass}" onclick="window.location.href='moreorder.html?order=${order.id}'">
-        <div class="order-header">
-          <div class="order-id">Заказ #${order.id}</div>
-          <div class="order-date">${formatDate(order.date)}</div>
-        </div>
-        <div class="order-details">
-          <div class="order-total">
-            ${fmtRub(order.total)}
-            ${order.refundAmount ? `<div style="font-size: 12px; color: #9c27b0; margin-top: 4px;">К возврату: ${fmtRub(order.refundAmount)}</div>` : ''}
-          </div>
-          <div class="order-status ${displayStatus.class}">${displayStatus.text}</div>
-        </div>
-      </div>
-    `;
-  }).join('');
-}
-
-function showError(title, message) {
-  document.getElementById('errorTitle').textContent = title;
-  document.getElementById('errorText').textContent = message;
-  showScreen('error');
-}
-
-document.getElementById('logoutBtn').addEventListener('click', () => {
-  clearUser();
-  window.location.href = SHOP_URL;
-});
-
-document.getElementById('backToShopBtn').addEventListener('click', () => {
-  window.location.href = SHOP_URL;
-});
-
-document.getElementById('retryBtn').addEventListener('click', () => {
-  if (currentUser) {
-    loadProfileData();
-  } else {
-    window.location.href = 'reg_log.html';
-  }
-});
-
-function checkInitialAuth() {
   const urlParams = new URLSearchParams(window.location.search);
-  const authToken = urlParams.get('auth');
+  const orderId = urlParams.get('order');
   
-  if (authToken) {
-    const newUrl = window.location.pathname;
-    window.history.replaceState({}, '', newUrl);
-    
-    verifyAuthToken(authToken);
-  } else {
-    currentUser = loadUser();
-    if (currentUser) {
-      loadProfileData();
-    } else {
-      window.location.href = 'reg_log.html';
-    }
+  if (!orderId) {
+    showScreen('noOrder');
+    return;
   }
-}
-
-async function verifyAuthToken(token) {
-  showScreen('loading');
   
-  try {
-    const response = await fetch(`${API_URL}/api/auth/check/${token}`);
-    const data = await response.json();
-    
-    if (data.success && data.authenticated && data.user) {
-      currentUser = data.user;
-      saveUser(data.user);
-      loadProfileData();
-    } else {
-      showError('Ошибка авторизации', 'Не удалось войти в аккаунт. Пожалуйста, попробуйте снова.');
-    }
-  } catch (error) {
-    showError('Ошибка сети', 'Не удалось подключиться к серверу');
+  await loadProducts();
+  
+  currentOrder = await loadOrderData(orderId);
+  
+  if (!currentOrder) {
+    showScreen('noOrder');
+    return;
+  }
+  
+  displayOrder(currentOrder);
+  
+  if (isActiveOrder(currentOrder.status)) {
+    await setupContinueButton(orderId);
   }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  loadLottieAnimations();
+  initLottieAnimation();
   
   setTimeout(() => {
-    checkInitialAuth();
+    init();
   }, 500);
 });
 </script>
