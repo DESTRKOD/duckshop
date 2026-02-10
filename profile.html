@@ -160,6 +160,27 @@ html, body {
   transform: translateY(-2px);
 }
 
+.order-item.grayed {
+  background: rgba(150, 150, 150, 0.15);
+  opacity: 0.7;
+}
+
+.order-item.grayed:hover {
+  background: rgba(150, 150, 150, 0.2);
+}
+
+.order-item.grayed .order-id {
+  color: #aaa;
+}
+
+.order-item.grayed .order-date {
+  color: rgba(200, 200, 200, 0.7);
+}
+
+.order-item.grayed .order-total {
+  color: #ccc;
+}
+
 .order-header {
   display: flex;
   justify-content: space-between;
@@ -176,6 +197,9 @@ html, body {
   overflow: hidden;
   text-overflow: ellipsis;
   flex: 1;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 215, 0, 0.5);
 }
 
 .order-date {
@@ -218,6 +242,11 @@ html, body {
 
 .order-status.canceled {
   background: #f44336;
+  color: white;
+}
+
+.order-status.refund {
+  background: #9c27b0;
   color: white;
 }
 
@@ -475,13 +504,17 @@ function formatDate(dateString) {
   });
 }
 
-function getDisplayStatus(status, paymentStatus) {
+function getDisplayStatus(status, paymentStatus, refundAmount) {
   if (status === 'completed') {
     return { text: 'Завершен', class: 'completed' };
   }
   
   if (status === 'canceled') {
     return { text: 'Отменен', class: 'canceled' };
+  }
+  
+  if (status === 'manyback') {
+    return { text: 'Возврат', class: 'refund' };
   }
   
   if (status === 'new' && paymentStatus === 'confirmed') {
@@ -618,7 +651,7 @@ async function loadOrders(orders) {
   }
   
   const filteredOrders = orders.filter(order => {
-    const displayStatus = getDisplayStatus(order.status, order.paymentStatus);
+    const displayStatus = getDisplayStatus(order.status, order.paymentStatus, order.refundAmount);
     return displayStatus.text !== 'В работе' || 
            (order.status !== 'new' || order.paymentStatus === 'confirmed');
   });
@@ -640,16 +673,21 @@ async function loadOrders(orders) {
   filteredOrders.sort((a, b) => new Date(b.date) - new Date(a.date));
   
   ordersList.innerHTML = filteredOrders.map(order => {
-    const displayStatus = getDisplayStatus(order.status, order.paymentStatus);
+    const displayStatus = getDisplayStatus(order.status, order.paymentStatus, order.refundAmount);
+    const isGrayed = order.status === 'canceled' || order.status === 'manyback';
+    const grayedClass = isGrayed ? 'grayed' : '';
     
     return `
-      <div class="order-item" onclick="window.location.href='moreorder.html?order=${order.id}'">
+      <div class="order-item ${grayedClass}" onclick="window.location.href='moreorder.html?order=${order.id}'">
         <div class="order-header">
           <div class="order-id">Заказ #${order.id}</div>
           <div class="order-date">${formatDate(order.date)}</div>
         </div>
         <div class="order-details">
-          <div class="order-total">${fmtRub(order.total)}</div>
+          <div class="order-total">
+            ${fmtRub(order.total)}
+            ${order.refundAmount ? `<div style="font-size: 12px; color: #9c27b0; margin-top: 4px;">К возврату: ${fmtRub(order.refundAmount)}</div>` : ''}
+          </div>
           <div class="order-status ${displayStatus.class}">${displayStatus.text}</div>
         </div>
       </div>
