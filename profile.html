@@ -512,6 +512,10 @@ function getDisplayStatus(status, paymentStatus, refundAmount) {
     return { text: 'В работе' };
   }
   
+  if (status === 'new' && paymentStatus === 'pending') {
+    return { text: 'Ожидает оплаты' };
+  }
+  
   return { text: 'В работе' };
 }
 
@@ -633,29 +637,11 @@ async function loadOrders(orders) {
     return;
   }
   
-  const filteredOrders = orders.filter(order => {
-    const displayStatus = getDisplayStatus(order.status, order.paymentStatus, order.refundAmount);
-    return displayStatus.text !== 'В работе' || 
-           (order.status !== 'new' || order.paymentStatus === 'confirmed');
-  });
+  ordersCount.textContent = `${orders.length} заказ${getPluralEnding(orders.length)}`;
   
-  if (filteredOrders.length === 0) {
-    ordersCount.textContent = '0 заказов';
-    ordersList.innerHTML = `
-      <div class="no-orders">
-        <div class="no-orders-icon"></div>
-        <div class="no-orders-text">У вас пока нет завершенных заказов</div>
-        <div class="no-orders-subtext">После завершения оплаты заказы появятся здесь</div>
-      </div>
-    `;
-    return;
-  }
+  orders.sort((a, b) => new Date(b.date) - new Date(a.date));
   
-  ordersCount.textContent = `${filteredOrders.length} заказ${getPluralEnding(filteredOrders.length)}`;
-  
-  filteredOrders.sort((a, b) => new Date(b.date) - new Date(a.date));
-  
-  ordersList.innerHTML = filteredOrders.map(order => {
+  ordersList.innerHTML = orders.map(order => {
     const displayStatus = getDisplayStatus(order.status, order.paymentStatus, order.refundAmount);
     const isGrayed = order.status === 'canceled' || order.status === 'manyback';
     const grayedClass = isGrayed ? 'grayed' : '';
