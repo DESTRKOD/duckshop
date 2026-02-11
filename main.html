@@ -908,6 +908,20 @@ html, body {
   .mobile-nav {
     display: flex;
   }
+  
+  .screen.active .mobile-nav,
+  .menu.active .mobile-nav {
+    display: flex;
+  }
+  
+  #hello .mobile-nav,
+  #load .mobile-nav,
+  #intro .mobile-nav,
+  #waiting .mobile-nav,
+  #checkout .mobile-nav,
+  #badPay .mobile-nav {
+    display: none !important;
+  }
 }
 
 .mobile-nav-item {
@@ -1435,7 +1449,7 @@ function updateMobileNavVisibility(currentScreen) {
   const mobileNav = document.getElementById('mobileNav');
   if (!mobileNav) return;
   
-  if (currentScreen === 'menu' || currentScreen === 'checkout') {
+  if (currentScreen === 'menu') {
     mobileNav.style.display = 'flex';
   } else {
     mobileNav.style.display = 'none';
@@ -1462,7 +1476,7 @@ function updateMobileNavActiveState() {
     navItems.wallet.classList.add('active');
   } else if (currentPath.includes('profile.html')) {
     navItems.profile.classList.add('active');
-  } else if (currentScreen && (currentScreen.id === 'menu' || currentScreen.id === 'checkout')) {
+  } else if (currentScreen && currentScreen.id === 'menu') {
     navItems.home.classList.add('active');
   }
 }
