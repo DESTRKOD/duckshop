@@ -2,11 +2,8 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8" />
-<title>Duck Shop</title>
+<title>Мой профиль - Duck Shop</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 
 <style>
@@ -16,1121 +13,532 @@ html, body {
   height: 100%;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   background: linear-gradient(180deg, #0b3c91 0%, #1565c0 55%, #42a5f5 100%);
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
-.screen, .menu {
+.screen {
   position: absolute;
   inset: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   opacity: 0;
   transform: translateY(16px);
   pointer-events: none;
   transition: opacity .35s ease, transform .35s ease;
   padding: 20px;
   box-sizing: border-box;
+  overflow-y: auto;
 }
 
-.screen.active, .menu.active {
+.screen.active {
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
 }
 
-.screen.leaving, .menu.leaving {
+.screen.leaving {
   opacity: 0;
   transform: translateY(-40px);
 }
 
-.sticker { 
-  width: 260px; 
-  height: 260px; 
-  margin-bottom: 20px;
+#loading .sticker {
+  width: 200px;
+  height: 200px;
+  margin: auto;
 }
 
-.title {
-  margin-top: 14px;
-  font-size: 30px;
+#loading .title {
+  color: white;
+  font-size: 24px;
   font-weight: 800;
-  color: #fff;
   text-align: center;
-  margin-bottom: 20px;
-}
-
-.button {
   margin-top: 20px;
-  padding: 20px 56px;
-  font-size: 22px;
-  font-weight: 800;
-  background: #fff;
-  color: #0b3c91;
-  border-radius: 18px;
-  box-shadow: 0 16px 36px rgba(0,0,0,.45);
-  transition: transform .12s ease, box-shadow .12s ease;
-  user-select: none;
-  cursor: pointer;
-  border: none;
-  outline: none;
-  min-width: 280px;
-  text-align: center;
 }
 
-.button.pressed {
-  transform: translateY(6px) scale(.9);
-  box-shadow: 0 6px 14px rgba(0,0,0,.35);
-}
-
-.button:disabled {
-  background: #cccccc;
-  color: #666666;
-  cursor: not-allowed;
-  transform: none !important;
-  box-shadow: 0 8px 20px rgba(0,0,0,.25) !important;
-}
-
-.menu { 
-  justify-content: flex-start; 
+.profile-screen {
   padding: 0;
 }
 
-.menu-header {
+.profile-header {
   width: 100%;
-  padding: 16px 20px;
-  font-size: 26px;
-  font-weight: 900;
-  color: #fff;
+  padding: 20px;
+  text-align: center;
   background: linear-gradient(180deg, #0b3c91, #124fa5);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  color: white;
   box-sizing: border-box;
   box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-  position: sticky;
-  top: 0;
-  z-index: 100;
 }
 
-.menu-header-title { 
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  flex: 1;
-}
-
-.menu-scroll {
-  flex: 1;
-  width: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding: 16px;
-  box-sizing: border-box;
-  -webkit-overflow-scrolling: touch;
-}
-
-.shop-card {
-  position: relative;
-  height: 240px;
-  border-radius: 22px;
-  overflow: hidden;
-  background: #fff;
-  box-shadow: 0 14px 32px rgba(0,0,0,.30);
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  opacity: 1;
-  transform: translateY(0);
-  margin-bottom: 18px;
-}
-
-.shop-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 18px 36px rgba(0,0,0,.35);
-}
-
-.gift {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 32px;
-  height: 32px;
-  z-index: 2;
-}
-.gift img { 
-  width: 100%; 
-  height: 100%; 
-  display:block;
-}
-
-.shop-top {
-  position: relative;
-  flex: 0 0 60%;
-  background: linear-gradient(180deg, #1b3fd6 0%, #2f6bff 100%);
+.profile-avatar {
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  margin: 0 auto 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 12px;
-  box-sizing: border-box;
-  overflow: hidden;
-  min-height: 0;
-}
-
-.shop-top img {
-  max-width: 100%;
-  max-height: 100%;
-  width: auto;
-  height: auto;
-  object-fit: contain;
-  object-position: center;
-  display: block;
-}
-
-.new-badge {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+  font-size: 40px;
   color: white;
-  padding: 4px 8px;
-  border-radius: 10px;
-  font-size: 11px;
   font-weight: 900;
-  z-index: 2;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
-}
-
-.shop-bottom {
-  flex: 0 0 40%;
-  background: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 14px;
-  gap: 8px;
-}
-
-.shop-name {
-  font-size: 15px;
-  font-weight: 700;
-  color: #000;
-  line-height: 1.2;
-  flex: 1;
   overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
 }
 
-.shop-buy {
-  min-width: 140px;
-  height: 44px;
-  background: #000;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 0 12px;
-  flex-shrink: 0;
-  border: 0;
-  cursor: pointer;
-  user-select: none;
-  transition: transform 0.15s ease, background 0.15s ease;
-}
-
-.shop-buy:hover {
-  background: #333;
-}
-
-.shop-buy:active { 
-  transform: scale(.95); 
-}
-
-.shop-buy svg {
-  width: 20px;
-  height: 20px;
-  fill: #fff;
-}
-
-.shop-price {
-  color: #fff;
-  font-size: 15px;
-  font-weight: 800;
-  white-space: nowrap;
-}
-
-.checkout-screen .title {
-  margin-bottom: 24px;
-}
-
-.checkout-summary {
+.profile-avatar img {
   width: 100%;
-  max-width: 400px;
-  background: rgba(255,255,255,0.1);
-  border-radius: 20px;
-  padding: 20px;
-  margin: 20px 0;
-  color: white;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
 }
 
-.checkout-item {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 12px;
-  font-size: 16px;
-}
-
-.checkout-total {
-  display: flex;
-  justify-content: space-between;
-  font-size: 22px;
-  font-weight: 900;
-  margin-top: 20px;
-  padding-top: 20px;
-  border-top: 2px solid rgba(255,255,255,0.2);
-}
-
-.order-number {
-  font-size: 18px;
-  font-weight: 700;
-  color: #ffd700;
-  margin: 10px 0 20px 0;
-  padding: 10px 20px;
-  background: rgba(255,255,255,0.1);
-  border-radius: 12px;
-  text-align: center;
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0% { opacity: 0.8; }
-  50% { opacity: 1; }
-  100% { opacity: 0.8; }
-}
-
-.amount-error {
-  color: #ff6b6b;
+.profile-name {
+  font-size: 24px;
   font-weight: 800;
-  font-size: 14px;
-  margin-top: 12px;
-  text-align: center;
-  display: none;
-  background: rgba(255,255,255,0.1);
-  padding: 10px;
-  border-radius: 12px;
-  max-width: 400px;
-  width: 100%;
-}
-
-.row-two {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 18px;
-  margin-bottom: 18px;
-}
-
-.row-centered {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 18px;
-}
-
-.row-centered .shop-card {
-  width: calc(50% - 9px);
-}
-
-.empty-card {
-  visibility: hidden;
-  pointer-events: none;
-}
-
-.cart-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.45);
-  display: none;
-  align-items: flex-end;
-  justify-content: center;
-  z-index: 9999;
-  padding: 12px;
-  box-sizing: border-box;
-}
-
-.cart-overlay.open { 
-  display: flex; 
-}
-
-.cart-sheet {
-  width: 100%;
-  max-width: 540px;
-  background: #fff;
-  border-radius: 22px;
-  overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0,0,0,.35);
-  transform: translateY(14px);
-  opacity: 0;
-  transition: transform .18s ease, opacity .18s ease;
-  max-height: 90vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.cart-overlay.open .cart-sheet { 
-  transform: translateY(0); 
-  opacity: 1; 
-}
-
-.cart-head {
-  background: linear-gradient(180deg, #0b3c91, #124fa5);
-  color: #fff;
-  padding: 14px 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  flex-shrink: 0;
-}
-
-.cart-head h3 {
-  margin: 0;
-  font-size: 20px;
-  font-weight: 900;
-}
-
-.cart-close {
-  width: 40px;
-  height: 40px;
-  border: 0;
-  border-radius: 14px;
-  background: rgba(255,255,255,.14);
-  color: #fff;
-  font-size: 22px;
-  font-weight: 900;
-  cursor: pointer;
-  transition: transform 0.15s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.cart-close:active { 
-  transform: scale(.95); 
-}
-
-.cart-body {
-  flex: 1;
-  overflow-y: auto;
-  padding: 12px;
-  box-sizing: border-box;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(0,0,0,0.2) transparent;
-  max-height: 50vh;
-}
-
-.cart-body::-webkit-scrollbar {
-  width: 6px;
-}
-
-.cart-body::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.cart-body::-webkit-scrollbar-thumb {
-  background-color: rgba(0,0,0,0.2);
-  border-radius: 3px;
-}
-
-.cart-empty {
-  padding: 18px 10px;
-  text-align: center;
-  color: rgba(0,0,0,.6);
-  font-weight: 800;
-  font-size: 16px;
-}
-
-.cart-row {
-  display: grid;
-  grid-template-columns: 56px 1fr auto;
-  gap: 10px;
-  align-items: center;
-  padding: 10px;
-  border-radius: 16px;
-  background: #f6f7fb;
   margin-bottom: 8px;
 }
 
-.cart-thumb {
-  width: 56px;
-  height: 56px;
-  border-radius: 14px;
-  background: linear-gradient(180deg, #1b3fd6 0%, #2f6bff 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
+.profile-id {
+  font-size: 16px;
+  color: rgba(255,255,255,0.9);
+  margin-bottom: 5px;
 }
 
-.cart-thumb img {
-  max-width: 92%;
-  max-height: 92%;
-  object-fit: contain;
-  display: block;
-}
-
-.cart-info { 
-  min-width: 0; 
-}
-
-.cart-name {
-  font-weight: 900;
+.profile-username {
   font-size: 14px;
-  line-height: 1.2;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  color: #333;
+  color: rgba(255,255,255,0.7);
+  margin-bottom: 20px;
 }
 
-.cart-sub {
-  margin-top: 2px;
-  font-size: 12px;
-  font-weight: 800;
-  color: rgba(0,0,0,.55);
+.profile-content {
+  flex: 1;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-y: auto;
 }
 
-.cart-qty {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.profile-section {
+  background: rgba(255,255,255,0.1);
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 20px;
 }
 
-.qty-btn {
-  width: 34px;
-  height: 34px;
-  border-radius: 12px;
-  border: 0;
-  background: #000;
-  color: #fff;
+.section-title {
+  color: white;
   font-size: 18px;
-  font-weight: 900;
-  cursor: pointer;
-  transition: transform 0.15s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.qty-btn:active { 
-  transform: scale(.95); 
-}
-
-.qty-num {
-  min-width: 22px;
-  text-align: center;
-  font-weight: 900;
-  color: #333;
-}
-
-.cart-foot {
-  padding: 12px;
-  border-top: 1px solid rgba(0,0,0,.08);
-  display: grid;
-  gap: 10px;
-  flex-shrink: 0;
-}
-
-.cart-total {
+  font-weight: 700;
+  margin-bottom: 15px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-weight: 900;
-  font-size: 16px;
-  color: #333;
 }
 
-.cart-actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+.section-title span:last-child {
+  font-size: 14px;
+  color: rgba(255,255,255,0.7);
+  font-weight: 600;
+}
+
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.order-item {
+  background: rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 15px;
+  transition: transform 0.2s ease, background 0.2s ease;
+  cursor: pointer;
+}
+
+.order-item:hover {
+  background: rgba(255,255,255,0.12);
+  transform: translateY(-2px);
+}
+
+.order-item.grayed {
+  background: rgba(150, 150, 150, 0.15);
+  opacity: 0.7;
+}
+
+.order-item.grayed:hover {
+  background: rgba(150, 150, 150, 0.2);
+}
+
+.order-item.grayed .order-id {
+  color: #aaa;
+}
+
+.order-item.grayed .order-date {
+  color: rgba(200, 200, 200, 0.7);
+}
+
+.order-item.grayed .order-total {
+  color: #ccc;
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  align-items: flex-start;
   gap: 10px;
 }
 
-.cart-action {
-  height: 46px;
-  border-radius: 14px;
-  border: 0;
-  cursor: pointer;
-  font-weight: 900;
+.order-id {
+  color: #ffd700;
+  font-weight: 700;
   font-size: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 215, 0, 0.5);
+}
+
+.order-date {
+  color: rgba(255,255,255,0.7);
+  font-size: 13px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.order-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.order-total {
+  color: white;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.order-status {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: rgba(255,255,255,0.15);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.no-orders {
+  text-align: center;
+  color: rgba(255,255,255,0.6);
+  padding: 30px 0;
+}
+
+.no-orders-icon {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 15px;
+  background-image: url('https://i.imgur.com/8Q5w6zR.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.no-orders-text {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.no-orders-subtext {
+  font-size: 13px;
+  color: rgba(255,255,255,0.5);
+}
+
+.profile-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 30px;
+}
+
+.profile-btn {
+  flex: 1;
+  height: 50px;
+  border-radius: 14px;
+  border: none;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
   transition: transform 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
-.cart-action:active { 
-  transform: scale(.98); 
+.profile-btn:active {
+  transform: scale(.98);
 }
 
-.btn-clear { 
-  background: #eef0f6; 
-  color: #333;
+.btn-logout {
+  background: rgba(255,255,255,0.1);
+  color: white;
 }
 
-.btn-checkout { 
-  background: #000; 
-  color: #fff; 
+.btn-back {
+  background: white;
+  color: #0b3c91;
 }
 
-@media (max-width: 768px) {
-  .menu-header {
-    padding: 14px 16px;
-    font-size: 22px;
-  }
-  
-  .auth-btn, .cart-btn {
-    display: none !important;
-  }
-  
-  .menu-scroll {
-    padding: 12px;
-    padding-bottom: 100px;
-  }
-  
-  .shop-card {
-    height: 220px;
-    margin-bottom: 12px;
-  }
-  
-  .shop-top {
-    flex: 0 0 55%;
-    padding: 8px;
-  }
-  
-  .shop-bottom {
-    flex: 0 0 45%;
-    padding: 8px 10px;
-    gap: 6px;
-  }
-  
-  .shop-name {
-    font-size: 14px;
-  }
-  
-  .shop-buy {
-    min-width: 120px;
-    height: 40px;
-    padding: 0 10px;
-  }
-  
-  .shop-price {
-    font-size: 14px;
-  }
-  
-  .shop-buy svg {
-    width: 18px;
-    height: 18px;
-  }
-  
-  .new-badge {
-    top: 6px;
-    left: 6px;
-    padding: 3px 6px;
-    font-size: 10px;
-  }
-  
-  .button {
-    padding: 16px 40px;
-    font-size: 18px;
-    margin-top: 20px;
-    min-width: 240px;
-  }
-  
-  .title {
-    font-size: 26px;
-  }
-  
-  .sticker {
-    width: 200px;
-    height: 200px;
-  }
+.error-screen {
+  text-align: center;
+  color: white;
+  padding: 40px 20px;
+}
+
+.error-icon {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 20px;
+  background-image: url('https://i.imgur.com/TdWbh8z.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.error-title {
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.error-text {
+  font-size: 16px;
+  color: rgba(255,255,255,0.8);
+  margin-bottom: 30px;
+  max-width: 400px;
 }
 
 @media (max-width: 480px) {
-  .row-two {
-    grid-template-columns: 1fr;
-    gap: 12px;
+  .profile-header {
+    padding: 15px;
   }
   
-  .shop-card {
-    height: 200px;
+  .profile-avatar {
+    width: 80px;
+    height: 80px;
+    font-size: 32px;
+    margin-bottom: 15px;
   }
   
-  .shop-name {
-    font-size: 13px;
-  }
-  
-  .shop-buy {
-    min-width: 100px;
-    height: 36px;
-  }
-  
-  .button {
-    padding: 14px 32px;
-    font-size: 16px;
-    min-width: 200px;
-  }
-  
-  .menu-header {
-    padding: 12px 14px;
+  .profile-name {
     font-size: 20px;
   }
   
-  .menu-header-title {
-    font-size: 18px;
+  .profile-id {
+    font-size: 14px;
   }
   
-  .auth-btn, .cart-btn {
-    display: none !important;
+  .profile-username {
+    font-size: 13px;
   }
   
-  .menu-scroll {
-    padding-bottom: 95px;
+  .profile-content {
+    padding: 15px;
+  }
+  
+  .profile-section {
+    padding: 15px;
+  }
+  
+  .order-item {
+    padding: 12px;
+  }
+  
+  .profile-actions {
+    flex-direction: column;
+  }
+  
+  .section-title {
+    font-size: 16px;
+  }
+  
+  .order-id {
+    font-size: 14px;
+  }
+  
+  .order-date {
+    font-size: 12px;
+  }
+  
+  .order-total {
+    font-size: 14px;
   }
 }
 
 @media (max-width: 360px) {
-  .shop-card {
-    height: 190px;
+  .profile-avatar {
+    width: 70px;
+    height: 70px;
+    font-size: 28px;
   }
   
-  .shop-top {
-    flex: 0 0 50%;
+  .profile-name {
+    font-size: 18px;
   }
   
-  .shop-bottom {
-    flex: 0 0 50%;
+  .order-header {
+    flex-direction: column;
+    gap: 5px;
   }
   
-  .shop-name {
-    font-size: 12px;
+  .order-date {
+    align-self: flex-start;
   }
-  
-  .shop-buy {
-    min-width: 90px;
-    height: 34px;
-    padding: 0 8px;
-  }
-  
-  .shop-price {
-    font-size: 12px;
-  }
-  
-  .auth-btn, .cart-btn {
-    display: none !important;
-  }
-  
-  .menu-scroll {
-    padding-bottom: 90px;
-  }
-}
-
-@media (min-width: 769px) {
-  .menu-scroll {
-    padding: 18px 16px 40px;
-  }
-  
-  .auth-btn {
-    min-width: auto;
-    padding: 0 16px;
-  }
-  
-  .auth-btn span {
-    display: inline;
-  }
-  
-  .mobile-nav {
-    display: none !important;
-  }
-}
-
-@media (min-width: 481px) and (max-width: 768px) {
-  .row-two {
-    grid-template-columns: 1fr 1fr;
-  }
-  
-  .menu-scroll {
-    padding-bottom: 100px;
-  }
-}
-
-.mobile-nav {
-  position: fixed;
-  bottom: 16px;
-  left: 16px;
-  right: 16px;
-  display: none;
-  align-items: center;
-  justify-content: space-around;
-  background: rgba(10, 10, 20, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-radius: 40px;
-  padding: 8px 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  z-index: 10000;
-  box-sizing: border-box;
-  transition: transform 0.2s ease, opacity 0.2s ease;
-}
-
-@media (max-width: 768px) {
-  .mobile-nav {
-    display: flex;
-  }
-}
-
-.mobile-nav-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  background: transparent;
-  border: none;
-  padding: 8px 10px;
-  border-radius: 30px;
-  min-width: 60px;
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
-  color: rgba(255, 255, 255, 0.7);
-  fill: rgba(255, 255, 255, 0.7);
-  position: relative;
-}
-
-.mobile-nav-item svg {
-  width: 24px;
-  height: 24px;
-  transition: transform 0.2s ease;
-}
-
-.mobile-nav-item span {
-  font-size: 11px;
-  font-weight: 700;
-  transition: color 0.2s ease;
-}
-
-.mobile-nav-item.active {
-  background: rgba(255, 255, 255, 0.15);
-  color: white;
-  fill: white;
-  transform: scale(1.05);
-}
-
-.mobile-nav-item.active svg {
-  transform: translateY(-1px);
-}
-
-.mobile-nav-item:active {
-  transform: scale(0.96);
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.mobile-nav .cart-badge-mobile {
-  position: absolute;
-  top: 4px;
-  right: 8px;
-  min-width: 18px;
-  height: 18px;
-  padding: 0 5px;
-  border-radius: 999px;
-  background: #ff2d55;
-  color: #fff;
-  font-size: 11px;
-  font-weight: 900;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-  border: 2px solid rgba(10, 10, 20, 0.9);
-}
-
-.mobile-nav .cart-badge-mobile.show {
-  display: inline-flex;
 }
 </style>
 </head>
 
 <body>
 
-<div id="hello" class="screen active">
-  <div id="animHello" class="sticker"></div>
-  <div class="title">Добро пожаловать</div>
-  <div class="button" id="continueBtn">Продолжить</div>
+<div id="loading" class="screen active">
+  <div class="sticker" id="loadingAnim"></div>
+  <div class="title">Загрузка профиля...</div>
 </div>
 
-<div id="load" class="screen">
-  <div id="animDownload" class="sticker"></div>
-  <div class="title">Загрузка…</div>
-</div>
-
-<div id="intro" class="screen">
-  <div id="animMain" class="sticker"></div>
-  <div class="title">Магазин Duck Shop</div>
-</div>
-
-<div id="menu" class="menu">
-  <div class="menu-header">
-    <div class="menu-header-title">Магазин Duck Shop</div>
+<div id="profile" class="screen profile-screen">
+  <div class="profile-header">
+    <div class="profile-avatar" id="profileAvatar">U</div>
+    <div class="profile-name" id="profileName">Пользователь</div>
+    <div class="profile-id" id="profileId">TG ID: ...</div>
+    <div class="profile-username" id="profileUsername">@username</div>
+  </div>
+  
+  <div class="profile-content">
+    <div class="profile-section">
+      <div class="section-title">
+        <span>История заказов</span>
+        <span id="ordersCount">0 заказов</span>
+      </div>
+      <div class="orders-list" id="ordersList">
+      </div>
+    </div>
     
-    <div style="display: flex; gap: 8px; align-items: center;">
-      <button class="auth-btn" id="authBtn">
-        <svg viewBox="0 0 24 24">
-          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+    <div class="profile-actions">
+      <button class="profile-btn btn-logout" id="logoutBtn">
+        <svg viewBox="0 0 24 24" width="20" height="20">
+          <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" fill="currentColor"/>
         </svg>
-        <span id="authBtnText">Войти</span>
+        Выйти
       </button>
-
-      <button class="cart-btn" id="openCart" aria-label="Корзина">
-        <svg viewBox="0 0 24 24">
-          <path d="M7 18a2 2 0 1 0 0 4a2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4a2 2 0 0 0 0-4zM7.16 14h9.45a2 2 0 0 0 1.75-1.03l3.58-6.49-1.74-.99-3.58 6.49H8.53L5.21 4H1v2h3l3.6 7.59-1.35 2.44C5.52 16.37 6.48 18 8 18h12v-2H8l1.16-2z"/>
+      <button class="profile-btn btn-back" id="backToShopBtn">
+        <svg viewBox="0 0 24 24" width="20" height="20">
+          <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" fill="currentColor"/>
         </svg>
-        <div class="cart-badge" id="cartBadge">0</div>
+        В магазин
       </button>
     </div>
   </div>
-
-  <div class="menu-scroll" id="cardsContainer"></div>
 </div>
 
-<div id="waiting" class="screen">
-  <div id="animWaiting" class="sticker"></div>
-  <div class="title">Ожидайте выполнения</div>
-  <div style="color: rgba(255,255,255,0.8); text-align: center; max-width: 400px; margin: 20px 0; font-size: 18px;">
-    Ваш заказ обрабатывается администратором
+<div id="error" class="screen error-screen">
+  <div class="error-icon"></div>
+  <div class="error-title" id="errorTitle">Ошибка загрузки</div>
+  <div class="error-text" id="errorText">Не удалось загрузить данные профиля. Проверьте подключение к интернету и попробуйте снова.</div>
+  <div class="profile-actions" style="margin-top: 20px;">
+    <button class="profile-btn btn-back" id="retryBtn">Повторить</button>
+    <button class="profile-btn btn-back" onclick="location.href='main.html'">В магазин</button>
   </div>
-  <div class="order-number" id="waitingOrderNumber"></div>
-</div>
-
-<div id="checkout" class="screen checkout-screen">
-  <div id="animCheckout" class="sticker"></div>
-  <div class="title">Оформление заказа</div>
-  
-  <div class="checkout-summary" id="checkoutSummary"></div>
-  
-  <div class="amount-error" id="amountError">
-    <span style="color:#ffd700;margin-right:8px;">⚠</span>
-    <span id="errorText"></span>
-  </div>
-  
-  <button class="button" id="proceedToPay">Оплатить корзину</button>
-  <button class="button" id="backToMenu" style="margin-top: 12px; background: rgba(255,255,255,0.2); color: white;">Вернуться в меню</button>
-</div>
-
-<div id="badPay" class="screen">
-  <div id="animBadPay" class="sticker"></div>
-  <div class="title">Оплата не прошла</div>
-  <div class="order-number" id="badPayOrderNumber"></div>
-  <button class="button" id="toMenuFromBadPay">Вернуться в меню</button>
-</div>
-
-<div class="cart-overlay" id="cartOverlay" aria-hidden="true">
-  <div class="cart-sheet" role="dialog" aria-modal="true">
-    <div class="cart-head">
-      <h3>Корзина</h3>
-      <button class="cart-close" id="closeCart" aria-label="Закрыть">×</button>
-    </div>
-
-    <div class="cart-body" id="cartBody"></div>
-
-    <div class="cart-foot">
-      <div class="cart-total">
-        <div>Итого</div>
-        <div id="cartTotal">0 ₽</div>
-      </div>
-
-      <div class="cart-actions">
-        <button class="cart-action btn-clear" id="clearCart">Очистить</button>
-        <button class="cart-action btn-checkout" id="checkoutBtn">Оформить</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="mobile-nav" id="mobileNav">
-  <button class="mobile-nav-item" id="navWallet">
-    <svg viewBox="0 0 24 24">
-      <path d="M21 18v1c0 1.1-0.9 2-2 2H5c-1.11 0-2-0.9-2-2V5c0-1.1 0.89-2 2-2h14c1.1 0 2 0.9 2 2v1h-9c-1.1 0-2 0.9-2 2v8c0 1.1 0.9 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-0.83 0-1.5-0.67-1.5-1.5s0.67-1.5 1.5-1.5 1.5 0.67 1.5 1.5-0.67 1.5-1.5 1.5z"/>
-    </svg>
-    <span>Кошелёк</span>
-  </button>
-  
-  <button class="mobile-nav-item" id="navProfile">
-    <svg viewBox="0 0 24 24">
-      <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-    </svg>
-    <span>Профиль</span>
-  </button>
-  
-  <button class="mobile-nav-item" id="navHome">
-    <svg viewBox="0 0 24 24">
-      <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-    </svg>
-    <span>Главная</span>
-  </button>
-  
-  <button class="mobile-nav-item" id="navCart">
-    <svg viewBox="0 0 24 24">
-      <path d="M7 18a2 2 0 1 0 0 4a2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4a2 2 0 0 0 0-4zM7.16 14h9.45a2 2 0 0 0 1.75-1.03l3.58-6.49-1.74-.99-3.58 6.49H8.53L5.21 4H1v2h3l3.6 7.59-1.35 2.44C5.52 16.37 6.48 18 8 18h12v-2H8l1.16-2z"/>
-    </svg>
-    <span>Корзина</span>
-    <div class="cart-badge-mobile" id="cartBadgeMobile">0</div>
-  </button>
 </div>
 
 <script>
 const API_URL = 'https://duck-shop-sever.onrender.com';
-const CART_KEY = 'duck_cart_v1';
 const USER_KEY = 'duck_user_v1';
+const SHOP_URL = 'main.html';
 
-let PRODUCTS = [];
-let productsCheckInterval = null;
-let cart = {};
-let currentOrderId = null;
-let currentPaymentUrl = null;
 let currentUser = null;
 
-function loadCart(){
-  try {
-    const raw = localStorage.getItem(CART_KEY);
-    return raw ? JSON.parse(raw) : {};
-  } catch {
-    return {};
-  }
-}
-
-function saveCart(){
-  localStorage.setItem(CART_KEY, JSON.stringify(cart));
-}
-
-function cartCount(){
-  return Object.values(cart).reduce((a,b) => a + b, 0);
-}
-
-function cartSum(){
-  let sum = 0;
-  for (const [id, qty] of Object.entries(cart)) {
-    const p = PRODUCTS.find(x => x.id === id);
-    if (p) sum += p.price * qty;
-  }
-  return sum;
-}
-
-function fmtRub(n){
+function fmtRub(n) {
   return `${n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} ₽`;
 }
 
-function loadAllLottieAnimations() {
+function getPluralEnding(number) {
+  if (number % 10 === 1 && number % 100 !== 11) {
+    return '';
+  } else if ([2, 3, 4].includes(number % 10) && ![12, 13, 14].includes(number % 100)) {
+    return 'а';
+  } else {
+    return 'ов';
+  }
+}
+
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('ru-RU', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+}
+
+function getDisplayStatus(status, paymentStatus, refundAmount) {
+  if (status === 'completed') {
+    return { text: 'Завершен' };
+  }
+  
+  if (status === 'canceled') {
+    return { text: 'Отменен' };
+  }
+  
+  if (status === 'manyback') {
+    return { text: 'Оформлен возврат' };
+  }
+  
+  if (status === 'new' && paymentStatus === 'confirmed') {
+    return { text: 'В работе' };
+  }
+  
+  if (status === 'waiting' || status === 'confirmed') {
+    return { text: 'В работе' };
+  }
+  
+  if (status === 'pending' || status === 'waiting_code_request') {
+    return { text: 'В работе' };
+  }
+  
+  return { text: 'В работе' };
+}
+
+function loadLottieAnimations() {
   try {
-    const animations = {
-      hello: 'hello.json',
-      download: 'download.json',
-      main: 'main.json',
-      waiting: 'https://assets2.lottiefiles.com/packages/lf20_puciaevh.json',
-      checkout: 'checkout.json',
-      badPay: 'https://assets2.lottiefiles.com/packages/lf20_dews0pqv.json'
-    };
-    
-    if (document.getElementById('animHello')) {
-      try {
-        lottie.loadAnimation({
-          container: document.getElementById('animHello'),
-          renderer: 'svg',
-          loop: true,
-          autoplay: true,
-          path: animations.hello
-        });
-      } catch (error) {
-        document.getElementById('animHello').innerHTML = '<div style="color: white; font-size: 50px; text-align: center;">👋</div>';
-      }
-    }
-    
-    if (document.getElementById('animDownload')) {
-      try {
-        lottie.loadAnimation({
-          container: document.getElementById('animDownload'),
-          renderer: 'svg',
-          loop: true,
-          autoplay: true,
-          path: animations.download
-        });
-      } catch (error) {
-        document.getElementById('animDownload').innerHTML = '<div style="color: white; font-size: 50px; text-align: center;">⌛</div>';
-      }
-    }
-    
-    if (document.getElementById('animMain')) {
-      try {
-        lottie.loadAnimation({
-          container: document.getElementById('animMain'),
-          renderer: 'svg',
-          loop: true,
-          autoplay: true,
-          path: animations.main
-        });
-      } catch (error) {
-        document.getElementById('animMain').innerHTML = '<div style="color: white; font-size: 50px; text-align: center;">🏪</div>';
-      }
-    }
-    
-    if (document.getElementById('animWaiting')) {
-      try {
-        lottie.loadAnimation({
-          container: document.getElementById('animWaiting'),
-          renderer: 'svg',
-          loop: true,
-          autoplay: true,
-          path: animations.waiting
-        });
-      } catch (error) {
-        document.getElementById('animWaiting').innerHTML = '<div style="color: white; font-size: 50px; text-align: center;">⏳</div>';
-      }
-    }
-    
-    if (document.getElementById('animCheckout')) {
-      try {
-        lottie.loadAnimation({
-          container: document.getElementById('animCheckout'),
-          renderer: 'svg',
-          loop: true,
-          autoplay: true,
-          path: animations.checkout
-        });
-      } catch (error) {
-        document.getElementById('animCheckout').innerHTML = '<div style="color: white; font-size: 50px; text-align: center;">🛒</div>';
-      }
-    }
-    
-    if (document.getElementById('animBadPay')) {
-      try {
-        lottie.loadAnimation({
-          container: document.getElementById('animBadPay'),
-          renderer: 'svg',
-          loop: true,
-          autoplay: true,
-          path: animations.badPay
-        });
-      } catch (error) {
-        document.getElementById('animBadPay').innerHTML = '<div style="color: white; font-size: 50px; text-align: center;">❌</div>';
-      }
+    if (document.getElementById('loadingAnim')) {
+      lottie.loadAnimation({
+        container: document.getElementById('loadingAnim'),
+        renderer: 'svg',
+        loop: true,
+        autoplay: true,
+        path: 'https://assets10.lottiefiles.com/packages/lf20_puciaevh.json'
+      });
     }
   } catch (error) {
-    document.querySelectorAll('.sticker').forEach(sticker => {
-      if (!sticker.innerHTML || sticker.innerHTML.trim() === '') {
-        sticker.innerHTML = '<div style="color: white; font-size: 50px; text-align: center;">🎁</div>';
-      }
-    });
+  }
+}
+
+function showScreen(id) {
+  const screens = ['loading', 'profile', 'error'];
+  screens.forEach(screen => {
+    document.getElementById(screen).classList.remove('active', 'leaving');
+  });
+  
+  const screen = document.getElementById(id);
+  if (screen) {
+    screen.classList.add('active');
   }
 }
 
@@ -1138,8 +546,7 @@ function loadUser() {
   try {
     const userData = localStorage.getItem(USER_KEY);
     if (userData) {
-      const user = JSON.parse(userData);
-      return user;
+      return JSON.parse(userData);
     }
   } catch (error) {
   }
@@ -1156,721 +563,189 @@ function saveUser(user) {
 function clearUser() {
   localStorage.removeItem(USER_KEY);
   currentUser = null;
-  updateAuthButton();
 }
 
-function updateAuthButton() {
-  const authBtn = document.getElementById('authBtn');
-  const authBtnText = document.getElementById('authBtnText');
+async function loadProfileData() {
+  if (!currentUser) {
+    window.location.href = 'reg_log.html';
+    return;
+  }
   
-  if (!authBtn || !authBtnText) return;
+  showScreen('loading');
   
-  authBtn.onclick = null;
-  
-  if (currentUser) {
-    if (window.innerWidth <= 768 && currentUser.username) {
-      const shortName = currentUser.username.length > 6 
-        ? currentUser.username.substring(0, 6) + '...' 
-        : currentUser.username;
-      authBtnText.textContent = shortName;
-    } else if (currentUser.username) {
-      authBtnText.textContent = currentUser.username;
-    } else {
-      authBtnText.textContent = 'Профиль';
-    }
+  try {
+    const response = await fetch(`${API_URL}/api/auth/profile?userId=${currentUser.id}`);
+    const data = await response.json();
     
-    authBtn.onclick = function(e) {
-      e.preventDefault();
-      window.location.href = 'profile.html';
-    };
-  } else {
-    authBtnText.textContent = 'Войти';
-    authBtn.onclick = function(e) {
-      e.preventDefault();
-      window.location.href = 'reg_log.html';
-    };
+    if (data.success && data.user) {
+      currentUser = { ...currentUser, ...data.user };
+      saveUser(currentUser);
+      
+      updateProfileUI(currentUser);
+      
+      await loadOrders(data.orders || []);
+      
+      showScreen('profile');
+    } else {
+      throw new Error(data.error || 'Ошибка загрузки профиля');
+    }
+  } catch (error) {
+    showError('Ошибка загрузки', 'Не удалось загрузить данные профиля. Попробуйте позже.');
   }
 }
 
-function checkAuthFromURL() {
+function updateProfileUI(user) {
+  const avatar = document.getElementById('profileAvatar');
+  if (user.avatarUrl) {
+    avatar.innerHTML = `<img src="${user.avatarUrl}" alt="${user.username}" onerror="this.style.display='none'; this.parentElement.textContent='${user.username.charAt(0).toUpperCase()}'">`;
+  } else if (user.username) {
+    avatar.textContent = user.username.charAt(0).toUpperCase();
+  }
+  
+  document.getElementById('profileName').textContent = user.username || 'Пользователь';
+  
+  document.getElementById('profileId').textContent = `TG ID: ${user.tgId || '...'}`;
+  
+  const usernameElement = document.getElementById('profileUsername');
+  if (user.telegramUsername) {
+    usernameElement.textContent = `@${user.telegramUsername}`;
+    usernameElement.style.display = 'block';
+  } else {
+    usernameElement.style.display = 'none';
+  }
+}
+
+async function loadOrders(orders) {
+  const ordersList = document.getElementById('ordersList');
+  const ordersCount = document.getElementById('ordersCount');
+  
+  if (!ordersList || !ordersCount) return;
+  
+  if (orders.length === 0) {
+    ordersCount.textContent = '0 заказов';
+    ordersList.innerHTML = `
+      <div class="no-orders">
+        <div class="no-orders-icon"></div>
+        <div class="no-orders-text">У вас пока нет заказов</div>
+        <div class="no-orders-subtext">Совершите первую покупку чтобы начать историю!</div>
+      </div>
+    `;
+    return;
+  }
+  
+  const filteredOrders = orders.filter(order => {
+    const displayStatus = getDisplayStatus(order.status, order.paymentStatus, order.refundAmount);
+    return displayStatus.text !== 'В работе' || 
+           (order.status !== 'new' || order.paymentStatus === 'confirmed');
+  });
+  
+  if (filteredOrders.length === 0) {
+    ordersCount.textContent = '0 заказов';
+    ordersList.innerHTML = `
+      <div class="no-orders">
+        <div class="no-orders-icon"></div>
+        <div class="no-orders-text">У вас пока нет завершенных заказов</div>
+        <div class="no-orders-subtext">После завершения оплаты заказы появятся здесь</div>
+      </div>
+    `;
+    return;
+  }
+  
+  ordersCount.textContent = `${filteredOrders.length} заказ${getPluralEnding(filteredOrders.length)}`;
+  
+  filteredOrders.sort((a, b) => new Date(b.date) - new Date(a.date));
+  
+  ordersList.innerHTML = filteredOrders.map(order => {
+    const displayStatus = getDisplayStatus(order.status, order.paymentStatus, order.refundAmount);
+    const isGrayed = order.status === 'canceled' || order.status === 'manyback';
+    const grayedClass = isGrayed ? 'grayed' : '';
+    
+    return `
+      <div class="order-item ${grayedClass}" onclick="window.location.href='moreorder.html?order=${order.id}'">
+        <div class="order-header">
+          <div class="order-id">Заказ #${order.id}</div>
+          <div class="order-date">${formatDate(order.date)}</div>
+        </div>
+        <div class="order-details">
+          <div class="order-total">
+            ${fmtRub(order.total)}
+            ${order.refundAmount ? `<div style="font-size: 12px; color: #9c27b0; margin-top: 4px;">К возврату: ${fmtRub(order.refundAmount)}</div>` : ''}
+          </div>
+          <div class="order-status">${displayStatus.text}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function showError(title, message) {
+  document.getElementById('errorTitle').textContent = title;
+  document.getElementById('errorText').textContent = message;
+  showScreen('error');
+}
+
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  clearUser();
+  window.location.href = SHOP_URL;
+});
+
+document.getElementById('backToShopBtn').addEventListener('click', () => {
+  window.location.href = SHOP_URL;
+});
+
+document.getElementById('retryBtn').addEventListener('click', () => {
+  if (currentUser) {
+    loadProfileData();
+  } else {
+    window.location.href = 'reg_log.html';
+  }
+});
+
+function checkInitialAuth() {
   const urlParams = new URLSearchParams(window.location.search);
   const authToken = urlParams.get('auth');
   
   if (authToken) {
+    const newUrl = window.location.pathname;
+    window.history.replaceState({}, '', newUrl);
+    
     verifyAuthToken(authToken);
   } else {
     currentUser = loadUser();
     if (currentUser) {
-      updateAuthButton();
+      loadProfileData();
     } else {
-      updateAuthButton();
+      window.location.href = 'reg_log.html';
     }
   }
 }
 
 async function verifyAuthToken(token) {
+  showScreen('loading');
+  
   try {
     const response = await fetch(`${API_URL}/api/auth/check/${token}`);
     const data = await response.json();
     
     if (data.success && data.authenticated && data.user) {
       currentUser = data.user;
-      saveUser(currentUser);
-      
-      const newUrl = window.location.pathname;
-      window.history.replaceState({}, '', newUrl);
-      
-      updateAuthButton();
-      
-      setTimeout(() => {
-        alert(`✅ Добро пожаловать, ${currentUser.username}!`);
-      }, 500);
-      
+      saveUser(data.user);
+      loadProfileData();
     } else {
-      updateAuthButton();
+      showError('Ошибка авторизации', 'Не удалось войти в аккаунт. Пожалуйста, попробуйте снова.');
     }
   } catch (error) {
-    updateAuthButton();
+    showError('Ошибка сети', 'Не удалось подключиться к серверу');
   }
 }
 
-function show(id) {
-  const ids = ['hello', 'load', 'intro', 'menu', 'waiting', 'checkout', 'badPay'];
-  const current = ids.map(x => document.getElementById(x)).find(el => el.classList.contains('active'));
-  const next = document.getElementById(id);
-
-  if (current && current !== next) {
-    current.classList.add('leaving');
-    setTimeout(() => {
-      ids.forEach(x => {
-        const el = document.getElementById(x);
-        el.classList.remove('active', 'leaving');
-      });
-      next.classList.add('active');
-      
-      if (id === 'menu') {
-        const cardsContainer = document.getElementById('cardsContainer');
-        if (cardsContainer) {
-          cardsContainer.innerHTML = '<div style="color: white; text-align: center; padding: 60px; font-size: 18px;">Загрузка товаров...</div>';
-          setTimeout(() => {
-            if (PRODUCTS.length === 0) {
-              loadProducts();
-            } else {
-              renderProducts();
-            }
-          }, 300);
-        }
-      }
-      
-      updateMobileNavVisibility(id);
-      updateMobileNavActiveState();
-      
-    }, 350);
-  } else {
-    ids.forEach(x => document.getElementById(x).classList.remove('active', 'leaving'));
-    next.classList.add('active');
-    
-    if (id === 'menu') {
-      const cardsContainer = document.getElementById('cardsContainer');
-      if (cardsContainer) {
-        cardsContainer.innerHTML = '<div style="color: white; text-align: center; padding: 60px; font-size: 18px;">Загрузка товаров...</div>';
-        setTimeout(() => {
-          if (PRODUCTS.length === 0) {
-            loadProducts();
-          } else {
-            renderProducts();
-          }
-        }, 300);
-      }
-    }
-    
-    updateMobileNavVisibility(id);
-    updateMobileNavActiveState();
-  }
-}
-
-function updateMobileNavVisibility(currentScreen) {
-  const mobileNav = document.getElementById('mobileNav');
-  if (!mobileNav) return;
+document.addEventListener('DOMContentLoaded', () => {
+  loadLottieAnimations();
   
-  if (currentScreen === 'menu' || currentScreen === 'checkout') {
-    mobileNav.style.display = 'flex';
-  } else {
-    mobileNav.style.display = 'none';
-  }
-}
-
-function updateMobileNavActiveState() {
-  const navItems = {
-    wallet: document.getElementById('navWallet'),
-    profile: document.getElementById('navProfile'),
-    home: document.getElementById('navHome'),
-    cart: document.getElementById('navCart')
-  };
-  
-  const currentPath = window.location.pathname;
-  const currentScreen = document.querySelector('.screen.active, .menu.active');
-  
-  navItems.wallet.classList.remove('active');
-  navItems.profile.classList.remove('active');
-  navItems.home.classList.remove('active');
-  navItems.cart.classList.remove('active');
-  
-  if (currentPath.includes('wallet.html')) {
-    navItems.wallet.classList.add('active');
-  } else if (currentPath.includes('profile.html')) {
-    navItems.profile.classList.add('active');
-  } else if (currentScreen && currentScreen.id === 'menu') {
-    navItems.home.classList.add('active');
-  }
-}
-
-function setupMobileNavigation() {
-  const navWallet = document.getElementById('navWallet');
-  const navProfile = document.getElementById('navProfile');
-  const navHome = document.getElementById('navHome');
-  const navCart = document.getElementById('navCart');
-  
-  if (navWallet) {
-    navWallet.addEventListener('click', function(e) {
-      e.preventDefault();
-      window.location.href = 'wallet.html';
-    });
-  }
-  
-  if (navProfile) {
-    navProfile.addEventListener('click', function(e) {
-      e.preventDefault();
-      window.location.href = 'profile.html';
-    });
-  }
-  
-  if (navHome) {
-    navHome.addEventListener('click', function(e) {
-      e.preventDefault();
-      const activeScreen = document.querySelector('.screen.active, .menu.active');
-      if (activeScreen && activeScreen.id !== 'menu') {
-        show('menu');
-      }
-      updateMobileNavActiveState();
-    });
-  }
-  
-  if (navCart) {
-    navCart.addEventListener('click', function(e) {
-      e.preventDefault();
-      document.getElementById('openCart').click();
-    });
-  }
-}
-
-document.getElementById('continueBtn').addEventListener('pointerdown', function() {
-  this.classList.add('pressed');
-});
-
-document.getElementById('continueBtn').addEventListener('pointerup', function() {
-  this.classList.remove('pressed');
-});
-
-document.getElementById('continueBtn').addEventListener('pointerleave', function() {
-  this.classList.remove('pressed');
-});
-
-document.getElementById('continueBtn').addEventListener('click', function() {
-  show('load');
   setTimeout(() => {
-    show('intro');
-    setTimeout(() => show('menu'), 2000);
-  }, 2500);
+    checkInitialAuth();
+  }, 500);
 });
-
-const DEFAULT_PRODUCTS = [
-  { id: "c30", name: "30 кристаллов", price: 200, image_url: "https://i.imgur.com/s4K0WIP.png", is_gift: false },
-  { id: "c80", name: "80 кристаллов", price: 550, image_url: "https://i.imgur.com/XbnZKDb.png", is_gift: false },
-  { id: "c170", name: "170 кристаллов", price: 950, image_url: "https://i.imgur.com/X0JCmMQ.png", is_gift: false },
-  { id: "c360", name: "360 кристаллов", price: 1900, image_url: "https://i.imgur.com/7z8z9Rw.png", is_gift: false },
-  { id: "c950", name: "950 кристаллов", price: 4600, image_url: "https://i.imgur.com/zzBuIxF.png", is_gift: false },
-  { id: "c2000", name: "2000 кристаллов", price: 9000, image_url: "https://i.imgur.com/FTVnycE.png", is_gift: false },
-  { id: "bp", name: "Brawl Pass", price: 900, image_url: "https://i.imgur.com/FaFAL6l.png", is_gift: false },
-  { id: "bpplus", name: "Brawl Pass Plus", price: 1200, image_url: "https://i.imgur.com/21InnIc.png", is_gift: false },
-  { id: "up", name: "Улучшение до БП+", price: 550, image_url: "https://i.imgur.com/yhaR5Ho.png", is_gift: false },
-  { id: "bp_g", name: "Brawl Pass", price: 950, image_url: "https://i.imgur.com/FaFAL6l.png", is_gift: true },
-  { id: "bpp_g", name: "Brawl Pass Plus", price: 1250, image_url: "https://i.imgur.com/21InnIc.png", is_gift: true },
-  { id: "pro", name: "Pro Pass", price: 2200, image_url: "https://i.imgur.com/6808Xnp.png", is_gift: false }
-];
-
-function sortProductsForDesktop(products) {
-  const desktopOrder = [
-    "c30", "c80",
-    "c170", "c360",
-    "c950", "c2000",
-    "bp", "bpplus",
-    "bp_g", "bpp_g",
-    "pro",
-    "up"
-  ];
-  
-  const orderedProducts = [];
-  const newProducts = products.filter(p => p.id.startsWith('prod_'));
-  const otherProducts = products.filter(p => !p.id.startsWith('prod_') && !desktopOrder.includes(p.id));
-  
-  newProducts.sort((a, b) => {
-    const getTimestamp = (id) => {
-      const match = id.match(/prod_(\d+)_/);
-      return match ? parseInt(match[1]) : 0;
-    };
-    return getTimestamp(b.id) - getTimestamp(a.id);
-  });
-  
-  desktopOrder.forEach(id => {
-    const product = products.find(p => p.id === id);
-    if (product) orderedProducts.push(product);
-  });
-  
-  otherProducts.sort((a, b) => a.price - b.price);
-  
-  return [...newProducts, ...orderedProducts, ...otherProducts];
-}
-
-function sortProductsForMobile(products) {
-  const mobileOrder = [
-    "c30", "c80", "c170", "c360", "c950", "c2000",
-    "bp", "bpplus", "bp_g", "bpp_g", "pro", "up"
-  ];
-  
-  const orderedProducts = [];
-  const newProducts = products.filter(p => p.id.startsWith('prod_'));
-  const otherProducts = products.filter(p => !p.id.startsWith('prod_') && !mobileOrder.includes(p.id));
-  
-  newProducts.sort((a, b) => {
-    const getTimestamp = (id) => {
-      const match = id.match(/prod_(\d+)_/);
-      return match ? parseInt(match[1]) : 0;
-    };
-    return getTimestamp(b.id) - getTimestamp(a.id);
-  });
-  
-  mobileOrder.forEach(id => {
-    const product = products.find(p => p.id === id);
-    if (product) orderedProducts.push(product);
-  });
-  
-  otherProducts.sort((a, b) => a.price - b.price);
-  
-  return [...newProducts, ...orderedProducts, ...otherProducts];
-}
-
-async function loadProducts() {
-  try {
-    const response = await fetch(`${API_URL}/api/products`);
-    
-    if (!response.ok) {
-      PRODUCTS = [...DEFAULT_PRODUCTS];
-      renderProducts();
-      return;
-    }
-    
-    const data = await response.json();
-    
-    if (data.success && data.products && data.products.length > 0) {
-      const serverProducts = data.products;
-      const serverProductIds = new Set(serverProducts.map(p => p.id));
-      const missingDefaultProducts = DEFAULT_PRODUCTS.filter(p => !serverProductIds.has(p.id));
-      
-      PRODUCTS = [...serverProducts, ...missingDefaultProducts];
-      renderProducts();
-    } else {
-      PRODUCTS = [...DEFAULT_PRODUCTS];
-      renderProducts();
-    }
-  } catch (error) {
-    PRODUCTS = [...DEFAULT_PRODUCTS];
-    renderProducts();
-  }
-}
-
-function renderProducts() {
-  const cardsContainer = document.getElementById('cardsContainer');
-  if (!cardsContainer) return;
-  
-  const isMobile = window.innerWidth <= 480;
-  
-  const productsToShow = isMobile ? 
-    sortProductsForMobile(PRODUCTS) : 
-    sortProductsForDesktop(PRODUCTS);
-  
-  cardsContainer.innerHTML = '';
-  
-  if (isMobile) {
-    productsToShow.forEach(p => {
-      const card = document.createElement('div');
-      card.className = 'shop-card';
-      card.innerHTML = `
-        ${p.is_gift ? '<div class="gift"><img src="https://i.imgur.com/Tdajl7F.png" alt="🎁"></div>' : ''}
-        <div class="shop-top">
-          <img src="${p.image_url}" alt="${p.name}" loading="lazy">
-          ${p.id.startsWith('prod_') ? '<div class="new-badge">NEW</div>' : ''}
-        </div>
-        <div class="shop-bottom">
-          <div class="shop-name">${p.name}</div>
-          <button class="shop-buy" type="button" data-add="${p.id}">
-            <svg viewBox="0 0 24 24">
-              <path d="M7 18a2 2 0 1 0 0 4a2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4a2 2 0 0 0 0-4zM7.16 14h9.45a2 2 0 0 0 1.75-1.03l3.58-6.49-1.74-.99-3.58 6.49H8.53L5.21 4H1v2h3l3.6 7.59-1.35 2.44C5.52 16.37 6.48 18 8 18h12v-2H8l1.16-2z"/>
-            </svg>
-            <div class="shop-price">${fmtRub(p.price)}</div>
-          </button>
-        </div>
-      `;
-      cardsContainer.appendChild(card);
-    });
-    
-  } else {
-    let currentRow = [];
-    
-    productsToShow.forEach((p, index) => {
-      currentRow.push(p);
-      
-      if (currentRow.length === 2 || index === productsToShow.length - 1) {
-        if (currentRow.length === 1 && currentRow[0].id === "pro") {
-          const row = document.createElement('div');
-          row.className = 'row-centered';
-          row.innerHTML = `
-            <div class="shop-card">
-              ${currentRow[0].is_gift ? '<div class="gift"><img src="https://i.imgur.com/Tdajl7F.png" alt="🎁"></div>' : ''}
-              <div class="shop-top">
-                <img src="${currentRow[0].image_url}" alt="${currentRow[0].name}" loading="lazy">
-                ${currentRow[0].id.startsWith('prod_') ? '<div class="new-badge">NEW</div>' : ''}
-              </div>
-              <div class="shop-bottom">
-                <div class="shop-name">${currentRow[0].name}</div>
-                <button class="shop-buy" type="button" data-add="${currentRow[0].id}">
-                  <svg viewBox="0 0 24 24">
-                    <path d="M7 18a2 2 0 1 0 0 4a2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4a2 2 0 0 0 0-4zM7.16 14h9.45a2 2 0 0 0 1.75-1.03l3.58-6.49-1.74-.99-3.58 6.49H8.53L5.21 4H1v2h3l3.6 7.59-1.35 2.44C5.52 16.37 6.48 18 8 18h12v-2H8l1.16-2z"/>
-                  </svg>
-                  <div class="shop-price">${fmtRub(currentRow[0].price)}</div>
-                </button>
-              </div>
-            </div>
-          `;
-          cardsContainer.appendChild(row);
-        } else {
-          const row = document.createElement('div');
-          row.className = 'row-two';
-          
-          currentRow.forEach(p => {
-            row.innerHTML += `
-              <div class="shop-card">
-                ${p.is_gift ? '<div class="gift"><img src="https://i.imgur.com/Tdajl7F.png" alt="🎁"></div>' : ''}
-                <div class="shop-top">
-                  <img src="${p.image_url}" alt="${p.name}" loading="lazy">
-                  ${p.id.startsWith('prod_') ? '<div class="new-badge">NEW</div>' : ''}
-                </div>
-                <div class="shop-bottom">
-                  <div class="shop-name">${p.name}</div>
-                  <button class="shop-buy" type="button" data-add="${p.id}">
-                    <svg viewBox="0 0 24 24">
-                      <path d="M7 18a2 2 0 1 0 0 4a2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4a2 2 0 0 0 0-4zM7.16 14h9.45a2 2 0 0 0 1.75-1.03l3.58-6.49-1.74-.99-3.58 6.49H8.53L5.21 4H1v2h3l3.6 7.59-1.35 2.44C5.52 16.37 6.48 18 8 18h12v-2H8l1.16-2z"/>
-                    </svg>
-                    <div class="shop-price">${fmtRub(p.price)}</div>
-                  </button>
-                </div>
-              </div>
-            `;
-          });
-          
-          if (currentRow.length === 1) {
-            row.innerHTML += `<div class="shop-card empty-card"></div>`;
-          }
-          
-          cardsContainer.appendChild(row);
-        }
-        
-        currentRow = [];
-      }
-    });
-  }
-}
-
-window.addEventListener('resize', () => {
-  if (PRODUCTS.length > 0) {
-    renderProducts();
-  }
-  if (currentUser) {
-    updateAuthButton();
-  }
-  updateMobileNavActiveState();
-});
-
-function updateBadge(){
-  const n = cartCount();
-  const cartBadge = document.getElementById('cartBadge');
-  const cartBadgeMobile = document.getElementById('cartBadgeMobile');
-  
-  if (n > 0) {
-    cartBadge.style.display = 'inline-flex';
-    cartBadge.textContent = n;
-    if (cartBadgeMobile) {
-      cartBadgeMobile.classList.add('show');
-      cartBadgeMobile.textContent = n;
-    }
-  } else {
-    cartBadge.style.display = 'none';
-    if (cartBadgeMobile) {
-      cartBadgeMobile.classList.remove('show');
-    }
-  }
-}
-
-function renderCart(){
-  const cartBody = document.getElementById('cartBody');
-  const cartTotalEl = document.getElementById('cartTotal');
-  
-  if (!cartBody || !cartTotalEl) return;
-  
-  const entries = Object.entries(cart);
-  if (entries.length === 0) {
-    cartBody.innerHTML = `<div class="cart-empty">Корзина пуста</div>`;
-    cartTotalEl.textContent = '0 ₽';
-    return;
-  }
-
-  cartBody.innerHTML = entries.map(([id, qty]) => {
-    const p = PRODUCTS.find(x => x.id === id);
-    if (!p) return '';
-    return `
-      <div class="cart-row">
-        <div class="cart-thumb"><img src="${p.image_url}" alt="${p.name}"></div>
-        <div class="cart-info">
-          <div class="cart-name">${p.name}${p.is_gift ? ' 🎁' : ''}</div>
-          <div class="cart-sub">${fmtRub(p.price)} • ${fmtRub(p.price * qty)}</div>
-        </div>
-        <div class="cart-qty">
-          <button class="qty-btn" type="button" data-dec="${id}">−</button>
-          <div class="qty-num">${qty}</div>
-          <button class="qty-btn" type="button" data-inc="${id}">+</button>
-        </div>
-      </div>
-    `;
-  }).join('');
-
-  cartTotalEl.textContent = fmtRub(cartSum());
-}
-
-function addToCart(id){
-  cart[id] = (cart[id] || 0) + 1;
-  saveCart();
-  updateBadge();
-}
-
-function inc(id){
-  cart[id] = (cart[id] || 0) + 1;
-  saveCart();
-  updateBadge();
-  renderCart();
-}
-
-function dec(id){
-  if (!cart[id]) return;
-  cart[id] -= 1;
-  if (cart[id] <= 0) delete cart[id];
-  saveCart();
-  updateBadge();
-  renderCart();
-}
-
-function clearCart(){
-  cart = {};
-  saveCart();
-  updateBadge();
-  renderCart();
-}
-
-document.addEventListener('click', (e) => {
-  const b = e.target.closest('[data-add]');
-  if (!b) return;
-  
-  const id = b.getAttribute('data-add');
-  addToCart(id);
-  b.style.transform = 'scale(.98)';
-  setTimeout(() => b.style.transform = '', 120);
-  if (document.getElementById('cartOverlay').classList.contains('open')) renderCart();
-});
-
-document.getElementById('openCart').addEventListener('click', () => {
-  const cartOverlay = document.getElementById('cartOverlay');
-  cartOverlay.classList.add('open');
-  cartOverlay.setAttribute('aria-hidden', 'false');
-  renderCart();
-});
-
-function closeCart(){
-  const cartOverlay = document.getElementById('cartOverlay');
-  cartOverlay.classList.remove('open');
-  cartOverlay.setAttribute('aria-hidden', 'true');
-}
-
-document.getElementById('closeCart').addEventListener('click', closeCart);
-document.getElementById('cartOverlay').addEventListener('click', (e) => {
-  if (e.target === document.getElementById('cartOverlay')) closeCart();
-});
-
-document.getElementById('cartBody').addEventListener('click', (e) => {
-  const incBtn = e.target.closest('[data-inc]');
-  const decBtn = e.target.closest('[data-dec]');
-  if (incBtn) inc(incBtn.getAttribute('data-inc'));
-  if (decBtn) dec(decBtn.getAttribute('data-dec'));
-});
-
-document.getElementById('checkoutBtn').addEventListener('click', () => {
-  closeCart();
-  showCheckout();
-});
-
-function showCheckout() {
-  const total = cartSum();
-  const checkoutSummary = document.getElementById('checkoutSummary');
-  const proceedToPayBtn = document.getElementById('proceedToPay');
-  const amountError = document.getElementById('amountError');
-  const errorText = document.getElementById('errorText');
-  
-  if (!checkoutSummary || !proceedToPayBtn || !amountError || !errorText) return;
-  
-  checkoutSummary.innerHTML = '';
-  
-  Object.entries(cart).forEach(([id, qty]) => {
-    const p = PRODUCTS.find(x => x.id === id);
-    if (p) {
-      const itemDiv = document.createElement('div');
-      itemDiv.className = 'checkout-item';
-      itemDiv.innerHTML = `
-        <span>${p.name} ×${qty}</span>
-        <span>${fmtRub(p.price * qty)}</span>
-      `;
-      checkoutSummary.appendChild(itemDiv);
-    }
-  });
-  
-  const totalDiv = document.createElement('div');
-  totalDiv.className = 'checkout-total';
-  totalDiv.innerHTML = `
-    <span>Итого:</span>
-    <span>${fmtRub(total)}</span>
-  `;
-  checkoutSummary.appendChild(totalDiv);
-  
-  if (total < 10 || total > 10000) {
-    proceedToPayBtn.disabled = true;
-    amountError.style.display = 'block';
-    if (total < 10) {
-      errorText.textContent = 'Ваша сумма заказа менее 10₽, добавьте товаров для получения возможной суммы оплаты заказа (от 10₽ до 10000₽)';
-    } else {
-      errorText.textContent = 'Ваша сумма заказа более 10000₽, удалите товаров для получения возможной суммы оплаты заказа (от 10₽ до 10000₽)';
-    }
-  } else {
-    proceedToPayBtn.disabled = false;
-    amountError.style.display = 'none';
-  }
-  
-  show('checkout');
-}
-
-document.getElementById('backToMenu').addEventListener('click', () => {
-  show('menu');
-});
-
-document.getElementById('proceedToPay').addEventListener('click', async () => {
-  const total = cartSum();
-  if (total < 10 || total > 10000) return;
-  
-  try {
-    const orderData = {
-      items: cart,
-      total: total,
-      userId: currentUser ? currentUser.id : null,
-      timestamp: Date.now()
-    };
-    localStorage.setItem('pending_order', JSON.stringify(orderData));
-    
-    window.location.href = 'waitpay.html';
-    
-  } catch (error) {
-    alert('Ошибка при переходе к оплате');
-  }
-});
-
-function updateOrderNumberElements(orderId) {
-  const orderNumber = `Заказ #${orderId}`;
-  
-  const elements = [
-    'waitingOrderNumber',
-    'badPayOrderNumber'
-  ];
-  
-  elements.forEach(elementId => {
-    const element = document.getElementById(elementId);
-    if (element) {
-      element.textContent = orderNumber;
-    }
-  });
-}
-
-document.getElementById('toMenuFromBadPay').addEventListener('click', () => {
-  show('menu');
-});
-
-function checkPaymentResult() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const status = urlParams.get('payment');
-  const orderId = urlParams.get('order');
-  
-  if (status === 'fail' && orderId) {
-    currentOrderId = orderId;
-    updateOrderNumberElements(currentOrderId);
-    show('badPay');
-    
-    const newUrl = window.location.pathname;
-    window.history.replaceState({}, '', newUrl);
-  }
-}
-
-document.getElementById('clearCart').addEventListener('click', () => {
-  clearCart();
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-  cart = loadCart();
-  currentUser = loadUser();
-  
-  loadAllLottieAnimations();
-  updateBadge();
-  checkAuthFromURL();
-  checkPaymentResult();
-  
-  if (PRODUCTS.length === 0) {
-    loadProducts();
-  }
-  
-  startAutoRefreshProducts();
-  
-  setupMobileNavigation();
-  
-  updateMobileNavVisibility('menu');
-  updateMobileNavActiveState();
-});
-
-function startAutoRefreshProducts() {
-  if (productsCheckInterval) clearInterval(productsCheckInterval);
-  
-  if (PRODUCTS.length === 0) {
-    loadProducts();
-  } else {
-    renderProducts();
-  }
-  
-  productsCheckInterval = setInterval(() => {
-    loadProducts();
-  }, 10000);
-}
 </script>
 </body>
 </html>
