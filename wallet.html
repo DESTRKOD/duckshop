@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -85,6 +84,38 @@ html, body {
   bottom: 0;
   background: radial-gradient(circle at 50% 30%, rgba(255,255,255,0.1) 0%, transparent 70%);
   pointer-events: none;
+}
+
+.back-button {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.14);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  z-index: 20;
+}
+
+.back-button:hover {
+  background: rgba(255,255,255,0.25);
+  transform: scale(1.05);
+}
+
+.back-button:active {
+  transform: scale(0.95);
+}
+
+.back-button svg {
+  width: 24px;
+  height: 24px;
+  fill: white;
 }
 
 .wallet-balance-card {
@@ -200,13 +231,13 @@ html, body {
 }
 
 .transaction-icon.deposit {
-  background-image: url('https://i.imgur.com/2c1vX7l.png');
+  background-image: url('https://i.imgur.com/rtxsxM1.png');
   background-color: rgba(76, 175, 80, 0.2);
   background-size: 60%;
 }
 
 .transaction-icon.withdraw {
-  background-image: url('https://i.imgur.com/8kUvCXl.png');
+  background-image: url('https://i.imgur.com/CE1KMVS.png');
   background-color: rgba(255, 107, 107, 0.2);
   background-size: 60%;
 }
@@ -272,14 +303,14 @@ html, body {
 }
 
 .no-transactions-icon {
-  width: 64px;
-  height: 64px;
-  margin: 0 auto 20px;
-  background-image: url('https://i.imgur.com/Wx7TpFc.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  opacity: 0.7;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 10px;
+}
+
+.no-transactions-icon .lottie-wrapper {
+  width: 100%;
+  height: 100%;
 }
 
 .no-transactions-text {
@@ -339,6 +370,13 @@ html, body {
   
   .wallet-content {
     padding-bottom: 110px;
+  }
+  
+  .back-button {
+    top: 16px;
+    left: 16px;
+    width: 40px;
+    height: 40px;
   }
 }
 
@@ -536,6 +574,12 @@ html, body {
 
 <div id="wallet" class="screen wallet-screen">
   <div class="wallet-header">
+    <button class="back-button" id="backToMenuBtn">
+      <svg viewBox="0 0 24 24">
+        <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+      </svg>
+    </button>
+    
     <div class="wallet-balance-card">
       <div class="wallet-balance-label">Баланс кошелька</div>
       <div class="wallet-balance-amount" id="walletBalance">0 <small>₽</small></div>
@@ -635,6 +679,23 @@ function loadLottieAnimations() {
       });
     }
   } catch (error) {
+  }
+}
+
+function loadNoTransactionsAnimation() {
+  const animContainer = document.getElementById('noTransactionsAnim');
+  if (animContainer) {
+    try {
+      lottie.loadAnimation({
+        container: animContainer,
+        renderer: 'svg',
+        loop: true,
+        autoplay: true,
+        path: 'notfound.json'
+      });
+    } catch (error) {
+      console.log('Ошибка загрузки анимации:', error);
+    }
   }
 }
 
@@ -763,13 +824,34 @@ function updateWalletUI() {
   
   if (!walletData.transactions || walletData.transactions.length === 0) {
     transactionsCount.textContent = '0 операций';
-    transactionsList.innerHTML = `
+    
+    const noTransactionsHtml = `
       <div class="no-transactions">
-        <div class="no-transactions-icon"></div>
+        <div class="no-transactions-icon" id="noTransactionsAnim"></div>
         <div class="no-transactions-text">У вас пока нет операций</div>
         <div class="no-transactions-subtext">Возвраты от заказов будут зачисляться сюда</div>
       </div>
     `;
+    
+    transactionsList.innerHTML = noTransactionsHtml;
+    
+    setTimeout(() => {
+      const animContainer = document.getElementById('noTransactionsAnim');
+      if (animContainer) {
+        try {
+          lottie.loadAnimation({
+            container: animContainer,
+            renderer: 'svg',
+            loop: true,
+            autoplay: true,
+            path: 'notfound.json'
+          });
+        } catch (error) {
+          console.log('Ошибка загрузки анимации:', error);
+        }
+      }
+    }, 100);
+    
     return;
   }
   
@@ -939,6 +1021,10 @@ document.getElementById('retryBtn').addEventListener('click', function() {
   }
 });
 
+document.getElementById('backToMenuBtn').addEventListener('click', function() {
+  window.location.href = SHOP_URL;
+});
+
 function checkInitialAuth() {
   const urlParams = new URLSearchParams(window.location.search);
   const authToken = urlParams.get('auth');
@@ -991,4 +1077,3 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </body>
 </html>
-```
