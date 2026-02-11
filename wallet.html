@@ -37,6 +37,27 @@ html, body {
   pointer-events: auto;
 }
 
+
+.wallet-balance-amount.negative {
+  color: #ff6b6b !important;
+}
+
+.transaction-amount.debt {
+  color: #ff6b6b;
+  font-weight: 800;
+}
+
+.transaction-amount.debt_paid {
+  color: #4caf50;
+  font-weight: 800;
+}
+
+.transaction-icon.debt {
+  background-image: url('https://i.imgur.com/HzRdGzT.png');
+  background-color: rgba(255, 107, 107, 0.2);
+  background-size: 60%;
+}
+
 .screen.leaving {
   opacity: 0;
   transform: translateY(-40px);
@@ -833,10 +854,14 @@ async function loadWalletFromServer() {
     const data = await response.json();
     
     if (data.success) {
+      const debtResult = await fetch(`${API_URL}/api/user/debt/${currentUser.id}`);
+      const debtData = await debtResult.json();
+      
       walletData = {
         balance: data.availableBalance || 0,
         frozenBalance: data.frozenBalance || 0,
-        transactions: data.transactions || []
+        transactions: data.transactions || [],
+        debt: debtData.debt || 0
       };
       
       saveWalletToLocalStorage();
@@ -902,11 +927,50 @@ function updateWalletUI() {
   const transactionsCount = document.getElementById('transactionsCount');
   
   if (balanceEl) {
-    balanceEl.innerHTML = `${fmtBalance(walletData.balance)} <span class="currency-icon-large"></span>`;
+    const balance = walletData.balance || 0;
+    const isNegative = balance < 0;
+    const balanceClass = isNegative ? 'negative' : '';
+    const balanceSign = isNegative ? '- ' : '';
+    const absBalance = Math.abs(balance);
+    
+    balanceEl.innerHTML = `${balanceSign}${fmtBalance(absBalance)} <span class="currency-icon-large"></span>`;
+    balanceEl.style.color = isNegative ? '#ff6b6b' : 'white';
   }
   
   if (frozenEl) {
-    frozenEl.innerHTML = `${walletData.frozenBalance} <small>₽</small>`;
+    frozenEl.innerHTML = `${walletData.frozenBalance || 0} <small>₽</small>`;
+  }
+  
+  const debt = walletData.debt || 0;
+  if (debt > 0) {
+    let debtElement = document.getElementById('debtInfo');
+    if (!debtElement) {
+      const frozenSection = document.querySelector('.wallet-frozen');
+      if (frozenSection) {
+        debtElement = document.createElement('div');
+        debtElement.id = 'debtInfo';
+        debtElement.className = 'wallet-frozen';
+        debtElement.style.background = 'rgba(255, 107, 107, 0.1)';
+        debtElement.style.borderColor = 'rgba(255, 107, 107, 0.3)';
+        debtElement.innerHTML = `
+          <div class="wallet-frozen-label" style="color: #ff6b6b;">
+            <svg viewBox="0 0 24 24" width="18" height="18" style="fill: #ff6b6b;">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+            </svg>
+            Задолженность:
+          </div>
+          <div class="wallet-frozen-value" style="color: #ff6b6b;">
+            ${fmtRub(debt)} <small>DCoin</small>
+          </div>
+        `;
+        frozenSection.parentNode.insertBefore(debtElement, frozenSection.nextSibling);
+      }
+    } else {
+      debtElement.querySelector('.wallet-frozen-value').innerHTML = `${fmtRub(debt)} <small>DCoin</small>`;
+    }
+  } else {
+    const debtElement = document.getElementById('debtInfo');
+    if (debtElement) debtElement.remove();
   }
   
   if (!transactionsList || !transactionsCount) return;
@@ -935,12 +999,39 @@ function updateWalletUI() {
   transactionsCount.textContent = `${count} ${getPluralEnding(count)}`;
   
   transactionsList.innerHTML = walletData.transactions.map(t => {
+    const isDebt = t.type === 'debt';
+    const isDebtPaid = t.type === 'debt_payment';
     const isDeposit = t.type === 'deposit' || t.type === 'refund';
-    const amountClass = isDeposit ? 'deposit' : 'withdraw';
-    const iconClass = isDeposit ? 'deposit' : 'withdraw';
-    const amountSign = isDeposit ? '+' : '-';
-    const title = t.title || (isDeposit ? 'Возврат средств' : 'Списание средств');
-    const amount = isDeposit ? t.amount : Math.abs(t.amount);
+    const isWithdraw = t.type === 'withdraw' && !t.metadata?.cancel_refund;
+    
+    let amountClass = '';
+    let iconClass = '';
+    let amountSign = '';
+    let title = t.title || '';
+    
+    if (isDebt) {
+      amountClass = 'debt';
+      iconClass = 'debt';
+      amountSign = '−';
+      title = title || 'Задолженность';
+    } else if (isDebtPaid) {
+      amountClass = 'debt_paid';
+      iconClass = 'deposit';
+      amountSign = '+';
+      title = title || 'Погашение задолженности';
+    } else if (isDeposit) {
+      amountClass = 'deposit';
+      iconClass = 'deposit';
+      amountSign = '+';
+      title = title || 'Пополнение';
+    } else if (isWithdraw) {
+      amountClass = 'withdraw';
+      iconClass = 'withdraw';
+      amountSign = '−';
+      title = title || 'Списание';
+    }
+    
+    const amount = Math.abs(t.amount);
     
     return `
       <div class="transaction-item">
