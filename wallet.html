@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -110,7 +111,6 @@ html, body {
   color: rgba(255,255,255,0.8);
   letter-spacing: 0.5px;
   margin-bottom: 12px;
-  text-transform: uppercase;
 }
 
 .wallet-balance-amount {
@@ -194,28 +194,21 @@ html, body {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-}
-
-.transaction-icon svg {
-  width: 26px;
-  height: 26px;
-  fill: white;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .transaction-icon.deposit {
-  background: rgba(76, 175, 80, 0.2);
-}
-
-.transaction-icon.deposit svg {
-  fill: #4caf50;
+  background-image: url('https://i.imgur.com/2c1vX7l.png');
+  background-color: rgba(76, 175, 80, 0.2);
+  background-size: 60%;
 }
 
 .transaction-icon.withdraw {
-  background: rgba(255, 107, 107, 0.2);
-}
-
-.transaction-icon.withdraw svg {
-  fill: #ff6b6b;
+  background-image: url('https://i.imgur.com/8kUvCXl.png');
+  background-color: rgba(255, 107, 107, 0.2);
+  background-size: 60%;
 }
 
 .transaction-info {
@@ -282,11 +275,11 @@ html, body {
   width: 64px;
   height: 64px;
   margin: 0 auto 20px;
-  background-image: url('https://i.imgur.com/8Q5w6zR.png');
+  background-image: url('https://i.imgur.com/Wx7TpFc.png');
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
-  opacity: 0.6;
+  opacity: 0.7;
 }
 
 .no-transactions-text {
@@ -311,7 +304,7 @@ html, body {
   width: 60px;
   height: 60px;
   margin: 0 auto 20px;
-  background-image: url('https://i.imgur.com/TdWbh8z.png');
+  background-image: url('https://i.imgur.com/HzRdGzT.png');
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
@@ -328,6 +321,11 @@ html, body {
   color: rgba(255,255,255,0.8);
   margin-bottom: 30px;
   max-width: 400px;
+}
+
+.wallet-desktop {
+  display: inline-flex !important;
+  margin-right: 8px;
 }
 
 @media (max-width: 768px) {
@@ -381,11 +379,6 @@ html, body {
     height: 44px;
   }
   
-  .transaction-icon svg {
-    width: 24px;
-    height: 24px;
-  }
-  
   .transaction-title {
     font-size: 14px;
   }
@@ -412,6 +405,16 @@ html, body {
   
   .transaction-details {
     width: 100%;
+  }
+}
+
+@media (min-width: 769px) {
+  .wallet-content {
+    padding-bottom: 40px;
+  }
+  
+  .mobile-nav {
+    display: none !important;
   }
 }
 
@@ -534,7 +537,7 @@ html, body {
 <div id="wallet" class="screen wallet-screen">
   <div class="wallet-header">
     <div class="wallet-balance-card">
-      <div class="wallet-balance-label">💰 Баланс</div>
+      <div class="wallet-balance-label">Баланс кошелька</div>
       <div class="wallet-balance-amount" id="walletBalance">0 <small>₽</small></div>
     </div>
   </div>
@@ -542,7 +545,7 @@ html, body {
   <div class="wallet-content">
     <div class="wallet-section">
       <div class="section-title">
-        <span>📋 История операций</span>
+        <span>История операций</span>
         <span id="transactionsCount">0 операций</span>
       </div>
       <div class="transactions-list" id="transactionsList">
@@ -690,7 +693,7 @@ function updateBadge() {
 }
 
 async function loadWalletFromServer() {
-  if (!currentUser) return;
+  if (!currentUser) return false;
   
   try {
     const response = await fetch(`${API_URL}/api/wallet/${currentUser.id}`);
@@ -782,12 +785,7 @@ function updateWalletUI() {
     
     return `
       <div class="transaction-item">
-        <div class="transaction-icon ${iconClass}">
-          ${isDeposit ? 
-            '<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 15l-5-5h4V7h2v5h4l-5 5z"/></svg>' :
-            '<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 15l-5-5h4V7h2v5h4l-5 5z"/></svg>'
-          }
-        </div>
+        <div class="transaction-icon ${iconClass}"></div>
         <div class="transaction-info">
           <div class="transaction-header">
             <div class="transaction-title">${title}</div>
@@ -993,3 +991,4 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </body>
 </html>
+```
