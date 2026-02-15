@@ -764,12 +764,8 @@ async function loadProfileData() {
       updateProfileUI(currentUser);
       
       const orders = data.orders || [];
-      const filteredOrders = orders.filter(order => 
-        order.paymentStatus === 'confirmed' || 
-        ['waiting', 'waiting_code_request', 'completed', 'manyback'].includes(order.status)
-      );
       
-      await loadOrders(filteredOrders);
+      await loadOrders(orders);
       
       showScreen('profile');
     } else {
