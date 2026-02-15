@@ -659,12 +659,11 @@ function getDisplayStatus(status, paymentStatus, refundAmount) {
   
   if (paymentStatus === 'confirmed' || 
       status === 'waiting' || 
-      status === 'waiting_code_request' || 
-      status === 'confirmed') {
-    return { text: 'В работе', color: 'white', bg: 'transparent' };
+      status === 'waiting_code_request') {
+    return { text: 'В работе', color: '#ffffff', bg: 'transparent' };
   }
   
-  return { text: 'В работе', color: 'white', bg: 'transparent' };
+  return { text: 'В работе', color: '#ffffff', bg: 'transparent' };
 }
 
 function loadCart() {
