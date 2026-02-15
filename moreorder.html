@@ -719,20 +719,20 @@ function getStatusText(status) {
     'new': 'Новый',
     'pending': 'Ожидает оплаты',
     'confirmed': 'Оплачен',
-    'waiting': 'Ожидает выполнения',
+    'waiting': 'В работе',
+    'waiting_code_request': 'В работе',
+    'waiting_execution': 'В работе',
     'completed': 'Завершен',
     'canceled': 'Отменен',
     'failed': 'Неудачный',
-    'manyback': 'Оформлен возврат'
+    'manyback': 'Возврат'
   };
   return statusMap[status] || status;
 }
 
 function isActiveOrder(status) {
-  const activeStatuses = ['new', 'pending', 'confirmed', 'waiting_code_request', 'waiting'];
-  return activeStatuses.includes(status);
+  return false; 
 }
-
 function initCopyButton() {
   const copyBtn = document.getElementById('copyOrderIdBtn');
   const orderIdText = document.getElementById('orderId').textContent;
@@ -869,8 +869,7 @@ function displayOrder(order) {
   const statusText = getStatusText(order.status);
   document.getElementById('orderStatusText').textContent = statusText;
   
-  if (isActiveOrder(order.status)) {
-    document.getElementById('orderInfoSection').classList.add('active-order');
+
   }
   
   initCopyButton();
