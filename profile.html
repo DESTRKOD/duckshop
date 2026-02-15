@@ -642,29 +642,29 @@ function formatDate(dateString) {
 
 function getDisplayStatus(status, paymentStatus, refundAmount) {
   if (status === 'completed') {
-    return { text: 'Завершен' };
+    return { text: 'Завершен', color: '#4caf50', bg: 'rgba(76, 175, 80, 0.2)' };
   }
   
   if (status === 'canceled') {
-    return { text: 'Отменен' };
+    return { text: 'Отменен', color: '#ff6b6b', bg: 'rgba(255, 107, 107, 0.2)' };
   }
   
   if (status === 'manyback') {
-    return { text: 'Оформлен возврат' };
+    return { text: 'Возврат', color: '#000000', bg: 'rgba(0, 0, 0, 0.2)' };
   }
   
-  if (paymentStatus === 'confirmed') {
-    if (status === 'waiting' || status === 'waiting_code_request' || status === 'confirmed') {
-      return { text: 'В работе' };
-    }
-    return { text: 'В работе' };
+  if (paymentStatus === 'pending' && status === 'new') {
+    return { text: 'Ожидает оплаты', color: '#ffd700', bg: 'rgba(255, 215, 0, 0.2)' };
   }
   
-  if (status === 'new' && paymentStatus === 'pending') {
-    return { text: 'Ожидает оплаты' };
+  if (paymentStatus === 'confirmed' || 
+      status === 'waiting' || 
+      status === 'waiting_code_request' || 
+      status === 'confirmed') {
+    return { text: 'В работе', color: 'white', bg: 'transparent' };
   }
   
-  return { text: 'В работе' };
+  return { text: 'В работе', color: 'white', bg: 'transparent' };
 }
 
 function loadCart() {
