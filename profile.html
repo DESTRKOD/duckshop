@@ -224,14 +224,51 @@ html, body {
 }
 
 .order-status {
-  padding: 4px 10px;
+  padding: 6px 14px;
   border-radius: 20px;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 800;
   text-transform: uppercase;
-  background: rgba(255,255,255,0.15);
-  color: white;
-  border: 1px solid rgba(255,255,255,0.2);
+  letter-spacing: 0.5px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+  min-width: 100px;
+  text-align: center;
+}
+
+.order-status.completed {
+  background: rgba(76, 175, 80, 0.25);
+  color: #4caf50;
+  border-color: rgba(76, 175, 80, 0.4);
+}
+
+.order-status.canceled {
+  background: rgba(255, 107, 107, 0.25);
+  color: #ff6b6b;
+  border-color: rgba(255, 107, 107, 0.4);
+}
+
+.order-status.manyback,
+.order-status.refund {
+  background: rgba(0, 0, 0, 0.45);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.order-status.waiting,
+.order-status.pending,
+.order-status.inwork {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.order-item:hover .order-status {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
 }
 
 .no-orders {
@@ -330,31 +367,24 @@ html, body {
     padding: 15px;
     padding-bottom: 110px;
   }
-  
   .profile-section {
     padding: 15px;
   }
-  
   .order-item {
     padding: 12px;
   }
-  
   .profile-actions {
     flex-direction: column;
   }
-  
   .section-title {
     font-size: 16px;
   }
-  
   .order-id {
     font-size: 14px;
   }
-  
   .order-date {
     font-size: 12px;
   }
-  
   .order-total {
     font-size: 14px;
   }
@@ -364,26 +394,21 @@ html, body {
   .profile-header {
     padding: 15px;
   }
-  
   .profile-avatar {
     width: 80px;
     height: 80px;
     font-size: 32px;
     margin-bottom: 15px;
   }
-  
   .profile-name {
     font-size: 20px;
   }
-  
   .profile-id {
     font-size: 14px;
   }
-  
   .profile-username {
     font-size: 13px;
   }
-  
   .profile-content {
     padding: 12px;
     padding-bottom: 105px;
@@ -396,20 +421,16 @@ html, body {
     height: 70px;
     font-size: 28px;
   }
-  
   .profile-name {
     font-size: 18px;
   }
-  
   .order-header {
     flex-direction: column;
     gap: 5px;
   }
-  
   .order-date {
     align-self: flex-start;
   }
-  
   .profile-content {
     padding-bottom: 100px;
   }
@@ -642,28 +663,22 @@ function formatDate(dateString) {
 
 function getDisplayStatus(status, paymentStatus, refundAmount) {
   if (status === 'completed') {
-    return { text: 'Завершен', color: '#4caf50', bg: 'rgba(76, 175, 80, 0.2)' };
+    return { text: 'Завершен', className: 'completed' };
   }
   
   if (status === 'canceled') {
-    return { text: 'Отменен', color: '#ff6b6b', bg: 'rgba(255, 107, 107, 0.2)' };
+    return { text: 'Отменен', className: 'canceled' };
   }
   
-  if (status === 'manyback') {
-    return { text: 'Возврат', color: '#000000', bg: 'rgba(0, 0, 0, 0.2)' };
+  if (status === 'manyback' || refundAmount > 0) {
+    return { text: 'Возврат', className: 'manyback' };
   }
   
   if (paymentStatus === 'pending' && status === 'new') {
-    return { text: 'Ожидает оплаты', color: '#ffd700', bg: 'rgba(255, 215, 0, 0.2)' };
+    return { text: 'Ожидает оплаты', className: 'pending' };
   }
   
-  if (paymentStatus === 'confirmed' || 
-      status === 'waiting' || 
-      status === 'waiting_code_request') {
-    return { text: 'В работе', color: '#ffffff', bg: 'transparent' };
-  }
-  
-  return { text: 'В работе', color: '#ffffff', bg: 'transparent' };
+  return { text: 'В работе', className: 'waiting' };
 }
 
 function loadCart() {
@@ -705,8 +720,7 @@ function loadLottieAnimations() {
         path: 'https://assets10.lottiefiles.com/packages/lf20_puciaevh.json'
       });
     }
-  } catch (error) {
-  }
+  } catch (error) {}
 }
 
 function showScreen(id) {
@@ -727,16 +741,14 @@ function loadUser() {
     if (userData) {
       return JSON.parse(userData);
     }
-  } catch (error) {
-  }
+  } catch (error) {}
   return null;
 }
 
 function saveUser(user) {
   try {
     localStorage.setItem(USER_KEY, JSON.stringify(user));
-  } catch (error) {
-  }
+  } catch (error) {}
 }
 
 function clearUser() {
@@ -774,7 +786,7 @@ async function loadProfileData() {
     showError('Ошибка загрузки', 'Не удалось загрузить данные профиля. Попробуйте позже.');
   }
 }
-  
+
 function updateProfileUI(user) {
   const avatar = document.getElementById('profileAvatar');
   if (user.avatarUrl) {
@@ -834,7 +846,7 @@ async function loadOrders(orders) {
             ${fmtRub(order.total)}
             ${order.refundAmount ? `<div style="font-size: 12px; color: #9c27b0; margin-top: 4px;">К возврату: ${fmtRub(order.refundAmount)}</div>` : ''}
           </div>
-          <div class="order-status">${displayStatus.text}</div>
+          <div class="order-status ${displayStatus.className}">${displayStatus.text}</div>
         </div>
       </div>
     `;
