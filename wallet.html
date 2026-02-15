@@ -5,6 +5,7 @@
 <title>Кошелёк - Duck Shop</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+
 <style>
 html, body {
   margin: 0;
@@ -163,12 +164,9 @@ html, body {
 .currency-icon-large {
   width: 32px;
   height: 32px;
-  background-image: url('https://i.imgur.com/8kUvCXl.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
   display: inline-block;
-  margin-left: 4px;
+  vertical-align: middle;
+  margin-left: 8px;
 }
 .wallet-frozen {
   width: 100%;
@@ -302,19 +300,6 @@ html, body {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-.transaction-icon.deposit {
-  background-image: url('https://i.imgur.com/2c1vX7l.png');
-  background-color: rgba(76, 175, 80, 0.2);
-  background-size: 60%;
-}
-.transaction-icon.withdraw {
-  background-image: url('https://i.imgur.com/8kUvCXl.png');
-  background-color: rgba(255, 107, 107, 0.2);
-  background-size: 60%;
 }
 .transaction-info {
   flex: 1;
@@ -340,7 +325,7 @@ html, body {
   white-space: nowrap;
   display: flex;
   align-items: center;
-  gap: 6px; /* ← добавлено для иконки */
+  gap: 8px; /* ← увеличил gap для больших иконок */
 }
 .transaction-amount.deposit {
   color: #4caf50;
@@ -559,10 +544,20 @@ html, body {
   display: inline-flex;
 }
 /* Добавлено для иконок в истории операций */
-.transaction-icon {
-  width: 20px;
-  height: 20px;
+.transaction-icon img {
+  width: 40px;
+  height: 40px;
   object-fit: contain;
+}
+.transaction-amount {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.currency-icon-large img {
+  width: 32px;
+  height: 32px;
+  vertical-align: middle;
 }
 </style>
 </head>
@@ -583,7 +578,7 @@ html, body {
     <div class="wallet-balance-card">
       <div class="wallet-balance-label">БАЛАНС</div>
       <div class="wallet-balance-amount" id="walletBalance">
-        0 <span class="currency-icon-large"></span>
+        0 <img src="https://i.imgur.com/gzCh26e.png" class="currency-icon-large" alt="DCoin" />
       </div>
     </div>
     <div class="wallet-frozen">
@@ -831,10 +826,9 @@ function updateWalletUI() {
   if (balanceEl) {
     const balance = walletData.balance || 0;
     const isNegative = balance < 0;
-    const balanceClass = isNegative ? 'negative' : '';
     const balanceSign = isNegative ? '- ' : '';
     const absBalance = Math.abs(balance);
-    balanceEl.innerHTML = `${balanceSign}${fmtBalance(absBalance)} <span class="currency-icon-large"></span>`;
+    balanceEl.innerHTML = `${balanceSign}${fmtBalance(absBalance)} <img src="https://i.imgur.com/gzCh26e.png" class="currency-icon-large" alt="DCoin" />`;
     balanceEl.style.color = isNegative ? '#ff6b6b' : 'white';
   }
 
@@ -913,33 +907,37 @@ function updateWalletUI() {
       title = title || 'Задолженность';
     } else if (isDebtPaid) {
       amountClass = 'debt_paid';
-      iconSrc = 'https://i.imgur.com/rtxsxM1.png'; // получение (погашение)
+      iconSrc = 'https://i.imgur.com/rtxsxM1.png';
       amountSign = '+';
       title = title || 'Погашение задолженности';
     } else if (isDeposit) {
       amountClass = 'deposit';
-      iconSrc = 'https://i.imgur.com/rtxsxM1.png'; // получение
+      iconSrc = 'https://i.imgur.com/rtxsxM1.png';
       amountSign = '+';
       title = title || 'Пополнение';
     } else if (isWithdraw) {
       amountClass = 'withdraw';
-      iconSrc = 'https://i.imgur.com/CE1KMVS.png'; // отправка
+      iconSrc = 'https://i.imgur.com/CE1KMVS.png';
       amountSign = '−';
       title = title || 'Списание';
-    } else if (t.currency === 'DCoin' || t.type?.includes('DCoin') || t.type?.includes('exchange')) {
-      iconSrc = 'https://i.imgur.com/gzCh26e.png'; // монета DCoin
+    } else if (t.currency === 'DCoin' || t.type?.toLowerCase().includes('exchange') || t.type?.toLowerCase().includes('swap')) {
+      iconSrc = 'https://i.imgur.com/gzCh26e.png';
+      amountSign = t.amount > 0 ? '+' : '−';
+      amountClass = t.amount > 0 ? 'deposit' : 'withdraw';
+      title = title || 'Обмен';
     } else {
-      // дефолт — рубль
-      iconSrc = isDeposit ? 'https://i.imgur.com/rtxsxM1.png' : 'https://i.imgur.com/CE1KMVS.png';
-      amountClass = isDeposit ? 'deposit' : 'withdraw';
-      amountSign = isDeposit ? '+' : '−';
+      iconSrc = t.amount > 0 ? 'https://i.imgur.com/rtxsxM1.png' : 'https://i.imgur.com/CE1KMVS.png';
+      amountSign = t.amount > 0 ? '+' : '−';
+      amountClass = t.amount > 0 ? 'deposit' : 'withdraw';
     }
 
     const amount = Math.abs(t.amount);
 
     return `
       <div class="transaction-item">
-        <div class="transaction-icon ${amountClass}" style="background-image: url('${iconSrc}');"></div>
+        <div class="transaction-icon">
+          <img src="${iconSrc}" alt="иконка операции" />
+        </div>
         <div class="transaction-info">
           <div class="transaction-header">
             <div class="transaction-title">${title}</div>
