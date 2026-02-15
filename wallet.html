@@ -97,6 +97,7 @@ html, body {
   border-radius: 20px;
   padding: 20px;
   margin-top: 20px;
+  width: 100%;
 }
 
 .section-title {
@@ -119,7 +120,6 @@ html, body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 12px;
 }
 
 .transaction-info {
@@ -144,7 +144,6 @@ html, body {
   display: flex;
   align-items: center;
   gap: 6px;
-  white-space: nowrap;
 }
 
 .transaction-amount.positive {
@@ -313,6 +312,7 @@ html, body {
 }
 </style>
 </head>
+
 <body>
 
 <div id="loading" class="screen active">
@@ -333,15 +333,9 @@ html, body {
 
   <div class="action-buttons">
     <button class="action-btn btn-deposit" id="depositBtn">
-      <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
-      </svg>
       Пополнить
     </button>
     <button class="action-btn btn-swap" id="swapBtn">
-      <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-        <path d="M6.99 11L3 15l3.99 4V17h8v-2h-8v-4zm10.02-4L21 7l-3.99-4v2h-8v2h8v4z"/>
-      </svg>
       Обменять
     </button>
   </div>
@@ -353,9 +347,6 @@ html, body {
 
   <div class="action-buttons" style="margin-top: 20px;">
     <button class="action-btn btn-back" id="backBtn">
-      <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-        <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
-      </svg>
       Назад в магазин
     </button>
   </div>
@@ -423,7 +414,7 @@ function showScreen(id) {
   screens.forEach(screen => {
     document.getElementById(screen).classList.remove('active', 'leaving');
   });
-  
+
   const screen = document.getElementById(id);
   if (screen) {
     screen.classList.add('active');
@@ -449,7 +440,6 @@ async function loadWalletData() {
   showScreen('loading');
 
   try {
-    // Загрузка баланса
     const balanceRes = await fetch(`${API_URL}/api/wallet/balance?userId=${currentUser.id}`);
     const balanceData = await balanceRes.json();
 
@@ -458,7 +448,6 @@ async function loadWalletData() {
       document.getElementById('frozenAmount').textContent = `Заморожено: ${fmtRub(balanceData.frozen || 0)}`;
     }
 
-    // Загрузка транзакций
     const txRes = await fetch(`${API_URL}/api/wallet/transactions?userId=${currentUser.id}`);
     const txData = await txRes.json();
 
@@ -469,7 +458,6 @@ async function loadWalletData() {
     showScreen('wallet');
   } catch (error) {
     console.error('Ошибка загрузки кошелька:', error);
-    // Можно добавить экран ошибки
   }
 }
 
@@ -477,35 +465,31 @@ function renderTransactions(transactions) {
   const list = document.getElementById('transactionsList');
 
   if (transactions.length === 0) {
-    list.innerHTML = `
-      <div class="no-transactions">
-        У вас пока нет операций в кошельке
-      </div>
-    `;
+    list.innerHTML = `<div class="no-transactions">Нет операций</div>`;
     return;
   }
 
   list.innerHTML = transactions.map(tx => {
     const isPositive = tx.amount > 0;
-    const typeText = isPositive ? 'Пополнение' : 'Списание';
     const amountText = isPositive ? `+${fmtRub(tx.amount)}` : `-${fmtRub(Math.abs(tx.amount))}`;
-    const iconSrc = isPositive 
-      ? 'https://i.imgur.com/rtxsxM1.png'   // получение (пополнение)
-      : 'https://i.imgur.com/CE1KMVS.png';  // отправка (списание)
 
-    // Если операция связана с DCoin (обмен и т.п.) — используем значок монеты
-    const finalIcon = tx.currency === 'DCoin' || tx.type.includes('DCoin') || tx.type.includes('exchange')
-      ? 'https://i.imgur.com/gzCh26e.png'
-      : iconSrc;
+    let iconSrc;
+    if (tx.currency === 'DCoin' || tx.type?.includes('DCoin') || tx.type?.includes('exchange')) {
+      iconSrc = 'https://i.imgur.com/gzCh26e.png'; // монета DCoin
+    } else if (isPositive) {
+      iconSrc = 'https://i.imgur.com/rtxsxM1.png'; // получение (пополнение)
+    } else {
+      iconSrc = 'https://i.imgur.com/CE1KMVS.png'; // отправка (списание)
+    }
 
     return `
       <div class="transaction-item">
         <div class="transaction-info">
-          <div class="transaction-type">${typeText} (${tx.type || 'Операция'})</div>
+          <div class="transaction-type">${tx.type || (isPositive ? 'Пополнение' : 'Списание')}</div>
           <div class="transaction-date">${new Date(tx.date).toLocaleString('ru-RU')}</div>
         </div>
         <div class="transaction-amount ${isPositive ? 'positive' : 'negative'}">
-          <img src="${finalIcon}" class="transaction-icon" alt="icon" />
+          <img src="${iconSrc}" class="transaction-icon" alt="иконка" />
           ${amountText}
         </div>
       </div>
@@ -514,7 +498,7 @@ function renderTransactions(transactions) {
 }
 
 document.getElementById('depositBtn').addEventListener('click', () => {
-  window.location.href = 'deposit.html'; // или куда ведёт пополнение
+  window.location.href = 'deposit.html'; // или куда ведёт пополнение в твоём проекте
 });
 
 document.getElementById('swapBtn').addEventListener('click', () => {
