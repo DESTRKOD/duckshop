@@ -201,26 +201,6 @@ html, body {
   padding: 2px 0;
 }
 
-.active-order {
-  border-left: 4px solid #4fc3f7;
-  border-right: 4px solid #4fc3f7;
-  position: relative;
-}
-
-.active-order::before {
-  content: "🔄 Активный";
-  position: absolute;
-  top: -10px;
-  right: 20px;
-  background: #4fc3f7;
-  color: white;
-  padding: 4px 10px;
-  border-radius: 10px;
-  font-size: 12px;
-  font-weight: 700;
-  z-index: 1;
-}
-
 .order-items {
   display: flex;
   flex-direction: column;
@@ -319,19 +299,19 @@ html, body {
 }
 
 .refund-row {
-  background: rgba(156, 39, 176, 0.2);
+  background: rgba(0, 0, 0, 0.2);
   border-radius: 10px;
   padding: 10px;
   margin-top: 10px;
-  border: 1px solid rgba(156, 39, 176, 0.4);
+  border: 1px solid rgba(0, 0, 0, 0.4);
 }
 
 .refund-row .total-label {
-  color: #e1bee7;
+  color: #ffffff;
 }
 
 .refund-row .total-value {
-  color: #ce93d8;
+  color: #ffffff;
   font-weight: 800;
 }
 
@@ -731,8 +711,9 @@ function getStatusText(status) {
 }
 
 function isActiveOrder(status) {
-  return false; 
+  return false;
 }
+
 function initCopyButton() {
   const copyBtn = document.getElementById('copyOrderIdBtn');
   const orderIdText = document.getElementById('orderId').textContent;
@@ -869,9 +850,6 @@ function displayOrder(order) {
   const statusText = getStatusText(order.status);
   document.getElementById('orderStatusText').textContent = statusText;
   
-
-  }
-  
   initCopyButton();
   
   displayOrderItems(order.items || {});
@@ -1003,9 +981,7 @@ async function init() {
   
   displayOrder(currentOrder);
   
-  if (isActiveOrder(currentOrder.status)) {
-    await setupContinueButton(orderId);
-  }
+  await setupContinueButton(orderId);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
