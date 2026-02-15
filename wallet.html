@@ -5,7 +5,6 @@
 <title>Кошелёк - Duck Shop</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
-
 <style>
 html, body {
   margin: 0;
@@ -15,7 +14,6 @@ html, body {
   background: linear-gradient(180deg, #0b3c91 0%, #1565c0 55%, #42a5f5 100%);
   overflow-x: hidden;
 }
-
 .screen {
   position: absolute;
   inset: 0;
@@ -26,28 +24,40 @@ html, body {
   transform: translateY(16px);
   pointer-events: none;
   transition: opacity .35s ease, transform .35s ease;
-  padding: 20px;
+  padding: 0;
   box-sizing: border-box;
   overflow-y: auto;
 }
-
 .screen.active {
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
 }
-
+.wallet-balance-amount.negative {
+  color: #ff6b6b !important;
+}
+.transaction-amount.debt {
+  color: #ff6b6b;
+  font-weight: 800;
+}
+.transaction-amount.debt_paid {
+  color: #4caf50;
+  font-weight: 800;
+}
+.transaction-icon.debt {
+  background-image: url('https://i.imgur.com/HzRdGzT.png');
+  background-color: rgba(255, 107, 107, 0.2);
+  background-size: 60%;
+}
 .screen.leaving {
   opacity: 0;
   transform: translateY(-40px);
 }
-
 #loading .sticker {
   width: 200px;
   height: 200px;
   margin: auto;
 }
-
 #loading .title {
   color: white;
   font-size: 24px;
@@ -55,157 +65,426 @@ html, body {
   text-align: center;
   margin-top: 20px;
 }
-
+.wallet-screen {
+  padding: 0;
+}
 .wallet-header {
   width: 100%;
-  padding: 20px;
-  text-align: center;
+  padding: 40px 20px 30px;
   background: linear-gradient(180deg, #0b3c91, #124fa5);
   color: white;
   box-sizing: border-box;
   box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-}
-
-.balance-card {
-  background: rgba(255,255,255,0.1);
-  border-radius: 20px;
-  padding: 20px;
-  margin: 20px 0;
-  text-align: center;
-}
-
-.balance-title {
-  font-size: 18px;
-  color: rgba(255,255,255,0.8);
-  margin-bottom: 8px;
-}
-
-.balance-amount {
-  font-size: 36px;
-  font-weight: 900;
-  color: #ffd700;
-}
-
-.balance-frozen {
-  font-size: 16px;
-  color: #ff9800;
-  margin-top: 8px;
-}
-
-.transactions-section {
-  background: rgba(255,255,255,0.1);
-  border-radius: 20px;
-  padding: 20px;
-  margin-top: 20px;
-  width: 100%;
-}
-
-.section-title {
-  color: white;
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 15px;
-}
-
-.transactions-list {
+  position: relative;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-}
-
-.transaction-item {
-  background: rgba(255,255,255,0.08);
-  border-radius: 12px;
-  padding: 15px;
-  display: flex;
-  justify-content: space-between;
   align-items: center;
 }
-
-.transaction-info {
-  flex: 1;
+.wallet-header::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 50% 30%, rgba(255,255,255,0.1) 0%, transparent 70%);
+  pointer-events: none;
 }
-
-.transaction-type {
-  font-weight: 700;
-  font-size: 16px;
-  margin-bottom: 4px;
-}
-
-.transaction-date {
-  font-size: 13px;
-  color: rgba(255,255,255,0.7);
-}
-
-.transaction-amount {
-  font-weight: 800;
-  font-size: 18px;
-  text-align: right;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.transaction-amount.positive {
-  color: #4caf50;
-}
-
-.transaction-amount.negative {
-  color: #ff6b6b;
-}
-
-.transaction-icon {
-  width: 22px;
-  height: 22px;
-  object-fit: contain;
-}
-
-.no-transactions {
-  text-align: center;
-  color: rgba(255,255,255,0.6);
-  padding: 30px 0;
-}
-
-.action-buttons {
-  display: flex;
-  gap: 12px;
-  margin-top: 30px;
-}
-
-.action-btn {
-  flex: 1;
-  height: 50px;
+.back-button {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 44px;
+  height: 44px;
   border-radius: 14px;
+  background: rgba(255,255,255,0.14);
   border: none;
-  font-weight: 700;
-  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  transition: transform 0.15s ease;
+  transition: all 0.15s ease;
+  z-index: 20;
+}
+.back-button:hover {
+  background: rgba(255,255,255,0.25);
+  transform: scale(1.05);
+}
+.back-button:active {
+  transform: scale(0.95);
+}
+.back-button svg {
+  width: 24px;
+  height: 24px;
+  fill: white;
+}
+.wallet-balance-card {
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 32px;
+  padding: 28px 32px;
+  border: 1px solid rgba(255,255,255,0.2);
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-top: 20px;
+}
+.wallet-balance-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.8);
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+.wallet-balance-amount {
+  font-size: 48px;
+  font-weight: 900;
+  color: white;
+  text-shadow: 0 4px 16px rgba(0,0,0,0.25);
+  line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
 }
-
-.action-btn:active {
-  transform: scale(.98);
+.wallet-balance-amount small {
+  font-size: 22px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.9);
 }
-
-.btn-deposit {
-  background: #4caf50;
+.currency-icon-large {
+  width: 32px;
+  height: 32px;
+  background-image: url('https://i.imgur.com/8kUvCXl.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  display: inline-block;
+  margin-left: 4px;
+}
+.wallet-frozen {
+  width: 100%;
+  max-width: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+  padding: 12px 20px;
+  background: rgba(64, 224, 255, 0.08);
+  border-radius: 20px;
+  border: 1px solid rgba(64, 224, 255, 0.2);
+  backdrop-filter: blur(5px);
+  z-index: 2;
+}
+.wallet-frozen-label {
+  color: #7fffd4;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.wallet-frozen-label svg {
+  width: 18px;
+  height: 18px;
+  fill: #7fffd4;
+  opacity: 0.9;
+}
+.wallet-frozen-value {
   color: white;
+  font-size: 18px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
-
-.btn-swap {
-  background: #2196f3;
-  color: white;
+.wallet-frozen-value small {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.7);
 }
-
-.btn-back {
+.unfreeze-btn {
+  width: 100%;
+  max-width: 320px;
+  height: 52px;
   background: white;
-  color: #0b3c91;
+  border: none;
+  border-radius: 18px;
+  color: black;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.1s ease, background 0.1s ease, opacity 0.1s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 16px;
+  box-shadow: 0 12px 28px rgba(0,0,0,.4);
+  z-index: 2;
+  border: 1px solid rgba(0,0,0,0.05);
 }
-
+.unfreeze-btn:hover {
+  background: #f5f5f5;
+}
+.unfreeze-btn:active {
+  transform: scale(0.96);
+  opacity: 0.9;
+}
+.unfreeze-btn svg {
+  width: 20px;
+  height: 20px;
+  fill: black;
+}
+.wallet-content {
+  flex: 1;
+  width: 100%;
+  padding: 24px 20px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+.wallet-section {
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border-radius: 24px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+.section-title {
+  color: white;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding-bottom: 12px;
+}
+.section-title span:last-child {
+  font-size: 14px;
+  color: rgba(255,255,255,0.7);
+  font-weight: 600;
+}
+.transactions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.transaction-item {
+  background: rgba(255,255,255,0.08);
+  border-radius: 18px;
+  padding: 16px;
+  transition: transform 0.2s ease, background 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.transaction-item:hover {
+  background: rgba(255,255,255,0.12);
+  transform: translateY(-2px);
+}
+.transaction-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.transaction-icon.deposit {
+  background-image: url('https://i.imgur.com/2c1vX7l.png');
+  background-color: rgba(76, 175, 80, 0.2);
+  background-size: 60%;
+}
+.transaction-icon.withdraw {
+  background-image: url('https://i.imgur.com/8kUvCXl.png');
+  background-color: rgba(255, 107, 107, 0.2);
+  background-size: 60%;
+}
+.transaction-info {
+  flex: 1;
+  min-width: 0;
+}
+.transaction-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.transaction-title {
+  color: white;
+  font-weight: 700;
+  font-size: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.transaction-amount {
+  font-weight: 800;
+  font-size: 16px;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px; /* ← добавлено для иконки */
+}
+.transaction-amount.deposit {
+  color: #4caf50;
+}
+.transaction-amount.withdraw {
+  color: #ff6b6b;
+}
+.transaction-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.transaction-date {
+  color: rgba(255,255,255,0.6);
+  font-size: 12px;
+}
+.transaction-order {
+  color: rgba(255,255,255,0.5);
+  font-size: 11px;
+  background: rgba(255,255,255,0.05);
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+.no-transactions {
+  text-align: center;
+  color: rgba(255,255,255,0.6);
+  padding: 48px 0;
+}
+.no-transactions-icon {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 10px;
+}
+.no-transactions-text {
+  font-size: 16px;
+  margin-bottom: 8px;
+  color: rgba(255,255,255,0.9);
+  font-weight: 600;
+}
+.no-transactions-subtext {
+  font-size: 14px;
+  color: rgba(255,255,255,0.5);
+}
+.error-screen {
+  text-align: center;
+  color: white;
+  padding: 40px 20px;
+}
+.error-icon {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 20px;
+  background-image: url('https://i.imgur.com/HzRdGzT.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.error-title {
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+.error-text {
+  font-size: 16px;
+  color: rgba(255,255,255,0.8);
+  margin-bottom: 30px;
+  max-width: 400px;
+}
+@media (max-width: 768px) {
+  .wallet-header {
+    padding: 30px 16px 24px;
+  }
+  .back-button {
+    top: 16px;
+    left: 16px;
+    width: 40px;
+    height: 40px;
+  }
+  .wallet-balance-card {
+    padding: 24px 28px;
+    max-width: 280px;
+  }
+  .wallet-balance-amount {
+    font-size: 42px;
+  }
+  .wallet-balance-amount small {
+    font-size: 20px;
+  }
+  .currency-icon-large {
+    width: 28px;
+    height: 28px;
+  }
+  .wallet-frozen {
+    max-width: 280px;
+    padding: 10px 16px;
+  }
+  .unfreeze-btn {
+    max-width: 280px;
+  }
+  .wallet-content {
+    padding: 20px 16px;
+    padding-bottom: 110px;
+  }
+  .wallet-section {
+    padding: 16px;
+  }
+}
+@media (max-width: 480px) {
+  .wallet-balance-amount {
+    font-size: 36px;
+  }
+  .wallet-balance-amount small {
+    font-size: 18px;
+  }
+  .currency-icon-large {
+    width: 24px;
+    height: 24px;
+  }
+  .wallet-frozen-value {
+    font-size: 16px;
+  }
+  .transaction-item {
+    padding: 14px;
+    gap: 14px;
+  }
+  .transaction-icon {
+    width: 44px;
+    height: 44px;
+  }
+  .transaction-title {
+    font-size: 14px;
+  }
+  .transaction-amount {
+    font-size: 15px;
+  }
+}
+@media (min-width: 769px) {
+  .wallet-content {
+    padding-bottom: 40px;
+  }
+  .mobile-nav {
+    display: none !important;
+  }
+}
 .mobile-nav {
   position: fixed;
   bottom: 16px;
@@ -222,21 +501,12 @@ html, body {
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.15);
   z-index: 10000;
   box-sizing: border-box;
-  transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.4, 1), opacity 0.2s ease;
 }
-
-.mobile-nav:active {
-  cursor: grabbing;
-  transform: scale(0.98);
-  transition: transform 0.05s ease;
-}
-
 @media (max-width: 768px) {
   .mobile-nav {
     display: flex;
   }
 }
-
 .mobile-nav-item {
   display: flex;
   flex-direction: column;
@@ -249,45 +519,25 @@ html, body {
   border-radius: 30px;
   min-width: 60px;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+  transition: all 0.2s ease;
   color: rgba(255, 255, 255, 0.75);
   fill: rgba(255, 255, 255, 0.75);
-  position: relative;
-  text-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
-
 .mobile-nav-item svg {
   width: 24px;
   height: 24px;
-  transition: transform 0.2s ease, filter 0.2s ease;
   filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
 }
-
 .mobile-nav-item span {
   font-size: 11px;
   font-weight: 700;
-  transition: color 0.2s ease;
 }
-
 .mobile-nav-item.active {
   background: rgba(255, 255, 255, 0.2);
   color: white;
   fill: white;
   transform: scale(1.05);
-  backdrop-filter: blur(5px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
-
-.mobile-nav-item.active svg {
-  transform: translateY(-1px);
-  filter: drop-shadow(0 3px 6px rgba(0,100,255,0.5));
-}
-
-.mobile-nav-item:active {
-  transform: scale(0.92);
-  background: rgba(255, 255, 255, 0.25);
-}
-
 .mobile-nav .cart-badge-mobile {
   position: absolute;
   top: 2px;
@@ -303,16 +553,19 @@ html, body {
   display: none;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(255,45,85,0.4);
   border: 2px solid rgba(65, 105, 225, 0.4);
 }
-
 .mobile-nav .cart-badge-mobile.show {
   display: inline-flex;
 }
+/* Добавлено для иконок в истории операций */
+.transaction-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
 </style>
 </head>
-
 <body>
 
 <div id="loading" class="screen active">
@@ -320,60 +573,77 @@ html, body {
   <div class="title">Загрузка кошелька...</div>
 </div>
 
-<div id="wallet" class="screen">
+<div id="wallet" class="screen wallet-screen">
   <div class="wallet-header">
-    <h1>Кошелёк</h1>
-  </div>
-
-  <div class="balance-card">
-    <div class="balance-title">Ваш баланс DCoin</div>
-    <div class="balance-amount" id="balanceAmount">0 DCoin</div>
-    <div class="balance-frozen" id="frozenAmount">Заморожено: 0 ₽</div>
-  </div>
-
-  <div class="action-buttons">
-    <button class="action-btn btn-deposit" id="depositBtn">
-      Пополнить
+    <button class="back-button" id="backToMenuBtn">
+      <svg viewBox="0 0 24 24">
+        <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+      </svg>
     </button>
-    <button class="action-btn btn-swap" id="swapBtn">
-      Обменять
+    <div class="wallet-balance-card">
+      <div class="wallet-balance-label">БАЛАНС</div>
+      <div class="wallet-balance-amount" id="walletBalance">
+        0 <span class="currency-icon-large"></span>
+      </div>
+    </div>
+    <div class="wallet-frozen">
+      <div class="wallet-frozen-label">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/>
+        </svg>
+        Заморожено:
+      </div>
+      <div class="wallet-frozen-value" id="frozenBalance">
+        0 <small>₽</small>
+      </div>
+    </div>
+    <button class="unfreeze-btn" id="unfreezeBtn">
+      <svg viewBox="0 0 24 24" width="20" height="20">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/>
+      </svg>
+      Разморозить деньги
     </button>
   </div>
 
-  <div class="transactions-section">
-    <div class="section-title">История операций</div>
-    <div class="transactions-list" id="transactionsList"></div>
+  <div class="wallet-content">
+    <div class="wallet-section">
+      <div class="section-title">
+        <span>История операций</span>
+        <span id="transactionsCount">0 операций</span>
+      </div>
+      <div class="transactions-list" id="transactionsList"></div>
+    </div>
   </div>
+</div>
 
-  <div class="action-buttons" style="margin-top: 20px;">
-    <button class="action-btn btn-back" id="backBtn">
-      Назад в магазин
-    </button>
+<div id="error" class="screen error-screen">
+  <div class="error-icon"></div>
+  <div class="error-title" id="errorTitle">Ошибка загрузки</div>
+  <div class="error-text" id="errorText">Не удалось загрузить данные кошелька. Проверьте подключение к интернету и попробуйте снова.</div>
+  <div style="margin-top: 20px;">
+    <button class="unfreeze-btn" id="retryBtn" style="width: auto; padding: 12px 40px;">Повторить</button>
   </div>
 </div>
 
 <div class="mobile-nav" id="mobileNav">
-  <button class="mobile-nav-item" id="navWallet">
+  <button class="mobile-nav-item active" id="navWallet">
     <svg viewBox="0 0 24 24">
       <path d="M21 18v1c0 1.1-0.9 2-2 2H5c-1.11 0-2-0.9-2-2V5c0-1.1 0.89-2 2-2h14c1.1 0 2 0.9 2 2v1h-9c-1.1 0-2 0.9-2 2v8c0 1.1 0.9 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-0.83 0-1.5-0.67-1.5-1.5s0.67-1.5 1.5-1.5 1.5 0.67 1.5 1.5-0.67 1.5-1.5 1.5z"/>
     </svg>
     <span>Кошелёк</span>
   </button>
-
   <button class="mobile-nav-item" id="navProfile">
     <svg viewBox="0 0 24 24">
       <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
     </svg>
     <span>Профиль</span>
   </button>
-
   <button class="mobile-nav-item" id="navHome">
     <svg viewBox="0 0 24 24">
       <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
     </svg>
     <span>Главная</span>
   </button>
-
   <button class="mobile-nav-item" id="navCart">
     <svg viewBox="0 0 24 24">
       <path d="M7 18a2 2 0 1 0 0 4a2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4a2 2 0 0 0 0-4zM7.16 14h9.45a2 2 0 0 0 1.75-1.03l3.58-6.49-1.74-.99-3.58 6.49H8.53L5.21 4H1v2h3l3.6 7.59-1.35 2.44C5.52 16.37 6.48 18 8 18h12v-2H8l1.16-2z"/>
@@ -388,11 +658,29 @@ const API_URL = 'https://duck-shop-sever.onrender.com';
 const USER_KEY = 'duck_user_v1';
 const CART_KEY = 'duck_cart_v1';
 const SHOP_URL = 'main.html';
+const PROFILE_URL = 'profile.html';
+const SWAP_URL = 'swap.html';
 
 let currentUser = null;
+let walletData = { balance: 0, frozenBalance: 0, transactions: [] };
 
 function fmtRub(n) {
   return `${n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} ₽`;
+}
+
+function fmtBalance(n) {
+  return `${n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, " ")}`;
+}
+
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('ru-RU', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
 }
 
 function loadLottieAnimations() {
@@ -403,16 +691,20 @@ function loadLottieAnimations() {
         renderer: 'svg',
         loop: true,
         autoplay: true,
-        path: 'wallet.json'
+        path: 'https://assets2.lottiefiles.com/packages/lf20_puciaevh.json'
       });
     }
-  } catch (error) {}
+  } catch (error) {
+  }
 }
 
 function showScreen(id) {
-  const screens = ['loading', 'wallet'];
+  const screens = ['loading', 'wallet', 'error'];
   screens.forEach(screen => {
-    document.getElementById(screen).classList.remove('active', 'leaving');
+    const el = document.getElementById(screen);
+    if (el) {
+      el.classList.remove('active', 'leaving');
+    }
   });
 
   const screen = document.getElementById(id);
@@ -427,8 +719,252 @@ function loadUser() {
     if (userData) {
       return JSON.parse(userData);
     }
-  } catch (error) {}
+  } catch (error) {
+  }
   return null;
+}
+
+function loadCart() {
+  try {
+    const cartData = localStorage.getItem(CART_KEY);
+    return cartData ? JSON.parse(cartData) : {};
+  } catch {
+    return {};
+  }
+}
+
+function cartCount() {
+  const cart = loadCart();
+  return Object.values(cart).reduce((a, b) => a + b, 0);
+}
+
+function updateBadge() {
+  const n = cartCount();
+  const cartBadgeMobile = document.getElementById('cartBadgeMobile');
+  if (cartBadgeMobile) {
+    if (n > 0) {
+      cartBadgeMobile.classList.add('show');
+      cartBadgeMobile.textContent = n;
+    } else {
+      cartBadgeMobile.classList.remove('show');
+    }
+  }
+}
+
+async function loadWalletFromServer() {
+  if (!currentUser) return false;
+  try {
+    const response = await fetch(`${API_URL}/api/wallet/${currentUser.id}`);
+    if (!response.ok) {
+      throw new Error('Ошибка загрузки кошелька');
+    }
+    const data = await response.json();
+    if (data.success) {
+      const debtResult = await fetch(`${API_URL}/api/user/debt/${currentUser.id}`);
+      const debtData = await debtResult.json();
+      walletData = {
+        balance: data.availableBalance || 0,
+        frozenBalance: data.frozenBalance || 0,
+        transactions: data.transactions || [],
+        debt: debtData.debt || 0
+      };
+      saveWalletToLocalStorage();
+      return true;
+    } else {
+      throw new Error(data.error || 'Ошибка загрузки данных');
+    }
+  } catch (error) {
+    console.error('Ошибка загрузки кошелька:', error);
+    const savedWallet = loadWalletFromLocalStorage();
+    if (savedWallet) {
+      walletData = savedWallet;
+      return true;
+    }
+    return false;
+  }
+}
+
+function loadWalletFromLocalStorage() {
+  try {
+    const key = `duck_wallet_${currentUser?.id}`;
+    const saved = localStorage.getItem(key);
+    if (saved) {
+      return JSON.parse(saved);
+    }
+  } catch (error) {
+  }
+  return null;
+}
+
+function saveWalletToLocalStorage() {
+  try {
+    if (currentUser) {
+      const key = `duck_wallet_${currentUser.id}`;
+      localStorage.setItem(key, JSON.stringify(walletData));
+    }
+  } catch (error) {
+  }
+}
+
+function loadNoTransactionsAnimation() {
+  const animContainer = document.getElementById('noTransactionsAnim');
+  if (animContainer) {
+    try {
+      lottie.loadAnimation({
+        container: animContainer,
+        renderer: 'svg',
+        loop: true,
+        autoplay: true,
+        path: 'notfound.json'
+      });
+    } catch (error) {
+    }
+  }
+}
+
+function updateWalletUI() {
+  const balanceEl = document.getElementById('walletBalance');
+  const frozenEl = document.getElementById('frozenBalance');
+  const transactionsList = document.getElementById('transactionsList');
+  const transactionsCount = document.getElementById('transactionsCount');
+
+  if (balanceEl) {
+    const balance = walletData.balance || 0;
+    const isNegative = balance < 0;
+    const balanceClass = isNegative ? 'negative' : '';
+    const balanceSign = isNegative ? '- ' : '';
+    const absBalance = Math.abs(balance);
+    balanceEl.innerHTML = `${balanceSign}${fmtBalance(absBalance)} <span class="currency-icon-large"></span>`;
+    balanceEl.style.color = isNegative ? '#ff6b6b' : 'white';
+  }
+
+  if (frozenEl) {
+    frozenEl.innerHTML = `${walletData.frozenBalance || 0} <small>₽</small>`;
+  }
+
+  const debt = walletData.debt || 0;
+  if (debt > 0) {
+    let debtElement = document.getElementById('debtInfo');
+    if (!debtElement) {
+      const frozenSection = document.querySelector('.wallet-frozen');
+      if (frozenSection) {
+        debtElement = document.createElement('div');
+        debtElement.id = 'debtInfo';
+        debtElement.className = 'wallet-frozen';
+        debtElement.style.background = 'rgba(255, 107, 107, 0.1)';
+        debtElement.style.borderColor = 'rgba(255, 107, 107, 0.3)';
+        debtElement.innerHTML = `
+          <div class="wallet-frozen-label" style="color: #ff6b6b;">
+            <svg viewBox="0 0 24 24" width="18" height="18" style="fill: #ff6b6b;">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+            </svg>
+            Задолженность:
+          </div>
+          <div class="wallet-frozen-value" style="color: #ff6b6b;">
+            ${fmtRub(debt)} <small>DCoin</small>
+          </div>
+        `;
+        frozenSection.parentNode.insertBefore(debtElement, frozenSection.nextSibling);
+      }
+    } else {
+      debtElement.querySelector('.wallet-frozen-value').innerHTML = `${fmtRub(debt)} <small>DCoin</small>`;
+    }
+  } else {
+    const debtElement = document.getElementById('debtInfo');
+    if (debtElement) debtElement.remove();
+  }
+
+  if (!transactionsList || !transactionsCount) return;
+
+  if (!walletData.transactions || walletData.transactions.length === 0) {
+    transactionsCount.textContent = '0 операций';
+    const noTransactionsHtml = `
+      <div class="no-transactions">
+        <div class="no-transactions-icon" id="noTransactionsAnim"></div>
+        <div class="no-transactions-text">У вас пока нет операций</div>
+        <div class="no-transactions-subtext">Возвраты от заказов будут зачисляться сюда</div>
+      </div>
+    `;
+    transactionsList.innerHTML = noTransactionsHtml;
+    setTimeout(() => {
+      loadNoTransactionsAnimation();
+    }, 100);
+    return;
+  }
+
+  const count = walletData.transactions.length;
+  transactionsCount.textContent = `${count} ${getPluralEnding(count)}`;
+
+  transactionsList.innerHTML = walletData.transactions.map(t => {
+    const isDebt = t.type === 'debt';
+    const isDebtPaid = t.type === 'debt_payment';
+    const isDeposit = t.type === 'deposit' || t.type === 'refund';
+    const isWithdraw = t.type === 'withdraw' && !t.metadata?.cancel_refund;
+
+    let amountClass = '';
+    let iconSrc = '';
+    let amountSign = '';
+    let title = t.title || '';
+
+    if (isDebt) {
+      amountClass = 'debt';
+      iconSrc = 'https://i.imgur.com/HzRdGzT.png';
+      amountSign = '−';
+      title = title || 'Задолженность';
+    } else if (isDebtPaid) {
+      amountClass = 'debt_paid';
+      iconSrc = 'https://i.imgur.com/rtxsxM1.png'; // получение (погашение)
+      amountSign = '+';
+      title = title || 'Погашение задолженности';
+    } else if (isDeposit) {
+      amountClass = 'deposit';
+      iconSrc = 'https://i.imgur.com/rtxsxM1.png'; // получение
+      amountSign = '+';
+      title = title || 'Пополнение';
+    } else if (isWithdraw) {
+      amountClass = 'withdraw';
+      iconSrc = 'https://i.imgur.com/CE1KMVS.png'; // отправка
+      amountSign = '−';
+      title = title || 'Списание';
+    } else if (t.currency === 'DCoin' || t.type?.includes('DCoin') || t.type?.includes('exchange')) {
+      iconSrc = 'https://i.imgur.com/gzCh26e.png'; // монета DCoin
+    } else {
+      // дефолт — рубль
+      iconSrc = isDeposit ? 'https://i.imgur.com/rtxsxM1.png' : 'https://i.imgur.com/CE1KMVS.png';
+      amountClass = isDeposit ? 'deposit' : 'withdraw';
+      amountSign = isDeposit ? '+' : '−';
+    }
+
+    const amount = Math.abs(t.amount);
+
+    return `
+      <div class="transaction-item">
+        <div class="transaction-icon ${amountClass}" style="background-image: url('${iconSrc}');"></div>
+        <div class="transaction-info">
+          <div class="transaction-header">
+            <div class="transaction-title">${title}</div>
+            <div class="transaction-amount ${amountClass}">
+              ${amountSign} ${fmtRub(amount)}
+            </div>
+          </div>
+          <div class="transaction-details">
+            <div class="transaction-date">${formatDate(t.date)}</div>
+            ${t.orderId ? `<div class="transaction-order">Заказ #${t.orderId}</div>` : ''}
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function getPluralEnding(number) {
+  if (number % 10 === 1 && number % 100 !== 11) {
+    return 'операция';
+  } else if ([2, 3, 4].includes(number % 10) && ![12, 13, 14].includes(number % 100)) {
+    return 'операции';
+  } else {
+    return 'операций';
+  }
 }
 
 async function loadWalletData() {
@@ -439,101 +975,179 @@ async function loadWalletData() {
 
   showScreen('loading');
 
-  try {
-    const balanceRes = await fetch(`${API_URL}/api/wallet/balance?userId=${currentUser.id}`);
-    const balanceData = await balanceRes.json();
-
-    if (balanceData.success) {
-      document.getElementById('balanceAmount').textContent = `${balanceData.balance} DCoin`;
-      document.getElementById('frozenAmount').textContent = `Заморожено: ${fmtRub(balanceData.frozen || 0)}`;
-    }
-
-    const txRes = await fetch(`${API_URL}/api/wallet/transactions?userId=${currentUser.id}`);
-    const txData = await txRes.json();
-
-    if (txData.success) {
-      renderTransactions(txData.transactions || []);
-    }
-
+  const success = await loadWalletFromServer();
+  if (success) {
+    updateWalletUI();
     showScreen('wallet');
-  } catch (error) {
-    console.error('Ошибка загрузки кошелька:', error);
+  } else {
+    showError('Ошибка загрузки', 'Не удалось загрузить данные кошелька. Попробуйте позже.');
   }
 }
 
-function renderTransactions(transactions) {
-  const list = document.getElementById('transactionsList');
-
-  if (transactions.length === 0) {
-    list.innerHTML = `<div class="no-transactions">Нет операций</div>`;
-    return;
-  }
-
-  list.innerHTML = transactions.map(tx => {
-    const isPositive = tx.amount > 0;
-    const amountText = isPositive ? `+${fmtRub(tx.amount)}` : `-${fmtRub(Math.abs(tx.amount))}`;
-
-    let iconSrc;
-    if (tx.currency === 'DCoin' || tx.type?.includes('DCoin') || tx.type?.includes('exchange')) {
-      iconSrc = 'https://i.imgur.com/gzCh26e.png'; // монета DCoin
-    } else if (isPositive) {
-      iconSrc = 'https://i.imgur.com/rtxsxM1.png'; // получение (пополнение)
-    } else {
-      iconSrc = 'https://i.imgur.com/CE1KMVS.png'; // отправка (списание)
-    }
-
-    return `
-      <div class="transaction-item">
-        <div class="transaction-info">
-          <div class="transaction-type">${tx.type || (isPositive ? 'Пополнение' : 'Списание')}</div>
-          <div class="transaction-date">${new Date(tx.date).toLocaleString('ru-RU')}</div>
-        </div>
-        <div class="transaction-amount ${isPositive ? 'positive' : 'negative'}">
-          <img src="${iconSrc}" class="transaction-icon" alt="иконка" />
-          ${amountText}
-        </div>
-      </div>
-    `;
-  }).join('');
+function showError(title, message) {
+  document.getElementById('errorTitle').textContent = title;
+  document.getElementById('errorText').textContent = message;
+  showScreen('error');
 }
-
-document.getElementById('depositBtn').addEventListener('click', () => {
-  window.location.href = 'deposit.html'; // или куда ведёт пополнение в твоём проекте
-});
-
-document.getElementById('swapBtn').addEventListener('click', () => {
-  window.location.href = 'swap.html';
-});
-
-document.getElementById('backBtn').addEventListener('click', () => {
-  window.location.href = SHOP_URL;
-});
 
 function setupMobileNavigation() {
-  const navWallet = document.getElementById('navWallet');
   const navProfile = document.getElementById('navProfile');
   const navHome = document.getElementById('navHome');
   const navCart = document.getElementById('navCart');
+  const navWallet = document.getElementById('navWallet');
+  const mobileNav = document.getElementById('mobileNav');
 
-  if (navWallet) navWallet.classList.add('active');
+  navWallet.classList.add('active');
 
-  if (navWallet) navWallet.onclick = () => window.location.href = 'wallet.html';
-  if (navProfile) navProfile.onclick = () => window.location.href = 'profile.html';
-  if (navHome) navHome.onclick = () => window.location.href = SHOP_URL;
-  if (navCart) navCart.onclick = () => {
-    localStorage.setItem('open_cart', 'true');
-    window.location.href = SHOP_URL;
-  };
+  if (navProfile) {
+    navProfile.addEventListener('click', function(e) {
+      e.preventDefault();
+      window.location.href = PROFILE_URL;
+    });
+  }
+
+  if (navHome) {
+    navHome.addEventListener('click', function(e) {
+      e.preventDefault();
+      window.location.href = SHOP_URL;
+    });
+  }
+
+  if (navCart) {
+    navCart.addEventListener('click', function(e) {
+      e.preventDefault();
+      try {
+        localStorage.setItem('open_cart', 'true');
+        window.location.href = SHOP_URL;
+      } catch (error) {
+      }
+    });
+  }
+
+  if (mobileNav) {
+    let isDragging = false;
+    let startX, startY;
+
+    mobileNav.addEventListener('mousedown', function(e) {
+      isDragging = false;
+      startX = e.clientX;
+      startY = e.clientY;
+    });
+
+    mobileNav.addEventListener('mousemove', function(e) {
+      if (!startX) return;
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+        isDragging = true;
+      }
+    });
+
+    mobileNav.addEventListener('mouseup', function() {
+      startX = null;
+      startY = null;
+    });
+
+    mobileNav.addEventListener('touchstart', function(e) {
+      isDragging = false;
+      if (e.touches.length) {
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+      }
+    });
+
+    mobileNav.addEventListener('touchmove', function(e) {
+      if (!startX) return;
+      if (e.touches.length) {
+        const dx = e.touches[0].clientX - startX;
+        const dy = e.touches[0].clientY - startY;
+        if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+          isDragging = true;
+        }
+      }
+    });
+
+    mobileNav.addEventListener('touchend', function() {
+      startX = null;
+      startY = null;
+    });
+
+    const navItems = [navProfile, navHome, navCart];
+    navItems.forEach(item => {
+      if (item) {
+        item.addEventListener('click', function(e) {
+          if (isDragging) {
+            e.preventDefault();
+            e.stopPropagation();
+            isDragging = false;
+          }
+        });
+      }
+    });
+  }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  loadLottieAnimations();
-  currentUser = loadUser();
+document.getElementById('backToMenuBtn').addEventListener('click', function() {
+  window.location.href = SHOP_URL;
+});
+
+document.getElementById('unfreezeBtn').addEventListener('click', function() {
+  window.location.href = SWAP_URL;
+});
+
+document.getElementById('retryBtn').addEventListener('click', function() {
   if (currentUser) {
     loadWalletData();
   } else {
     window.location.href = 'reg_log.html';
   }
+});
+
+function checkInitialAuth() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const authToken = urlParams.get('auth');
+
+  if (authToken) {
+    const newUrl = window.location.pathname;
+    window.history.replaceState({}, '', newUrl);
+    verifyAuthToken(authToken);
+  } else {
+    currentUser = loadUser();
+    if (currentUser) {
+      loadWalletData();
+    } else {
+      window.location.href = 'reg_log.html';
+    }
+  }
+}
+
+async function verifyAuthToken(token) {
+  showScreen('loading');
+
+  try {
+    const response = await fetch(`${API_URL}/api/auth/check/${token}`);
+    const data = await response.json();
+
+    if (data.success && data.authenticated && data.user) {
+      currentUser = data.user;
+      try {
+        localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+      } catch (e) {}
+      loadWalletData();
+    } else {
+      showError('Ошибка авторизации', 'Не удалось войти в аккаунт. Пожалуйста, попробуйте снова.');
+    }
+  } catch (error) {
+    showError('Ошибка сети', 'Не удалось подключиться к серверу');
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  loadLottieAnimations();
+  updateBadge();
+  setTimeout(() => {
+    checkInitialAuth();
+  }, 500);
   setupMobileNavigation();
 });
 </script>
