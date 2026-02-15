@@ -1451,7 +1451,9 @@ function updateMobileNavVisibility(currentScreen) {
   
   if (!mobileNav) return;
   
-  if (currentScreen === 'menu' && !cartOverlay.classList.contains('open')) {
+  const hiddenScreens = ['hello', 'load', 'intro', 'waiting', 'checkout', 'badPay'];
+  
+  if (currentScreen === 'menu' && !cartOverlay.classList.contains('open') && !hiddenScreens.includes(currentScreen)) {
     mobileNav.style.display = 'flex';
   } else {
     mobileNav.style.display = 'none';
