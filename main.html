@@ -1447,9 +1447,11 @@ function show(id) {
 
 function updateMobileNavVisibility(currentScreen) {
   const mobileNav = document.getElementById('mobileNav');
+  const cartOverlay = document.getElementById('cartOverlay');
+  
   if (!mobileNav) return;
   
-  if (currentScreen === 'menu') {
+  if (currentScreen === 'menu' && !cartOverlay.classList.contains('open')) {
     mobileNav.style.display = 'flex';
   } else {
     mobileNav.style.display = 'none';
@@ -1818,6 +1820,7 @@ window.addEventListener('resize', () => {
     updateAuthButton();
   }
   updateMobileNavActiveState();
+  updateMobileNavVisibility(document.querySelector('.screen.active, .menu.active')?.id || 'menu');
 });
 
 function updateBadge(){
@@ -1920,12 +1923,14 @@ document.getElementById('openCart').addEventListener('click', () => {
   cartOverlay.classList.add('open');
   cartOverlay.setAttribute('aria-hidden', 'false');
   renderCart();
+  updateMobileNavVisibility('menu');
 });
 
 function closeCart(){
   const cartOverlay = document.getElementById('cartOverlay');
   cartOverlay.classList.remove('open');
   cartOverlay.setAttribute('aria-hidden', 'true');
+  updateMobileNavVisibility('menu');
 }
 
 document.getElementById('closeCart').addEventListener('click', closeCart);
