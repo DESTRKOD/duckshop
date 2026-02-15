@@ -223,6 +223,7 @@ html, body {
   font-size: 16px;
 }
 
+/* Статусы заказов — всегда белый текст + glassmorphism */
 .order-status {
   padding: 6px 14px;
   border-radius: 20px;
@@ -230,6 +231,7 @@ html, body {
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  color: #ffffff !important;               /* ← всегда белый текст */
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.18);
@@ -239,36 +241,36 @@ html, body {
   text-align: center;
 }
 
+/* Завершён — зелёный фон */
 .order-status.completed {
-  background: rgba(76, 175, 80, 0.25);
-  color: #4caf50;
-  border-color: rgba(76, 175, 80, 0.4);
+  background: rgba(76, 175, 80, 0.35);
+  border-color: rgba(76, 175, 80, 0.5);
 }
 
+/* Отменён — красный фон */
 .order-status.canceled {
-  background: rgba(255, 107, 107, 0.25);
-  color: #ff6b6b;
-  border-color: rgba(255, 107, 107, 0.4);
+  background: rgba(255, 107, 107, 0.35);
+  border-color: rgba(255, 107, 107, 0.5);
 }
 
+/* Возврат — чёрный/тёмный фон */
 .order-status.manyback,
 .order-status.refund {
-  background: rgba(0, 0, 0, 0.45);
-  color: #ffffff;
-  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.55);
+  border-color: rgba(255, 255, 255, 0.15);
 }
 
+/* В работе / Ожидает оплаты — прозрачный фон */
 .order-status.waiting,
 .order-status.pending,
 .order-status.inwork {
-  background: rgba(255, 255, 255, 0.12);
-  color: #ffffff;
-  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.30);
 }
 
 .order-item:hover .order-status {
   transform: scale(1.05);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
 }
 
 .no-orders {
@@ -566,8 +568,7 @@ html, body {
         <span>История заказов</span>
         <span id="ordersCount">0 заказов</span>
       </div>
-      <div class="orders-list" id="ordersList">
-      </div>
+      <div class="orders-list" id="ordersList"></div>
     </div>
     
     <div class="profile-actions">
