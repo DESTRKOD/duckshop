@@ -571,7 +571,7 @@ async function loadMessageHistory() {
   if (!currentUser) return;
   
   try {
-    const response = await fetch(`${API_URL}/api/chat/history/${currentUser.id}`);
+    const response = await fetch(`${API_URL}/api/support/history/${currentUser.id}`);
     const data = await response.json();
     
     if (data.success && data.messages) {
@@ -593,7 +593,7 @@ async function checkNewMessages() {
   if (!currentUser) return;
   
   try {
-    const response = await fetch(`${API_URL}/api/chat/new/${currentUser.id}/${lastMessageId}`);
+    const response = await fetch(`${API_URL}/api/support/new/${currentUser.id}/${lastMessageId}`);
     const data = await response.json();
     
     if (data.success && data.messages && data.messages.length > 0) {
@@ -619,7 +619,7 @@ async function sendMessage(text) {
   };
   
   try {
-    const response = await fetch(`${API_URL}/api/chat/send`, {
+    const response = await fetch(`${API_URL}/api/support/send`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(message)
