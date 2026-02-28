@@ -143,7 +143,8 @@
     }
 
     .message-bubble {
-      max-width: 78%;
+      max-width: 70%;
+      min-width: 80px;
       padding: 10px 15px;
       border-radius: 18px;
       font-size: 15px;
@@ -151,6 +152,7 @@
       word-break: break-word;
       overflow-wrap: break-word;
       position: relative;
+      white-space: pre-wrap;
     }
 
     .message-wrapper.user .message-bubble {
@@ -185,6 +187,13 @@
       flex-shrink: 0;
       margin-bottom: 4px;
       border: 1px solid rgba(255,255,255,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #ffb300;
+      color: #0d47a1;
+      font-weight: bold;
+      font-size: 16px;
     }
 
     .message-avatar.support {
@@ -194,6 +203,12 @@
     .message-avatar.user {
       margin-left: 10px;
       order: 2;
+    }
+
+    .message-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
     .sender-name {
@@ -263,6 +278,7 @@
       max-height: 110px;
       resize: none;
       line-height: 1.4;
+      font-family: inherit;
     }
 
     .chat-input::placeholder {
@@ -308,15 +324,34 @@
       padding: 40px 20px;
     }
 
+    .file-message {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .file-icon {
+      width: 24px;
+      height: 24px;
+      fill: currentColor;
+    }
+
+    .file-link {
+      color: white;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      word-break: break-all;
+    }
+
     @media (max-width: 480px) {
       .chat-container { max-width: 100%; }
       .chat-messages { padding: 14px 10px; }
       .chat-input-area { padding: 10px 14px; gap: 8px; }
+      .message-bubble { max-width: 80%; }
     }
   </style>
 </head>
 <body>
-
   <div class="chat-container">
     <div class="chat-header">
       <button class="back-button" id="backButton">
@@ -325,9 +360,7 @@
         </svg>
       </button>
 
-      <div class="support-avatar" id="supportAvatar">
-        <!-- будет заменено JS -->
-      </div>
+      <div class="support-avatar" id="supportAvatar"></div>
 
       <div class="support-info">
         <div class="support-name">Duck Shop Support</div>
@@ -388,6 +421,15 @@
       return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }
 
+    function getFileIcon(fileName) {
+      const ext = fileName.split('.').pop().toLowerCase();
+      if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) return '🖼️';
+      if (['pdf'].includes(ext)) return '📄';
+      if (['doc', 'docx'].includes(ext)) return '📝';
+      if (['txt'].includes(ext)) return '📃';
+      return '📎';
+    }
+
     async function sendMessage(text = null, file = null) {
       if (!currentUser) return;
 
@@ -421,15 +463,9 @@
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        let data;
-        try {
-          data = await response.json();
-        } catch (jsonErr) {
-          console.warn('Сервер вернул не JSON, но статус 200 — считаем успехом');
-          data = { success: true };
-        }
+        const data = await response.json();
 
-        if (data && (data.success || data.ok || response.status === 200 || response.status === 201)) {
+        if (data.success || response.ok) {
           if (!currentDialogId && data.dialog_id) {
             currentDialogId = data.dialog_id;
           }
@@ -442,12 +478,9 @@
           document.getElementById('fileInput').value = '';
 
           await loadMessageHistory();
-        } else {
-          alert('Сообщение/файл отправлено, но сервер вернул странный ответ');
         }
       } catch (error) {
         console.error('Ошибка отправки:', error);
-        alert('Не удалось отправить. Проверьте интернет.');
       }
     }
 
@@ -474,13 +507,13 @@
               if (!isUser) {
                 avatarHtml = `
                   <div class="message-avatar support">
-                    <img src="https://i.imgur.com/DUCK_IMAGE.png" alt="Support" onerror="this.style.display='none'; this.parentElement.innerHTML='<span>🦆</span>'">
+                    <span>🦆</span>
                   </div>
                 `;
               } else if (currentUser.avatarUrl) {
                 avatarHtml = `
                   <div class="message-avatar user">
-                    <img src="${currentUser.avatarUrl}" alt="You" onerror="this.style.display='none'; this.parentElement.innerHTML='<span>${currentUser.username?.charAt(0).toUpperCase() || 'U'}</span>'">
+                    <img src="${currentUser.avatarUrl}" alt="You">
                   </div>
                 `;
               } else {
@@ -491,13 +524,27 @@
                 `;
               }
               
+              let messageContent = msg.message || '';
+              if (msg.metadata && msg.metadata.file) {
+                const file = msg.metadata.file;
+                const icon = getFileIcon(file.name);
+                messageContent = `
+                  <div class="file-message">
+                    <span class="file-icon">${icon}</span>
+                    <a href="${file.url}" target="_blank" class="file-link">${file.name}</a>
+                  </div>
+                `;
+              } else {
+                messageContent = messageContent.replace(/\n/g, '<br>');
+              }
+              
               return `
                 <div class="message-wrapper ${isUser ? 'user' : 'support'}">
                   ${!isUser ? avatarHtml : ''}
                   <div class="message-content">
                     ${!isUser ? '<div class="sender-name">Поддержка</div>' : ''}
                     <div class="message-bubble">
-                      ${msg.message || '[файл отправлен]'}
+                      ${messageContent}
                       <div class="message-time">${formatTime(msg.created_at)}</div>
                     </div>
                   </div>
@@ -555,13 +602,13 @@
             if (!isUser) {
               avatarHtml = `
                 <div class="message-avatar support">
-                  <img src="https://i.imgur.com/DUCK_IMAGE.png" alt="Support" onerror="this.style.display='none'; this.parentElement.innerHTML='<span>🦆</span>'">
+                  <span>🦆</span>
                 </div>
               `;
             } else if (currentUser.avatarUrl) {
               avatarHtml = `
                 <div class="message-avatar user">
-                  <img src="${currentUser.avatarUrl}" alt="You" onerror="this.style.display='none'; this.parentElement.innerHTML='<span>${currentUser.username?.charAt(0).toUpperCase() || 'U'}</span>'">
+                  <img src="${currentUser.avatarUrl}" alt="You">
                 </div>
               `;
             } else {
@@ -572,13 +619,27 @@
               `;
             }
             
+            let messageContent = msg.message || '';
+            if (msg.metadata && msg.metadata.file) {
+              const file = msg.metadata.file;
+              const icon = getFileIcon(file.name);
+              messageContent = `
+                <div class="file-message">
+                  <span class="file-icon">${icon}</span>
+                  <a href="${file.url}" target="_blank" class="file-link">${file.name}</a>
+                </div>
+              `;
+            } else {
+              messageContent = messageContent.replace(/\n/g, '<br>');
+            }
+            
             const messageHtml = `
               <div class="message-wrapper ${isUser ? 'user' : 'support'}">
                 ${!isUser ? avatarHtml : ''}
                 <div class="message-content">
                   ${!isUser ? '<div class="sender-name">Поддержка</div>' : ''}
                   <div class="message-bubble">
-                    ${msg.message || '[файл отправлен]'}
+                    ${messageContent}
                     <div class="message-time">${formatTime(msg.created_at)}</div>
                   </div>
                 </div>
@@ -614,7 +675,7 @@
       }
 
       const supportAvatar = document.getElementById('supportAvatar');
-      supportAvatar.innerHTML = '<img src="https://i.imgur.com/DUCK_IMAGE.png" alt="Support Duck" onerror="this.style.display=\'none\'; this.parentElement.innerHTML=\'<span>🦆</span>\'">';
+      supportAvatar.innerHTML = '<span>🦆</span>';
 
       await loadMessageHistory();
 
