@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Поддержка - Duck Shop</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes">
   <style>
     * {
       margin: 0;
@@ -15,19 +15,41 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background: linear-gradient(180deg, #0b3c91 0%, #1565c0 55%, #42a5f5 100%);
       color: white;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .chat-container {
       display: flex;
       flex-direction: column;
       height: 100dvh;
+      width: 100%;
       max-width: 500px;
       margin: 0 auto;
       background: transparent;
       overflow: hidden;
+      box-shadow: 0 0 30px rgba(0,0,0,0.3);
+    }
+
+    /* Desktop styles */
+    @media (min-width: 768px) {
+      body {
+        padding: 20px;
+      }
+      
+      .chat-container {
+        height: 90vh;
+        max-width: 450px;
+        border-radius: 24px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+      }
     }
 
     .chat-header {
@@ -187,13 +209,15 @@
     }
 
     .message-bubble {
-      padding: 10px 14px;
+      padding: 8px 12px;
       border-radius: 18px;
       font-size: 15px;
       line-height: 1.45;
       word-break: break-word;
       overflow-wrap: break-word;
       white-space: pre-wrap;
+      width: fit-content;
+      max-width: 100%;
     }
 
     .message-wrapper.user .message-bubble {
@@ -201,6 +225,7 @@
       color: white;
       border-bottom-right-radius: 4px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.25);
+      margin-left: auto;
     }
 
     .message-wrapper.support .message-bubble {
@@ -211,6 +236,7 @@
       color: white;
       border-bottom-left-radius: 4px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      margin-right: auto;
     }
 
     .message-time {
@@ -308,6 +334,7 @@
     .send-button:disabled {
       background: rgba(255,255,255,0.18);
       cursor: not-allowed;
+      transform: none;
     }
 
     .send-button svg {
@@ -319,11 +346,18 @@
     .loading-indicator {
       flex: 1;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       color: rgba(255,255,255,0.75);
       font-size: 16px;
       padding: 40px 20px;
+    }
+
+    .lottie-container {
+      width: 200px;
+      height: 200px;
+      margin-bottom: 20px;
     }
 
     .file-message {
@@ -360,6 +394,7 @@
       max-height: 300px;
       border-radius: 12px;
       display: block;
+      margin-top: 4px;
     }
 
     .image-modal {
@@ -368,7 +403,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(0,0,0,0.9);
+      background: rgba(0,0,0,0.95);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -392,6 +427,7 @@
       .send-button { width: 40px; height: 40px; }
     }
   </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 </head>
 <body>
   <div class="chat-container">
@@ -405,7 +441,7 @@
       <div class="support-avatar" id="supportAvatar"></div>
 
       <div class="support-info">
-        <div class="support-name">Duck Shop Support</div>
+        <div class="support-name">Поддержка Duck Shop</div>
         <div class="support-status">
           <span class="status-dot"></span>
           Online
@@ -415,7 +451,8 @@
 
     <div class="chat-messages" id="chatMessages">
       <div class="loading-indicator" id="loadingIndicator">
-        Загрузка сообщений...
+        <div class="lottie-container" id="lottieAnimation"></div>
+        <div style="color: rgba(255,255,255,0.9); font-size: 18px; font-weight: 500;">Загрузка сообщений...</div>
       </div>
     </div>
 
@@ -452,25 +489,21 @@
     let currentDialogId = null;
     let lastMessageId = 0;
     let messageCheckInterval = null;
+    let lottieAnimation = null;
 
     function loadUser() {
-      const userData = localStorage.getItem('duck_user_v1');
-      return userData ? JSON.parse(userData) : null;
+      try {
+        const userData = localStorage.getItem('duck_user_v1');
+        return userData ? JSON.parse(userData) : null;
+      } catch (e) {
+        console.error('Error loading user:', e);
+        return null;
+      }
     }
 
     function formatTime(timestamp) {
       const date = new Date(timestamp);
       return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    }
-
-    function getFileIcon(fileName) {
-      const ext = fileName.split('.').pop().toLowerCase();
-      if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'].includes(ext)) return '🖼️';
-      if (['pdf'].includes(ext)) return '📄';
-      if (['doc', 'docx'].includes(ext)) return '📝';
-      if (['txt'].includes(ext)) return '📃';
-      if (['zip', 'rar', '7z'].includes(ext)) return '📦';
-      return '📎';
     }
 
     function isImageFile(fileName) {
@@ -516,28 +549,35 @@
         });
 
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          console.warn('Server returned non-OK status, but message might still be sent');
         }
 
-        const data = await response.json();
+        const data = await response.json().catch(() => ({}));
 
-        if (data.success || response.ok) {
-          if (!currentDialogId && data.dialog_id) {
-            currentDialogId = data.dialog_id;
-          }
+        if (!currentDialogId && data.dialog_id) {
+          currentDialogId = data.dialog_id;
+        }
 
-          if (text) {
-            const messageInput = document.getElementById('messageInput');
+        if (text) {
+          const messageInput = document.getElementById('messageInput');
+          if (messageInput) {
             messageInput.value = '';
             messageInput.style.height = 'auto';
-            document.getElementById('sendButton').disabled = true;
           }
-          document.getElementById('fileInput').value = '';
-
-          await loadMessageHistory();
+          const sendButton = document.getElementById('sendButton');
+          if (sendButton) {
+            sendButton.disabled = true;
+          }
         }
+        
+        const fileInput = document.getElementById('fileInput');
+        if (fileInput) {
+          fileInput.value = '';
+        }
+
+        await loadMessageHistory();
       } catch (error) {
-        console.error('Ошибка отправки:', error);
+        console.error('Error sending message:', error);
       }
     }
 
@@ -548,10 +588,12 @@
         const response = await fetch(`${API_URL}/api/support/history/${currentUser.id}`);
         const data = await response.json();
 
+        const messagesContainer = document.getElementById('chatMessages');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        
+        if (!messagesContainer || !loadingIndicator) return;
+
         if (data.success) {
-          const messagesContainer = document.getElementById('chatMessages');
-          const loadingIndicator = document.getElementById('loadingIndicator');
-          
           if (data.messages.length > 0) {
             currentDialogId = data.dialog_id;
             
@@ -568,20 +610,19 @@
                 
                 if (isImage) {
                   messageContent = `
-                    <div class="file-message" style="flex-direction: column; align-items: flex-start; gap: 6px;">
-                      <div style="display: flex; align-items: center; gap: 6px; width: 100%;">
-                        <span class="file-icon">🖼️</span>
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                      <div style="display: flex; align-items: center; gap: 6px;">
+                        <span style="font-size: 16px;">🖼️</span>
                         <span style="font-size: 13px; opacity: 0.9;">${file.name}</span>
                       </div>
                       <img src="${file.url}" alt="${file.name}" class="image-preview" onclick="openImageModal('${file.url}')">
                     </div>
                   `;
                 } else {
-                  const icon = getFileIcon(file.name);
                   messageContent = `
-                    <div class="file-message">
-                      <span class="file-icon">${icon}</span>
-                      <a href="${file.url}" target="_blank" class="file-link">${file.name}</a>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <span style="font-size: 20px;">📎</span>
+                      <a href="${file.url}" target="_blank" style="color: white; text-decoration: underline;">${file.name}</a>
                     </div>
                   `;
                 }
@@ -601,7 +642,7 @@
                   </div>
                   ${isUser ? (currentUser.avatarUrl ? 
                     `<div class="message-avatar user"><img src="${currentUser.avatarUrl}" alt="You"></div>` : 
-                    `<div class="message-avatar user"><span>${currentUser.username?.charAt(0).toUpperCase() || 'U'}</span></div>`
+                    `<div class="message-avatar user"><span>${(currentUser.username || 'U').charAt(0).toUpperCase()}</span></div>`
                   ) : ''}
                 </div>
               `;
@@ -611,25 +652,55 @@
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
           } else {
             messagesContainer.innerHTML = `
-              <div style="text-align: center; color: rgba(255,255,255,0.7); padding: 80px 20px;">
-                <div style="font-size: 64px; margin-bottom: 16px;">🦆💬</div>
-                <div style="font-size: 20px; font-weight: 600; margin-bottom: 8px;">Чат с поддержкой</div>
-                <div>Напишите нам или прикрепите файл — ответим быстро</div>
+              <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; padding: 20px;">
+                <div class="lottie-container" id="emptyLottie" style="width: 200px; height: 200px; margin-bottom: 20px;"></div>
+                <div style="color: rgba(255,255,255,0.9); font-size: 18px; font-weight: 500; text-align: center;">Чат с поддержкой</div>
+                <div style="color: rgba(255,255,255,0.7); font-size: 14px; margin-top: 8px; text-align: center;">Напишите нам — ответим быстро</div>
               </div>
             `;
+            
+            // Initialize Lottie for empty state
+            if (typeof lottie !== 'undefined') {
+              lottieAnimation = lottie.loadAnimation({
+                container: document.getElementById('emptyLottie'),
+                renderer: 'svg',
+                loop: true,
+                autoplay: true,
+                path: 'support.json'
+              });
+            }
           }
           
           loadingIndicator.style.display = 'none';
         }
       } catch (error) {
-        console.error('Ошибка загрузки истории:', error);
-        document.getElementById('loadingIndicator').style.display = 'none';
-        document.getElementById('chatMessages').innerHTML = `
-          <div style="text-align: center; color: #ff6b6b; padding: 80px 20px;">
-            <div style="font-size: 48px; margin-bottom: 12px;">⚠️</div>
-            <div style="font-size: 18px; font-weight: 600;">Не удалось загрузить чат</div>
-          </div>
-        `;
+        console.error('Error loading history:', error);
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        if (loadingIndicator) {
+          loadingIndicator.style.display = 'none';
+        }
+        
+        const messagesContainer = document.getElementById('chatMessages');
+        if (messagesContainer) {
+          messagesContainer.innerHTML = `
+            <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; padding: 20px;">
+              <div class="lottie-container" id="errorLottie" style="width: 200px; height: 200px; margin-bottom: 20px;"></div>
+              <div style="color: rgba(255,255,255,0.9); font-size: 18px; font-weight: 500;">Не удалось загрузить чат</div>
+              <div style="color: rgba(255,255,255,0.7); font-size: 14px; margin-top: 8px;">Попробуйте обновить страницу</div>
+            </div>
+          `;
+          
+          // Initialize Lottie for error state
+          if (typeof lottie !== 'undefined') {
+            lottieAnimation = lottie.loadAnimation({
+              container: document.getElementById('errorLottie'),
+              renderer: 'svg',
+              loop: true,
+              autoplay: true,
+              path: 'support.json'
+            });
+          }
+        }
       }
     }
 
@@ -642,9 +713,11 @@
 
         if (data.success && data.messages.length > 0) {
           const messagesContainer = document.getElementById('chatMessages');
+          if (!messagesContainer) return;
           
-          const noMessagesDiv = messagesContainer.querySelector('div[style*="text-align: center"]');
-          if (noMessagesDiv) {
+          // Remove empty state if it exists
+          const emptyState = messagesContainer.querySelector('div[style*="justify-content: center"]');
+          if (emptyState) {
             messagesContainer.innerHTML = '';
           }
           
@@ -660,20 +733,19 @@
               
               if (isImage) {
                 messageContent = `
-                  <div class="file-message" style="flex-direction: column; align-items: flex-start; gap: 6px;">
-                    <div style="display: flex; align-items: center; gap: 6px; width: 100%;">
-                      <span class="file-icon">🖼️</span>
+                  <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                      <span style="font-size: 16px;">🖼️</span>
                       <span style="font-size: 13px; opacity: 0.9;">${file.name}</span>
                     </div>
                     <img src="${file.url}" alt="${file.name}" class="image-preview" onclick="openImageModal('${file.url}')">
                   </div>
                 `;
               } else {
-                const icon = getFileIcon(file.name);
                 messageContent = `
-                  <div class="file-message">
-                    <span class="file-icon">${icon}</span>
-                    <a href="${file.url}" target="_blank" class="file-link">${file.name}</a>
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 20px;">📎</span>
+                    <a href="${file.url}" target="_blank" style="color: white; text-decoration: underline;">${file.name}</a>
                   </div>
                 `;
               }
@@ -693,7 +765,7 @@
                 </div>
                 ${isUser ? (currentUser.avatarUrl ? 
                   `<div class="message-avatar user"><img src="${currentUser.avatarUrl}" alt="You"></div>` : 
-                  `<div class="message-avatar user"><span>${currentUser.username?.charAt(0).toUpperCase() || 'U'}</span></div>`
+                  `<div class="message-avatar user"><span>${(currentUser.username || 'U').charAt(0).toUpperCase()}</span></div>`
                 ) : ''}
               </div>
             `;
@@ -704,17 +776,21 @@
           messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
       } catch (error) {
-        console.error('Ошибка проверки новых сообщений:', error);
+        console.error('Error checking new messages:', error);
       }
     }
 
     function autoResizeTextarea() {
       const textarea = document.getElementById('messageInput');
+      if (!textarea) return;
+      
       textarea.style.height = 'auto';
       textarea.style.height = Math.min(textarea.scrollHeight, 110) + 'px';
       
       const sendButton = document.getElementById('sendButton');
-      sendButton.disabled = !textarea.value.trim();
+      if (sendButton) {
+        sendButton.disabled = !textarea.value.trim();
+      }
     }
 
     document.addEventListener('DOMContentLoaded', async () => {
@@ -726,7 +802,20 @@
       }
 
       const supportAvatar = document.getElementById('supportAvatar');
-      supportAvatar.innerHTML = '<span>🦆</span>';
+      if (supportAvatar) {
+        supportAvatar.innerHTML = '<span>🦆</span>';
+      }
+
+      // Initialize Lottie for loading state
+      if (typeof lottie !== 'undefined') {
+        lottieAnimation = lottie.loadAnimation({
+          container: document.getElementById('lottieAnimation'),
+          renderer: 'svg',
+          loop: true,
+          autoplay: true,
+          path: 'support.json'
+        });
+      }
 
       await loadMessageHistory();
 
@@ -740,47 +829,60 @@
       const attachButton = document.getElementById('attachButton');
       const fileInput = document.getElementById('fileInput');
 
-      messageInput.addEventListener('input', autoResizeTextarea);
-      
-      messageInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-          e.preventDefault();
-          if (messageInput.value.trim()) {
+      if (messageInput) {
+        messageInput.addEventListener('input', autoResizeTextarea);
+        
+        messageInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            if (messageInput.value.trim()) {
+              sendMessage(messageInput.value);
+            }
+          }
+        });
+      }
+
+      if (sendButton) {
+        sendButton.addEventListener('click', () => {
+          if (messageInput && messageInput.value.trim()) {
             sendMessage(messageInput.value);
           }
-        }
-      });
+        });
+      }
 
-      sendButton.addEventListener('click', () => {
-        if (messageInput.value.trim()) {
-          sendMessage(messageInput.value);
-        }
-      });
+      if (attachButton) {
+        attachButton.addEventListener('click', () => {
+          if (fileInput) fileInput.click();
+        });
+      }
 
-      attachButton.addEventListener('click', () => {
-        fileInput.click();
-      });
+      if (fileInput) {
+        fileInput.addEventListener('change', (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
 
-      fileInput.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
+          if (file.size > 10 * 1024 * 1024) {
+            alert('Файл слишком большой (максимум 10 МБ)');
+            return;
+          }
 
-        if (file.size > 10 * 1024 * 1024) {
-          alert('Файл слишком большой (максимум 10 МБ)');
-          return;
-        }
+          sendMessage(null, file);
+        });
+      }
 
-        sendMessage(null, file);
-      });
-
-      backButton.addEventListener('click', () => {
-        window.location.href = 'main.html';
-      });
+      if (backButton) {
+        backButton.addEventListener('click', () => {
+          window.location.href = 'main.html';
+        });
+      }
     });
 
     window.addEventListener('beforeunload', () => {
       if (messageCheckInterval) {
         clearInterval(messageCheckInterval);
+      }
+      if (lottieAnimation) {
+        lottieAnimation.destroy();
       }
     });
   </script>
