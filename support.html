@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Поддержка - Duck Shop</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     * {
       margin: 0;
@@ -15,7 +15,7 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       background: linear-gradient(180deg, #0b3c91 0%, #1565c0 55%, #42a5f5 100%);
       color: white;
     }
@@ -29,44 +29,38 @@
     .chat-container {
       display: flex;
       flex-direction: column;
-      height: 100dvh;
-      width: 100%;
-      max-width: 500px;
-      margin: 0 auto;
+      width: 100vw;
+      height: 100vh;
       background: transparent;
       overflow: hidden;
-      box-shadow: 0 0 30px rgba(0,0,0,0.3);
     }
 
-    /* Desktop styles */
-    @media (min-width: 768px) {
-      body {
-        padding: 20px;
-      }
-      
+    /* Desktop styles - полное расширение */
+    @media (min-width: 1024px) {
       .chat-container {
+        max-width: 800px;
         height: 90vh;
-        max-width: 450px;
+        margin: 20px auto;
         border-radius: 24px;
         box-shadow: 0 20px 40px rgba(0,0,0,0.4);
       }
     }
 
     .chat-header {
-      padding: 12px 16px;
-      background: rgba(11, 60, 145, 0.92);
+      padding: 16px 20px;
+      background: rgba(11, 60, 145, 0.95);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 16px;
       flex-shrink: 0;
       border-bottom: 1px solid rgba(255,255,255,0.15);
     }
 
     .back-button {
-      width: 40px;
-      height: 40px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
       background: rgba(255,255,255,0.15);
       border: none;
@@ -75,6 +69,7 @@
       justify-content: center;
       cursor: pointer;
       transition: background 0.18s;
+      flex-shrink: 0;
     }
 
     .back-button:hover {
@@ -82,35 +77,9 @@
     }
 
     .back-button svg {
-      width: 22px;
-      height: 22px;
+      width: 24px;
+      height: 24px;
       fill: white;
-    }
-
-    .support-avatar {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: #ffeb3b;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      border: 3px solid #ffe082;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-      flex-shrink: 0;
-    }
-
-    .support-avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .support-avatar span {
-      font-size: 32px;
-      font-weight: bold;
-      color: #0d47a1;
     }
 
     .support-info {
@@ -120,21 +89,21 @@
     .support-name {
       font-size: 18px;
       font-weight: 700;
-      margin-bottom: 2px;
+      margin-bottom: 4px;
     }
 
     .support-status {
-      font-size: 13px;
+      font-size: 14px;
       color: #c3dfff;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       font-weight: 500;
     }
 
     .status-dot {
-      width: 9px;
-      height: 9px;
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
       background: #4caf50;
       box-shadow: 0 0 0 3px rgba(76,175,80,0.35);
@@ -143,10 +112,10 @@
     .chat-messages {
       flex: 1;
       overflow-y: auto;
-      padding: 16px 12px;
+      padding: 20px 16px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 16px;
       scroll-behavior: smooth;
     }
 
@@ -164,8 +133,8 @@
     }
 
     .message-avatar {
-      width: 32px;
-      height: 32px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       overflow: hidden;
       flex-shrink: 0;
@@ -175,16 +144,12 @@
       background: #ffb300;
       color: #0d47a1;
       font-weight: bold;
-      font-size: 16px;
+      font-size: 18px;
       border: 1px solid rgba(255,255,255,0.3);
     }
 
-    .message-avatar.support {
-      margin-right: 8px;
-    }
-
     .message-avatar.user {
-      margin-left: 8px;
+      margin-left: 10px;
     }
 
     .message-avatar img {
@@ -199,20 +164,17 @@
       flex-direction: column;
     }
 
-    .sender-name {
-      font-size: 12px;
-      font-weight: 600;
-      margin-bottom: 2px;
-      color: #ffeb3b;
-      opacity: 0.95;
-      padding-left: 4px;
+    @media (min-width: 1024px) {
+      .message-content {
+        max-width: 60%;
+      }
     }
 
     .message-bubble {
-      padding: 8px 12px;
-      border-radius: 18px;
+      padding: 10px 16px;
+      border-radius: 20px;
       font-size: 15px;
-      line-height: 1.45;
+      line-height: 1.5;
       word-break: break-word;
       overflow-wrap: break-word;
       white-space: pre-wrap;
@@ -223,7 +185,7 @@
     .message-wrapper.user .message-bubble {
       background: linear-gradient(135deg, #1976d2 0%, #0d47a1 100%);
       color: white;
-      border-bottom-right-radius: 4px;
+      border-bottom-right-radius: 6px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.25);
       margin-left: auto;
     }
@@ -234,33 +196,33 @@
       -webkit-backdrop-filter: blur(10px);
       border: 1px solid rgba(255,255,255,0.18);
       color: white;
-      border-bottom-left-radius: 4px;
+      border-bottom-left-radius: 6px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.2);
       margin-right: auto;
     }
 
     .message-time {
-      font-size: 10px;
-      margin-top: 4px;
+      font-size: 11px;
+      margin-top: 6px;
       opacity: 0.7;
       text-align: right;
-      padding-right: 2px;
+      padding-right: 4px;
     }
 
     .chat-input-area {
-      padding: 12px 16px;
-      background: rgba(11,60,145,0.92);
+      padding: 16px 20px;
+      background: rgba(11,60,145,0.95);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border-top: 1px solid rgba(255,255,255,0.15);
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 12px;
     }
 
     .attach-button {
-      width: 44px;
-      height: 44px;
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
       background: rgba(255,255,255,0.14);
       border: none;
@@ -269,6 +231,7 @@
       justify-content: center;
       cursor: pointer;
       transition: background 0.2s;
+      flex-shrink: 0;
     }
 
     .attach-button:hover {
@@ -277,15 +240,15 @@
 
     .attach-button svg {
       fill: white;
-      width: 22px;
-      height: 22px;
+      width: 24px;
+      height: 24px;
     }
 
     .input-wrapper {
       flex: 1;
       background: rgba(255,255,255,0.13);
-      border-radius: 24px;
-      padding: 8px 16px;
+      border-radius: 28px;
+      padding: 10px 18px;
       border: 1px solid rgba(255,255,255,0.18);
       transition: all 0.2s;
     }
@@ -300,12 +263,12 @@
       background: transparent;
       border: none;
       color: white;
-      font-size: 15px;
+      font-size: 16px;
       outline: none;
-      min-height: 22px;
-      max-height: 110px;
+      min-height: 24px;
+      max-height: 120px;
       resize: none;
-      line-height: 1.4;
+      line-height: 1.5;
       font-family: inherit;
     }
 
@@ -314,8 +277,8 @@
     }
 
     .send-button {
-      width: 44px;
-      height: 44px;
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
       background: #2196f3;
       border: none;
@@ -324,6 +287,7 @@
       justify-content: center;
       cursor: pointer;
       transition: all 0.18s;
+      flex-shrink: 0;
     }
 
     .send-button:hover {
@@ -339,8 +303,36 @@
 
     .send-button svg {
       fill: white;
-      width: 20px;
-      height: 20px;
+      width: 22px;
+      height: 22px;
+    }
+
+    .empty-state {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .empty-state-text {
+      color: rgba(255,255,255,0.9);
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .empty-state-subtext {
+      color: rgba(255,255,255,0.7);
+      font-size: 15px;
+    }
+
+    .lottie-container {
+      width: 240px;
+      height: 240px;
+      margin-bottom: 24px;
     }
 
     .loading-indicator {
@@ -349,25 +341,17 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      color: rgba(255,255,255,0.75);
-      font-size: 16px;
       padding: 40px 20px;
-    }
-
-    .lottie-container {
-      width: 200px;
-      height: 200px;
-      margin-bottom: 20px;
     }
 
     .file-message {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
     }
 
     .file-icon {
-      font-size: 20px;
+      font-size: 22px;
     }
 
     .file-link {
@@ -378,23 +362,18 @@
       font-size: 14px;
     }
 
-    .image-message {
-      max-width: 100%;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-
-    .image-message:hover {
-      transform: scale(1.02);
-    }
-
     .image-preview {
       max-width: 100%;
       max-height: 300px;
       border-radius: 12px;
       display: block;
-      margin-top: 4px;
+      margin-top: 8px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .image-preview:hover {
+      transform: scale(1.02);
     }
 
     .image-modal {
@@ -419,12 +398,13 @@
     }
 
     @media (max-width: 480px) {
-      .chat-container { max-width: 100%; }
-      .chat-messages { padding: 14px 10px; }
-      .chat-input-area { padding: 10px 14px; gap: 6px; }
+      .chat-header { padding: 12px 16px; }
+      .chat-messages { padding: 16px 12px; }
+      .chat-input-area { padding: 12px 16px; gap: 8px; }
       .message-content { max-width: 80%; }
-      .attach-button { width: 40px; height: 40px; }
-      .send-button { width: 40px; height: 40px; }
+      .attach-button { width: 44px; height: 44px; }
+      .send-button { width: 44px; height: 44px; }
+      .lottie-container { width: 200px; height: 200px; }
     }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
@@ -438,23 +418,16 @@
         </svg>
       </button>
 
-      <div class="support-avatar" id="supportAvatar"></div>
-
       <div class="support-info">
         <div class="support-name">Поддержка Duck Shop</div>
         <div class="support-status">
           <span class="status-dot"></span>
-          Online
+          в сети
         </div>
       </div>
     </div>
 
-    <div class="chat-messages" id="chatMessages">
-      <div class="loading-indicator" id="loadingIndicator">
-        <div class="lottie-container" id="lottieAnimation"></div>
-        <div style="color: rgba(255,255,255,0.9); font-size: 18px; font-weight: 500;">Загрузка сообщений...</div>
-      </div>
-    </div>
+    <div class="chat-messages" id="chatMessages"></div>
 
     <div class="chat-input-area">
       <button class="attach-button" id="attachButton" type="button">
@@ -519,6 +492,47 @@
       document.body.appendChild(modal);
     }
 
+    function showLoadingState() {
+      const messagesContainer = document.getElementById('chatMessages');
+      messagesContainer.innerHTML = `
+        <div class="loading-indicator">
+          <div class="lottie-container" id="lottieAnimation"></div>
+          <div style="color: rgba(255,255,255,0.9); font-size: 18px; font-weight: 500;">Загрузка сообщений...</div>
+        </div>
+      `;
+      
+      if (typeof lottie !== 'undefined') {
+        lottieAnimation = lottie.loadAnimation({
+          container: document.getElementById('lottieAnimation'),
+          renderer: 'svg',
+          loop: true,
+          autoplay: true,
+          path: 'support.json'
+        });
+      }
+    }
+
+    function showEmptyState() {
+      const messagesContainer = document.getElementById('chatMessages');
+      messagesContainer.innerHTML = `
+        <div class="empty-state">
+          <div class="lottie-container" id="emptyLottie"></div>
+          <div class="empty-state-text">Чат с поддержкой</div>
+          <div class="empty-state-subtext">Напишите нам — ответим быстро</div>
+        </div>
+      `;
+      
+      if (typeof lottie !== 'undefined') {
+        lottieAnimation = lottie.loadAnimation({
+          container: document.getElementById('emptyLottie'),
+          renderer: 'svg',
+          loop: true,
+          autoplay: true,
+          path: 'support.json'
+        });
+      }
+    }
+
     async function sendMessage(text = null, file = null) {
       if (!currentUser) return;
 
@@ -578,6 +592,7 @@
         await loadMessageHistory();
       } catch (error) {
         console.error('Error sending message:', error);
+        // Не показываем ошибку пользователю, просто логируем
       }
     }
 
@@ -588,17 +603,12 @@
         const response = await fetch(`${API_URL}/api/support/history/${currentUser.id}`);
         const data = await response.json();
 
-        const messagesContainer = document.getElementById('chatMessages');
-        const loadingIndicator = document.getElementById('loadingIndicator');
-        
-        if (!messagesContainer || !loadingIndicator) return;
-
         if (data.success) {
           if (data.messages.length > 0) {
             currentDialogId = data.dialog_id;
             
             let lastId = 0;
-            messagesContainer.innerHTML = data.messages.map(msg => {
+            const messagesHtml = data.messages.map(msg => {
               lastId = Math.max(lastId, msg.id);
               const isUser = msg.sender === 'user';
               
@@ -610,19 +620,19 @@
                 
                 if (isImage) {
                   messageContent = `
-                    <div style="display: flex; flex-direction: column; gap: 6px;">
-                      <div style="display: flex; align-items: center; gap: 6px;">
-                        <span style="font-size: 16px;">🖼️</span>
-                        <span style="font-size: 13px; opacity: 0.9;">${file.name}</span>
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                      <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 18px;">🖼️</span>
+                        <span style="font-size: 14px; opacity: 0.9;">${file.name}</span>
                       </div>
                       <img src="${file.url}" alt="${file.name}" class="image-preview" onclick="openImageModal('${file.url}')">
                     </div>
                   `;
                 } else {
                   messageContent = `
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                      <span style="font-size: 20px;">📎</span>
-                      <a href="${file.url}" target="_blank" style="color: white; text-decoration: underline;">${file.name}</a>
+                    <div class="file-message">
+                      <span class="file-icon">📎</span>
+                      <a href="${file.url}" target="_blank" class="file-link">${file.name}</a>
                     </div>
                   `;
                 }
@@ -632,75 +642,32 @@
               
               return `
                 <div class="message-wrapper ${isUser ? 'user' : 'support'}">
-                  ${!isUser ? '<div class="message-avatar support"><span>🦆</span></div>' : ''}
                   <div class="message-content">
-                    ${!isUser ? '<div class="sender-name">Поддержка</div>' : ''}
                     <div class="message-bubble">
                       ${messageContent}
                       <div class="message-time">${formatTime(msg.created_at)}</div>
                     </div>
                   </div>
-                  ${isUser ? (currentUser.avatarUrl ? 
+                  ${isUser && currentUser.avatarUrl ? 
                     `<div class="message-avatar user"><img src="${currentUser.avatarUrl}" alt="You"></div>` : 
-                    `<div class="message-avatar user"><span>${(currentUser.username || 'U').charAt(0).toUpperCase()}</span></div>`
-                  ) : ''}
+                    isUser ? `<div class="message-avatar user"><span>${(currentUser.username || 'U').charAt(0).toUpperCase()}</span></div>` : ''
+                  }
                 </div>
               `;
             }).join('');
             
+            document.getElementById('chatMessages').innerHTML = messagesHtml;
             lastMessageId = lastId;
+            
+            const messagesContainer = document.getElementById('chatMessages');
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
           } else {
-            messagesContainer.innerHTML = `
-              <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; padding: 20px;">
-                <div class="lottie-container" id="emptyLottie" style="width: 200px; height: 200px; margin-bottom: 20px;"></div>
-                <div style="color: rgba(255,255,255,0.9); font-size: 18px; font-weight: 500; text-align: center;">Чат с поддержкой</div>
-                <div style="color: rgba(255,255,255,0.7); font-size: 14px; margin-top: 8px; text-align: center;">Напишите нам — ответим быстро</div>
-              </div>
-            `;
-            
-            // Initialize Lottie for empty state
-            if (typeof lottie !== 'undefined') {
-              lottieAnimation = lottie.loadAnimation({
-                container: document.getElementById('emptyLottie'),
-                renderer: 'svg',
-                loop: true,
-                autoplay: true,
-                path: 'support.json'
-              });
-            }
+            showEmptyState();
           }
-          
-          loadingIndicator.style.display = 'none';
         }
       } catch (error) {
         console.error('Error loading history:', error);
-        const loadingIndicator = document.getElementById('loadingIndicator');
-        if (loadingIndicator) {
-          loadingIndicator.style.display = 'none';
-        }
-        
-        const messagesContainer = document.getElementById('chatMessages');
-        if (messagesContainer) {
-          messagesContainer.innerHTML = `
-            <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; padding: 20px;">
-              <div class="lottie-container" id="errorLottie" style="width: 200px; height: 200px; margin-bottom: 20px;"></div>
-              <div style="color: rgba(255,255,255,0.9); font-size: 18px; font-weight: 500;">Не удалось загрузить чат</div>
-              <div style="color: rgba(255,255,255,0.7); font-size: 14px; margin-top: 8px;">Попробуйте обновить страницу</div>
-            </div>
-          `;
-          
-          // Initialize Lottie for error state
-          if (typeof lottie !== 'undefined') {
-            lottieAnimation = lottie.loadAnimation({
-              container: document.getElementById('errorLottie'),
-              renderer: 'svg',
-              loop: true,
-              autoplay: true,
-              path: 'support.json'
-            });
-          }
-        }
+        showEmptyState();
       }
     }
 
@@ -713,10 +680,9 @@
 
         if (data.success && data.messages.length > 0) {
           const messagesContainer = document.getElementById('chatMessages');
-          if (!messagesContainer) return;
           
-          // Remove empty state if it exists
-          const emptyState = messagesContainer.querySelector('div[style*="justify-content: center"]');
+          // Удаляем empty state если он есть
+          const emptyState = messagesContainer.querySelector('.empty-state');
           if (emptyState) {
             messagesContainer.innerHTML = '';
           }
@@ -733,19 +699,19 @@
               
               if (isImage) {
                 messageContent = `
-                  <div style="display: flex; flex-direction: column; gap: 6px;">
-                    <div style="display: flex; align-items: center; gap: 6px;">
-                      <span style="font-size: 16px;">🖼️</span>
-                      <span style="font-size: 13px; opacity: 0.9;">${file.name}</span>
+                  <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <span style="font-size: 18px;">🖼️</span>
+                      <span style="font-size: 14px; opacity: 0.9;">${file.name}</span>
                     </div>
                     <img src="${file.url}" alt="${file.name}" class="image-preview" onclick="openImageModal('${file.url}')">
                   </div>
                 `;
               } else {
                 messageContent = `
-                  <div style="display: flex; align-items: center; gap: 8px;">
-                    <span style="font-size: 20px;">📎</span>
-                    <a href="${file.url}" target="_blank" style="color: white; text-decoration: underline;">${file.name}</a>
+                  <div class="file-message">
+                    <span class="file-icon">📎</span>
+                    <a href="${file.url}" target="_blank" class="file-link">${file.name}</a>
                   </div>
                 `;
               }
@@ -755,18 +721,16 @@
             
             const messageHtml = `
               <div class="message-wrapper ${isUser ? 'user' : 'support'}">
-                ${!isUser ? '<div class="message-avatar support"><span>🦆</span></div>' : ''}
                 <div class="message-content">
-                  ${!isUser ? '<div class="sender-name">Поддержка</div>' : ''}
                   <div class="message-bubble">
                     ${messageContent}
                     <div class="message-time">${formatTime(msg.created_at)}</div>
                   </div>
                 </div>
-                ${isUser ? (currentUser.avatarUrl ? 
+                ${isUser && currentUser.avatarUrl ? 
                   `<div class="message-avatar user"><img src="${currentUser.avatarUrl}" alt="You"></div>` : 
-                  `<div class="message-avatar user"><span>${(currentUser.username || 'U').charAt(0).toUpperCase()}</span></div>`
-                ) : ''}
+                  isUser ? `<div class="message-avatar user"><span>${(currentUser.username || 'U').charAt(0).toUpperCase()}</span></div>` : ''
+                }
               </div>
             `;
             
@@ -785,7 +749,7 @@
       if (!textarea) return;
       
       textarea.style.height = 'auto';
-      textarea.style.height = Math.min(textarea.scrollHeight, 110) + 'px';
+      textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
       
       const sendButton = document.getElementById('sendButton');
       if (sendButton) {
@@ -801,21 +765,8 @@
         return;
       }
 
-      const supportAvatar = document.getElementById('supportAvatar');
-      if (supportAvatar) {
-        supportAvatar.innerHTML = '<span>🦆</span>';
-      }
-
-      // Initialize Lottie for loading state
-      if (typeof lottie !== 'undefined') {
-        lottieAnimation = lottie.loadAnimation({
-          container: document.getElementById('lottieAnimation'),
-          renderer: 'svg',
-          loop: true,
-          autoplay: true,
-          path: 'support.json'
-        });
-      }
+      // Показываем загрузку
+      showLoadingState();
 
       await loadMessageHistory();
 
