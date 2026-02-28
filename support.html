@@ -278,12 +278,12 @@
       max-width: 280px;
     }
 
-    /* Кнопка нового разговора */
+    /* Кнопка нового разговора на всю ширину */
     .new-chat-button {
       background: var(--accent);
       border: none;
       border-radius: 40px;
-      padding: 12px 28px;
+      padding: 16px 28px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -294,8 +294,8 @@
       font-weight: 600;
       box-shadow: 0 4px 15px rgba(0,0,0,0.1);
       transition: all 0.2s;
-      max-width: 300px;
       width: 100%;
+      max-width: 100%;
     }
 
     .new-chat-button:hover {
@@ -310,57 +310,48 @@
       fill: white;
     }
 
-    /* Анимация завершения диалога */
-    .dialog-end-overlay {
-      position: fixed;
-      inset: 0;
-      background: radial-gradient(circle at center, transparent 0%, #000 70%);
-      opacity: 0;
-      pointer-events: none;
-      z-index: 9999;
-      transition: opacity 2.4s ease-in-out;
+    /* Сообщение о закрытии диалога */
+    .closed-message {
+      background: #e8f0fe;
+      border-left: 4px solid var(--accent);
+      padding: 12px 16px;
+      margin: 8px 12px;
+      border-radius: 12px;
+      color: var(--text);
+      font-size: 15px;
       display: flex;
-      flex-direction: column;
       align-items: center;
-      justify-content: center;
+      gap: 10px;
+      animation: slideIn 0.3s ease;
     }
 
-    .dialog-end-overlay.active {
-      opacity: 1;
-      pointer-events: all;
+    .closed-message svg {
+      width: 24px;
+      height: 24px;
+      fill: var(--accent);
+      flex-shrink: 0;
     }
 
-    .end-lottie {
-      width: 240px;
-      height: 240px;
-      margin-bottom: 32px;
-      opacity: 0;
-      transform: scale(0.5);
-      transition: all 1.4s ease-out 1s;
+    .closed-message span {
+      font-weight: 500;
     }
 
-    .dialog-end-overlay.active .end-lottie {
-      opacity: 1;
-      transform: scale(1);
+    .closed-message small {
+      display: block;
+      color: var(--text-secondary);
+      font-size: 13px;
+      margin-top: 4px;
     }
 
-    .end-text {
-      font-size: 24px;
-      font-weight: 600;
-      color: white;
-      text-align: center;
-      opacity: 0;
-      transition: opacity 1.2s ease-out 2s;
-    }
-
-    .dialog-end-overlay.active .end-text {
-      opacity: 1;
-    }
-
-    .end-subtext {
-      font-size: 16px;
-      opacity: 0.8;
-      margin-top: 8px;
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .message-image {
@@ -405,6 +396,9 @@
 
     <div class="messages" id="messages"></div>
 
+    <!-- Контейнер для сообщения о закрытии диалога -->
+    <div id="closedMessageContainer"></div>
+
     <div class="input-area" id="inputArea">
       <button class="attach" id="attach">
         <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
@@ -423,15 +417,6 @@
     </div>
   </div>
 
-  <!-- Затемнение + анимация завершения -->
-  <div class="dialog-end-overlay" id="endOverlay">
-    <div class="end-lottie" id="endLottie"></div>
-    <div class="end-text">
-      Ваше обращение закрыто
-      <div class="end-subtext">надеемся, мы решили все ваши вопросы</div>
-    </div>
-  </div>
-
   <script>
     const API_URL = 'https://duck-shop-sever.onrender.com';
     let currentUser = null;
@@ -439,6 +424,7 @@
     let lastMessageId = 0;
     let pollingInterval = null;
     let isDialogClosed = false;
+    let closedMessageShown = false;
 
     function loadUser() {
       try {
@@ -462,36 +448,60 @@
       document.getElementById('send').disabled = !ta.value.trim();
     }
 
+    function showClosedMessage() {
+      if (closedMessageShown) return;
+      
+      const container = document.getElementById('closedMessageContainer');
+      container.innerHTML = `
+        <div class="closed-message">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+          </svg>
+          <div>
+            <span>✅ Ваше обращение закрыто</span>
+            <small>надеемся, мы решили все ваши вопросы</small>
+          </div>
+        </div>
+      `;
+      closedMessageShown = true;
+    }
+
     function showNewChatButton() {
       const inputArea = document.getElementById('inputArea');
       const attach = document.getElementById('attach');
       const inputWrap = document.querySelector('.input-wrap');
       const send = document.getElementById('send');
       
+      // Скрываем старые элементы
       attach.style.display = 'none';
       inputWrap.style.display = 'none';
       send.style.display = 'none';
       
+      // Добавляем класс для центрирования
       inputArea.classList.add('closed');
       
-      if (!document.getElementById('newChatButton')) {
-        const newChatBtn = document.createElement('button');
-        newChatBtn.id = 'newChatButton';
-        newChatBtn.className = 'new-chat-button';
-        newChatBtn.innerHTML = `
-          <svg viewBox="0 0 24 24">
-            <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
-            <path d="M12 6v4h4v2h-4v4h-2v-4H6v-2h4V6h2z"/>
-          </svg>
-          Начать новый разговор
-        `;
-        newChatBtn.onclick = () => location.reload();
-        inputArea.appendChild(newChatBtn);
-      }
+      // Удаляем старую кнопку если есть
+      const oldBtn = document.getElementById('newChatButton');
+      if (oldBtn) oldBtn.remove();
+      
+      // Создаем новую кнопку на всю ширину
+      const newChatBtn = document.createElement('button');
+      newChatBtn.id = 'newChatButton';
+      newChatBtn.className = 'new-chat-button';
+      newChatBtn.innerHTML = `
+        <svg viewBox="0 0 24 24">
+          <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+          <path d="M12 6v4h4v2h-4v4h-2v-4H6v-2h4V6h2z"/>
+        </svg>
+        Начать новый разговор
+      `;
+      newChatBtn.onclick = () => location.reload();
+      inputArea.appendChild(newChatBtn);
     }
 
     async function sendMessage(text = '', file = null) {
       if (!currentUser || isDialogClosed) return;
+      
       const formData = new FormData();
       formData.append('user_id', currentUser.id);
       if (currentDialogId) formData.append('dialog_id', currentDialogId);
@@ -500,13 +510,19 @@
       else return;
 
       try {
-        const res = await fetch(`${API_URL}/api/support/message`, { method: 'POST', body: formData });
+        const res = await fetch(`${API_URL}/api/support/message`, { 
+          method: 'POST', 
+          body: formData 
+        });
         const data = await res.json();
         if (data.dialog_id) currentDialogId = data.dialog_id;
+        
         document.getElementById('input').value = '';
         document.getElementById('input').style.height = 'auto';
         document.getElementById('file').value = '';
         document.getElementById('send').disabled = true;
+        
+        // После отправки сразу проверяем статус
         await loadMessages();
       } catch (e) {
         console.error('send error', e);
@@ -518,30 +534,41 @@
         location.href = 'reg_log.html';
         return;
       }
+      
       try {
         const res = await fetch(`${API_URL}/api/support/history/${currentUser.id}`);
         const data = await res.json();
         if (!data.success) return;
+        
         if (data.dialog_id) currentDialogId = data.dialog_id;
-
+        
         // Проверка закрытия диалога
         if (data.is_closed && !isDialogClosed) {
+          console.log('Диалог закрыт!');
           isDialogClosed = true;
           
+          // Блокируем ввод
           document.getElementById('input').disabled = true;
           document.getElementById('send').disabled = true;
           document.getElementById('attach').disabled = true;
           document.getElementById('file').disabled = true;
           
-          closeDialog();
+          // Показываем сообщение о закрытии
+          showClosedMessage();
           
-          setTimeout(() => {
-            showNewChatButton();
-          }, 3500);
+          // Показываем кнопку нового разговора
+          showNewChatButton();
+          
+          // Останавливаем polling
+          if (pollingInterval) {
+            clearInterval(pollingInterval);
+            pollingInterval = null;
+          }
         }
 
         const container = document.getElementById('messages');
-        if (!silent && data.messages.length === 0) {
+        
+        if (!silent && data.messages.length === 0 && !data.is_closed) {
           container.innerHTML = `
             <div class="empty">
               <div class="lottie" id="lottie"></div>
@@ -549,13 +576,21 @@
               <div class="empty-subtitle">Напишите нам — ответим быстро</div>
             </div>
           `;
-          lottie.loadAnimation({
-            container: document.getElementById('lottie'),
-            renderer: 'svg',
-            loop: true,
-            autoplay: true,
-            path: 'support.json'
-          });
+          
+          if (typeof lottie !== 'undefined') {
+            lottie.loadAnimation({
+              container: document.getElementById('lottie'),
+              renderer: 'svg',
+              loop: true,
+              autoplay: true,
+              path: 'support.json'
+            });
+          }
+          return;
+        }
+        
+        // Если диалог закрыт и нет сообщений - не показываем пустой чат
+        if (data.is_closed && data.messages.length === 0) {
           return;
         }
         
@@ -599,29 +634,16 @@
 
     async function checkNewMessages() {
       if (!currentUser || !currentDialogId || isDialogClosed) return;
+      
       try {
         const res = await fetch(`${API_URL}/api/support/new/${currentUser.id}/${lastMessageId}`);
         const data = await res.json();
         if (data.success && data.messages?.length > 0) {
           await loadMessages(true);
         }
-      } catch {}
-    }
-
-    // Анимация завершения
-    function closeDialog() {
-      const overlay = document.getElementById('endOverlay');
-      overlay.classList.add('active');
-
-      setTimeout(() => {
-        lottie.loadAnimation({
-          container: document.getElementById('endLottie'),
-          renderer: 'svg',
-          loop: false,
-          autoplay: true,
-          path: 'enddialog.json'
-        });
-      }, 200);
+      } catch (err) {
+        console.error('check new messages error:', err);
+      }
     }
 
     document.addEventListener('DOMContentLoaded', async () => {
@@ -660,8 +682,10 @@
 
       back.addEventListener('click', () => location.href = 'main.html');
 
+      // Загружаем историю
       await loadMessages();
 
+      // Запускаем polling только если диалог активен
       if (currentDialogId && !isDialogClosed) {
         pollingInterval = setInterval(checkNewMessages, 3000);
       }
