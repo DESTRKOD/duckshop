@@ -1,625 +1,675 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-    <title>Поддержка - Duck Shop</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
-    <style>
-        * { margin:0; padding:0; box-sizing:border-box; }
-        html, body {
-            height:100%;
-            margin:0;
-            overflow:hidden;
-            font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-            background:linear-gradient(180deg,#0b3c91 0%,#1565c0 55%,#42a5f5 100%);
-            color:#fff;
-            -webkit-text-size-adjust:100%;
-        }
-        .chat-container {
-            display:flex;
-            flex-direction:column;
-            height:100%;
-            min-height:-webkit-fill-available;
-            background:transparent;
-            overflow:hidden;
-        }
-        .chat-header {
-            padding:10px 14px;
-            background:rgba(11,60,145,0.98);
-            backdrop-filter:blur(12px);
-            display:flex;
-            align-items:center;
-            gap:10px;
-            flex-shrink:0;
-            border-bottom:1px solid rgba(255,255,255,0.12);
-            z-index:10;
-        }
-        .back-button {
-            width:34px; height:34px;
-            border-radius:50%;
-            background:rgba(255,255,255,0.15);
-            border:none;
-            display:flex; align-items:center; justify-content:center;
-            cursor:pointer;
-        }
-        .back-button:hover { background:rgba(255,255,255,0.25); }
-        .back-button svg { width:18px; height:18px; fill:#fff; }
-        .support-info { flex:1; }
-        .support-name { font-size:16px; font-weight:700; margin-bottom:1px; }
-        .support-status { font-size:12px; color:#d0e0ff; display:flex; align-items:center; gap:5px; }
-        .status-dot { width:7px; height:7px; border-radius:50%; background:#4caf50; box-shadow:0 0 0 2px rgba(76,175,80,0.4); }
-        .chat-messages {
-            flex:1;
-            overflow-y:auto;
-            padding:6px 6px;
-            display:flex;
-            flex-direction:column;
-            gap:4px;
-            scroll-behavior:smooth;
-            -webkit-overflow-scrolling:touch;
-        }
-        .message-wrapper {
-            display:flex;
-            width:100%;
-            align-items:flex-start;
-            margin-bottom:2px;
-        }
-        .message-wrapper.user {
-            justify-content:flex-end !important;
-            flex-direction:row-reverse !important;
-        }
-        .message-wrapper.support {
-            justify-content:flex-start !important;
-        }
-        .message-avatar {
-            width:28px; height:28px;
-            border-radius:50%;
-            overflow:hidden;
-            flex-shrink:0;
-            margin:0 4px;
-            border:1.5px solid rgba(255,255,255,0.18);
-            background:#1e90ff;
-            display:flex; align-items:center; justify-content:center;
-            font-size:12px; font-weight:bold;
-        }
-        .message-avatar img { width:100%; height:100%; object-fit:cover; }
-        .message-avatar.support { background:#4caf50; color:#fff; }
-        .message-content {
-            display:inline-block !important;
-            max-width: fit-content !important;
-            margin:0 !important;
-            padding:0 !important;
-        }
-        .message-wrapper.user .message-content {
-            margin-left:auto;
-            margin-right:0;
-        }
-        .message-wrapper.support .message-content {
-            margin-right:auto;
-            margin-left:0;
-        }
-        .message-bubble {
-            padding:6px 10px;
-            font-size:14.5px;
-            line-height:1.32;
-            border-radius:16px;
-            word-break:break-word;
-            white-space:pre-wrap;
-            text-align:left;
-            display:inline-block;
-            min-width:0;
-        }
-        .message-wrapper.user .message-bubble {
-            background:linear-gradient(135deg,#1976d2 0%,#0d47a1 100%);
-            color:#fff;
-            border-bottom-right-radius:5px;
-            border-bottom-left-radius:16px;
-            box-shadow:0 1px 2px rgba(0,0,0,0.25);
-            margin-left:auto;
-            margin-right:0;
-        }
-        .message-wrapper.support .message-bubble {
-            background:rgba(255,255,255,0.13);
-            backdrop-filter:blur(10px);
-            border:1px solid rgba(255,255,255,0.1);
-            color:#fff;
-            border-bottom-left-radius:5px;
-            border-bottom-right-radius:16px;
-            box-shadow:0 1px 2px rgba(0,0,0,0.2);
-            margin-right:auto;
-            margin-left:0;
-        }
-        .message-time {
-            font-size:10px;
-            opacity:0.65;
-            margin-top:2px;
-            text-align:right;
-            align-self:flex-end;
-            white-space:nowrap;
-        }
-        .message-image {
-            max-width:210px;
-            border-radius:12px;
-            margin:2px 0;
-            display:block;
-            cursor:pointer;
-            box-shadow:0 2px 5px rgba(0,0,0,0.3);
-        }
-        .chat-input-area {
-            padding:8px 12px;
-            background:rgba(11,60,145,0.98);
-            backdrop-filter:blur(12px);
-            border-top:1px solid rgba(255,255,255,0.12);
-            display:flex;
-            align-items:center;
-            gap:8px;
-            flex-shrink:0;
-            min-height:56px;
-            padding-bottom:calc(env(safe-area-inset-bottom, 0) + 12px);
-            box-sizing:border-box;
-        }
-        .chat-input-area.closed {
-            justify-content:center;
-            padding:12px;
-        }
-        .attach-button, .send-button {
-            width:38px; height:38px;
-            border-radius:50%;
-            border:none;
-            display:flex; align-items:center; justify-content:center;
-            cursor:pointer;
-        }
-        .attach-button { background:rgba(255,255,255,0.14); }
-        .attach-button:hover { background:rgba(255,255,255,0.22); }
-        .attach-button svg, .send-button svg { width:20px; height:20px; fill:#fff; }
-        .send-button { background:#2196f3; }
-        .send-button:hover:not(:disabled) { background:#1976d2; transform:scale(1.08); }
-        .send-button:disabled { background:rgba(255,255,255,0.16); cursor:not-allowed; }
-        .input-wrapper {
-            flex:1;
-            background:rgba(255,255,255,0.12);
-            border-radius:24px;
-            padding:8px 14px;
-            border:1px solid rgba(255,255,255,0.14);
-            min-height:44px;
-            display:flex;
-            align-items:center;
-        }
-        .chat-input {
-            width:100%;
-            background:transparent;
-            border:none;
-            color:#fff;
-            font-size:15px;
-            outline:none;
-            resize:none;
-            line-height:1.4;
-            padding:0;
-        }
-        .chat-input::placeholder { color:rgba(255,255,255,0.5); }
-        .chat-input:disabled { opacity:0.5; }
-        .empty-state {
-            flex:1;
-            display:flex;
-            flex-direction:column;
-            justify-content:center;
-            align-items:center;
-            text-align:center;
-            padding:20px;
-        }
-        .lottie-container {
-            width:160px;
-            height:160px;
-            margin-bottom:12px;
-        }
-        .empty-state-text { font-size:18px; font-weight:600; margin-bottom:8px; }
-        .empty-state-subtext { font-size:14px; opacity:0.8; }
-        .image-modal {
-            position:fixed; inset:0;
-            background:rgba(0,0,0,0.96);
-            display:flex; align-items:center; justify-content:center;
-            z-index:1000;
-            cursor:zoom-out;
-        }
-        .image-modal img {
-            max-width:96%; max-height:96%;
-            object-fit:contain;
-            border-radius:8px;
-        }
-        /* Кнопка нового разговора */
-        .new-chat-button {
-            background:#2196f3;
-            border:none;
-            border-radius:40px;
-            padding:12px 28px;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            gap:12px;
-            cursor:pointer;
-            color:white;
-            font-size:18px;
-            font-weight:600;
-            box-shadow:0 4px 15px rgba(0,0,0,0.3);
-            transition:all 0.2s;
-            max-width:280px;
-            width:100%;
-        }
-        .new-chat-button:hover {
-            background:#1976d2;
-            transform:scale(1.02);
-            box-shadow:0 6px 20px rgba(0,0,0,0.4);
-        }
-        .new-chat-button svg {
-            width:24px;
-            height:24px;
-            fill:white;
-        }
-        /* Затемнение → Lottie → текст при закрытии диалога */
-        .dialog-end-overlay {
-            position: fixed;
-            inset: 0;
-            background: radial-gradient(circle at center, transparent 0%, #000 70%);
-            opacity: 0;
-            pointer-events: none;
-            z-index: 9999;
-            transition: opacity 2.4s ease-in-out;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        .dialog-end-overlay.active {
-            opacity: 1;
-            pointer-events: all;
-        }
-        .end-lottie {
-            width: 240px;
-            height: 240px;
-            margin-bottom: 32px;
-            opacity: 0;
-            transform: scale(0.5);
-            transition: all 1.4s ease-out 1s;
-        }
-        .dialog-end-overlay.active .end-lottie {
-            opacity: 1;
-            transform: scale(1);
-        }
-        .end-text {
-            font-size: 24px;
-            font-weight: 600;
-            color: white;
-            text-align: center;
-            opacity: 0;
-            transition: opacity 1.2s ease-out 2s;
-        }
-        .dialog-end-overlay.active .end-text {
-            opacity: 1;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Поддержка • Duck Shop</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-2: #f1f5f9;
+      --text: #0f172a;
+      --text-secondary: #64748b;
+      --border: #e2e8f0;
+      --accent: #3b82f6;
+      --bubble-user: #3b82f6;
+      --bubble-support: #ffffff;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      min-height: -webkit-fill-available;
+      position: relative;
+    }
+
+    header {
+      padding: 12px 16px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+      z-index: 10;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    .back {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--surface-2);
+      border: none;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .back:hover { background: #e2e8f0; }
+
+    .back svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+
+    .title {
+      font-weight: 600;
+      font-size: 18px;
+      flex: 1;
+      text-align: center;
+    }
+
+    .status {
+      font-size: 13px;
+      color: #10b981;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 0 3px rgba(16,185,129,0.2);
+    }
+
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: var(--bg);
+    }
+
+    .msg {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 4px;
+      max-width: 88%;
+      width: fit-content;
+    }
+
+    .msg.user {
+      align-self: flex-end;
+    }
+
+    .msg.support {
+      align-self: flex-start;
+    }
+
+    .bubble {
+      padding: 9px 13px;
+      border-radius: 20px;
+      font-size: 15px;
+      line-height: 1.38;
+      word-break: break-word;
+      white-space: pre-wrap;
+      width: fit-content;
+      max-width: 100%;
+    }
+
+    .user .bubble {
+      background: var(--bubble-user);
+      color: white;
+      border-bottom-right-radius: 6px;
+    }
+
+    .support .bubble {
+      background: var(--bubble-support);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-bottom-left-radius: 6px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+    }
+
+    .time {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 3px;
+      align-self: flex-end;
+      white-space: nowrap;
+    }
+
+    .input-area {
+      padding: 12px 16px;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+      padding-bottom: calc(env(safe-area-inset-bottom) + 12px);
+      box-shadow: 0 -1px 3px rgba(0,0,0,0.04);
+    }
+
+    .input-area.closed {
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .attach, .send {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: none;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .attach {
+      background: var(--surface-2);
+      color: var(--text-secondary);
+    }
+
+    .attach:hover { background: #e2e8f0; }
+    .attach:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .send {
+      background: var(--accent);
+    }
+
+    .send:hover:not(:disabled) {
+      background: #2563eb;
+      transform: scale(1.05);
+    }
+
+    .send:disabled {
+      background: #cbd5e1;
+      cursor: not-allowed;
+    }
+
+    .send svg {
+      fill: white;
+    }
+
+    .input-wrap {
+      flex: 1;
+      background: var(--surface-2);
+      border-radius: 24px;
+      padding: 10px 16px;
+      border: 1px solid var(--border);
+      transition: 0.2s;
+    }
+
+    .input-wrap:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+    }
+
+    .input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-size: 16px;
+      outline: none;
+      resize: none;
+      line-height: 1.4;
+      max-height: 120px;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .input::placeholder {
+      color: #94a3b8;
+    }
+
+    .input:disabled {
+      opacity: 0.6;
+    }
+
+    .empty {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: var(--text-secondary);
+    }
+
+    .lottie {
+      width: 180px;
+      height: 180px;
+      margin-bottom: 20px;
+    }
+
+    .empty-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    .empty-subtitle {
+      font-size: 15px;
+      max-width: 280px;
+    }
+
+    /* Кнопка нового разговора */
+    .new-chat-button {
+      background: var(--accent);
+      border: none;
+      border-radius: 40px;
+      padding: 12px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      cursor: pointer;
+      color: white;
+      font-size: 18px;
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      transition: all 0.2s;
+      max-width: 300px;
+      width: 100%;
+    }
+
+    .new-chat-button:hover {
+      background: #2563eb;
+      transform: scale(1.02);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    }
+
+    .new-chat-button svg {
+      width: 24px;
+      height: 24px;
+      fill: white;
+    }
+
+    /* Анимация завершения диалога */
+    .dialog-end-overlay {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at center, transparent 0%, #000 70%);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 9999;
+      transition: opacity 2.4s ease-in-out;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .dialog-end-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .end-lottie {
+      width: 240px;
+      height: 240px;
+      margin-bottom: 32px;
+      opacity: 0;
+      transform: scale(0.5);
+      transition: all 1.4s ease-out 1s;
+    }
+
+    .dialog-end-overlay.active .end-lottie {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .end-text {
+      font-size: 24px;
+      font-weight: 600;
+      color: white;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 1.2s ease-out 2s;
+    }
+
+    .dialog-end-overlay.active .end-text {
+      opacity: 1;
+    }
+
+    .end-subtext {
+      font-size: 16px;
+      opacity: 0.8;
+      margin-top: 8px;
+    }
+
+    .message-image {
+      max-width: 200px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .message-image:hover {
+      opacity: 0.9;
+    }
+
+    .file-message {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.1);
+      padding: 6px 10px;
+      border-radius: 12px;
+    }
+
+    .file-message.support {
+      background: var(--surface-2);
+    }
+  </style>
 </head>
 <body>
-    <div class="chat-container">
-        <div class="chat-header">
-            <button class="back-button" id="backButton">
-                <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
-            </button>
-            <div class="support-info">
-                <div class="support-name">Поддержка Duck Shop</div>
-                <div class="support-status">
-                    <span class="status-dot"></span> в сети
-                </div>
-            </div>
-        </div>
-        <div class="chat-messages" id="chatMessages"></div>
-        <div class="chat-input-area" id="chatInputArea">
-            <!-- Исходные элементы ввода -->
-            <button class="attach-button" id="attachButton">
-                <svg viewBox="0 0 24 24"><path d="M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V5c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5v10.5c0 .55-.45 1-1 1s-1-.45-1-1V6H10v9.5c0 1.38 1.12 2.5 2.5 2.5s2.5-1.12 2.5-2.5V5c0-2.21-1.79-4-4-4S7 2.79 7 5v12.5c0 3.04 2.46 5.5 5.5 5.5s5.5-2.46 5.5-5.5V6h-1.5z"/></svg>
-            </button>
-            <input type="file" id="fileInput" accept="image/*" style="display:none;">
-            <div class="input-wrapper">
-                <textarea id="messageInput" class="chat-input" placeholder="Сообщение..." rows="1"></textarea>
-            </div>
-            <button class="send-button" id="sendButton" disabled>
-                <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-            </button>
-        </div>
+  <div class="container">
+    <header>
+      <button class="back" id="back">
+        <svg viewBox="0 0 24 24">
+          <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6z"/>
+        </svg>
+      </button>
+      <div class="title">Поддержка Duck Shop</div>
+      <div class="status">
+        <div class="dot"></div>
+        онлайн
+      </div>
+    </header>
+
+    <div class="messages" id="messages"></div>
+
+    <div class="input-area" id="inputArea">
+      <button class="attach" id="attach">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+          <path d="M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V5c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5v10.5c0 .55-.45 1-1 1s-1-.45-1-1V6H10v9.5c0 1.38 1.12 2.5 2.5 2.5s2.5-1.12 2.5-2.5V5c0-2.21-1.79-4-4-4S7 2.79 7 5v12.5c0 3.04 2.46 5.5 5.5 5.5s5.5-2.46 5.5-5.5V6h-1.5z"/>
+        </svg>
+      </button>
+      <input type="file" id="file" accept="image/*" style="display:none;">
+      <div class="input-wrap">
+        <textarea id="input" class="input" placeholder="Сообщение..." rows="1"></textarea>
+      </div>
+      <button class="send" id="send" disabled>
+        <svg viewBox="0 0 24 24" width="22" height="22">
+          <path d="M2.01 21L23 12 2.01 3 2 10l15 2z"/>
+        </svg>
+      </button>
     </div>
-    <!-- Затемнение + анимация завершения -->
-    <div class="dialog-end-overlay" id="endOverlay">
-        <div class="end-lottie" id="endLottie"></div>
-        <div class="end-text">Ваше обращение закрыто<br><span style="font-size:16px; opacity:0.8;">надеемся, мы решили все ваши вопросы</span></div>
+  </div>
+
+  <!-- Затемнение + анимация завершения -->
+  <div class="dialog-end-overlay" id="endOverlay">
+    <div class="end-lottie" id="endLottie"></div>
+    <div class="end-text">
+      Ваше обращение закрыто
+      <div class="end-subtext">надеемся, мы решили все ваши вопросы</div>
     </div>
+  </div>
 
-    <script>
-        const API_URL = 'https://duck-shop-sever.onrender.com';
-        let currentUser = null;
-        let currentDialogId = null;
-        let lastMessageId = 0;
-        let pollingInterval = null;
-        let isDialogClosed = false;
+  <script>
+    const API_URL = 'https://duck-shop-sever.onrender.com';
+    let currentUser = null;
+    let currentDialogId = null;
+    let lastMessageId = 0;
+    let pollingInterval = null;
+    let isDialogClosed = false;
 
-        function loadUser() {
-            try {
-                const data = localStorage.getItem('duck_user_v1');
-                return data ? JSON.parse(data) : null;
-            } catch {
-                return null;
+    function loadUser() {
+      try {
+        const data = localStorage.getItem('duck_user_v1');
+        return data ? JSON.parse(data) : null;
+      } catch {
+        return null;
+      }
+    }
+
+    function formatTime(ts) {
+      const d = new Date(ts);
+      return d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    }
+
+    function autoGrow() {
+      const ta = document.getElementById('input');
+      if (!ta) return;
+      ta.style.height = 'auto';
+      ta.style.height = Math.min(ta.scrollHeight, 120) + 'px';
+      document.getElementById('send').disabled = !ta.value.trim();
+    }
+
+    function showNewChatButton() {
+      const inputArea = document.getElementById('inputArea');
+      const attach = document.getElementById('attach');
+      const inputWrap = document.querySelector('.input-wrap');
+      const send = document.getElementById('send');
+      
+      attach.style.display = 'none';
+      inputWrap.style.display = 'none';
+      send.style.display = 'none';
+      
+      inputArea.classList.add('closed');
+      
+      if (!document.getElementById('newChatButton')) {
+        const newChatBtn = document.createElement('button');
+        newChatBtn.id = 'newChatButton';
+        newChatBtn.className = 'new-chat-button';
+        newChatBtn.innerHTML = `
+          <svg viewBox="0 0 24 24">
+            <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+            <path d="M12 6v4h4v2h-4v4h-2v-4H6v-2h4V6h2z"/>
+          </svg>
+          Начать новый разговор
+        `;
+        newChatBtn.onclick = () => location.reload();
+        inputArea.appendChild(newChatBtn);
+      }
+    }
+
+    async function sendMessage(text = '', file = null) {
+      if (!currentUser || isDialogClosed) return;
+      const formData = new FormData();
+      formData.append('user_id', currentUser.id);
+      if (currentDialogId) formData.append('dialog_id', currentDialogId);
+      if (file) formData.append('file', file);
+      else if (text.trim()) formData.append('message', text.trim());
+      else return;
+
+      try {
+        const res = await fetch(`${API_URL}/api/support/message`, { method: 'POST', body: formData });
+        const data = await res.json();
+        if (data.dialog_id) currentDialogId = data.dialog_id;
+        document.getElementById('input').value = '';
+        document.getElementById('input').style.height = 'auto';
+        document.getElementById('file').value = '';
+        document.getElementById('send').disabled = true;
+        await loadMessages();
+      } catch (e) {
+        console.error('send error', e);
+      }
+    }
+
+    async function loadMessages(silent = false) {
+      if (!currentUser) {
+        location.href = 'reg_log.html';
+        return;
+      }
+      try {
+        const res = await fetch(`${API_URL}/api/support/history/${currentUser.id}`);
+        const data = await res.json();
+        if (!data.success) return;
+        if (data.dialog_id) currentDialogId = data.dialog_id;
+
+        // Проверка закрытия диалога
+        if (data.is_closed && !isDialogClosed) {
+          isDialogClosed = true;
+          
+          document.getElementById('input').disabled = true;
+          document.getElementById('send').disabled = true;
+          document.getElementById('attach').disabled = true;
+          document.getElementById('file').disabled = true;
+          
+          closeDialog();
+          
+          setTimeout(() => {
+            showNewChatButton();
+          }, 3500);
+        }
+
+        const container = document.getElementById('messages');
+        if (!silent && data.messages.length === 0) {
+          container.innerHTML = `
+            <div class="empty">
+              <div class="lottie" id="lottie"></div>
+              <div class="empty-title">Чат с поддержкой</div>
+              <div class="empty-subtitle">Напишите нам — ответим быстро</div>
+            </div>
+          `;
+          lottie.loadAnimation({
+            container: document.getElementById('lottie'),
+            renderer: 'svg',
+            loop: true,
+            autoplay: true,
+            path: 'support.json'
+          });
+          return;
+        }
+        
+        let html = '';
+        let newId = lastMessageId;
+        
+        data.messages.forEach(msg => {
+          if (msg.id > newId) newId = msg.id;
+          const isUser = msg.sender === 'user';
+          let content = '';
+          
+          if (msg.metadata?.file) {
+            const f = msg.metadata.file;
+            if (f.isImage || f.type?.startsWith('image/')) {
+              content = `<img src="${f.url}" class="message-image" onclick="window.open('${f.url}','_blank')">`;
+            } else {
+              content = `<div class="file-message ${isUser ? 'user' : 'support'}">📎 ${f.name} (${(f.size/1024).toFixed(1)} KB)</div>`;
             }
-        }
-
-        function formatTime(ts) {
-            const d = new Date(ts);
-            return d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-        }
-
-        function autoGrowTextarea() {
-            const ta = document.getElementById('messageInput');
-            if (!ta) return;
-            ta.style.height = 'auto';
-            ta.style.height = Math.min(ta.scrollHeight, 80) + 'px';
-            document.getElementById('sendButton').disabled = !ta.value.trim();
-        }
-
-        function openFullImage(src) {
-            const modal = document.createElement('div');
-            modal.className = 'image-modal';
-            modal.innerHTML = `<img src="${src}" alt="full image">`;
-            modal.onclick = () => modal.remove();
-            document.body.appendChild(modal);
-        }
-
-        // Функция для замены строки ввода на кнопку "Начать новый разговор"
-        function showNewChatButton() {
-            const inputArea = document.getElementById('chatInputArea');
-            const attachBtn = document.getElementById('attachButton');
-            const inputWrapper = document.querySelector('.input-wrapper');
-            const sendBtn = document.getElementById('sendButton');
-            
-            // Скрываем старые элементы
-            attachBtn.style.display = 'none';
-            inputWrapper.style.display = 'none';
-            sendBtn.style.display = 'none';
-            
-            // Добавляем класс для центрирования
-            inputArea.classList.add('closed');
-            
-            // Создаем кнопку нового разговора, если её ещё нет
-            if (!document.getElementById('newChatButton')) {
-                const newChatBtn = document.createElement('button');
-                newChatBtn.id = 'newChatButton';
-                newChatBtn.className = 'new-chat-button';
-                newChatBtn.innerHTML = `
-                    <svg viewBox="0 0 24 24">
-                        <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
-                        <path d="M12 6v4h4v2h-4v4h-2v-4H6v-2h4V6h2z"/>
-                    </svg>
-                    Начать новый разговор
-                `;
-                newChatBtn.onclick = () => location.reload();
-                inputArea.appendChild(newChatBtn);
-            }
-        }
-
-        async function sendMessage(text = '', file = null) {
-            if (!currentUser || isDialogClosed) return;
-            const formData = new FormData();
-            formData.append('user_id', currentUser.id);
-            if (currentDialogId) formData.append('dialog_id', currentDialogId);
-            if (file) formData.append('file', file);
-            else if (text.trim()) formData.append('message', text.trim());
-            else return;
-            
-            try {
-                const resp = await fetch(`${API_URL}/api/support/message`, {
-                    method: 'POST',
-                    body: formData
-                });
-                const data = await resp.json();
-                if (data.dialog_id) currentDialogId = data.dialog_id;
-                document.getElementById('messageInput').value = '';
-                document.getElementById('messageInput').style.height = 'auto';
-                document.getElementById('fileInput').value = '';
-                document.getElementById('sendButton').disabled = true;
-                await loadMessages();
-            } catch (err) {
-                console.error('send error:', err);
-            }
-        }
-
-        async function loadMessages(silent = false) {
-            if (!currentUser) {
-                location.href = 'reg_log.html';
-                return;
-            }
-            
-            try {
-                const res = await fetch(`${API_URL}/api/support/history/${currentUser.id}`);
-                const data = await res.json();
-                if (!data.success) return;
-                
-                if (data.dialog_id) currentDialogId = data.dialog_id;
-                
-                // Проверка закрытия диалога
-                if (data.is_closed && !isDialogClosed) {
-                    isDialogClosed = true;
-                    
-                    // Блокируем ввод
-                    document.getElementById('messageInput').disabled = true;
-                    document.getElementById('sendButton').disabled = true;
-                    document.getElementById('attachButton').disabled = true;
-                    document.getElementById('fileInput').disabled = true;
-                    
-                    // Запускаем анимацию закрытия
-                    closeDialog();
-                    
-                    // Показываем кнопку нового разговора через 3.5 секунды
-                    setTimeout(() => {
-                        showNewChatButton();
-                    }, 3500);
-                }
-                
-                const container = document.getElementById('chatMessages');
-                
-                if (!silent && data.messages.length === 0) {
-                    container.innerHTML = `
-                        <div class="empty-state">
-                            <div class="lottie-container" id="lottieEmpty"></div>
-                            <div class="empty-state-text">Чат с поддержкой</div>
-                            <div class="empty-state-subtext">Напишите нам — ответим быстро</div>
-                        </div>
-                    `;
-                    if (typeof lottie !== 'undefined') {
-                        lottie.loadAnimation({
-                            container: document.getElementById('lottieEmpty'),
-                            renderer: 'svg',
-                            loop: true,
-                            autoplay: true,
-                            path: 'support.json'
-                        });
-                    }
-                    return;
-                }
-                
-                let html = '';
-                let newLastId = lastMessageId;
-                
-                data.messages.forEach(msg => {
-                    if (msg.id > newLastId) newLastId = msg.id;
-                    const isUser = msg.sender === 'user';
-                    let content = '';
-                    
-                    if (msg.metadata?.file) {
-                        const f = msg.metadata.file;
-                        if (f.isImage || f.type?.startsWith('image/')) {
-                            content = `<img src="${f.url}" class="message-image" onclick="openFullImage('${f.url}')">`;
-                        } else {
-                            content = `
-                                <div class="file-message">
-                                    <span class="file-icon">📎</span>
-                                    <div class="file-info">
-                                        <div class="file-name">${f.name}</div>
-                                        <div class="file-size">${(f.size/1024).toFixed(1)} KB</div>
-                                    </div>
-                                </div>
-                            `;
-                        }
-                    } else {
-                        content = (msg.message || '').replace(/\n/g, '<br>');
-                    }
-                    
-                    const avatarHtml = isUser ? `
-                        <div class="message-avatar">
-                            ${currentUser.avatarUrl
-                                ? `<img src="${currentUser.avatarUrl}" alt="">`
-                                : `<span>${(currentUser.username||'U')[0].toUpperCase()}</span>`}
-                        </div>
-                    ` : `
-                        <div class="message-avatar support">
-                            <span>DS</span>
-                        </div>
-                    `;
-                    
-                    html += `
-                        <div class="message-wrapper ${isUser ? 'user' : 'support'}">
-                            ${avatarHtml}
-                            <div class="message-content">
-                                <div class="message-bubble">
-                                    ${content}
-                                    <div class="message-time">${formatTime(msg.created_at)}</div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                });
-                
-                if (html) {
-                    container.innerHTML = html;
-                    container.scrollTop = container.scrollHeight;
-                }
-                
-                lastMessageId = newLastId;
-                
-            } catch (err) {
-                console.error('load messages error:', err);
-            }
-        }
-
-        async function checkNewMessages() {
-            if (!currentUser || !currentDialogId || isDialogClosed) return;
-            try {
-                const res = await fetch(`${API_URL}/api/support/new/${currentUser.id}/${lastMessageId}`);
-                const data = await res.json();
-                if (data.success && data.messages?.length > 0) {
-                    await loadMessages(true);
-                }
-            } catch {}
-        }
-
-        // Анимация завершения диалога
-        function closeDialog() {
-            const overlay = document.getElementById('endOverlay');
-            overlay.classList.add('active');
-            
-            setTimeout(() => {
-                lottie.loadAnimation({
-                    container: document.getElementById('endLottie'),
-                    renderer: 'svg',
-                    loop: false,
-                    autoplay: true,
-                    path: 'enddialog.json'
-                });
-            }, 200);
-        }
-
-        document.addEventListener('DOMContentLoaded', async () => {
-            currentUser = loadUser();
-            if (!currentUser) {
-                location.href = 'reg_log.html';
-                return;
-            }
-
-            const msgInput = document.getElementById('messageInput');
-            const sendBtn = document.getElementById('sendButton');
-            const attachBtn = document.getElementById('attachButton');
-            const fileInp = document.getElementById('fileInput');
-            const backBtn = document.getElementById('backButton');
-
-            msgInput.addEventListener('input', autoGrowTextarea);
-            msgInput.addEventListener('keydown', e => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    if (msgInput.value.trim() && !isDialogClosed) sendMessage(msgInput.value);
-                }
-            });
-
-            sendBtn.addEventListener('click', () => {
-                if (msgInput.value.trim() && !isDialogClosed) sendMessage(msgInput.value);
-            });
-
-            attachBtn.addEventListener('click', () => {
-                if (!isDialogClosed) fileInp.click();
-            });
-
-            fileInp.addEventListener('change', e => {
-                const file = e.target.files[0];
-                if (file && !isDialogClosed) sendMessage('', file);
-            });
-
-            backBtn.addEventListener('click', () => location.href = 'main.html');
-
-            await loadMessages();
-            
-            if (currentDialogId && !isDialogClosed) {
-                pollingInterval = setInterval(checkNewMessages, 2800);
-            }
+          } else {
+            content = msg.message || '';
+          }
+          
+          html += `
+            <div class="msg ${isUser ? 'user' : 'support'}">
+              <div class="bubble">${content.replace(/\n/g,'<br>')}</div>
+              <div class="time">${formatTime(msg.created_at)}</div>
+            </div>
+          `;
         });
+        
+        if (html) {
+          container.innerHTML = html;
+          container.scrollTop = container.scrollHeight;
+        }
+        
+        lastMessageId = newId;
+      } catch (err) {
+        console.error('load error', err);
+      }
+    }
 
-        window.addEventListener('beforeunload', () => {
-            if (pollingInterval) clearInterval(pollingInterval);
+    async function checkNewMessages() {
+      if (!currentUser || !currentDialogId || isDialogClosed) return;
+      try {
+        const res = await fetch(`${API_URL}/api/support/new/${currentUser.id}/${lastMessageId}`);
+        const data = await res.json();
+        if (data.success && data.messages?.length > 0) {
+          await loadMessages(true);
+        }
+      } catch {}
+    }
+
+    // Анимация завершения
+    function closeDialog() {
+      const overlay = document.getElementById('endOverlay');
+      overlay.classList.add('active');
+
+      setTimeout(() => {
+        lottie.loadAnimation({
+          container: document.getElementById('endLottie'),
+          renderer: 'svg',
+          loop: false,
+          autoplay: true,
+          path: 'enddialog.json'
         });
-    </script>
+      }, 200);
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      currentUser = loadUser();
+      if (!currentUser) {
+        location.href = 'reg_log.html';
+        return;
+      }
+
+      const input = document.getElementById('input');
+      const send = document.getElementById('send');
+      const attach = document.getElementById('attach');
+      const file = document.getElementById('file');
+      const back = document.getElementById('back');
+
+      input.addEventListener('input', autoGrow);
+      input.addEventListener('keydown', e => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          if (input.value.trim() && !isDialogClosed) sendMessage(input.value);
+        }
+      });
+
+      send.addEventListener('click', () => {
+        if (input.value.trim() && !isDialogClosed) sendMessage(input.value);
+      });
+
+      attach.addEventListener('click', () => {
+        if (!isDialogClosed) file.click();
+      });
+      
+      file.addEventListener('change', e => {
+        const f = e.target.files[0];
+        if (f && !isDialogClosed) sendMessage('', f);
+      });
+
+      back.addEventListener('click', () => location.href = 'main.html');
+
+      await loadMessages();
+
+      if (currentDialogId && !isDialogClosed) {
+        pollingInterval = setInterval(checkNewMessages, 3000);
+      }
+    });
+
+    window.addEventListener('beforeunload', () => {
+      if (pollingInterval) clearInterval(pollingInterval);
+    });
+  </script>
 </body>
 </html>
