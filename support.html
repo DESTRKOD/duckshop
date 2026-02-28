@@ -25,7 +25,7 @@
       flex-direction: column;
       height: 100vh;
       height: 100dvh;
-      max-width: 420px;
+      max-width: 480px;                /* шире для большего текста */
       margin: 0 auto;
       background: transparent;
       overflow: hidden;
@@ -152,13 +152,17 @@
     }
 
     .message-bubble {
-      max-width: 76%;
-      padding: 11px 15px;
+      max-width: 82%;                  /* шире → меньше переносов */
+      padding: 12px 18px;              /* больше воздуха внутри */
       border-radius: 20px;
-      line-height: 1.48;
-      font-size: 15px;
+      line-height: 1.5;
+      font-size: 15.5px;
       font-weight: 400;
       position: relative;
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow-wrap: break-word;
+      hyphens: auto;
     }
 
     .message-wrapper.user .message-bubble {
@@ -238,16 +242,41 @@
       border-top: 1px solid rgba(255,255,255,0.12);
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       flex-shrink: 0;
       box-shadow: 0 -4px 12px rgba(0,0,0,0.25);
+    }
+
+    .attach-button {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: white;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .attach-button:hover {
+      background: rgba(255,255,255,0.25);
+    }
+
+    .attach-button svg {
+      fill: white;
+      width: 22px;
+      height: 22px;
     }
 
     .input-wrapper {
       flex: 1;
       background: rgba(255,255,255,0.12);
       border-radius: 26px;
-      padding: 8px 16px;
+      padding: 10px 18px;           /* больше места для текста */
       border: 1px solid rgba(255,255,255,0.18);
       transition: all 0.2s;
     }
@@ -262,12 +291,12 @@
       background: transparent;
       border: none;
       color: white;
-      font-size: 15px;
+      font-size: 15.5px;
       outline: none;
       min-height: 24px;
-      max-height: 110px;
+      max-height: 120px;
       resize: none;
-      line-height: 1.4;
+      line-height: 1.45;
     }
 
     .chat-input::placeholder {
@@ -319,10 +348,10 @@
     }
 
     @media (max-width: 480px) {
+      .chat-container { max-width: 100%; }
       .chat-header { padding: 12px 16px; }
-      .support-avatar { width: 44px; height: 44px; }
       .chat-messages { padding: 14px 12px; }
-      .chat-input-area { padding: 12px 14px; }
+      .chat-input-area { padding: 12px 14px; gap: 8px; }
     }
   </style>
 </head>
@@ -337,9 +366,7 @@
       </button>
 
       <div class="support-info">
-        <div class="support-avatar" id="supportAvatar">
-          <!-- JS подставит утку -->
-        </div>
+        <div class="support-avatar" id="supportAvatar"></div>
 
         <div class="support-text">
           <div class="support-name">Duck Shop Support</div>
@@ -358,6 +385,14 @@
     </div>
 
     <div class="chat-input-area">
+      <button class="attach-button" id="attachButton" type="button">
+        <svg viewBox="0 0 24 24">
+          <path d="M21.41 8.59l-5-5A2 2 0 0016 3H4a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2V9.41a2 2 0 00-.59-1.41zM15 19H5V5h9v3h3v11z"/>
+        </svg>
+      </button>
+
+      <input type="file" id="fileInput" style="display:none;" accept="image/*,.pdf,.doc,.docx,.txt" />
+
       <div class="input-wrapper">
         <textarea 
           id="messageInput" 
@@ -376,12 +411,7 @@
   </div>
 
   <script>
-    // ──────────────────────────────────────────────
-    // Логика полностью сохранена из предыдущей версии
-    // Изменён только дизайн (CSS + структура под стекло/градиент)
-    // ──────────────────────────────────────────────
-
-    const API_URL = 'https://duck-shop-sever.onrender.com'; // ← твой сервер
+    const API_URL = 'https://duck-shop-sever.onrender.com';
 
     let currentUser = null;
     let currentDialogId = null;
@@ -398,36 +428,65 @@
       return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }
 
-    async function sendMessage(text) {
-      if (!currentUser || !text.trim()) return;
+    async function sendMessage(text = null, file = null) {
+      if (!currentUser) return;
 
       try {
-        const response = await fetch(`${API_URL}/api/support/message`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
+        let body;
+        let headers = {};
+
+        if (file) {
+          body = new FormData();
+          body.append('file', file);
+          body.append('user_id', currentUser.id);
+          if (currentDialogId) body.append('dialog_id', currentDialogId);
+        } else if (text && text.trim()) {
+          body = JSON.stringify({
             user_id: currentUser.id,
             message: text.trim(),
             dialog_id: currentDialogId
-          })
+          });
+          headers = { 'Content-Type': 'application/json' };
+        } else {
+          return;
+        }
+
+        const response = await fetch(`${API_URL}/api/support/message`, {
+          method: 'POST',
+          headers,
+          body
         });
 
-        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
 
-        if (data.success) {
-          if (!currentDialogId && data.message.dialog_id) {
-            currentDialogId = data.message.dialog_id;
+        let data;
+        try {
+          data = await response.json();
+        } catch {
+          data = { success: true }; // считаем успехом при 200 без JSON
+        }
+
+        if (data && (data.success || data.ok || response.status === 200 || response.status === 201)) {
+          if (!currentDialogId && data.dialog_id) {
+            currentDialogId = data.dialog_id;
           }
 
           const messageInput = document.getElementById('messageInput');
-          messageInput.value = '';
-          messageInput.style.height = 'auto';
+          if (text) {
+            messageInput.value = '';
+            messageInput.style.height = 'auto';
+          }
+          document.getElementById('fileInput').value = '';
 
           await loadMessageHistory();
+        } else {
+          alert('Сообщение/файл отправлено, но сервер вернул неожиданный ответ');
         }
       } catch (error) {
         console.error('Ошибка отправки:', error);
-        alert('Не удалось отправить сообщение');
+        alert('Не удалось отправить. Проверьте соединение.');
       }
     }
 
@@ -439,14 +498,14 @@
         const data = await response.json();
 
         if (data.success) {
-          const messagesContainer = document.getElementById('chatMessages');
-          const loadingIndicator = document.getElementById('loadingIndicator');
+          const container = document.getElementById('chatMessages');
+          const loading = document.getElementById('loadingIndicator');
 
           if (data.messages.length > 0) {
             currentDialogId = data.dialog_id;
 
             let lastId = 0;
-            messagesContainer.innerHTML = data.messages.map(msg => {
+            container.innerHTML = data.messages.map(msg => {
               lastId = Math.max(lastId, msg.id);
               const isUser = msg.sender === 'user';
 
@@ -477,7 +536,7 @@
                   <div class="message-content">
                     ${!isUser ? '<div class="sender-name">Поддержка</div>' : ''}
                     <div class="message-bubble">
-                      ${msg.message}
+                      ${msg.message || '[файл отправлен]'}
                       <div class="message-time">${formatTime(msg.created_at)}</div>
                     </div>
                   </div>
@@ -487,26 +546,26 @@
             }).join('');
 
             lastMessageId = lastId;
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            container.scrollTop = container.scrollHeight;
           } else {
-            messagesContainer.innerHTML = `
+            container.innerHTML = `
               <div style="text-align:center; color:rgba(255,255,255,0.7); padding:80px 20px;">
                 <div style="font-size:64px; margin-bottom:16px;">🦆💬</div>
-                <div style="font-size:20px; font-weight:600; margin-bottom:8px;">Чат с поддержкой</div>
-                <div>Напишите нам — ответим максимально быстро</div>
+                <div style="font-size:20px; font-weight:600;">Чат с поддержкой</div>
+                <div>Напишите или прикрепите файл — ответим быстро</div>
               </div>
             `;
           }
 
-          loadingIndicator.style.display = 'none';
+          loading.style.display = 'none';
         }
       } catch (error) {
-        console.error('Ошибка загрузки истории:', error);
+        console.error('Ошибка загрузки:', error);
         document.getElementById('loadingIndicator').style.display = 'none';
         document.getElementById('chatMessages').innerHTML = `
           <div style="text-align:center; color:#ff6b6b; padding:80px 20px;">
             <div style="font-size:48px; margin-bottom:12px;">⚠️</div>
-            <div style="font-size:18px;">Не удалось загрузить чат</div>
+            <div>Не удалось загрузить чат</div>
           </div>
         `;
       }
@@ -519,11 +578,12 @@
         const response = await fetch(`${API_URL}/api/support/new/${currentUser.id}/${lastMessageId}`);
         const data = await response.json();
 
-        if (data.success && data.messages.length > 0) {
-          const messagesContainer = document.getElementById('chatMessages');
+        if (data.success && data.messages?.length > 0) {
+          const container = document.getElementById('chatMessages');
 
-          const noMsg = messagesContainer.querySelector('div[style*="text-align:center"]');
-          if (noMsg) messagesContainer.innerHTML = '';
+          if (container.querySelector('div[style*="text-align:center"]')) {
+            container.innerHTML = '';
+          }
 
           data.messages.forEach(msg => {
             lastMessageId = Math.max(lastMessageId, msg.id);
@@ -556,7 +616,7 @@
                 <div class="message-content">
                   ${!isUser ? '<div class="sender-name">Поддержка</div>' : ''}
                   <div class="message-bubble">
-                    ${msg.message}
+                    ${msg.message || '[файл отправлен]'}
                     <div class="message-time">${formatTime(msg.created_at)}</div>
                   </div>
                 </div>
@@ -564,10 +624,10 @@
               </div>
             `;
 
-            messagesContainer.insertAdjacentHTML('beforeend', html);
+            container.insertAdjacentHTML('beforeend', html);
           });
 
-          messagesContainer.scrollTop = messagesContainer.scrollHeight;
+          container.scrollTop = container.scrollHeight;
         }
       } catch (error) {
         console.error('Ошибка проверки новых сообщений:', error);
@@ -577,14 +637,13 @@
     function autoResizeTextarea() {
       const ta = document.getElementById('messageInput');
       ta.style.height = 'auto';
-      ta.style.height = Math.min(ta.scrollHeight, 110) + 'px';
+      ta.style.height = Math.min(ta.scrollHeight, 120) + 'px';
 
       document.getElementById('sendButton').disabled = !ta.value.trim();
     }
 
     document.addEventListener('DOMContentLoaded', async () => {
       currentUser = loadUser();
-
       if (!currentUser) {
         window.location.href = 'reg_log.html';
         return;
@@ -602,6 +661,8 @@
       const input = document.getElementById('messageInput');
       const sendBtn = document.getElementById('sendButton');
       const backBtn = document.getElementById('backButton');
+      const attachBtn = document.getElementById('attachButton');
+      const fileInput = document.getElementById('fileInput');
 
       input.addEventListener('input', autoResizeTextarea);
 
@@ -616,8 +677,22 @@
         if (input.value.trim()) sendMessage(input.value);
       });
 
+      attachBtn.addEventListener('click', () => fileInput.click());
+
+      fileInput.addEventListener('change', e => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (file.size > 10 * 1024 * 1024) {
+          alert('Файл слишком большой (макс. 10 МБ)');
+          return;
+        }
+
+        sendMessage(null, file);
+      });
+
       backBtn.addEventListener('click', () => {
-        window.location.href = 'profile.html'; // или main.html — как у тебя настроено
+        window.location.href = 'main.html'; 
       });
     });
 
