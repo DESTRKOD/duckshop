@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Поддержка - Duck Shop</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <style>
     * {
       margin: 0;
@@ -20,12 +20,7 @@
       color: white;
     }
 
-    body {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
+    /* Используем всю площадь экрана */
     .chat-container {
       display: flex;
       flex-direction: column;
@@ -35,32 +30,23 @@
       overflow: hidden;
     }
 
-    /* Desktop styles - полное расширение */
-    @media (min-width: 1024px) {
-      .chat-container {
-        max-width: 800px;
-        height: 90vh;
-        margin: 20px auto;
-        border-radius: 24px;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-      }
-    }
-
+    /* Хедер всегда виден */
     .chat-header {
-      padding: 16px 20px;
-      background: rgba(11, 60, 145, 0.95);
+      padding: 12px 16px;
+      background: rgba(11, 60, 145, 0.98);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 12px;
       flex-shrink: 0;
       border-bottom: 1px solid rgba(255,255,255,0.15);
+      z-index: 10;
     }
 
     .back-button {
-      width: 44px;
-      height: 44px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       background: rgba(255,255,255,0.15);
       border: none;
@@ -87,35 +73,36 @@
     }
 
     .support-name {
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 700;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }
 
     .support-status {
-      font-size: 14px;
+      font-size: 13px;
       color: #c3dfff;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       font-weight: 500;
     }
 
     .status-dot {
-      width: 10px;
-      height: 10px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
       background: #4caf50;
-      box-shadow: 0 0 0 3px rgba(76,175,80,0.35);
+      box-shadow: 0 0 0 2px rgba(76,175,80,0.35);
     }
 
+    /* Область сообщений с прокруткой */
     .chat-messages {
       flex: 1;
       overflow-y: auto;
-      padding: 20px 16px;
+      padding: 16px 12px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 12px;
       scroll-behavior: smooth;
     }
 
@@ -132,9 +119,10 @@
       justify-content: flex-start;
     }
 
+    /* Аватар только у пользователя */
     .message-avatar {
-      width: 36px;
-      height: 36px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
       overflow: hidden;
       flex-shrink: 0;
@@ -144,12 +132,9 @@
       background: #ffb300;
       color: #0d47a1;
       font-weight: bold;
-      font-size: 18px;
+      font-size: 16px;
       border: 1px solid rgba(255,255,255,0.3);
-    }
-
-    .message-avatar.user {
-      margin-left: 10px;
+      margin-left: 8px;
     }
 
     .message-avatar img {
@@ -164,17 +149,11 @@
       flex-direction: column;
     }
 
-    @media (min-width: 1024px) {
-      .message-content {
-        max-width: 60%;
-      }
-    }
-
+    /* Сообщения с padding 2px сверху/снизу и 4px слева/справа */
     .message-bubble {
-      padding: 10px 16px;
-      border-radius: 20px;
+      padding: 2px 4px;
       font-size: 15px;
-      line-height: 1.5;
+      line-height: 1.4;
       word-break: break-word;
       overflow-wrap: break-word;
       white-space: pre-wrap;
@@ -185,8 +164,8 @@
     .message-wrapper.user .message-bubble {
       background: linear-gradient(135deg, #1976d2 0%, #0d47a1 100%);
       color: white;
-      border-bottom-right-radius: 6px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.25);
+      border-radius: 12px 12px 4px 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.25);
       margin-left: auto;
     }
 
@@ -196,33 +175,70 @@
       -webkit-backdrop-filter: blur(10px);
       border: 1px solid rgba(255,255,255,0.18);
       color: white;
-      border-bottom-left-radius: 6px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      border-radius: 12px 12px 12px 4px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
       margin-right: auto;
     }
 
     .message-time {
-      font-size: 11px;
-      margin-top: 6px;
+      font-size: 10px;
+      margin-top: 4px;
       opacity: 0.7;
       text-align: right;
-      padding-right: 4px;
+      padding-right: 2px;
     }
 
+    /* Изображения без контейнера */
+    .message-image {
+      max-width: 250px;
+      max-height: 300px;
+      border-radius: 12px;
+      cursor: pointer;
+      display: block;
+      margin: 0;
+      transition: transform 0.2s;
+    }
+
+    .message-image:hover {
+      transform: scale(1.02);
+    }
+
+    /* Файлы */
+    .file-message {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .file-icon {
+      font-size: 18px;
+    }
+
+    .file-link {
+      color: white;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      word-break: break-all;
+      font-size: 14px;
+    }
+
+    /* Область ввода всегда видна */
     .chat-input-area {
-      padding: 16px 20px;
-      background: rgba(11,60,145,0.95);
+      padding: 12px 16px;
+      background: rgba(11,60,145,0.98);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border-top: 1px solid rgba(255,255,255,0.15);
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
+      flex-shrink: 0;
+      z-index: 10;
     }
 
     .attach-button {
-      width: 48px;
-      height: 48px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
       background: rgba(255,255,255,0.14);
       border: none;
@@ -240,15 +256,15 @@
 
     .attach-button svg {
       fill: white;
-      width: 24px;
-      height: 24px;
+      width: 22px;
+      height: 22px;
     }
 
     .input-wrapper {
       flex: 1;
       background: rgba(255,255,255,0.13);
-      border-radius: 28px;
-      padding: 10px 18px;
+      border-radius: 24px;
+      padding: 8px 16px;
       border: 1px solid rgba(255,255,255,0.18);
       transition: all 0.2s;
     }
@@ -263,12 +279,12 @@
       background: transparent;
       border: none;
       color: white;
-      font-size: 16px;
+      font-size: 15px;
       outline: none;
-      min-height: 24px;
-      max-height: 120px;
+      min-height: 22px;
+      max-height: 90px;
       resize: none;
-      line-height: 1.5;
+      line-height: 1.4;
       font-family: inherit;
     }
 
@@ -277,8 +293,8 @@
     }
 
     .send-button {
-      width: 48px;
-      height: 48px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
       background: #2196f3;
       border: none;
@@ -292,7 +308,7 @@
 
     .send-button:hover {
       background: #1976d2;
-      transform: scale(1.07);
+      transform: scale(1.05);
     }
 
     .send-button:disabled {
@@ -303,10 +319,11 @@
 
     .send-button svg {
       fill: white;
-      width: 22px;
-      height: 22px;
+      width: 20px;
+      height: 20px;
     }
 
+    /* Пустое состояние */
     .empty-state {
       flex: 1;
       display: flex;
@@ -319,20 +336,20 @@
 
     .empty-state-text {
       color: rgba(255,255,255,0.9);
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 600;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
     }
 
     .empty-state-subtext {
       color: rgba(255,255,255,0.7);
-      font-size: 15px;
+      font-size: 14px;
     }
 
     .lottie-container {
-      width: 240px;
-      height: 240px;
-      margin-bottom: 24px;
+      width: 180px;
+      height: 180px;
+      margin-bottom: 16px;
     }
 
     .loading-indicator {
@@ -342,38 +359,6 @@
       justify-content: center;
       align-items: center;
       padding: 40px 20px;
-    }
-
-    .file-message {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .file-icon {
-      font-size: 22px;
-    }
-
-    .file-link {
-      color: white;
-      text-decoration: underline;
-      text-underline-offset: 2px;
-      word-break: break-all;
-      font-size: 14px;
-    }
-
-    .image-preview {
-      max-width: 100%;
-      max-height: 300px;
-      border-radius: 12px;
-      display: block;
-      margin-top: 8px;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-
-    .image-preview:hover {
-      transform: scale(1.02);
     }
 
     .image-modal {
@@ -397,14 +382,28 @@
       border-radius: 8px;
     }
 
-    @media (max-width: 480px) {
-      .chat-header { padding: 12px 16px; }
-      .chat-messages { padding: 16px 12px; }
-      .chat-input-area { padding: 12px 16px; gap: 8px; }
-      .message-content { max-width: 80%; }
-      .attach-button { width: 44px; height: 44px; }
-      .send-button { width: 44px; height: 44px; }
-      .lottie-container { width: 200px; height: 200px; }
+    /* На десктопе используем всю ширину */
+    @media (min-width: 1024px) {
+      .chat-header {
+        padding: 16px 24px;
+      }
+      
+      .chat-messages {
+        padding: 20px 24px;
+      }
+      
+      .message-content {
+        max-width: 60%;
+      }
+      
+      .message-image {
+        max-width: 400px;
+        max-height: 400px;
+      }
+      
+      .chat-input-area {
+        padding: 16px 24px;
+      }
     }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
@@ -497,7 +496,7 @@
       messagesContainer.innerHTML = `
         <div class="loading-indicator">
           <div class="lottie-container" id="lottieAnimation"></div>
-          <div style="color: rgba(255,255,255,0.9); font-size: 18px; font-weight: 500;">Загрузка сообщений...</div>
+          <div style="color: rgba(255,255,255,0.9);">Загрузка...</div>
         </div>
       `;
       
@@ -563,7 +562,7 @@
         });
 
         if (!response.ok) {
-          console.warn('Server returned non-OK status, but message might still be sent');
+          console.warn('Server returned non-OK status');
         }
 
         const data = await response.json().catch(() => ({}));
@@ -592,7 +591,6 @@
         await loadMessageHistory();
       } catch (error) {
         console.error('Error sending message:', error);
-        // Не показываем ошибку пользователю, просто логируем
       }
     }
 
@@ -619,14 +617,9 @@
                 const isImage = isImageFile(file.name);
                 
                 if (isImage) {
+                  // Изображение без контейнера сообщения
                   messageContent = `
-                    <div style="display: flex; flex-direction: column; gap: 8px;">
-                      <div style="display: flex; align-items: center; gap: 8px;">
-                        <span style="font-size: 18px;">🖼️</span>
-                        <span style="font-size: 14px; opacity: 0.9;">${file.name}</span>
-                      </div>
-                      <img src="${file.url}" alt="${file.name}" class="image-preview" onclick="openImageModal('${file.url}')">
-                    </div>
+                    <img src="${file.url}" alt="Image" class="message-image" onclick="openImageModal('${file.url}')">
                   `;
                 } else {
                   messageContent = `
@@ -640,6 +633,22 @@
                 messageContent = (msg.message || '').replace(/\n/g, '<br>');
               }
               
+              // Для изображений не добавляем контейнер сообщения
+              if (msg.metadata?.file && isImageFile(msg.metadata.file.name)) {
+                return `
+                  <div class="message-wrapper ${isUser ? 'user' : 'support'}">
+                    <div class="message-content" style="max-width: none;">
+                      ${messageContent}
+                      ${isUser ? `<div class="message-avatar user">${currentUser.avatarUrl ? 
+                        `<img src="${currentUser.avatarUrl}" alt="You">` : 
+                        `<span>${(currentUser.username || 'U').charAt(0).toUpperCase()}</span>`}
+                      </div>` : ''}
+                    </div>
+                  </div>
+                `;
+              }
+              
+              // Для текстовых сообщений - с контейнером
               return `
                 <div class="message-wrapper ${isUser ? 'user' : 'support'}">
                   <div class="message-content">
@@ -648,10 +657,10 @@
                       <div class="message-time">${formatTime(msg.created_at)}</div>
                     </div>
                   </div>
-                  ${isUser && currentUser.avatarUrl ? 
-                    `<div class="message-avatar user"><img src="${currentUser.avatarUrl}" alt="You"></div>` : 
-                    isUser ? `<div class="message-avatar user"><span>${(currentUser.username || 'U').charAt(0).toUpperCase()}</span></div>` : ''
-                  }
+                  ${isUser ? `<div class="message-avatar user">${currentUser.avatarUrl ? 
+                    `<img src="${currentUser.avatarUrl}" alt="You">` : 
+                    `<span>${(currentUser.username || 'U').charAt(0).toUpperCase()}</span>`}
+                  </div>` : ''}
                 </div>
               `;
             }).join('');
@@ -681,7 +690,6 @@
         if (data.success && data.messages.length > 0) {
           const messagesContainer = document.getElementById('chatMessages');
           
-          // Удаляем empty state если он есть
           const emptyState = messagesContainer.querySelector('.empty-state');
           if (emptyState) {
             messagesContainer.innerHTML = '';
@@ -699,13 +707,7 @@
               
               if (isImage) {
                 messageContent = `
-                  <div style="display: flex; flex-direction: column; gap: 8px;">
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                      <span style="font-size: 18px;">🖼️</span>
-                      <span style="font-size: 14px; opacity: 0.9;">${file.name}</span>
-                    </div>
-                    <img src="${file.url}" alt="${file.name}" class="image-preview" onclick="openImageModal('${file.url}')">
-                  </div>
+                  <img src="${file.url}" alt="Image" class="message-image" onclick="openImageModal('${file.url}')">
                 `;
               } else {
                 messageContent = `
@@ -719,22 +721,37 @@
               messageContent = (msg.message || '').replace(/\n/g, '<br>');
             }
             
-            const messageHtml = `
-              <div class="message-wrapper ${isUser ? 'user' : 'support'}">
-                <div class="message-content">
-                  <div class="message-bubble">
+            // Для изображений не добавляем контейнер сообщения
+            if (msg.metadata?.file && isImageFile(msg.metadata.file.name)) {
+              const messageHtml = `
+                <div class="message-wrapper ${isUser ? 'user' : 'support'}">
+                  <div class="message-content" style="max-width: none;">
                     ${messageContent}
-                    <div class="message-time">${formatTime(msg.created_at)}</div>
+                    ${isUser ? `<div class="message-avatar user">${currentUser.avatarUrl ? 
+                      `<img src="${currentUser.avatarUrl}" alt="You">` : 
+                      `<span>${(currentUser.username || 'U').charAt(0).toUpperCase()}</span>`}
+                    </div>` : ''}
                   </div>
                 </div>
-                ${isUser && currentUser.avatarUrl ? 
-                  `<div class="message-avatar user"><img src="${currentUser.avatarUrl}" alt="You"></div>` : 
-                  isUser ? `<div class="message-avatar user"><span>${(currentUser.username || 'U').charAt(0).toUpperCase()}</span></div>` : ''
-                }
-              </div>
-            `;
-            
-            messagesContainer.insertAdjacentHTML('beforeend', messageHtml);
+              `;
+              messagesContainer.insertAdjacentHTML('beforeend', messageHtml);
+            } else {
+              const messageHtml = `
+                <div class="message-wrapper ${isUser ? 'user' : 'support'}">
+                  <div class="message-content">
+                    <div class="message-bubble">
+                      ${messageContent}
+                      <div class="message-time">${formatTime(msg.created_at)}</div>
+                    </div>
+                  </div>
+                  ${isUser ? `<div class="message-avatar user">${currentUser.avatarUrl ? 
+                    `<img src="${currentUser.avatarUrl}" alt="You">` : 
+                    `<span>${(currentUser.username || 'U').charAt(0).toUpperCase()}</span>`}
+                  </div>` : ''}
+                </div>
+              `;
+              messagesContainer.insertAdjacentHTML('beforeend', messageHtml);
+            }
           });
           
           messagesContainer.scrollTop = messagesContainer.scrollHeight;
@@ -749,7 +766,7 @@
       if (!textarea) return;
       
       textarea.style.height = 'auto';
-      textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
+      textarea.style.height = Math.min(textarea.scrollHeight, 90) + 'px';
       
       const sendButton = document.getElementById('sendButton');
       if (sendButton) {
@@ -765,7 +782,6 @@
         return;
       }
 
-      // Показываем загрузку
       showLoadingState();
 
       await loadMessageHistory();
