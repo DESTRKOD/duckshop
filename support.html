@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <title>Поддержка - Duck Shop</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
   <style>
     * { margin:0; padding:0; box-sizing:border-box; }
     html, body {
@@ -64,7 +65,7 @@
       display:flex;
       width:100%;
       align-items:flex-start;
-      margin-bottom:2px;
+      margin-bottom:3px;
     }
     .message-wrapper.user {
       justify-content:flex-end !important;
@@ -92,7 +93,7 @@
       max-width: fit-content;
       display:flex;
       flex-direction:column;
-      align-items:center; /* текст по центру блока */
+      align-items:center;
     }
 
     .message-wrapper.user .message-content {
@@ -108,13 +109,13 @@
     }
 
     .message-bubble {
-      padding:6px 9px; /* минимум воздуха */
+      padding:5px 8px;        /* очень плотный padding — блоки узкие и длинные */
       font-size:14.5px;
       line-height:1.32;
       border-radius:16px;
       word-break:break-word;
       white-space:pre-wrap;
-      text-align:center; /* текст ровно по центру */
+      text-align:center;
     }
 
     .message-wrapper.user .message-bubble {
@@ -142,7 +143,7 @@
     .message-time {
       font-size:10px;
       opacity:0.65;
-      margin-top:2px;
+      margin-top:3px;
       text-align:right;
       align-self:flex-end;
       white-space:nowrap;
@@ -163,25 +164,24 @@
       backdrop-filter:blur(12px);
       border-top:1px solid rgba(255,255,255,0.12);
       display:flex;
-      align-items:flex-end;
-      gap:6px;
+      align-items:center;          /* выровнено по центру по вертикали */
+      gap:8px;
       flex-shrink:0;
-      min-height:54px;
-      padding-bottom:calc(env(safe-area-inset-bottom, 0) + 10px);
+      min-height:56px;
+      padding-bottom:calc(env(safe-area-inset-bottom, 0) + 12px);
       box-sizing:border-box;
     }
 
     .attach-button, .send-button {
-      width:32px; height:32px;
+      width:38px; height:38px;
       border-radius:50%;
       border:none;
       display:flex; align-items:center; justify-content:center;
       cursor:pointer;
-      margin-bottom:env(safe-area-inset-bottom, 0);
     }
     .attach-button { background:rgba(255,255,255,0.14); }
     .attach-button:hover { background:rgba(255,255,255,0.22); }
-    .attach-button svg, .send-button svg { width:16px; height:16px; fill:#fff; }
+    .attach-button svg, .send-button svg { width:20px; height:20px; fill:#fff; }
     .send-button { background:#2196f3; }
     .send-button:hover:not(:disabled) { background:#1976d2; transform:scale(1.08); }
     .send-button:disabled { background:rgba(255,255,255,0.16); cursor:not-allowed; }
@@ -189,10 +189,12 @@
     .input-wrapper {
       flex:1;
       background:rgba(255,255,255,0.12);
-      border-radius:20px;
-      padding:7px 12px;
+      border-radius:24px;
+      padding:8px 14px;
       border:1px solid rgba(255,255,255,0.14);
-      min-height:38px;
+      min-height:44px;
+      display:flex;
+      align-items:center;
     }
 
     .chat-input {
@@ -200,12 +202,11 @@
       background:transparent;
       border:none;
       color:#fff;
-      font-size:14.5px;
+      font-size:15px;
       outline:none;
       resize:none;
-      max-height:70px;
-      line-height:1.35;
-      padding:1px 0;
+      line-height:1.4;
+      padding:0;
     }
     .chat-input::placeholder { color:rgba(255,255,255,0.5); }
 
@@ -218,8 +219,13 @@
       text-align:center;
       padding:20px;
     }
-    .empty-state-text { font-size:17px; font-weight:600; margin-bottom:6px; }
-    .empty-state-subtext { font-size:13px; opacity:0.75; }
+    .lottie-container {
+      width:160px;
+      height:160px;
+      margin-bottom:12px;
+    }
+    .empty-state-text { font-size:18px; font-weight:600; margin-bottom:8px; }
+    .empty-state-subtext { font-size:14px; opacity:0.8; }
 
     .image-modal {
       position:fixed; inset:0;
@@ -329,7 +335,10 @@
     }
 
     async function loadMessages(silent = false) {
-      if (!currentUser) return;
+      if (!currentUser) {
+        location.href = 'reg_log.html';
+        return;
+      }
       try {
         const res = await fetch(`${API_URL}/api/support/history/${currentUser.id}`);
         const data = await res.json();
@@ -339,10 +348,20 @@
         if (!silent && data.messages.length === 0) {
           container.innerHTML = `
             <div class="empty-state">
+              <div class="lottie-container" id="lottieEmpty"></div>
               <div class="empty-state-text">Чат с поддержкой</div>
               <div class="empty-state-subtext">Напишите нам — ответим быстро</div>
             </div>
           `;
+          if (typeof lottie !== 'undefined') {
+            lottie.loadAnimation({
+              container: document.getElementById('lottieEmpty'),
+              renderer: 'svg',
+              loop: true,
+              autoplay: true,
+              path: 'https://assets5.lottiefiles.com/packages/lf20_u25cckyh.json'  // анимация чата/поддержки
+            });
+          }
           return;
         }
         let html = '';
