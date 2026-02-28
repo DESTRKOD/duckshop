@@ -466,6 +466,66 @@
       closedMessageShown = true;
     }
 
+    // Функция для начала нового диалога
+    async function startNewDialog() {
+      if (!currentUser) return;
+      
+      try {
+        // Отправляем первое сообщение чтобы создать новый диалог
+        const formData = new FormData();
+        formData.append('user_id', currentUser.id);
+        formData.append('message', 'Здравствуйте, у меня новый вопрос');
+        
+        const res = await fetch(`${API_URL}/api/support/message`, { 
+          method: 'POST', 
+          body: formData 
+        });
+        
+        const data = await res.json();
+        
+        if (data.dialog_id) {
+          // Сбрасываем состояние
+          isDialogClosed = false;
+          closedMessageShown = false;
+          currentDialogId = data.dialog_id;
+          lastMessageId = 0;
+          
+          // Убираем сообщение о закрытии
+          document.getElementById('closedMessageContainer').innerHTML = '';
+          
+          // Возвращаем обычный интерфейс
+          const inputArea = document.getElementById('inputArea');
+          const attach = document.getElementById('attach');
+          const inputWrap = document.querySelector('.input-wrap');
+          const send = document.getElementById('send');
+          
+          attach.style.display = 'grid';
+          inputWrap.style.display = 'block';
+          send.style.display = 'grid';
+          inputArea.classList.remove('closed');
+          
+          // Удаляем кнопку нового разговора
+          const oldBtn = document.getElementById('newChatButton');
+          if (oldBtn) oldBtn.remove();
+          
+          // Разблокируем ввод
+          document.getElementById('input').disabled = false;
+          document.getElementById('attach').disabled = false;
+          document.getElementById('file').disabled = false;
+          document.getElementById('input').value = '';
+          
+          // Загружаем историю нового диалога
+          await loadMessages();
+          
+          // Запускаем polling заново
+          if (pollingInterval) clearInterval(pollingInterval);
+          pollingInterval = setInterval(checkNewMessages, 3000);
+        }
+      } catch (e) {
+        console.error('start new dialog error:', e);
+      }
+    }
+
     function showNewChatButton() {
       const inputArea = document.getElementById('inputArea');
       const attach = document.getElementById('attach');
@@ -495,7 +555,7 @@
         </svg>
         Начать новый разговор
       `;
-      newChatBtn.onclick = () => location.reload();
+      newChatBtn.onclick = startNewDialog;
       inputArea.appendChild(newChatBtn);
     }
 
@@ -564,6 +624,8 @@
             clearInterval(pollingInterval);
             pollingInterval = null;
           }
+          
+          return; // Не обновляем сообщения если диалог закрыт
         }
 
         const container = document.getElementById('messages');
