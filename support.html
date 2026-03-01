@@ -426,6 +426,9 @@
     let isDialogClosed = false;
     let closedMessageShown = false;
 
+    // Флаг для отслеживания, был ли диалог закрыт при прошлом визите
+    const CLOSED_DIALOG_KEY = 'duck_support_closed';
+
     function loadUser() {
       try {
         const data = localStorage.getItem('duck_user_v1');
@@ -466,6 +469,52 @@
       closedMessageShown = true;
     }
 
+    // Функция для создания нового диалога автоматически
+    async function createNewDialog() {
+      if (!currentUser) return;
+      
+      try {
+        // Отправляем пустое сообщение чтобы создать диалог
+        const formData = new FormData();
+        formData.append('user_id', currentUser.id);
+        formData.append('message', ' '); // пробел чтобы создать диалог
+        
+        const res = await fetch(`${API_URL}/api/support/message`, { 
+          method: 'POST', 
+          body: formData 
+        });
+        
+        const data = await res.json();
+        
+        if (data.dialog_id) {
+          currentDialogId = data.dialog_id;
+          isDialogClosed = false;
+          closedMessageShown = false;
+          lastMessageId = 0;
+          
+          // Убираем флаг из localStorage
+          localStorage.removeItem(CLOSED_DIALOG_KEY);
+          
+          // Показываем пустой чат
+          showEmptyState();
+          
+          // Разблокируем ввод
+          document.getElementById('input').disabled = false;
+          document.getElementById('attach').disabled = false;
+          document.getElementById('file').disabled = false;
+          document.getElementById('send').disabled = true;
+          
+          // Запускаем polling
+          if (pollingInterval) clearInterval(pollingInterval);
+          pollingInterval = setInterval(checkNewMessages, 3000);
+        }
+      } catch (e) {
+        console.error('create new dialog error:', e);
+        // Если ошибка - показываем кнопку
+        showNewChatButton();
+      }
+    }
+
     // Функция для возврата к обычному интерфейсу
     function resetToNormalInterface() {
       const inputArea = document.getElementById('inputArea');
@@ -485,17 +534,6 @@
       
       // Убираем сообщение о закрытии
       document.getElementById('closedMessageContainer').innerHTML = '';
-      
-      // Разблокируем ввод
-      document.getElementById('input').disabled = false;
-      document.getElementById('attach').disabled = false;
-      document.getElementById('file').disabled = false;
-      
-      // Сбрасываем флаги
-      isDialogClosed = false;
-      closedMessageShown = false;
-      currentDialogId = null;
-      lastMessageId = 0;
     }
 
     // Функция для показа начального экрана с Lottie
@@ -520,24 +558,12 @@
       }
     }
 
-    // Функция для начала нового диалога
+    // Функция для начала нового диалога по кнопке
     async function startNewDialog() {
       if (!currentUser) return;
       
-      // Просто сбрасываем интерфейс без отправки сообщения
       resetToNormalInterface();
-      
-      // Показываем начальный экран
-      showEmptyState();
-      
-      // Останавливаем старый polling
-      if (pollingInterval) {
-        clearInterval(pollingInterval);
-        pollingInterval = null;
-      }
-      
-      // Новый диалог начнется когда пользователь напишет сообщение
-      // А currentDialogId обновится при отправке первого сообщения
+      await createNewDialog();
     }
 
     function showNewChatButton() {
@@ -620,6 +646,9 @@
         if (data.is_closed) {
           console.log('Диалог закрыт!');
           
+          // Сохраняем в localStorage что диалог был закрыт
+          localStorage.setItem(CLOSED_DIALOG_KEY, 'true');
+          
           if (!isDialogClosed) {
             // Первый раз видим закрытие - показываем кнопку
             isDialogClosed = true;
@@ -642,16 +671,15 @@
               pollingInterval = null;
             }
           } else {
-            // При повторных загрузках страницы кнопка уже должна быть
-            // Но если её нет по какой-то причине - показываем
-            if (!document.getElementById('newChatButton')) {
-              showNewChatButton();
-            }
+            // При повторных загрузках страницы - автоматически создаем новый диалог
+            console.log('Диалог был закрыт, создаем новый автоматически');
+            await createNewDialog();
           }
           
-          return; // Не показываем сообщения если диалог закрыт
+          return;
         }
 
+        // Если диалог активен и есть сообщения
         const container = document.getElementById('messages');
         
         if (data.messages.length === 0) {
