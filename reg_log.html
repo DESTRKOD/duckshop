@@ -406,6 +406,7 @@ html, body {
     </div>
     
     <div class="social-buttons">
+      <!-- Telegram -->
       <button class="social-btn btn-telegram" id="telegramBtn">
         <svg viewBox="0 0 24 24">
           <path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/>
@@ -413,12 +414,13 @@ html, body {
         <span>Telegram</span>
       </button>
       
-      <button class="social-btn btn-yandex" id="yandexBtn">
+      <!-- Яндекс (рабочая ссылка) -->
+      <a href="https://duck-shop-sever.onrender.com/api/auth/yandex" class="social-btn btn-yandex" style="text-decoration: none;">
         <svg viewBox="0 0 24 24">
           <path d="M2.04 12c0-5.523 4.476-10 10-10 5.522 0 10 4.477 10 10s-4.478 10-10 10c-5.524 0-10-4.477-10-10zm8.981-5.5v6.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V6.5h2v6.5c0 1.93-1.57 3.5-3.5 3.5s-3.5-1.57-3.5-3.5V6.5h2z"/>
         </svg>
         <span>Яндекс ID</span>
-      </button>
+      </a>
     </div>
     
     <div class="loading-spinner" id="loadingSpinner"></div>
@@ -531,7 +533,7 @@ async function handleEmailAuth() {
       showEmailStatus('success');
       localStorage.setItem('temp_email', email);
       setTimeout(() => {
-        window.location.href = `code.html?email=${encodeURIComponent(email)}`;
+        window.location.href = `code_login.html?email=${encodeURIComponent(email)}`;
       }, 1500);
     } else {
       showEmailStatus('error', data.error || 'Ошибка отправки кода');
@@ -600,13 +602,6 @@ function startTelegramPolling() {
   }, 3 * 60 * 1000);
 }
 
-function handleYandexAuth() {
-  showTelegramStatus('loading');
-  setTimeout(() => {
-    showTelegramStatus('error', '❌ Яндекс авторизация временно недоступна');
-  }, 1500);
-}
-
 window.addEventListener('beforeunload', () => {
   if (telegramCheckInterval) clearInterval(telegramCheckInterval);
 });
@@ -617,7 +612,6 @@ document.addEventListener('DOMContentLoaded', () => {
   
   document.getElementById('emailSubmitBtn').addEventListener('click', handleEmailAuth);
   document.getElementById('telegramBtn').addEventListener('click', handleTelegramAuth);
-  document.getElementById('yandexBtn').addEventListener('click', handleYandexAuth);
   
   document.getElementById('emailInput').addEventListener('keypress', (e) => {
     if (e.key === 'Enter') handleEmailAuth();
