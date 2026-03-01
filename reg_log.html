@@ -27,7 +27,6 @@ html, body {
   width: 100%;
   max-width: 440px;
   min-height: 100vh;
-  justify-content: space-between;
 }
 
 .auth-content {
@@ -70,7 +69,6 @@ html, body {
   font-weight: 500;
 }
 
-/* Email блок */
 .email-section {
   width: 100%;
   margin-bottom: 30px;
@@ -153,7 +151,6 @@ html, body {
   fill: #0b3c91;
 }
 
-/* Разделитель */
 .divider {
   width: 100%;
   display: flex;
@@ -171,7 +168,6 @@ html, body {
   background: rgba(255,255,255,0.2);
 }
 
-/* Социальные кнопки */
 .social-buttons {
   display: flex;
   flex-direction: column;
@@ -226,7 +222,6 @@ html, body {
   fill: #FC3F1D;
 }
 
-/* Ссылка на регистрацию */
 .register-prompt {
   margin-top: 20px;
   text-align: center;
@@ -270,7 +265,6 @@ html, body {
   margin-bottom: 8px;
 }
 
-/* Блок для статуса */
 .status-message {
   margin-top: 16px;
   padding: 14px 18px;
@@ -302,7 +296,6 @@ html, body {
   border-left: 4px solid #ff2d55;
 }
 
-/* Блок с анимацией загрузки */
 .loading-spinner {
   display: none;
   width: 48px;
@@ -318,7 +311,6 @@ html, body {
   to { transform: rotate(360deg); }
 }
 
-/* Вернуться в магазин */
 .back-link {
   margin-top: 30px;
   color: rgba(255,255,255,0.6);
@@ -341,7 +333,6 @@ html, body {
   fill: currentColor;
 }
 
-/* Адаптация */
 @media (max-width: 380px) {
   .auth-title {
     font-size: 28px;
@@ -383,14 +374,11 @@ html, body {
 <body>
 <div class="auth-screen">
   <div class="auth-content">
-    <!-- Анимация -->
     <div id="lottie-animation" class="auth-sticker"></div>
     
-    <!-- Заголовок -->
     <div class="auth-title">Добро пожаловать</div>
     <div class="auth-subtitle">Войдите чтобы продолжить</div>
     
-    <!-- Блок ввода email -->
     <div class="email-section">
       <label class="email-label">Введите email для входа</label>
       <div class="email-input-group">
@@ -402,7 +390,6 @@ html, body {
         </button>
       </div>
       
-      <!-- Статус сообщения для email -->
       <div class="status-message status-loading" id="emailLoading">
         ⏳ Отправка кода...
       </div>
@@ -412,16 +399,13 @@ html, body {
       <div class="status-message status-error" id="emailError"></div>
     </div>
     
-    <!-- Разделитель -->
     <div class="divider">
       <div class="divider-line"></div>
       <span>или войти через</span>
       <div class="divider-line"></div>
     </div>
     
-    <!-- Социальные кнопки -->
     <div class="social-buttons">
-      <!-- Telegram -->
       <button class="social-btn btn-telegram" id="telegramBtn">
         <svg viewBox="0 0 24 24">
           <path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/>
@@ -429,7 +413,6 @@ html, body {
         <span>Telegram</span>
       </button>
       
-      <!-- Яндекс -->
       <button class="social-btn btn-yandex" id="yandexBtn">
         <svg viewBox="0 0 24 24">
           <path d="M2.04 12c0-5.523 4.476-10 10-10 5.522 0 10 4.477 10 10s-4.478 10-10 10c-5.524 0-10-4.477-10-10zm8.981-5.5v6.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V6.5h2v6.5c0 1.93-1.57 3.5-3.5 3.5s-3.5-1.57-3.5-3.5V6.5h2z"/>
@@ -438,10 +421,8 @@ html, body {
       </button>
     </div>
     
-    <!-- Спиннер загрузки -->
     <div class="loading-spinner" id="loadingSpinner"></div>
     
-    <!-- Блок для статуса Telegram -->
     <div class="status-message status-loading" id="telegramLoading">
       ⏳ Открываем Telegram...
     </div>
@@ -451,7 +432,6 @@ html, body {
     <div class="status-message status-error" id="telegramError"></div>
   </div>
   
-  <!-- Ссылка на регистрацию (внизу) -->
   <div class="register-prompt">
     <div class="register-text">Еще нет аккаунта?</div>
     <a href="reg.html" class="register-link">
@@ -462,7 +442,6 @@ html, body {
     </a>
   </div>
   
-  <!-- Ссылка назад в магазин -->
   <a href="main.html" class="back-link">
     <svg viewBox="0 0 24 24">
       <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
@@ -480,7 +459,6 @@ let currentEmail = '';
 let telegramCheckInterval = null;
 let telegramToken = null;
 
-// Инициализация Lottie
 function initLottie() {
   try {
     lottie.loadAnimation({
@@ -495,7 +473,6 @@ function initLottie() {
   }
 }
 
-// Управление статусами
 function hideAllStatuses() {
   document.getElementById('emailLoading').style.display = 'none';
   document.getElementById('emailSuccess').style.display = 'none';
@@ -530,7 +507,6 @@ function showTelegramStatus(type, message = '') {
   }
 }
 
-// Email авторизация
 async function handleEmailAuth() {
   const email = document.getElementById('emailInput').value.trim();
   
@@ -543,20 +519,28 @@ async function handleEmailAuth() {
   showEmailStatus('loading');
   
   try {
-    // Здесь будет API для отправки кода на email
-    // Пока просто эмулируем успех
-    setTimeout(() => {
-      showEmailStatus('success');
-      // Переход на страницу ввода кода
-      window.location.href = `reg.html?email=${encodeURIComponent(email)}`;
-    }, 1500);
+    const response = await fetch(`${API_URL}/api/auth/send-code`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
     
+    const data = await response.json();
+    
+    if (data.success) {
+      showEmailStatus('success');
+      localStorage.setItem('temp_email', email);
+      setTimeout(() => {
+        window.location.href = `code.html?email=${encodeURIComponent(email)}`;
+      }, 1500);
+    } else {
+      showEmailStatus('error', data.error || 'Ошибка отправки кода');
+    }
   } catch (error) {
-    showEmailStatus('error', '❌ Ошибка отправки кода');
+    showEmailStatus('error', '❌ Ошибка соединения');
   }
 }
 
-// Telegram авторизация
 async function handleTelegramAuth() {
   showTelegramStatus('loading');
   
@@ -572,14 +556,11 @@ async function handleTelegramAuth() {
       telegramToken = data.token;
       showTelegramStatus('success');
       
-      // Открываем Telegram
       setTimeout(() => {
         window.open(data.telegramLink, '_blank');
       }, 1000);
       
-      // Начинаем проверять статус авторизации
       startTelegramPolling();
-      
     } else {
       showTelegramStatus('error', '❌ Ошибка получения ссылки');
     }
@@ -588,7 +569,6 @@ async function handleTelegramAuth() {
   }
 }
 
-// Проверка статуса Telegram авторизации
 function startTelegramPolling() {
   if (telegramCheckInterval) clearInterval(telegramCheckInterval);
   
@@ -612,7 +592,6 @@ function startTelegramPolling() {
     }
   }, 2000);
   
-  // Таймаут через 3 минуты
   setTimeout(() => {
     if (telegramCheckInterval) {
       clearInterval(telegramCheckInterval);
@@ -621,35 +600,29 @@ function startTelegramPolling() {
   }, 3 * 60 * 1000);
 }
 
-// Яндекс авторизация (пока без логики)
 function handleYandexAuth() {
-  showTelegramStatus('loading'); // Используем Telegram статусы для простоты
+  showTelegramStatus('loading');
   setTimeout(() => {
     showTelegramStatus('error', '❌ Яндекс авторизация временно недоступна');
   }, 1500);
 }
 
-// Очистка интервалов при уходе
 window.addEventListener('beforeunload', () => {
   if (telegramCheckInterval) clearInterval(telegramCheckInterval);
 });
 
-// Инициализация при загрузке
 document.addEventListener('DOMContentLoaded', () => {
   initLottie();
   hideAllStatuses();
   
-  // Обработчики
   document.getElementById('emailSubmitBtn').addEventListener('click', handleEmailAuth);
   document.getElementById('telegramBtn').addEventListener('click', handleTelegramAuth);
   document.getElementById('yandexBtn').addEventListener('click', handleYandexAuth);
   
-  // Enter в поле email
   document.getElementById('emailInput').addEventListener('keypress', (e) => {
     if (e.key === 'Enter') handleEmailAuth();
   });
   
-  // Фокус на email поле
   document.getElementById('emailInput').focus();
 });
 </script>
