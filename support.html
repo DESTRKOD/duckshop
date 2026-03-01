@@ -425,8 +425,6 @@
     let pollingInterval = null;
     let isDialogClosed = false;
     let closedMessageShown = false;
-
-    // Флаг для отслеживания, что мы уже показали кнопку в этой сессии
     let buttonShownThisSession = false;
 
     function loadUser() {
@@ -469,7 +467,6 @@
       closedMessageShown = true;
     }
 
-    // Функция для показа начального экрана с Lottie
     function showEmptyState() {
       const container = document.getElementById('messages');
       container.innerHTML = `
@@ -497,19 +494,15 @@
       const inputWrap = document.querySelector('.input-wrap');
       const send = document.getElementById('send');
       
-      // Скрываем старые элементы
       attach.style.display = 'none';
       inputWrap.style.display = 'none';
       send.style.display = 'none';
       
-      // Добавляем класс для центрирования
       inputArea.classList.add('closed');
       
-      // Удаляем старую кнопку если есть
       const oldBtn = document.getElementById('newChatButton');
       if (oldBtn) oldBtn.remove();
       
-      // Создаем новую кнопку на всю ширину
       const newChatBtn = document.createElement('button');
       newChatBtn.id = 'newChatButton';
       newChatBtn.className = 'new-chat-button';
@@ -521,21 +514,18 @@
         Начать новый разговор
       `;
       newChatBtn.onclick = () => {
-        // При нажатии просто показываем пустой чат
         showEmptyState();
-        // Прячем кнопку и показываем обычный интерфейс
+        
         attach.style.display = 'grid';
         inputWrap.style.display = 'block';
         send.style.display = 'grid';
         inputArea.classList.remove('closed');
         newChatBtn.remove();
         
-        // Разблокируем ввод
         document.getElementById('input').disabled = false;
         document.getElementById('attach').disabled = false;
         document.getElementById('file').disabled = false;
         
-        // Сбрасываем флаги
         isDialogClosed = false;
         closedMessageShown = false;
         currentDialogId = null;
@@ -569,7 +559,6 @@
         document.getElementById('file').value = '';
         document.getElementById('send').disabled = true;
         
-        // После отправки загружаем сообщения
         await loadMessages();
       } catch (e) {
         console.error('send error', e);
@@ -589,43 +578,32 @@
         
         if (data.dialog_id) currentDialogId = data.dialog_id;
         
-        // Проверка закрытия диалога
         if (data.is_closed) {
           console.log('Диалог закрыт!');
           
           if (!isDialogClosed && !buttonShownThisSession) {
-            // Первый раз видим закрытие в этой сессии - показываем кнопку
             isDialogClosed = true;
             
-            // Блокируем ввод
             document.getElementById('input').disabled = true;
             document.getElementById('send').disabled = true;
             document.getElementById('attach').disabled = true;
             document.getElementById('file').disabled = true;
             
-            // Показываем сообщение о закрытии
             showClosedMessage();
-            
-            // Показываем кнопку нового разговора
             showNewChatButton();
             
-            // Останавливаем polling
             if (pollingInterval) {
               clearInterval(pollingInterval);
               pollingInterval = null;
             }
           } else {
-            // При повторных загрузках страницы (после ухода и возврата)
-            // просто показываем начальный экран
-            console.log('Возврат на страницу после закрытия - показываем начальный экран');
+            // Если вернулись на страницу после ухода - показываем начальный экран
             showEmptyState();
             
-            // Разблокируем ввод для нового диалога
             document.getElementById('input').disabled = false;
             document.getElementById('attach').disabled = false;
             document.getElementById('file').disabled = false;
             
-            // Сбрасываем флаги
             isDialogClosed = false;
             currentDialogId = null;
             lastMessageId = 0;
@@ -634,7 +612,6 @@
           return;
         }
 
-        // Если диалог активен и есть сообщения
         const container = document.getElementById('messages');
         
         if (data.messages.length === 0) {
@@ -728,12 +705,14 @@
         if (f && !isDialogClosed) sendMessage('', f);
       });
 
-      back.addEventListener('click', () => location.href = 'main.html');
+     
+      back.addEventListener('click', () => {
+        buttonShownThisSession = false; 
+        location.href = 'main.html';
+      });
 
-      // Загружаем историю
       await loadMessages();
 
-      // Запускаем polling только если диалог активен
       if (currentDialogId && !isDialogClosed) {
         pollingInterval = setInterval(checkNewMessages, 3000);
       }
