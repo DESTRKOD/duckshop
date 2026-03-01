@@ -2,1039 +2,655 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8" />
-<title>Мой профиль - Duck Shop</title>
+<title>Вход в Duck Shop</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
-
 <style>
 html, body {
   margin: 0;
-  width: 100%;
-  height: 100%;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  background: linear-gradient(180deg, #0b3c91 0%, #1565c0 55%, #42a5f5 100%);
-  overflow-x: hidden;
-}
-
-.screen {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  opacity: 0;
-  transform: translateY(16px);
-  pointer-events: none;
-  transition: opacity .35s ease, transform .35s ease;
-  padding: 20px;
-  box-sizing: border-box;
-  overflow-y: auto;
-}
-
-.screen.active {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-
-.screen.leaving {
-  opacity: 0;
-  transform: translateY(-40px);
-}
-
-#loading .sticker {
-  width: 200px;
-  height: 200px;
-  margin: auto;
-}
-
-#loading .title {
-  color: white;
-  font-size: 24px;
-  font-weight: 800;
-  text-align: center;
-  margin-top: 20px;
-}
-
-.profile-screen {
   padding: 0;
-}
-
-.profile-header {
   width: 100%;
-  padding: 20px;
-  text-align: center;
-  background: linear-gradient(180deg, #0b3c91, #124fa5);
-  color: white;
-  box-sizing: border-box;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-}
-
-.profile-avatar {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  margin: 0 auto 20px;
-  overflow: hidden;
-}
-
-.profile-avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
-}
-
-.profile-avatar .avatar-placeholder {
-  width: 100%;
-  height: 100%;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(180deg, #0b3c91 0%, #1565c0 55%, #42a5f5 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  font-size: 40px;
-  color: white;
-  font-weight: 900;
-  border-radius: 50%;
 }
 
-.profile-name {
-  font-size: 24px;
-  font-weight: 800;
-  margin-bottom: 8px;
-}
-
-.profile-id {
-  font-size: 16px;
-  color: rgba(255,255,255,0.9);
-  margin-bottom: 5px;
-  word-break: break-word;
-  padding: 0 20px;
-}
-
-.profile-username {
-  font-size: 14px;
-  color: rgba(255,255,255,0.7);
-  margin-bottom: 20px;
-}
-
-.profile-content {
-  flex: 1;
-  width: 100%;
-  padding: 20px;
-  box-sizing: border-box;
-  overflow-y: auto;
-  padding-bottom: 110px;
-}
-
-.profile-section {
-  background: rgba(255,255,255,0.1);
-  border-radius: 20px;
-  padding: 20px;
-  margin-bottom: 20px;
-}
-
-.section-title {
-  color: white;
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 15px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.section-title span:last-child {
-  font-size: 14px;
-  color: rgba(255,255,255,0.7);
-  font-weight: 600;
-}
-
-.orders-list {
+.auth-screen {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-}
-
-.order-item {
-  background: rgba(255,255,255,0.08);
-  border-radius: 12px;
-  padding: 15px;
-  transition: transform 0.2s ease, background 0.2s ease;
-  cursor: pointer;
-}
-
-.order-item:hover {
-  background: rgba(255,255,255,0.12);
-  transform: translateY(-2px);
-}
-
-.order-item.grayed {
-  background: rgba(150, 150, 150, 0.15);
-  opacity: 0.7;
-}
-
-.order-item.grayed:hover {
-  background: rgba(150, 150, 150, 0.2);
-}
-
-.order-header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 8px;
-  align-items: flex-start;
-  gap: 10px;
-}
-
-.order-id {
-  color: #ffd700;
-  font-weight: 700;
-  font-size: 15px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  flex: 1;
-  cursor: pointer;
-  text-decoration: underline;
-  text-decoration-color: rgba(255, 215, 0, 0.5);
-}
-
-.order-date {
-  color: rgba(255,255,255,0.7);
-  font-size: 13px;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-.order-details {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-top: 10px;
+  padding: 40px 20px 30px;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 440px;
+  min-height: 100vh;
+  justify-content: space-between;
 }
 
-.order-total {
-  color: white;
-  font-weight: 700;
-  font-size: 16px;
-}
-
-.order-status {
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: #ffffff !important;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-  transition: all 0.2s ease;
-  min-width: 100px;
-  text-align: center;
-}
-
-.order-status.completed {
-  background: rgba(76, 175, 80, 0.35);
-  border-color: rgba(76, 175, 80, 0.5);
-}
-
-.order-status.canceled {
-  background: rgba(255, 107, 107, 0.35);
-  border-color: rgba(255, 107, 107, 0.5);
-}
-
-.order-status.manyback,
-.order-status.refund {
-  background: rgba(0, 0, 0, 0.55);
-  border-color: rgba(255, 255, 255, 0.15);
-}
-
-.order-status.waiting,
-.order-status.pending,
-.order-status.inwork {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.30);
-}
-
-.order-item:hover .order-status {
-  transform: scale(1.05);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
-}
-
-.no-orders {
-  text-align: center;
-  color: rgba(255,255,255,0.6);
-  padding: 30px 0;
-}
-
-.no-orders-icon {
-  width: 60px;
-  height: 60px;
-  margin: 0 auto 15px;
-  background-image: url('https://i.imgur.com/8Q5w6zR.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-}
-
-.no-orders-text {
-  font-size: 16px;
-  margin-bottom: 5px;
-}
-
-.no-orders-subtext {
-  font-size: 13px;
-  color: rgba(255,255,255,0.5);
-}
-
-.profile-actions {
+.auth-content {
+  width: 100%;
   display: flex;
-  gap: 12px;
-  margin-top: 30px;
-  margin-bottom: 30px;
-}
-
-.profile-btn {
-  flex: 1;
-  height: 50px;
-  border-radius: 14px;
-  border: none;
-  font-weight: 700;
-  font-size: 16px;
-  cursor: pointer;
-  transition: transform 0.15s ease;
-  display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
 }
 
-.profile-btn:active {
-  transform: scale(.98);
-}
-
-.btn-logout {
-  background: rgba(255,255,255,0.1);
-  color: white;
-}
-
-.btn-back {
-  background: white;
-  color: #0b3c91;
-}
-
-.error-screen {
-  text-align: center;
-  color: white;
-  padding: 40px 20px;
-}
-
-.error-icon {
-  width: 60px;
-  height: 60px;
-  margin: 0 auto 20px;
-  background-image: url('https://i.imgur.com/TdWbh8z.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-}
-
-.error-title {
-  font-size: 24px;
-  font-weight: 800;
-  margin-bottom: 10px;
-}
-
-.error-text {
-  font-size: 16px;
-  color: rgba(255,255,255,0.8);
-  margin-bottom: 30px;
-  max-width: 400px;
-}
-
-@media (max-width: 768px) {
-  .profile-content {
-    padding: 15px;
-    padding-bottom: 110px;
-  }
-  .profile-section {
-    padding: 15px;
-  }
-  .order-item {
-    padding: 12px;
-  }
-  .profile-actions {
-    flex-direction: column;
-  }
-  .section-title {
-    font-size: 16px;
-  }
-  .order-id {
-    font-size: 14px;
-  }
-  .order-date {
-    font-size: 12px;
-  }
-  .order-total {
-    font-size: 14px;
-  }
+.auth-sticker {
+  width: 160px;
+  height: 160px;
+  margin-bottom: 20px;
 }
 
 @media (max-width: 480px) {
-  .profile-header {
-    padding: 15px;
-  }
-  .profile-avatar {
-    width: 80px;
-    height: 80px;
+  .auth-sticker {
+    width: 140px;
+    height: 140px;
     margin-bottom: 15px;
   }
-  .profile-avatar .avatar-placeholder {
-    font-size: 32px;
-  }
-  .profile-name {
-    font-size: 20px;
-  }
-  .profile-id {
-    font-size: 14px;
-  }
-  .profile-username {
-    font-size: 13px;
-  }
-  .profile-content {
-    padding: 12px;
-    padding-bottom: 105px;
-  }
 }
 
-@media (max-width: 360px) {
-  .profile-avatar {
-    width: 70px;
-    height: 70px;
-  }
-  .profile-avatar .avatar-placeholder {
-    font-size: 28px;
-  }
-  .profile-name {
-    font-size: 18px;
-  }
-  .order-header {
-    flex-direction: column;
-    gap: 5px;
-  }
-  .order-date {
-    align-self: flex-start;
-  }
-  .profile-content {
-    padding-bottom: 100px;
-  }
+.auth-title {
+  font-size: 32px;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 8px;
+  text-align: center;
+  text-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
-.mobile-nav {
-  position: fixed;
-  bottom: 16px;
-  left: 16px;
-  right: 16px;
-  display: none;
-  align-items: center;
-  justify-content: space-around;
-  background: rgba(65, 105, 225, 0.25);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border-radius: 40px;
-  padding: 8px 12px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.15);
-  z-index: 10000;
+.auth-subtitle {
+  font-size: 16px;
+  color: rgba(255,255,255,0.9);
+  margin-bottom: 32px;
+  text-align: center;
+  max-width: 320px;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+/* Email блок */
+.email-section {
+  width: 100%;
+  margin-bottom: 30px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 24px;
+  padding: 24px 20px;
   box-sizing: border-box;
-  transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.4, 1), opacity 0.2s ease;
-  touch-action: pan-y;
-  cursor: grab;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.15);
 }
 
-.mobile-nav:active {
-  cursor: grabbing;
-  transform: scale(0.98);
-  transition: transform 0.05s ease;
+.email-label {
+  color: white;
+  font-weight: 600;
+  margin-bottom: 12px;
+  font-size: 15px;
+  display: block;
+  letter-spacing: 0.5px;
+  opacity: 0.9;
 }
 
-@media (max-width: 768px) {
-  .mobile-nav {
-    display: flex;
-  }
+.email-input-group {
+  display: flex;
+  gap: 12px;
+  width: 100%;
 }
 
-.mobile-nav-item {
+.email-input {
+  flex: 1;
+  padding: 16px 20px;
+  font-size: 16px;
+  border-radius: 16px;
+  border: 2px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.1);
+  color: white;
+  box-sizing: border-box;
+  outline: none;
+  transition: all .2s ease;
+  font-family: inherit;
+  font-weight: 500;
+}
+
+.email-input:focus {
+  border-color: #4fc3f7;
+  background: rgba(255,255,255,0.15);
+  box-shadow: 0 0 0 3px rgba(79, 195, 247, 0.2);
+}
+
+.email-input::placeholder {
+  color: rgba(255,255,255,0.5);
+  font-weight: 400;
+}
+
+.email-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  border: none;
+  background: white;
+  color: #0b3c91;
+  font-weight: 800;
+  font-size: 22px;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  flex-shrink: 0;
+}
+
+.email-btn:active {
+  transform: scale(0.95);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+.email-btn svg {
+  width: 28px;
+  height: 28px;
+  fill: #0b3c91;
+}
+
+/* Разделитель */
+.divider {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0 20px;
+  color: rgba(255,255,255,0.6);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.divider-line {
+  flex: 1;
+  height: 1px;
+  background: rgba(255,255,255,0.2);
+}
+
+/* Социальные кнопки */
+.social-buttons {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  background: transparent;
-  border: none;
-  padding: 8px 10px;
-  border-radius: 30px;
-  min-width: 60px;
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
-  color: rgba(255, 255, 255, 0.75);
-  fill: rgba(255, 255, 255, 0.75);
-  position: relative;
-  text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  gap: 12px;
+  width: 100%;
+  margin-bottom: 20px;
 }
 
-.mobile-nav-item svg {
+.social-btn {
+  width: 100%;
+  height: 60px;
+  border-radius: 18px;
+  border: none;
+  font-weight: 700;
+  font-size: 18px;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 0 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  background: white;
+}
+
+.social-btn:active {
+  transform: scale(0.98);
+}
+
+.social-btn svg {
   width: 24px;
   height: 24px;
-  transition: transform 0.2s ease, filter 0.2s ease;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
 }
 
-.mobile-nav-item span {
-  font-size: 11px;
-  font-weight: 700;
-  transition: color 0.2s ease;
-}
-
-.mobile-nav-item.active {
-  background: rgba(255, 255, 255, 0.2);
+.btn-telegram {
+  background: #27A7E7;
   color: white;
+}
+
+.btn-telegram svg {
   fill: white;
-  transform: scale(1.05);
-  backdrop-filter: blur(5px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
-.mobile-nav-item.active svg {
-  transform: translateY(-1px);
-  filter: drop-shadow(0 3px 6px rgba(0,100,255,0.5));
+.btn-yandex {
+  background: white;
+  color: #333;
+  border: 1px solid rgba(255,255,255,0.3);
 }
 
-.mobile-nav-item:active {
-  transform: scale(0.92);
-  background: rgba(255, 255, 255, 0.25);
+.btn-yandex svg {
+  fill: #FC3F1D;
 }
 
-.mobile-nav .cart-badge-mobile {
-  position: absolute;
-  top: 2px;
-  right: 6px;
-  min-width: 18px;
-  height: 18px;
-  padding: 0 5px;
-  border-radius: 999px;
-  background: #ff2d55;
-  color: #fff;
-  font-size: 11px;
-  font-weight: 900;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 12px rgba(255,45,85,0.4);
-  border: 2px solid rgba(65, 105, 225, 0.4);
+/* Ссылка на регистрацию */
+.register-prompt {
+  margin-top: 20px;
+  text-align: center;
+  width: 100%;
 }
 
-.mobile-nav .cart-badge-mobile.show {
+.register-link {
+  color: rgba(255,255,255,0.9);
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 600;
   display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 40px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.15);
+  transition: all 0.2s ease;
+}
+
+.register-link:hover {
+  background: rgba(255,255,255,0.15);
+  transform: translateY(-1px);
+}
+
+.register-link:active {
+  transform: translateY(1px);
+}
+
+.register-link svg {
+  width: 20px;
+  height: 20px;
+  fill: rgba(255,255,255,0.9);
+}
+
+.register-text {
+  color: rgba(255,255,255,0.6);
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+/* Блок для статуса */
+.status-message {
+  margin-top: 16px;
+  padding: 14px 18px;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  display: none;
+  width: 100%;
+  box-sizing: border-box;
+  backdrop-filter: blur(10px);
+}
+
+.status-loading {
+  background: rgba(255,255,255,0.12);
+  color: white;
+  border-left: 4px solid #4fc3f7;
+}
+
+.status-success {
+  background: rgba(0,200,83,0.15);
+  color: white;
+  border-left: 4px solid #00c853;
+}
+
+.status-error {
+  background: rgba(255,45,85,0.15);
+  color: white;
+  border-left: 4px solid #ff2d55;
+}
+
+/* Блок с анимацией загрузки */
+.loading-spinner {
+  display: none;
+  width: 48px;
+  height: 48px;
+  border: 4px solid rgba(255,255,255,0.2);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 20px auto;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Вернуться в магазин */
+.back-link {
+  margin-top: 30px;
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+  font-size: 15px;
+  transition: color 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 0;
+}
+
+.back-link:hover {
+  color: white;
+}
+
+.back-link svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+/* Адаптация */
+@media (max-width: 380px) {
+  .auth-title {
+    font-size: 28px;
+  }
+  
+  .auth-subtitle {
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+  
+  .email-input {
+    padding: 14px 16px;
+    font-size: 15px;
+  }
+  
+  .email-btn {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .social-btn {
+    height: 54px;
+    font-size: 16px;
+  }
+  
+  .social-btn svg {
+    width: 22px;
+    height: 22px;
+  }
+  
+  .register-link {
+    padding: 10px 20px;
+    font-size: 15px;
+  }
 }
 </style>
 </head>
 
 <body>
-
-<div id="loading" class="screen active">
-  <div class="sticker" id="loadingAnim"></div>
-  <div class="title">Загрузка профиля...</div>
-</div>
-
-<div id="profile" class="screen profile-screen">
-  <div class="profile-header">
-    <div class="profile-avatar" id="profileAvatar"></div>
-    <div class="profile-name" id="profileName">Пользователь</div>
-    <div class="profile-id" id="profileId"></div>
-    <div class="profile-username" id="profileUsername"></div>
-  </div>
-  
-  <div class="profile-content">
-    <div class="profile-section">
-      <div class="section-title">
-        <span>История заказов</span>
-        <span id="ordersCount">0 заказов</span>
+<div class="auth-screen">
+  <div class="auth-content">
+    <!-- Анимация -->
+    <div id="lottie-animation" class="auth-sticker"></div>
+    
+    <!-- Заголовок -->
+    <div class="auth-title">Добро пожаловать</div>
+    <div class="auth-subtitle">Войдите чтобы продолжить</div>
+    
+    <!-- Блок ввода email -->
+    <div class="email-section">
+      <label class="email-label">Введите email для входа</label>
+      <div class="email-input-group">
+        <input type="email" class="email-input" id="emailInput" placeholder="your@email.ru" autocomplete="email">
+        <button class="email-btn" id="emailSubmitBtn">
+          <svg viewBox="0 0 24 24">
+            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+          </svg>
+        </button>
       </div>
-      <div class="orders-list" id="ordersList"></div>
+      
+      <!-- Статус сообщения для email -->
+      <div class="status-message status-loading" id="emailLoading">
+        ⏳ Отправка кода...
+      </div>
+      <div class="status-message status-success" id="emailSuccess">
+        ✅ Код отправлен на почту
+      </div>
+      <div class="status-message status-error" id="emailError"></div>
     </div>
     
-    <div class="profile-actions">
-      <button class="profile-btn btn-logout" id="logoutBtn">
-        <svg viewBox="0 0 24 24" width="20" height="20">
-          <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" fill="currentColor"/>
+    <!-- Разделитель -->
+    <div class="divider">
+      <div class="divider-line"></div>
+      <span>или войти через</span>
+      <div class="divider-line"></div>
+    </div>
+    
+    <!-- Социальные кнопки -->
+    <div class="social-buttons">
+      <!-- Telegram -->
+      <button class="social-btn btn-telegram" id="telegramBtn">
+        <svg viewBox="0 0 24 24">
+          <path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/>
         </svg>
-        Выйти
+        <span>Telegram</span>
       </button>
-      <button class="profile-btn btn-back" id="backToShopBtn">
-        <svg viewBox="0 0 24 24" width="20" height="20">
-          <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" fill="currentColor"/>
+      
+      <!-- Яндекс -->
+      <button class="social-btn btn-yandex" id="yandexBtn">
+        <svg viewBox="0 0 24 24">
+          <path d="M2.04 12c0-5.523 4.476-10 10-10 5.522 0 10 4.477 10 10s-4.478 10-10 10c-5.524 0-10-4.477-10-10zm8.981-5.5v6.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V6.5h2v6.5c0 1.93-1.57 3.5-3.5 3.5s-3.5-1.57-3.5-3.5V6.5h2z"/>
         </svg>
-        В магазин
+        <span>Яндекс ID</span>
       </button>
     </div>
+    
+    <!-- Спиннер загрузки -->
+    <div class="loading-spinner" id="loadingSpinner"></div>
+    
+    <!-- Блок для статуса Telegram -->
+    <div class="status-message status-loading" id="telegramLoading">
+      ⏳ Открываем Telegram...
+    </div>
+    <div class="status-message status-success" id="telegramSuccess">
+      ✅ Перейдите в Telegram для подтверждения
+    </div>
+    <div class="status-message status-error" id="telegramError"></div>
   </div>
-</div>
-
-<div id="error" class="screen error-screen">
-  <div class="error-icon"></div>
-  <div class="error-title" id="errorTitle">Ошибка загрузки</div>
-  <div class="error-text" id="errorText">Не удалось загрузить данные профиля. Проверьте подключение к интернету и попробуйте снова.</div>
-  <div class="profile-actions" style="margin-top: 20px;">
-    <button class="profile-btn btn-back" id="retryBtn">Повторить</button>
-    <button class="profile-btn btn-back" onclick="location.href='main.html'">В магазин</button>
+  
+  <!-- Ссылка на регистрацию (внизу) -->
+  <div class="register-prompt">
+    <div class="register-text">Еще нет аккаунта?</div>
+    <a href="reg.html" class="register-link">
+      <svg viewBox="0 0 24 24">
+        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+      </svg>
+      Создать аккаунт
+    </a>
   </div>
-</div>
-
-<div class="mobile-nav" id="mobileNav">
-  <button class="mobile-nav-item" id="navWallet">
-    <svg viewBox="0 0 24 24">
-      <path d="M21 18v1c0 1.1-0.9 2-2 2H5c-1.11 0-2-0.9-2-2V5c0-1.1 0.89-2 2-2h14c1.1 0 2 0.9 2 2v1h-9c-1.1 0-2 0.9-2 2v8c0 1.1 0.9 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-0.83 0-1.5-0.67-1.5-1.5s0.67-1.5 1.5-1.5 1.5 0.67 1.5 1.5-0.67 1.5-1.5 1.5z"/>
-    </svg>
-    <span>Кошелёк</span>
-  </button>
   
-  <button class="mobile-nav-item active" id="navProfile">
+  <!-- Ссылка назад в магазин -->
+  <a href="main.html" class="back-link">
     <svg viewBox="0 0 24 24">
-      <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+      <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
     </svg>
-    <span>Профиль</span>
-  </button>
-  
-  <button class="mobile-nav-item" id="navHome">
-    <svg viewBox="0 0 24 24">
-      <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-    </svg>
-    <span>Главная</span>
-  </button>
-  
-  <button class="mobile-nav-item" id="navCart">
-    <svg viewBox="0 0 24 24">
-      <path d="M7 18a2 2 0 1 0 0 4a2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4a2 2 0 0 0 0-4zM7.16 14h9.45a2 2 0 0 0 1.75-1.03l3.58-6.49-1.74-.99-3.58 6.49H8.53L5.21 4H1v2h3l3.6 7.59-1.35 2.44C5.52 16.37 6.48 18 8 18h12v-2H8l1.16-2z"/>
-    </svg>
-    <span>Корзина</span>
-    <div class="cart-badge-mobile" id="cartBadgeMobile">0</div>
-  </button>
+    Вернуться в магазин
+  </a>
 </div>
 
 <script>
 const API_URL = 'https://duck-shop-sever.onrender.com';
+const SITE_URL = 'https://destrkod.github.io/duckshop';
 const USER_KEY = 'duck_user_v1';
-const CART_KEY = 'duck_cart_v1';
-const SHOP_URL = 'main.html';
 
-let currentUser = null;
+let currentEmail = '';
+let telegramCheckInterval = null;
+let telegramToken = null;
 
-function fmtRub(n) {
-  return `${n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} ₽`;
-}
-
-function getPluralEnding(number) {
-  if (number % 10 === 1 && number % 100 !== 11) {
-    return '';
-  } else if ([2, 3, 4].includes(number % 10) && ![12, 13, 14].includes(number % 100)) {
-    return 'а';
-  } else {
-    return 'ов';
-  }
-}
-
-function formatDate(dateString) {
-  const date = new Date(dateString);
-  return date.toLocaleDateString('ru-RU', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  });
-}
-
-function getDisplayStatus(status, paymentStatus, refundAmount) {
-  if (status === 'completed') {
-    return { text: 'Завершен', className: 'completed' };
-  }
-  
-  if (status === 'canceled') {
-    return { text: 'Отменен', className: 'canceled' };
-  }
-  
-  if (status === 'manyback' || refundAmount > 0) {
-    return { text: 'Возврат', className: 'manyback' };
-  }
-  
-  if (paymentStatus === 'pending' && status === 'new') {
-    return { text: 'Ожидает оплаты', className: 'pending' };
-  }
-  
-  return { text: 'В работе', className: 'waiting' };
-}
-
-function loadCart() {
+// Инициализация Lottie
+function initLottie() {
   try {
-    const cartData = localStorage.getItem(CART_KEY);
-    return cartData ? JSON.parse(cartData) : {};
-  } catch {
-    return {};
+    lottie.loadAnimation({
+      container: document.getElementById('lottie-animation'),
+      renderer: 'svg',
+      loop: true,
+      autoplay: true,
+      path: 'reg_log.json'
+    });
+  } catch (e) {
+    console.log('Lottie не загрузилась');
   }
 }
 
-function cartCount() {
-  const cart = loadCart();
-  return Object.values(cart).reduce((a, b) => a + b, 0);
+// Управление статусами
+function hideAllStatuses() {
+  document.getElementById('emailLoading').style.display = 'none';
+  document.getElementById('emailSuccess').style.display = 'none';
+  document.getElementById('emailError').style.display = 'none';
+  document.getElementById('telegramLoading').style.display = 'none';
+  document.getElementById('telegramSuccess').style.display = 'none';
+  document.getElementById('telegramError').style.display = 'none';
+  document.getElementById('loadingSpinner').style.display = 'none';
 }
 
-function updateBadge() {
-  const n = cartCount();
-  const cartBadgeMobile = document.getElementById('cartBadgeMobile');
+function showEmailStatus(type, message = '') {
+  hideAllStatuses();
+  if (type === 'loading') {
+    document.getElementById('emailLoading').style.display = 'block';
+  } else if (type === 'success') {
+    document.getElementById('emailSuccess').style.display = 'block';
+  } else if (type === 'error') {
+    document.getElementById('emailError').textContent = message;
+    document.getElementById('emailError').style.display = 'block';
+  }
+}
+
+function showTelegramStatus(type, message = '') {
+  hideAllStatuses();
+  if (type === 'loading') {
+    document.getElementById('telegramLoading').style.display = 'block';
+  } else if (type === 'success') {
+    document.getElementById('telegramSuccess').style.display = 'block';
+  } else if (type === 'error') {
+    document.getElementById('telegramError').textContent = message;
+    document.getElementById('telegramError').style.display = 'block';
+  }
+}
+
+// Email авторизация
+async function handleEmailAuth() {
+  const email = document.getElementById('emailInput').value.trim();
   
-  if (cartBadgeMobile) {
-    if (n > 0) {
-      cartBadgeMobile.classList.add('show');
-      cartBadgeMobile.textContent = n;
-    } else {
-      cartBadgeMobile.classList.remove('show');
-    }
-  }
-}
-
-function loadLottieAnimations() {
-  try {
-    if (document.getElementById('loadingAnim')) {
-      lottie.loadAnimation({
-        container: document.getElementById('loadingAnim'),
-        renderer: 'svg',
-        loop: true,
-        autoplay: true,
-        path: 'https://assets10.lottiefiles.com/packages/lf20_puciaevh.json'
-      });
-    }
-  } catch (error) {}
-}
-
-function showScreen(id) {
-  const screens = ['loading', 'profile', 'error'];
-  screens.forEach(screen => {
-    document.getElementById(screen).classList.remove('active', 'leaving');
-  });
-  
-  const screen = document.getElementById(id);
-  if (screen) {
-    screen.classList.add('active');
-  }
-}
-
-function loadUser() {
-  try {
-    const userData = localStorage.getItem(USER_KEY);
-    if (userData) {
-      return JSON.parse(userData);
-    }
-  } catch (error) {}
-  return null;
-}
-
-function saveUser(user) {
-  try {
-    localStorage.setItem(USER_KEY, JSON.stringify(user));
-  } catch (error) {}
-}
-
-function clearUser() {
-  localStorage.removeItem(USER_KEY);
-  currentUser = null;
-}
-
-async function loadProfileData() {
-  if (!currentUser) {
-    window.location.href = 'reg_log.html';
+  if (!email || !email.includes('@')) {
+    showEmailStatus('error', '❌ Введите корректный email');
     return;
   }
   
-  showScreen('loading');
+  currentEmail = email;
+  showEmailStatus('loading');
   
   try {
-    const response = await fetch(`${API_URL}/api/auth/profile?userId=${currentUser.id}`);
-    const data = await response.json();
+    // Здесь будет API для отправки кода на email
+    // Пока просто эмулируем успех
+    setTimeout(() => {
+      showEmailStatus('success');
+      // Переход на страницу ввода кода
+      window.location.href = `reg.html?email=${encodeURIComponent(email)}`;
+    }, 1500);
     
-    if (data.success && data.user) {
-      currentUser = { ...currentUser, ...data.user };
-      saveUser(currentUser);
-      
-      updateProfileUI(currentUser);
-      
-      const orders = data.orders || [];
-      
-      await loadOrders(orders);
-      
-      showScreen('profile');
-    } else {
-      throw new Error(data.error || 'Ошибка загрузки профиля');
-    }
   } catch (error) {
-    showError('Ошибка загрузки', 'Не удалось загрузить данные профиля. Попробуйте позже.');
+    showEmailStatus('error', '❌ Ошибка отправки кода');
   }
 }
 
-function updateProfileUI(user) {
-  const avatar = document.getElementById('profileAvatar');
-  
-  // Аватарка
-  if (user.avatarUrl) {
-    avatar.innerHTML = `<img src="${user.avatarUrl}" alt="${user.username}" onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\\'avatar-placeholder\\'>${user.username ? user.username.charAt(0).toUpperCase() : 'U'}</div>'">`;
-  } else {
-    const firstLetter = user.username ? user.username.charAt(0).toUpperCase() : 'U';
-    avatar.innerHTML = `<div class="avatar-placeholder">${firstLetter}</div>`;
-  }
-  
-  // Имя пользователя
-  document.getElementById('profileName').textContent = user.username || 'Пользователь';
-  
-  // Определяем способ регистрации
-  const provider = user.auth_provider || 'email';
-  
-  const profileId = document.getElementById('profileId');
-  const profileUsername = document.getElementById('profileUsername');
-  
-  if (provider === 'telegram') {
-    // Telegram регистрация
-    profileId.textContent = `TG ID: ${user.tgId || '...'}`;
-    if (user.telegramUsername) {
-      profileUsername.textContent = `@${user.telegramUsername}`;
-      profileUsername.style.display = 'block';
-    } else {
-      profileUsername.style.display = 'none';
-    }
-  } else {
-    // Email регистрация (ручная)
-    profileId.textContent = user.email || 'Email не указан';
-    profileUsername.style.display = 'none';
-  }
-}
-
-async function loadOrders(orders) {
-  const ordersList = document.getElementById('ordersList');
-  const ordersCount = document.getElementById('ordersCount');
-  
-  if (!ordersList || !ordersCount) return;
-  
-  if (orders.length === 0) {
-    ordersCount.textContent = '0 заказов';
-    ordersList.innerHTML = `
-      <div class="no-orders">
-        <div class="no-orders-icon"></div>
-        <div class="no-orders-text">У вас пока нет заказов</div>
-        <div class="no-orders-subtext">Совершите первую покупку чтобы начать историю!</div>
-      </div>
-    `;
-    return;
-  }
-  
-  ordersCount.textContent = `${orders.length} заказ${getPluralEnding(orders.length)}`;
-  
-  orders.sort((a, b) => new Date(b.date) - new Date(a.date));
-  
-  ordersList.innerHTML = orders.map(order => {
-    const displayStatus = getDisplayStatus(order.status, order.paymentStatus, order.refundAmount);
-    const isGrayed = order.status === 'canceled' || order.status === 'manyback';
-    const grayedClass = isGrayed ? 'grayed' : '';
-    
-    return `
-      <div class="order-item ${grayedClass}" onclick="window.location.href='moreorder.html?order=${order.id}'">
-        <div class="order-header">
-          <div class="order-id">Заказ #${order.id}</div>
-          <div class="order-date">${formatDate(order.date)}</div>
-        </div>
-        <div class="order-details">
-          <div class="order-total">
-            ${fmtRub(order.total)}
-            ${order.refundAmount ? `<div style="font-size: 12px; color: #9c27b0; margin-top: 4px;">К возврату: ${fmtRub(order.refundAmount)}</div>` : ''}
-          </div>
-          <div class="order-status ${displayStatus.className}">${displayStatus.text}</div>
-        </div>
-      </div>
-    `;
-  }).join('');
-}
-
-function showError(title, message) {
-  document.getElementById('errorTitle').textContent = title;
-  document.getElementById('errorText').textContent = message;
-  showScreen('error');
-}
-
-function setupMobileNavigation() {
-  const navWallet = document.getElementById('navWallet');
-  const navProfile = document.getElementById('navProfile');
-  const navHome = document.getElementById('navHome');
-  const navCart = document.getElementById('navCart');
-  const mobileNav = document.getElementById('mobileNav');
-  
-  navProfile.classList.add('active');
-  
-  if (navWallet) {
-    navWallet.addEventListener('click', function(e) {
-      e.preventDefault();
-      window.location.href = 'wallet.html';
-    });
-  }
-  
-  if (navProfile) {
-    navProfile.addEventListener('click', function(e) {
-      e.preventDefault();
-      window.location.href = 'profile.html';
-    });
-  }
-  
-  if (navHome) {
-    navHome.addEventListener('click', function(e) {
-      e.preventDefault();
-      window.location.href = SHOP_URL;
-    });
-  }
-  
-  if (navCart) {
-    navCart.addEventListener('click', function(e) {
-      e.preventDefault();
-      localStorage.setItem('open_cart', 'true');
-      window.location.href = SHOP_URL;
-    });
-  }
-  
-  if (mobileNav) {
-    let isDragging = false;
-    let startX, startY;
-    
-    mobileNav.addEventListener('mousedown', function(e) {
-      isDragging = false;
-      startX = e.clientX;
-      startY = e.clientY;
-    });
-    
-    mobileNav.addEventListener('mousemove', function(e) {
-      if (!startX) return;
-      const dx = e.clientX - startX;
-      const dy = e.clientY - startY;
-      if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
-        isDragging = true;
-      }
-    });
-    
-    mobileNav.addEventListener('mouseup', function() {
-      startX = null;
-      startY = null;
-    });
-    
-    mobileNav.addEventListener('touchstart', function(e) {
-      isDragging = false;
-      if (e.touches.length) {
-        startX = e.touches[0].clientX;
-        startY = e.touches[0].clientY;
-      }
-    });
-    
-    mobileNav.addEventListener('touchmove', function(e) {
-      if (!startX) return;
-      if (e.touches.length) {
-        const dx = e.touches[0].clientX - startX;
-        const dy = e.touches[0].clientY - startY;
-        if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
-          isDragging = true;
-        }
-      }
-    });
-    
-    mobileNav.addEventListener('touchend', function() {
-      startX = null;
-      startY = null;
-    });
-    
-    const navItems = [navWallet, navProfile, navHome, navCart];
-    navItems.forEach(item => {
-      if (item) {
-        item.addEventListener('click', function(e) {
-          if (isDragging) {
-            e.preventDefault();
-            e.stopPropagation();
-            isDragging = false;
-          }
-        });
-      }
-    });
-  }
-}
-
-document.getElementById('logoutBtn').addEventListener('click', () => {
-  clearUser();
-  window.location.href = SHOP_URL;
-});
-
-document.getElementById('backToShopBtn').addEventListener('click', () => {
-  window.location.href = SHOP_URL;
-});
-
-document.getElementById('retryBtn').addEventListener('click', () => {
-  if (currentUser) {
-    loadProfileData();
-  } else {
-    window.location.href = 'reg_log.html';
-  }
-});
-
-function checkInitialAuth() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const authToken = urlParams.get('auth');
-  
-  if (authToken) {
-    const newUrl = window.location.pathname;
-    window.history.replaceState({}, '', newUrl);
-    
-    verifyAuthToken(authToken);
-  } else {
-    currentUser = loadUser();
-    if (currentUser) {
-      loadProfileData();
-    } else {
-      window.location.href = 'reg_log.html';
-    }
-  }
-}
-
-async function verifyAuthToken(token) {
-  showScreen('loading');
+// Telegram авторизация
+async function handleTelegramAuth() {
+  showTelegramStatus('loading');
   
   try {
-    const response = await fetch(`${API_URL}/api/auth/check/${token}`);
+    const response = await fetch(`${API_URL}/api/auth/start-login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    });
+    
     const data = await response.json();
     
-    if (data.success && data.authenticated && data.user) {
-      currentUser = data.user;
-      saveUser(data.user);
-      loadProfileData();
+    if (data.success && data.telegramLink) {
+      telegramToken = data.token;
+      showTelegramStatus('success');
+      
+      // Открываем Telegram
+      setTimeout(() => {
+        window.open(data.telegramLink, '_blank');
+      }, 1000);
+      
+      // Начинаем проверять статус авторизации
+      startTelegramPolling();
+      
     } else {
-      showError('Ошибка авторизации', 'Не удалось войти в аккаунт. Пожалуйста, попробуйте снова.');
+      showTelegramStatus('error', '❌ Ошибка получения ссылки');
     }
   } catch (error) {
-    showError('Ошибка сети', 'Не удалось подключиться к серверу');
+    showTelegramStatus('error', '❌ Ошибка соединения');
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  loadLottieAnimations();
-  updateBadge();
+// Проверка статуса Telegram авторизации
+function startTelegramPolling() {
+  if (telegramCheckInterval) clearInterval(telegramCheckInterval);
   
+  telegramCheckInterval = setInterval(async () => {
+    if (!telegramToken) return;
+    
+    try {
+      const response = await fetch(`${API_URL}/api/auth/check/${telegramToken}`);
+      const data = await response.json();
+      
+      if (data.success && data.authenticated) {
+        clearInterval(telegramCheckInterval);
+        localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+        window.location.href = `${SITE_URL}/main.html`;
+      } else if (data.expired) {
+        clearInterval(telegramCheckInterval);
+        showTelegramStatus('error', '❌ Время ожидания истекло');
+      }
+    } catch (error) {
+      console.error('Ошибка проверки:', error);
+    }
+  }, 2000);
+  
+  // Таймаут через 3 минуты
   setTimeout(() => {
-    checkInitialAuth();
-  }, 500);
+    if (telegramCheckInterval) {
+      clearInterval(telegramCheckInterval);
+      showTelegramStatus('error', '❌ Время ожидания истекло');
+    }
+  }, 3 * 60 * 1000);
+}
+
+// Яндекс авторизация (пока без логики)
+function handleYandexAuth() {
+  showTelegramStatus('loading'); // Используем Telegram статусы для простоты
+  setTimeout(() => {
+    showTelegramStatus('error', '❌ Яндекс авторизация временно недоступна');
+  }, 1500);
+}
+
+// Очистка интервалов при уходе
+window.addEventListener('beforeunload', () => {
+  if (telegramCheckInterval) clearInterval(telegramCheckInterval);
+});
+
+// Инициализация при загрузке
+document.addEventListener('DOMContentLoaded', () => {
+  initLottie();
+  hideAllStatuses();
   
-  setupMobileNavigation();
+  // Обработчики
+  document.getElementById('emailSubmitBtn').addEventListener('click', handleEmailAuth);
+  document.getElementById('telegramBtn').addEventListener('click', handleTelegramAuth);
+  document.getElementById('yandexBtn').addEventListener('click', handleYandexAuth);
+  
+  // Enter в поле email
+  document.getElementById('emailInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') handleEmailAuth();
+  });
+  
+  // Фокус на email поле
+  document.getElementById('emailInput').focus();
 });
 </script>
 </body>
