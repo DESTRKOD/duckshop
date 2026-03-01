@@ -467,6 +467,12 @@
       closedMessageShown = true;
     }
 
+    function hideClosedMessage() {
+      const container = document.getElementById('closedMessageContainer');
+      container.innerHTML = '';
+      closedMessageShown = false;
+    }
+
     function showEmptyState() {
       const container = document.getElementById('messages');
       container.innerHTML = `
@@ -488,6 +494,25 @@
       }
     }
 
+    function hideNewChatButton() {
+      const inputArea = document.getElementById('inputArea');
+      const attach = document.getElementById('attach');
+      const inputWrap = document.querySelector('.input-wrap');
+      const send = document.getElementById('send');
+      
+      attach.style.display = 'grid';
+      inputWrap.style.display = 'block';
+      send.style.display = 'grid';
+      inputArea.classList.remove('closed');
+      
+      const oldBtn = document.getElementById('newChatButton');
+      if (oldBtn) oldBtn.remove();
+      
+      document.getElementById('input').disabled = false;
+      document.getElementById('attach').disabled = false;
+      document.getElementById('file').disabled = false;
+    }
+
     function showNewChatButton() {
       const inputArea = document.getElementById('inputArea');
       const attach = document.getElementById('attach');
@@ -507,27 +532,21 @@
       newChatBtn.id = 'newChatButton';
       newChatBtn.className = 'new-chat-button';
       newChatBtn.innerHTML = `
-        <svg viewBox="0 0 24 24">
-          <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
-          <path d="M12 6v4h4v2h-4v4h-2v-4H6v-2h4V6h2z"/>
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
         </svg>
         Начать новый разговор
       `;
       newChatBtn.onclick = () => {
+        // Прячем кнопку и сообщение
+        hideNewChatButton();
+        hideClosedMessage();
+        
+        // Показываем пустой чат
         showEmptyState();
         
-        attach.style.display = 'grid';
-        inputWrap.style.display = 'block';
-        send.style.display = 'grid';
-        inputArea.classList.remove('closed');
-        newChatBtn.remove();
-        
-        document.getElementById('input').disabled = false;
-        document.getElementById('attach').disabled = false;
-        document.getElementById('file').disabled = false;
-        
+        // Сбрасываем состояние
         isDialogClosed = false;
-        closedMessageShown = false;
         currentDialogId = null;
         lastMessageId = 0;
       };
@@ -705,8 +724,9 @@
         if (f && !isDialogClosed) sendMessage('', f);
       });
 
-     
-      back.addEventListener('click', () => {
+      
+      back.addEventListener('click', (e) => {
+        e.preventDefault();
         buttonShownThisSession = false; 
         location.href = 'main.html';
       });
