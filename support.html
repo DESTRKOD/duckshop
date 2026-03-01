@@ -465,6 +465,11 @@
         </div>
       `;
       closedMessageShown = true;
+      
+      // Автоматически скрываем сообщение через 5 секунд
+      setTimeout(() => {
+        hideClosedMessage();
+      }, 5000);
     }
 
     function hideClosedMessage() {
@@ -533,7 +538,7 @@
       newChatBtn.className = 'new-chat-button';
       newChatBtn.innerHTML = `
         <svg viewBox="0 0 24 24" width="24" height="24">
-          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+          <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
         </svg>
         Начать новый разговор
       `;
@@ -724,10 +729,10 @@
         if (f && !isDialogClosed) sendMessage('', f);
       });
 
-      
+      // При нажатии на стрелку
       back.addEventListener('click', (e) => {
         e.preventDefault();
-        buttonShownThisSession = false; 
+        buttonShownThisSession = false; // Сбрасываем флаг
         location.href = 'main.html';
       });
 
