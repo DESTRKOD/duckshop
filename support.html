@@ -466,64 +466,78 @@
       closedMessageShown = true;
     }
 
+    // Функция для возврата к обычному интерфейсу
+    function resetToNormalInterface() {
+      const inputArea = document.getElementById('inputArea');
+      const attach = document.getElementById('attach');
+      const inputWrap = document.querySelector('.input-wrap');
+      const send = document.getElementById('send');
+      
+      // Показываем обычные элементы
+      attach.style.display = 'grid';
+      inputWrap.style.display = 'block';
+      send.style.display = 'grid';
+      inputArea.classList.remove('closed');
+      
+      // Удаляем кнопку нового разговора
+      const oldBtn = document.getElementById('newChatButton');
+      if (oldBtn) oldBtn.remove();
+      
+      // Убираем сообщение о закрытии
+      document.getElementById('closedMessageContainer').innerHTML = '';
+      
+      // Разблокируем ввод
+      document.getElementById('input').disabled = false;
+      document.getElementById('attach').disabled = false;
+      document.getElementById('file').disabled = false;
+      
+      // Сбрасываем флаги
+      isDialogClosed = false;
+      closedMessageShown = false;
+      currentDialogId = null;
+      lastMessageId = 0;
+    }
+
+    // Функция для показа начального экрана с Lottie
+    function showEmptyState() {
+      const container = document.getElementById('messages');
+      container.innerHTML = `
+        <div class="empty">
+          <div class="lottie" id="lottie"></div>
+          <div class="empty-title">Чат с поддержкой</div>
+          <div class="empty-subtitle">Напишите нам — ответим быстро</div>
+        </div>
+      `;
+      
+      if (typeof lottie !== 'undefined') {
+        lottie.loadAnimation({
+          container: document.getElementById('lottie'),
+          renderer: 'svg',
+          loop: true,
+          autoplay: true,
+          path: 'support.json'
+        });
+      }
+    }
+
     // Функция для начала нового диалога
     async function startNewDialog() {
       if (!currentUser) return;
       
-      try {
-        // Отправляем первое сообщение чтобы создать новый диалог
-        const formData = new FormData();
-        formData.append('user_id', currentUser.id);
-        formData.append('message', 'Здравствуйте, у меня новый вопрос');
-        
-        const res = await fetch(`${API_URL}/api/support/message`, { 
-          method: 'POST', 
-          body: formData 
-        });
-        
-        const data = await res.json();
-        
-        if (data.dialog_id) {
-          // Сбрасываем состояние
-          isDialogClosed = false;
-          closedMessageShown = false;
-          currentDialogId = data.dialog_id;
-          lastMessageId = 0;
-          
-          // Убираем сообщение о закрытии
-          document.getElementById('closedMessageContainer').innerHTML = '';
-          
-          // Возвращаем обычный интерфейс
-          const inputArea = document.getElementById('inputArea');
-          const attach = document.getElementById('attach');
-          const inputWrap = document.querySelector('.input-wrap');
-          const send = document.getElementById('send');
-          
-          attach.style.display = 'grid';
-          inputWrap.style.display = 'block';
-          send.style.display = 'grid';
-          inputArea.classList.remove('closed');
-          
-          // Удаляем кнопку нового разговора
-          const oldBtn = document.getElementById('newChatButton');
-          if (oldBtn) oldBtn.remove();
-          
-          // Разблокируем ввод
-          document.getElementById('input').disabled = false;
-          document.getElementById('attach').disabled = false;
-          document.getElementById('file').disabled = false;
-          document.getElementById('input').value = '';
-          
-          // Загружаем историю нового диалога
-          await loadMessages();
-          
-          // Запускаем polling заново
-          if (pollingInterval) clearInterval(pollingInterval);
-          pollingInterval = setInterval(checkNewMessages, 3000);
-        }
-      } catch (e) {
-        console.error('start new dialog error:', e);
+      // Просто сбрасываем интерфейс без отправки сообщения
+      resetToNormalInterface();
+      
+      // Показываем начальный экран
+      showEmptyState();
+      
+      // Останавливаем старый polling
+      if (pollingInterval) {
+        clearInterval(pollingInterval);
+        pollingInterval = null;
       }
+      
+      // Новый диалог начнется когда пользователь напишет сообщение
+      // А currentDialogId обновится при отправке первого сообщения
     }
 
     function showNewChatButton() {
@@ -582,7 +596,7 @@
         document.getElementById('file').value = '';
         document.getElementById('send').disabled = true;
         
-        // После отправки сразу проверяем статус
+        // После отправки загружаем сообщения
         await loadMessages();
       } catch (e) {
         console.error('send error', e);
@@ -603,56 +617,45 @@
         if (data.dialog_id) currentDialogId = data.dialog_id;
         
         // Проверка закрытия диалога
-        if (data.is_closed && !isDialogClosed) {
+        if (data.is_closed) {
           console.log('Диалог закрыт!');
-          isDialogClosed = true;
           
-          // Блокируем ввод
-          document.getElementById('input').disabled = true;
-          document.getElementById('send').disabled = true;
-          document.getElementById('attach').disabled = true;
-          document.getElementById('file').disabled = true;
-          
-          // Показываем сообщение о закрытии
-          showClosedMessage();
-          
-          // Показываем кнопку нового разговора
-          showNewChatButton();
-          
-          // Останавливаем polling
-          if (pollingInterval) {
-            clearInterval(pollingInterval);
-            pollingInterval = null;
+          if (!isDialogClosed) {
+            // Первый раз видим закрытие - показываем кнопку
+            isDialogClosed = true;
+            
+            // Блокируем ввод
+            document.getElementById('input').disabled = true;
+            document.getElementById('send').disabled = true;
+            document.getElementById('attach').disabled = true;
+            document.getElementById('file').disabled = true;
+            
+            // Показываем сообщение о закрытии
+            showClosedMessage();
+            
+            // Показываем кнопку нового разговора
+            showNewChatButton();
+            
+            // Останавливаем polling
+            if (pollingInterval) {
+              clearInterval(pollingInterval);
+              pollingInterval = null;
+            }
+          } else {
+            // При повторных загрузках страницы кнопка уже должна быть
+            // Но если её нет по какой-то причине - показываем
+            if (!document.getElementById('newChatButton')) {
+              showNewChatButton();
+            }
           }
           
-          return; // Не обновляем сообщения если диалог закрыт
+          return; // Не показываем сообщения если диалог закрыт
         }
 
         const container = document.getElementById('messages');
         
-        if (!silent && data.messages.length === 0 && !data.is_closed) {
-          container.innerHTML = `
-            <div class="empty">
-              <div class="lottie" id="lottie"></div>
-              <div class="empty-title">Чат с поддержкой</div>
-              <div class="empty-subtitle">Напишите нам — ответим быстро</div>
-            </div>
-          `;
-          
-          if (typeof lottie !== 'undefined') {
-            lottie.loadAnimation({
-              container: document.getElementById('lottie'),
-              renderer: 'svg',
-              loop: true,
-              autoplay: true,
-              path: 'support.json'
-            });
-          }
-          return;
-        }
-        
-        // Если диалог закрыт и нет сообщений - не показываем пустой чат
-        if (data.is_closed && data.messages.length === 0) {
+        if (data.messages.length === 0) {
+          showEmptyState();
           return;
         }
         
