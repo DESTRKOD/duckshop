@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<title>Ввод кода - Duck Shop</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(180deg, #0b3c91 0%, #1565c0 55%, #42a5f5 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px 20px;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 440px;
+  min-height: 100vh;
+}
+
+.auth-sticker {
+  width: 120px;
+  height: 120px;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 480px) {
+  .auth-sticker {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 12px;
+  }
+}
+
+.auth-title {
+  font-size: 28px;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 8px;
+  text-align: center;
+  text-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.auth-subtitle {
+  font-size: 16px;
+  color: rgba(255,255,255,0.9);
+  margin-bottom: 24px;
+  text-align: center;
+  max-width: 320px;
+  line-height: 1.5;
+}
+
+/* Основной блок */
+.code-section {
+  width: 100%;
+  background: rgba(255,255,255,0.08);
+  border-radius: 28px;
+  padding: 32px 24px;
+  box-sizing: border-box;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.15);
+  margin-bottom: 20px;
+}
+
+.email-display {
+  text-align: center;
+  margin-bottom: 28px;
+  padding: 16px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 20px;
+  border: 1px dashed rgba(255,255,255,0.2);
+  word-break: break-all;
+}
+
+.email-label {
+  color: rgba(255,255,255,0.7);
+  font-size: 14px;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.email-value {
+  color: white;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.code-label {
+  color: white;
+  font-weight: 600;
+  margin-bottom: 20px;
+  font-size: 16px;
+  display: block;
+  text-align: center;
+}
+
+.code-input-group {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.code-digit {
+  width: 52px;
+  height: 64px;
+  border-radius: 16px;
+  border: 2px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.1);
+  color: white;
+  font-size: 28px;
+  font-weight: 800;
+  text-align: center;
+  line-height: 64px;
+  outline: none;
+  transition: all 0.2s ease;
+  caret-color: #4fc3f7;
+}
+
+.code-digit:focus {
+  border-color: #4fc3f7;
+  background: rgba(255,255,255,0.15);
+  box-shadow: 0 0 0 3px rgba(79, 195, 247, 0.2);
+}
+
+.code-digit:not(:placeholder-shown) {
+  border-color: rgba(255,255,255,0.4);
+  background: rgba(255,255,255,0.2);
+}
+
+/* Таймер */
+.timer-block {
+  text-align: center;
+  margin: 20px 0 16px;
+}
+
+.timer {
+  color: rgba(255,255,255,0.9);
+  font-size: 20px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  background: rgba(0,0,0,0.2);
+  display: inline-block;
+  padding: 8px 20px;
+  border-radius: 40px;
+  letter-spacing: 2px;
+}
+
+.timer-warning {
+  color: #ffb74d;
+}
+
+.timer-expired {
+  color: #ff6b6b;
+}
+
+/* Кнопки */
+.action-btn {
+  width: 100%;
+  height: 56px;
+  border-radius: 18px;
+  border: none;
+  font-weight: 800;
+  font-size: 18px;
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.action-btn:active {
+  transform: scale(0.98);
+}
+
+.action-btn.primary {
+  background: white;
+  color: #0b3c91;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+
+.action-btn.secondary {
+  background: rgba(255,255,255,0.1);
+  color: white;
+  border: 2px solid rgba(255,255,255,0.2);
+  backdrop-filter: blur(5px);
+}
+
+.action-btn:disabled {
+  opacity: 0.5;
+  transform: none !important;
+  cursor: not-allowed;
+}
+
+.action-btn svg {
+  width: 22px;
+  height: 22px;
+  fill: currentColor;
+}
+
+/* Статус сообщение */
+.status-message {
+  margin: 16px 0;
+  padding: 14px 18px;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  display: none;
+  width: 100%;
+  box-sizing: border-box;
+  backdrop-filter: blur(10px);
+}
+
+.status-loading {
+  background: rgba(255,255,255,0.12);
+  color: white;
+  border-left: 4px solid #4fc3f7;
+}
+
+.status-success {
+  background: rgba(0,200,83,0.15);
+  color: white;
+  border-left: 4px solid #00c853;
+}
+
+.status-error {
+  background: rgba(255,45,85,0.15);
+  color: white;
+  border-left: 4px solid #ff2d55;
+}
+
+/* Ссылка назад */
+.back-link {
+  margin-top: 20px;
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+  font-size: 15px;
+  transition: color 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 0;
+}
+
+.back-link:hover {
+  color: white;
+}
+
+.back-link svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+/* Адаптация */
+@media (max-width: 380px) {
+  .code-digit {
+    width: 44px;
+    height: 56px;
+    font-size: 24px;
+    line-height: 56px;
+  }
+  
+  .auth-title {
+    font-size: 24px;
+  }
+  
+  .action-btn {
+    height: 50px;
+    font-size: 16px;
+  }
+  
+  .email-value {
+    font-size: 16px;
+  }
+}
+</style>
+</head>
+
+<body>
+<div class="auth-screen">
+  <!-- Анимация -->
+  <div id="lottie-animation" class="auth-sticker"></div>
+  
+  <!-- Заголовок -->
+  <div class="auth-title">Подтверждение</div>
+  <div class="auth-subtitle">Введите код из письма</div>
+  
+  <!-- Основной блок с кодом -->
+  <div class="code-section">
+    <!-- Email получателя -->
+    <div class="email-display">
+      <div class="email-label">Код отправлен на</div>
+      <div class="email-value" id="displayEmail">загрузка...</div>
+    </div>
+    
+    <!-- Поля для ввода кода -->
+    <label class="code-label">Введите 6-значный код</label>
+    <div class="code-input-group">
+      <input type="text" class="code-digit" id="digit1" maxlength="1" inputmode="numeric" pattern="[0-9]*" placeholder="0">
+      <input type="text" class="code-digit" id="digit2" maxlength="1" inputmode="numeric" pattern="[0-9]*" placeholder="0">
+      <input type="text" class="code-digit" id="digit3" maxlength="1" inputmode="numeric" pattern="[0-9]*" placeholder="0">
+      <input type="text" class="code-digit" id="digit4" maxlength="1" inputmode="numeric" pattern="[0-9]*" placeholder="0">
+      <input type="text" class="code-digit" id="digit5" maxlength="1" inputmode="numeric" pattern="[0-9]*" placeholder="0">
+      <input type="text" class="code-digit" id="digit6" maxlength="1" inputmode="numeric" pattern="[0-9]*" placeholder="0">
+    </div>
+    
+    <!-- Таймер -->
+    <div class="timer-block">
+      <div class="timer" id="timer">10:00</div>
+    </div>
+    
+    <!-- Кнопки -->
+    <button class="action-btn primary" id="verifyBtn">
+      <svg viewBox="0 0 24 24">
+        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+      </svg>
+      Подтвердить
+    </button>
+    
+    <button class="action-btn secondary" id="resendBtn">
+      <svg viewBox="0 0 24 24">
+        <path d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+      </svg>
+      Отправить снова
+    </button>
+  </div>
+  
+  <!-- Статус сообщения -->
+  <div class="status-message status-loading" id="loadingMessage">
+    ⏳ Проверка кода...
+  </div>
+  <div class="status-message status-success" id="successMessage">
+    ✅ Код верный! Выполняем вход...
+  </div>
+  <div class="status-message status-error" id="errorMessage"></div>
+  
+  <!-- Ссылка назад -->
+  <a href="reg_log.html" class="back-link">
+    <svg viewBox="0 0 24 24">
+      <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+    </svg>
+    Назад к выбору способа входа
+  </a>
+</div>
+
+<script>
+const API_URL = 'https://duck-shop-sever.onrender.com';
+const SITE_URL = 'https://destrkod.github.io/duckshop';
+const USER_KEY = 'duck_user_v1';
+
+let email = '';
+let timerInterval;
+let timeLeft = 600; // 10 минут в секундах
+let canResend = false;
+
+// Инициализация Lottie
+function initLottie() {
+  try {
+    lottie.loadAnimation({
+      container: document.getElementById('lottie-animation'),
+      renderer: 'svg',
+      loop: true,
+      autoplay: true,
+      path: 'registration.json'
+    });
+  } catch (e) {
+    console.log('Lottie не загрузилась');
+  }
+}
+
+// Получаем email из URL
+function getEmailFromUrl() {
+  const urlParams = new URLSearchParams(window.location.search);
+  email = urlParams.get('email') || '';
+  
+  if (!email) {
+    const savedEmail = localStorage.getItem('temp_email');
+    if (savedEmail) {
+      email = savedEmail;
+      localStorage.removeItem('temp_email');
+    } else {
+      window.location.href = 'reg_log.html';
+      return;
+    }
+  }
+  
+  document.getElementById('displayEmail').textContent = email;
+}
+
+// Управление полями ввода кода
+function setupCodeInputs() {
+  const digits = [
+    document.getElementById('digit1'),
+    document.getElementById('digit2'),
+    document.getElementById('digit3'),
+    document.getElementById('digit4'),
+    document.getElementById('digit5'),
+    document.getElementById('digit6')
+  ];
+  
+  digits.forEach((input, index) => {
+    input.addEventListener('input', (e) => {
+      const value = e.target.value;
+      
+      if (value && !/^\d+$/.test(value)) {
+        input.value = '';
+        return;
+      }
+      
+      if (value && index < digits.length - 1) {
+        digits[index + 1].focus();
+      }
+      
+      if (getFullCode().length === 6) {
+        document.getElementById('verifyBtn').click();
+      }
+    });
+    
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Backspace' && !input.value && index > 0) {
+        digits[index - 1].focus();
+      }
+    });
+    
+    input.addEventListener('keypress', (e) => {
+      if (!/[0-9]/.test(e.key)) {
+        e.preventDefault();
+      }
+    });
+  });
+  
+  setTimeout(() => digits[0].focus(), 300);
+}
+
+function getFullCode() {
+  return (
+    document.getElementById('digit1').value +
+    document.getElementById('digit2').value +
+    document.getElementById('digit3').value +
+    document.getElementById('digit4').value +
+    document.getElementById('digit5').value +
+    document.getElementById('digit6').value
+  );
+}
+
+function clearCodeInputs() {
+  for (let i = 1; i <= 6; i++) {
+    document.getElementById(`digit${i}`).value = '';
+  }
+  document.getElementById('digit1').focus();
+}
+
+function startTimer(seconds) {
+  timeLeft = seconds;
+  updateTimerDisplay();
+  
+  if (timerInterval) clearInterval(timerInterval);
+  
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    updateTimerDisplay();
+    
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      canResend = true;
+      document.getElementById('timer').classList.add('timer-expired');
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const minutes = Math.floor(timeLeft / 60);
+  const seconds = timeLeft % 60;
+  const timerEl = document.getElementById('timer');
+  
+  timerEl.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  
+  if (timeLeft <= 60) {
+    timerEl.classList.add('timer-warning');
+  } else {
+    timerEl.classList.remove('timer-warning', 'timer-expired');
+  }
+}
+
+function hideStatuses() {
+  document.getElementById('loadingMessage').style.display = 'none';
+  document.getElementById('successMessage').style.display = 'none';
+  document.getElementById('errorMessage').style.display = 'none';
+}
+
+function showStatus(type, message = '') {
+  hideStatuses();
+  if (type === 'loading') {
+    document.getElementById('loadingMessage').style.display = 'block';
+  } else if (type === 'success') {
+    document.getElementById('successMessage').style.display = 'block';
+  } else if (type === 'error') {
+    document.getElementById('errorMessage').textContent = message;
+    document.getElementById('errorMessage').style.display = 'block';
+  }
+}
+
+async function verifyCode() {
+  const code = getFullCode();
+  
+  if (code.length !== 6) {
+    showStatus('error', '❌ Введите полный 6-значный код');
+    return;
+  }
+  
+  if (timeLeft <= 0) {
+    showStatus('error', '❌ Время действия кода истекло');
+    return;
+  }
+  
+  showStatus('loading');
+  
+  try {
+    const response = await fetch(`${API_URL}/api/auth/verify-code`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, code })
+    });
+    
+    const data = await response.json();
+    
+    if (data.success) {
+      showStatus('success');
+      localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+      
+      setTimeout(() => {
+        window.location.href = `${SITE_URL}/main.html?auth=${data.token}`;
+      }, 1500);
+    } else {
+      showStatus('error', data.error || 'Неверный код');
+      clearCodeInputs();
+    }
+  } catch (error) {
+    showStatus('error', '❌ Ошибка проверки кода');
+    clearCodeInputs();
+  }
+}
+
+async function resendCode() {
+  if (!canResend && timeLeft > 0) {
+    showStatus('error', `❌ Подождите ${Math.ceil(timeLeft / 60)} мин. перед повторной отправкой`);
+    return;
+  }
+  
+  showStatus('loading');
+  
+  try {
+    const response = await fetch(`${API_URL}/api/auth/send-code`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    
+    const data = await response.json();
+    
+    if (data.success) {
+      showStatus('success', '✅ Новый код отправлен на почту');
+      startTimer(600);
+      canResend = false;
+      clearCodeInputs();
+      document.getElementById('timer').classList.remove('timer-expired');
+      
+      setTimeout(hideStatuses, 2000);
+    } else {
+      showStatus('error', data.error || 'Ошибка отправки кода');
+    }
+  } catch (error) {
+    showStatus('error', '❌ Ошибка соединения');
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  initLottie();
+  getEmailFromUrl();
+  setupCodeInputs();
+  startTimer(600);
+  
+  document.getElementById('verifyBtn').addEventListener('click', verifyCode);
+  document.getElementById('resendBtn').addEventListener('click', resendCode);
+  
+  window.addEventListener('beforeunload', () => {
+    if (timerInterval) clearInterval(timerInterval);
+  });
+});
+</script>
+</body>
+</html>
