@@ -426,6 +426,9 @@
     let isDialogClosed = false;
     let closedMessageShown = false;
     let buttonShownThisSession = false;
+    
+    // Ключ для localStorage чтобы запомнить, что пользователь начал новый диалог
+    const NEW_DIALOG_STARTED_KEY = 'duck_support_new_dialog_started';
 
     function loadUser() {
       try {
@@ -459,8 +462,8 @@
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
           </svg>
           <div>
-            <span>✅ Ваше обращение закрыто</span>
-            <small>надеемся, мы решили все ваши вопросы</small>
+            <span>✅ Ваше предыдущее обращение закрыто</span>
+            <small>надеемся, мы решили все Ваши вопросы</small>
           </div>
         </div>
       `;
@@ -543,6 +546,9 @@
         Начать новый разговор
       `;
       newChatBtn.onclick = () => {
+        // Запоминаем, что пользователь начал новый диалог
+        localStorage.setItem(NEW_DIALOG_STARTED_KEY, 'true');
+        
         // Прячем кнопку и сообщение
         hideNewChatButton();
         hideClosedMessage();
@@ -602,10 +608,14 @@
         
         if (data.dialog_id) currentDialogId = data.dialog_id;
         
+        // Проверяем, начинал ли пользователь новый диалог
+        const startedNewDialog = localStorage.getItem(NEW_DIALOG_STARTED_KEY) === 'true';
+        
         if (data.is_closed) {
           console.log('Диалог закрыт!');
           
-          if (!isDialogClosed && !buttonShownThisSession) {
+          if (!isDialogClosed && !buttonShownThisSession && !startedNewDialog) {
+            // Показываем кнопку только если пользователь не начинал новый диалог
             isDialogClosed = true;
             
             document.getElementById('input').disabled = true;
@@ -621,7 +631,7 @@
               pollingInterval = null;
             }
           } else {
-            // Если вернулись на страницу после ухода - показываем начальный экран
+            // Если пользователь начинал новый диалог или возвращался - показываем пустой чат
             showEmptyState();
             
             document.getElementById('input').disabled = false;
