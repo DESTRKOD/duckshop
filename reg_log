@@ -69,88 +69,6 @@ html, body {
   font-weight: 500;
 }
 
-.email-section {
-  width: 100%;
-  margin-bottom: 30px;
-  background: rgba(255,255,255,0.08);
-  border-radius: 24px;
-  padding: 24px 20px;
-  box-sizing: border-box;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,0.15);
-}
-
-.email-label {
-  color: white;
-  font-weight: 600;
-  margin-bottom: 12px;
-  font-size: 15px;
-  display: block;
-  letter-spacing: 0.5px;
-  opacity: 0.9;
-}
-
-.email-input-group {
-  display: flex;
-  gap: 12px;
-  width: 100%;
-}
-
-.email-input {
-  flex: 1;
-  padding: 16px 20px;
-  font-size: 16px;
-  border-radius: 16px;
-  border: 2px solid rgba(255,255,255,0.2);
-  background: rgba(255,255,255,0.1);
-  color: white;
-  box-sizing: border-box;
-  outline: none;
-  transition: all .2s ease;
-  font-family: inherit;
-  font-weight: 500;
-}
-
-.email-input:focus {
-  border-color: #4fc3f7;
-  background: rgba(255,255,255,0.15);
-  box-shadow: 0 0 0 3px rgba(79, 195, 247, 0.2);
-}
-
-.email-input::placeholder {
-  color: rgba(255,255,255,0.5);
-  font-weight: 400;
-}
-
-.email-btn {
-  width: 56px;
-  height: 56px;
-  border-radius: 16px;
-  border: none;
-  background: white;
-  color: #0b3c91;
-  font-weight: 800;
-  font-size: 22px;
-  cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-  flex-shrink: 0;
-}
-
-.email-btn:active {
-  transform: scale(0.95);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-}
-
-.email-btn svg {
-  width: 28px;
-  height: 28px;
-  fill: #0b3c91;
-}
-
 .divider {
   width: 100%;
   display: flex;
@@ -343,16 +261,6 @@ html, body {
     margin-bottom: 24px;
   }
   
-  .email-input {
-    padding: 14px 16px;
-    font-size: 15px;
-  }
-  
-  .email-btn {
-    width: 50px;
-    height: 50px;
-  }
-  
   .social-btn {
     height: 54px;
     font-size: 16px;
@@ -379,34 +287,13 @@ html, body {
     <div class="auth-title">Добро пожаловать</div>
     <div class="auth-subtitle">Войдите чтобы продолжить</div>
     
-    <div class="email-section">
-      <label class="email-label">Введите email для входа</label>
-      <div class="email-input-group">
-        <input type="email" class="email-input" id="emailInput" placeholder="your@email.ru" autocomplete="email">
-        <button class="email-btn" id="emailSubmitBtn">
-          <svg viewBox="0 0 24 24">
-            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-          </svg>
-        </button>
-      </div>
-      
-      <div class="status-message status-loading" id="emailLoading">
-        ⏳ Отправка кода...
-      </div>
-      <div class="status-message status-success" id="emailSuccess">
-        ✅ Код отправлен на почту
-      </div>
-      <div class="status-message status-error" id="emailError"></div>
-    </div>
-    
     <div class="divider">
       <div class="divider-line"></div>
-      <span>или войти через</span>
+      <span>войти через</span>
       <div class="divider-line"></div>
     </div>
     
     <div class="social-buttons">
-      <!-- Telegram -->
       <button class="social-btn btn-telegram" id="telegramBtn">
         <svg viewBox="0 0 24 24">
           <path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/>
@@ -414,7 +301,6 @@ html, body {
         <span>Telegram</span>
       </button>
       
-      <!-- Яндекс (рабочая ссылка) -->
       <a href="https://duck-shop-sever.onrender.com/api/auth/yandex" class="social-btn btn-yandex" style="text-decoration: none;">
         <svg viewBox="0 0 24 24">
           <path d="M2.04 12c0-5.523 4.476-10 10-10 5.522 0 10 4.477 10 10s-4.478 10-10 10c-5.524 0-10-4.477-10-10zm8.981-5.5v6.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V6.5h2v6.5c0 1.93-1.57 3.5-3.5 3.5s-3.5-1.57-3.5-3.5V6.5h2z"/>
@@ -454,10 +340,9 @@ html, body {
 
 <script>
 const API_URL = 'https://duck-shop-sever.onrender.com';
-const SITE_URL = 'https://destrkod.github.io/duckshop';
+const SITE_URL = 'https://shopdxs.ru';
 const USER_KEY = 'duck_user_v1';
 
-let currentEmail = '';
 let telegramCheckInterval = null;
 let telegramToken = null;
 
@@ -476,25 +361,10 @@ function initLottie() {
 }
 
 function hideAllStatuses() {
-  document.getElementById('emailLoading').style.display = 'none';
-  document.getElementById('emailSuccess').style.display = 'none';
-  document.getElementById('emailError').style.display = 'none';
   document.getElementById('telegramLoading').style.display = 'none';
   document.getElementById('telegramSuccess').style.display = 'none';
   document.getElementById('telegramError').style.display = 'none';
   document.getElementById('loadingSpinner').style.display = 'none';
-}
-
-function showEmailStatus(type, message = '') {
-  hideAllStatuses();
-  if (type === 'loading') {
-    document.getElementById('emailLoading').style.display = 'block';
-  } else if (type === 'success') {
-    document.getElementById('emailSuccess').style.display = 'block';
-  } else if (type === 'error') {
-    document.getElementById('emailError').textContent = message;
-    document.getElementById('emailError').style.display = 'block';
-  }
 }
 
 function showTelegramStatus(type, message = '') {
@@ -506,40 +376,6 @@ function showTelegramStatus(type, message = '') {
   } else if (type === 'error') {
     document.getElementById('telegramError').textContent = message;
     document.getElementById('telegramError').style.display = 'block';
-  }
-}
-
-async function handleEmailAuth() {
-  const email = document.getElementById('emailInput').value.trim();
-  
-  if (!email || !email.includes('@')) {
-    showEmailStatus('error', '❌ Введите корректный email');
-    return;
-  }
-  
-  currentEmail = email;
-  showEmailStatus('loading');
-  
-  try {
-    const response = await fetch(`${API_URL}/api/auth/send-code`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email })
-    });
-    
-    const data = await response.json();
-    
-    if (data.success) {
-      showEmailStatus('success');
-      localStorage.setItem('temp_email', email);
-      setTimeout(() => {
-        window.location.href = `code_login.html?email=${encodeURIComponent(email)}`;
-      }, 1500);
-    } else {
-      showEmailStatus('error', data.error || 'Ошибка отправки кода');
-    }
-  } catch (error) {
-    showEmailStatus('error', '❌ Ошибка соединения');
   }
 }
 
@@ -610,14 +446,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initLottie();
   hideAllStatuses();
   
-  document.getElementById('emailSubmitBtn').addEventListener('click', handleEmailAuth);
   document.getElementById('telegramBtn').addEventListener('click', handleTelegramAuth);
-  
-  document.getElementById('emailInput').addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') handleEmailAuth();
-  });
-  
-  document.getElementById('emailInput').focus();
 });
 </script>
 </body>
