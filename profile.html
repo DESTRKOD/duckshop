@@ -73,15 +73,8 @@ html, body {
 .profile-avatar {
   width: 100px;
   height: 100px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border-radius: 50%;
   margin: 0 auto 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 40px;
-  color: white;
-  font-weight: 900;
   overflow: hidden;
 }
 
@@ -89,6 +82,19 @@ html, body {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: 50%;
+}
+
+.profile-avatar .avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  font-size: 40px;
+  color: white;
+  font-weight: 900;
   border-radius: 50%;
 }
 
@@ -102,6 +108,8 @@ html, body {
   font-size: 16px;
   color: rgba(255,255,255,0.9);
   margin-bottom: 5px;
+  word-break: break-word;
+  padding: 0 20px;
 }
 
 .profile-username {
@@ -170,18 +178,6 @@ html, body {
   background: rgba(150, 150, 150, 0.2);
 }
 
-.order-item.grayed .order-id {
-  color: #aaa;
-}
-
-.order-item.grayed .order-date {
-  color: rgba(200, 200, 200, 0.7);
-}
-
-.order-item.grayed .order-total {
-  color: #ccc;
-}
-
 .order-header {
   display: flex;
   justify-content: space-between;
@@ -223,7 +219,6 @@ html, body {
   font-size: 16px;
 }
 
-/* Статусы заказов — всегда белый текст + glassmorphism */
 .order-status {
   padding: 6px 14px;
   border-radius: 20px;
@@ -231,7 +226,7 @@ html, body {
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #ffffff !important;               /* ← всегда белый текст */
+  color: #ffffff !important;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.18);
@@ -241,26 +236,22 @@ html, body {
   text-align: center;
 }
 
-/* Завершён — зелёный фон */
 .order-status.completed {
   background: rgba(76, 175, 80, 0.35);
   border-color: rgba(76, 175, 80, 0.5);
 }
 
-/* Отменён — красный фон */
 .order-status.canceled {
   background: rgba(255, 107, 107, 0.35);
   border-color: rgba(255, 107, 107, 0.5);
 }
 
-/* Возврат — чёрный/тёмный фон */
 .order-status.manyback,
 .order-status.refund {
   background: rgba(0, 0, 0, 0.55);
   border-color: rgba(255, 255, 255, 0.15);
 }
 
-/* В работе / Ожидает оплаты — прозрачный фон */
 .order-status.waiting,
 .order-status.pending,
 .order-status.inwork {
@@ -399,8 +390,10 @@ html, body {
   .profile-avatar {
     width: 80px;
     height: 80px;
-    font-size: 32px;
     margin-bottom: 15px;
+  }
+  .profile-avatar .avatar-placeholder {
+    font-size: 32px;
   }
   .profile-name {
     font-size: 20px;
@@ -421,6 +414,8 @@ html, body {
   .profile-avatar {
     width: 70px;
     height: 70px;
+  }
+  .profile-avatar .avatar-placeholder {
     font-size: 28px;
   }
   .profile-name {
@@ -556,10 +551,10 @@ html, body {
 
 <div id="profile" class="screen profile-screen">
   <div class="profile-header">
-    <div class="profile-avatar" id="profileAvatar">U</div>
+    <div class="profile-avatar" id="profileAvatar"></div>
     <div class="profile-name" id="profileName">Пользователь</div>
-    <div class="profile-id" id="profileId">TG ID: ...</div>
-    <div class="profile-username" id="profileUsername">@username</div>
+    <div class="profile-id" id="profileId"></div>
+    <div class="profile-username" id="profileUsername"></div>
   </div>
   
   <div class="profile-content">
@@ -790,22 +785,37 @@ async function loadProfileData() {
 
 function updateProfileUI(user) {
   const avatar = document.getElementById('profileAvatar');
+  
+  // Аватарка
   if (user.avatarUrl) {
-    avatar.innerHTML = `<img src="${user.avatarUrl}" alt="${user.username}" onerror="this.style.display='none'; this.parentElement.textContent='${user.username.charAt(0).toUpperCase()}'">`;
-  } else if (user.username) {
-    avatar.textContent = user.username.charAt(0).toUpperCase();
+    avatar.innerHTML = `<img src="${user.avatarUrl}" alt="${user.username}" onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\\'avatar-placeholder\\'>${user.username ? user.username.charAt(0).toUpperCase() : 'U'}</div>'">`;
+  } else {
+    const firstLetter = user.username ? user.username.charAt(0).toUpperCase() : 'U';
+    avatar.innerHTML = `<div class="avatar-placeholder">${firstLetter}</div>`;
   }
   
+  // Имя пользователя
   document.getElementById('profileName').textContent = user.username || 'Пользователь';
   
-  document.getElementById('profileId').textContent = `TG ID: ${user.tgId || '...'}`;
+  // Определяем способ регистрации
+  const provider = user.auth_provider || 'email';
   
-  const usernameElement = document.getElementById('profileUsername');
-  if (user.telegramUsername) {
-    usernameElement.textContent = `@${user.telegramUsername}`;
-    usernameElement.style.display = 'block';
+  const profileId = document.getElementById('profileId');
+  const profileUsername = document.getElementById('profileUsername');
+  
+  if (provider === 'telegram') {
+    // Telegram регистрация
+    profileId.textContent = `TG ID: ${user.tgId || '...'}`;
+    if (user.telegramUsername) {
+      profileUsername.textContent = `@${user.telegramUsername}`;
+      profileUsername.style.display = 'block';
+    } else {
+      profileUsername.style.display = 'none';
+    }
   } else {
-    usernameElement.style.display = 'none';
+    // Email регистрация (ручная)
+    profileId.textContent = user.email || 'Email не указан';
+    profileUsername.style.display = 'none';
   }
 }
 
