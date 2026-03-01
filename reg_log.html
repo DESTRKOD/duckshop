@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8" />
-<title>Авторизация</title>
+<title>Вход в Duck Shop</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 <style>
@@ -10,8 +10,8 @@ html, body {
   margin: 0;
   padding: 0;
   width: 100%;
-  height: 100%;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background: linear-gradient(180deg, #0b3c91 0%, #1565c0 55%, #42a5f5 100%);
   display: flex;
   align-items: center;
@@ -22,130 +22,270 @@ html, body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 30px 20px;
+  padding: 40px 20px 30px;
   box-sizing: border-box;
   width: 100%;
-  max-width: 400px;
+  max-width: 440px;
+  min-height: 100vh;
+  justify-content: space-between;
+}
+
+.auth-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .auth-sticker {
-  width: 180px;
-  height: 180px;
-  margin-bottom: 30px;
+  width: 160px;
+  height: 160px;
+  margin-bottom: 20px;
 }
 
 @media (max-width: 480px) {
   .auth-sticker {
     width: 140px;
     height: 140px;
-    margin-bottom: 25px;
+    margin-bottom: 15px;
   }
 }
 
 .auth-title {
-  font-size: 28px;
+  font-size: 32px;
   font-weight: 800;
   color: white;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   text-align: center;
+  text-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
 .auth-subtitle {
   font-size: 16px;
-  color: rgba(255,255,255,0.8);
-  margin-bottom: 30px;
+  color: rgba(255,255,255,0.9);
+  margin-bottom: 32px;
   text-align: center;
   max-width: 320px;
-  line-height: 1.4;
+  line-height: 1.5;
+  font-weight: 500;
 }
 
-@media (max-width: 480px) {
-  .auth-title {
-    font-size: 24px;
-  }
-  
-  .auth-subtitle {
-    font-size: 14px;
-    margin-bottom: 25px;
-  }
-}
-
-.auth-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
+/* Email блок */
+.email-section {
   width: 100%;
-  max-width: 300px;
   margin-bottom: 30px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 24px;
+  padding: 24px 20px;
+  box-sizing: border-box;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.15);
 }
 
-.auth-btn {
+.email-label {
+  color: white;
+  font-weight: 600;
+  margin-bottom: 12px;
+  font-size: 15px;
+  display: block;
+  letter-spacing: 0.5px;
+  opacity: 0.9;
+}
+
+.email-input-group {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.email-input {
+  flex: 1;
+  padding: 16px 20px;
+  font-size: 16px;
+  border-radius: 16px;
+  border: 2px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.1);
+  color: white;
+  box-sizing: border-box;
+  outline: none;
+  transition: all .2s ease;
+  font-family: inherit;
+  font-weight: 500;
+}
+
+.email-input:focus {
+  border-color: #4fc3f7;
+  background: rgba(255,255,255,0.15);
+  box-shadow: 0 0 0 3px rgba(79, 195, 247, 0.2);
+}
+
+.email-input::placeholder {
+  color: rgba(255,255,255,0.5);
+  font-weight: 400;
+}
+
+.email-btn {
+  width: 56px;
   height: 56px;
   border-radius: 16px;
+  border: none;
+  background: white;
+  color: #0b3c91;
+  font-weight: 800;
+  font-size: 22px;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  flex-shrink: 0;
+}
+
+.email-btn:active {
+  transform: scale(0.95);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+.email-btn svg {
+  width: 28px;
+  height: 28px;
+  fill: #0b3c91;
+}
+
+/* Разделитель */
+.divider {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0 20px;
+  color: rgba(255,255,255,0.6);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.divider-line {
+  flex: 1;
+  height: 1px;
+  background: rgba(255,255,255,0.2);
+}
+
+/* Социальные кнопки */
+.social-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.social-btn {
+  width: 100%;
+  height: 60px;
+  border-radius: 18px;
   border: none;
   font-weight: 700;
   font-size: 18px;
   cursor: pointer;
-  transition: transform 0.15s ease;
+  transition: transform 0.15s ease, background 0.15s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  text-decoration: none;
-  color: inherit;
-}
-
-.auth-btn:active {
-  transform: scale(.98);
-}
-
-.btn-login {
+  gap: 14px;
+  padding: 0 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
   background: white;
-  color: #0b3c91;
 }
 
-.btn-register {
-  background: rgba(255,255,255,0.1);
+.social-btn:active {
+  transform: scale(0.98);
+}
+
+.social-btn svg {
+  width: 24px;
+  height: 24px;
+}
+
+.btn-telegram {
+  background: #27A7E7;
   color: white;
-  border: 2px solid rgba(255,255,255,0.3);
 }
 
-.auth-link {
+.btn-telegram svg {
+  fill: white;
+}
+
+.btn-yandex {
+  background: white;
+  color: #333;
+  border: 1px solid rgba(255,255,255,0.3);
+}
+
+.btn-yandex svg {
+  fill: #FC3F1D;
+}
+
+/* Ссылка на регистрацию */
+.register-prompt {
   margin-top: 20px;
-  color: rgba(255,255,255,0.7);
-  font-size: 14px;
+  text-align: center;
+  width: 100%;
+}
+
+.register-link {
+  color: rgba(255,255,255,0.9);
   text-decoration: none;
-  display: flex;
+  font-size: 16px;
+  font-weight: 600;
+  display: inline-flex;
   align-items: center;
-  gap: 6px;
-  transition: color 0.2s ease;
+  gap: 8px;
+  padding: 12px 24px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 40px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.15);
+  transition: all 0.2s ease;
 }
 
-.auth-link:hover {
-  color: white;
-  text-decoration: underline;
+.register-link:hover {
+  background: rgba(255,255,255,0.15);
+  transform: translateY(-1px);
 }
 
-.auth-link svg {
-  width: 18px;
-  height: 18px;
+.register-link:active {
+  transform: translateY(1px);
 }
 
-.status-message {
-  margin-top: 15px;
-  padding: 12px 16px;
-  border-radius: 14px;
+.register-link svg {
+  width: 20px;
+  height: 20px;
+  fill: rgba(255,255,255,0.9);
+}
+
+.register-text {
+  color: rgba(255,255,255,0.6);
   font-size: 14px;
-  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+/* Блок для статуса */
+.status-message {
+  margin-top: 16px;
+  padding: 14px 18px;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 600;
   text-align: center;
   display: none;
   width: 100%;
-  max-width: 280px;
   box-sizing: border-box;
+  backdrop-filter: blur(10px);
 }
 
 .status-loading {
-  background: rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.12);
   color: white;
   border-left: 4px solid #4fc3f7;
 }
@@ -162,34 +302,79 @@ html, body {
   border-left: 4px solid #ff2d55;
 }
 
-@media (max-width: 360px) {
-  .auth-screen {
-    padding: 20px 15px;
-  }
-  
-  .auth-sticker {
-    width: 120px;
-    height: 120px;
-    margin-bottom: 20px;
-  }
-  
+/* Блок с анимацией загрузки */
+.loading-spinner {
+  display: none;
+  width: 48px;
+  height: 48px;
+  border: 4px solid rgba(255,255,255,0.2);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 20px auto;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Вернуться в магазин */
+.back-link {
+  margin-top: 30px;
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+  font-size: 15px;
+  transition: color 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 0;
+}
+
+.back-link:hover {
+  color: white;
+}
+
+.back-link svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+/* Адаптация */
+@media (max-width: 380px) {
   .auth-title {
-    font-size: 22px;
+    font-size: 28px;
   }
   
   .auth-subtitle {
-    font-size: 13px;
-    margin-bottom: 20px;
+    font-size: 14px;
+    margin-bottom: 24px;
   }
   
-  .auth-btn {
+  .email-input {
+    padding: 14px 16px;
+    font-size: 15px;
+  }
+  
+  .email-btn {
+    width: 50px;
     height: 50px;
+  }
+  
+  .social-btn {
+    height: 54px;
     font-size: 16px;
   }
   
-  .auth-buttons {
-    gap: 12px;
-    max-width: 260px;
+  .social-btn svg {
+    width: 22px;
+    height: 22px;
+  }
+  
+  .register-link {
+    padding: 10px 20px;
+    font-size: 15px;
   }
 }
 </style>
@@ -197,60 +382,99 @@ html, body {
 
 <body>
 <div class="auth-screen">
-  <div id="lottie-animation" class="auth-sticker"></div>
-  
-  <div class="auth-title">Вход в аккаунт</div>
-  <div class="auth-subtitle">Авторизуйтесь, чтобы просмотреть историю заказов и управлять профилем</div>
-  
-  <div class="auth-buttons">
-    <button class="auth-btn btn-login" id="loginBtn">
-      <svg viewBox="0 0 24 24" width="24" height="24">
-        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-      </svg>
-      Войти в аккаунт
-    </button>
+  <div class="auth-content">
+    <!-- Анимация -->
+    <div id="lottie-animation" class="auth-sticker"></div>
     
-    <button class="auth-btn btn-register" id="registerBtn">
-      <svg viewBox="0 0 24 24" width="24" height="24">
+    <!-- Заголовок -->
+    <div class="auth-title">Добро пожаловать</div>
+    <div class="auth-subtitle">Войдите чтобы продолжить</div>
+    
+    <!-- Блок ввода email -->
+    <div class="email-section">
+      <label class="email-label">Введите email для входа</label>
+      <div class="email-input-group">
+        <input type="email" class="email-input" id="emailInput" placeholder="your@email.ru" autocomplete="email">
+        <button class="email-btn" id="emailSubmitBtn">
+          <svg viewBox="0 0 24 24">
+            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+          </svg>
+        </button>
+      </div>
+      
+      <!-- Статус сообщения для email -->
+      <div class="status-message status-loading" id="emailLoading">
+        ⏳ Отправка кода...
+      </div>
+      <div class="status-message status-success" id="emailSuccess">
+        ✅ Код отправлен на почту
+      </div>
+      <div class="status-message status-error" id="emailError"></div>
+    </div>
+    
+    <!-- Разделитель -->
+    <div class="divider">
+      <div class="divider-line"></div>
+      <span>или войти через</span>
+      <div class="divider-line"></div>
+    </div>
+    
+    <!-- Социальные кнопки -->
+    <div class="social-buttons">
+      <!-- Telegram -->
+      <button class="social-btn btn-telegram" id="telegramBtn">
+        <svg viewBox="0 0 24 24">
+          <path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/>
+        </svg>
+        <span>Telegram</span>
+      </button>
+      
+      <!-- Яндекс -->
+      <button class="social-btn btn-yandex" id="yandexBtn">
+        <svg viewBox="0 0 24 24">
+          <path d="M2.04 12c0-5.523 4.476-10 10-10 5.522 0 10 4.477 10 10s-4.478 10-10 10c-5.524 0-10-4.477-10-10zm8.981-5.5v6.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V6.5h2v6.5c0 1.93-1.57 3.5-3.5 3.5s-3.5-1.57-3.5-3.5V6.5h2z"/>
+        </svg>
+        <span>Яндекс ID</span>
+      </button>
+    </div>
+    
+    <!-- Спиннер загрузки -->
+    <div class="loading-spinner" id="loadingSpinner"></div>
+    
+    <!-- Блок для статуса Telegram -->
+    <div class="status-message status-loading" id="telegramLoading">
+      ⏳ Открываем Telegram...
+    </div>
+    <div class="status-message status-success" id="telegramSuccess">
+      ✅ Перейдите в Telegram для подтверждения
+    </div>
+    <div class="status-message status-error" id="telegramError"></div>
+  </div>
+  
+  <!-- Ссылка на регистрацию (внизу) -->
+  <div class="register-prompt">
+    <div class="register-text">Еще нет аккаунта?</div>
+    <a href="reg.html" class="register-link">
+      <svg viewBox="0 0 24 24">
         <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
       </svg>
       Создать аккаунт
-    </button>
+    </a>
   </div>
   
-  <div class="status-message status-loading" id="loadingMessage">
-    ⏳ Открываем Telegram...
-  </div>
   
-  <div class="status-message status-success" id="successMessage">
-    ⏳ Переходим в Telegram для завершения...
-  </div>
-  
-  <div class="status-message status-error" id="errorMessage"></div>
-  
-  <a href="https://destrkod.github.io/duckshop/main.html" class="auth-link">
-    <svg viewBox="0 0 24 24" width="18" height="18">
-      <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" fill="currentColor"/>
-    </svg>
-    Вернуться в магазин
-  </a>
-</div>
 
 <script>
 const API_URL = 'https://duck-shop-sever.onrender.com';
 const SITE_URL = 'https://destrkod.github.io/duckshop';
-const USER_KEY = 'duck_user_v1'; 
+const USER_KEY = 'duck_user_v1';
 
-const registerBtn = document.getElementById('registerBtn');
-const loginBtn = document.getElementById('loginBtn');
-const loadingMessage = document.getElementById('loadingMessage');
-const successMessage = document.getElementById('successMessage');
-const errorMessage = document.getElementById('errorMessage');
+let currentEmail = '';
+let telegramCheckInterval = null;
+let telegramToken = null;
 
-let currentToken = null;
-let checkInterval = null;
-
-function initLottieAnimation() {
+// Инициализация Lottie
+function initLottie() {
   try {
     lottie.loadAnimation({
       container: document.getElementById('lottie-animation'),
@@ -260,97 +484,77 @@ function initLottieAnimation() {
       path: 'reg_log.json'
     });
   } catch (e) {
-    console.log('Lottie анимация не загружена');
-    document.getElementById('lottie-animation').innerHTML = '🔐';
+    console.log('Lottie не загрузилась');
   }
 }
 
-function showStatus(type, message = '') {
-  loadingMessage.style.display = 'none';
-  successMessage.style.display = 'none';
-  errorMessage.style.display = 'none';
+// Управление статусами
+function hideAllStatuses() {
+  document.getElementById('emailLoading').style.display = 'none';
+  document.getElementById('emailSuccess').style.display = 'none';
+  document.getElementById('emailError').style.display = 'none';
+  document.getElementById('telegramLoading').style.display = 'none';
+  document.getElementById('telegramSuccess').style.display = 'none';
+  document.getElementById('telegramError').style.display = 'none';
+  document.getElementById('loadingSpinner').style.display = 'none';
+}
+
+function showEmailStatus(type, message = '') {
+  hideAllStatuses();
+  if (type === 'loading') {
+    document.getElementById('emailLoading').style.display = 'block';
+  } else if (type === 'success') {
+    document.getElementById('emailSuccess').style.display = 'block';
+  } else if (type === 'error') {
+    document.getElementById('emailError').textContent = message;
+    document.getElementById('emailError').style.display = 'block';
+  }
+}
+
+function showTelegramStatus(type, message = '') {
+  hideAllStatuses();
+  if (type === 'loading') {
+    document.getElementById('telegramLoading').style.display = 'block';
+  } else if (type === 'success') {
+    document.getElementById('telegramSuccess').style.display = 'block';
+  } else if (type === 'error') {
+    document.getElementById('telegramError').textContent = message;
+    document.getElementById('telegramError').style.display = 'block';
+  }
+}
+
+// Email авторизация
+async function handleEmailAuth() {
+  const email = document.getElementById('emailInput').value.trim();
   
-  switch(type) {
-    case 'loading':
-      loadingMessage.style.display = 'block';
-      break;
-    case 'success':
-      successMessage.style.display = 'block';
-      break;
-    case 'error':
-      errorMessage.textContent = message;
-      errorMessage.style.display = 'block';
-      break;
+  if (!email || !email.includes('@')) {
+    showEmailStatus('error', '❌ Введите корректный email');
+    return;
   }
-}
-
-function clearCheckInterval() {
-  if (checkInterval) {
-    clearInterval(checkInterval);
-    checkInterval = null;
-  }
-}
-
-function openTelegram(link) {
-  const newWindow = window.open(link, '_blank');
   
-  if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
-    showStatus('error', '❌ Не удалось открыть Telegram. Пожалуйста, откройте ссылку вручную.');
-    
-    const manualLink = document.createElement('a');
-    manualLink.href = link;
-    manualLink.target = '_blank';
-    manualLink.textContent = 'Нажмите здесь чтобы открыть Telegram';
-    manualLink.style.color = 'white';
-    manualLink.style.textDecoration = 'underline';
-    manualLink.style.marginTop = '10px';
-    manualLink.style.display = 'block';
-    
-    errorMessage.appendChild(manualLink);
-  }
-}
-
-async function checkAuthStatus(token, button) {
-  try {
-    const response = await fetch(`${API_URL}/api/auth/check/${token}`);
-    const data = await response.json();
-    
-    if (data.success && data.authenticated) {
-      clearCheckInterval();
-      
-      localStorage.setItem(USER_KEY, JSON.stringify(data.user));
-      console.log('✅ Пользователь сохранен:', data.user.username);
-      
-      button.disabled = false;
-      
-      window.location.href = `${SITE_URL}/main.html`;
-      
-      return true;
-      
-    } else if (data.success && data.expired) {
-      clearCheckInterval();
-      button.disabled = false;
-      showStatus('error', '❌ Время ожидания истекло. Попробуйте снова.');
-      return false;
-    }
-    
-    return false;
-    
-  } catch (checkError) {
-    console.error('Ошибка проверки статуса:', checkError);
-    return false;
-  }
-}
-
-async function handleAuth(endpoint, button) {
-  clearCheckInterval();
-  
-  button.disabled = true;
-  
-  showStatus('loading');
+  currentEmail = email;
+  showEmailStatus('loading');
   
   try {
-    const response = await fetch(`${API_URL}/api/auth/${endpoint}`, {
+    // Здесь будет API для отправки кода на email
+    // Пока просто эмулируем успех
+    setTimeout(() => {
+      showEmailStatus('success');
+      // Переход на страницу ввода кода
+      window.location.href = `reg.html?email=${encodeURIComponent(email)}`;
+    }, 1500);
+    
+  } catch (error) {
+    showEmailStatus('error', '❌ Ошибка отправки кода');
+  }
+}
+
+// Telegram авторизация
+async function handleTelegramAuth() {
+  showTelegramStatus('loading');
+  
+  try {
+    const response = await fetch(`${API_URL}/api/auth/start-login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' }
     });
@@ -358,85 +562,88 @@ async function handleAuth(endpoint, button) {
     const data = await response.json();
     
     if (data.success && data.telegramLink) {
-      currentToken = data.token;
+      telegramToken = data.token;
+      showTelegramStatus('success');
       
-      showStatus('success');
-      
+      // Открываем Telegram
       setTimeout(() => {
-        openTelegram(data.telegramLink);
+        window.open(data.telegramLink, '_blank');
       }, 1000);
       
-      checkInterval = setInterval(async () => {
-        const success = await checkAuthStatus(currentToken, button);
-        if (success) {
-          clearCheckInterval();
-        }
-      }, 2000);
-      
-      setTimeout(() => {
-        if (checkInterval) {
-          clearCheckInterval();
-          button.disabled = false;
-          showStatus('error', '❌ Время ожидания истекло. Попробуйте снова.');
-        }
-      }, 3 * 60 * 1000);
+      // Начинаем проверять статус авторизации
+      startTelegramPolling();
       
     } else {
-      button.disabled = false;
-      showStatus('error', `❌ ${data.error || 'Ошибка получения ссылки на Telegram'}`);
-    }
-  } catch (err) {
-    button.disabled = false;
-    showStatus('error', '❌ Ошибка соединения с сервером');
-    console.error('Ошибка авторизации:', err);
-  }
-}
-
-registerBtn.addEventListener('click', () => {
-  handleAuth('start-register', registerBtn);
-});
-
-loginBtn.addEventListener('click', () => {
-  handleAuth('start-login', loginBtn);
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-  initLottieAnimation();
-  
-  const urlParams = new URLSearchParams(window.location.search);
-  const authToken = urlParams.get('auth');
-  
-  if (authToken) {
-    verifyAuthToken(authToken);
-  }
-});
-
-async function verifyAuthToken(token) {
-  try {
-    showStatus('loading', '⏳ Проверяем авторизацию...');
-    
-    const response = await fetch(`${API_URL}/api/auth/check/${token}`);
-    const data = await response.json();
-    
-    if (data.success && data.authenticated) {
-      localStorage.setItem(USER_KEY, JSON.stringify(data.user));
-      console.log('✅ Пользователь сохранен через токен:', data.user.username);
-      
-      const newUrl = window.location.pathname;
-      window.history.replaceState({}, '', newUrl);
-      
-      window.location.href = `${SITE_URL}/main.html`;
-    } else {
-      showStatus('error', '❌ Токен недействителен');
+      showTelegramStatus('error', '❌ Ошибка получения ссылки');
     }
   } catch (error) {
-    console.error('Ошибка проверки токена:', error);
-    showStatus('error', '❌ Ошибка проверки авторизации');
+    showTelegramStatus('error', '❌ Ошибка соединения');
   }
 }
 
+// Проверка статуса Telegram авторизации
+function startTelegramPolling() {
+  if (telegramCheckInterval) clearInterval(telegramCheckInterval);
+  
+  telegramCheckInterval = setInterval(async () => {
+    if (!telegramToken) return;
+    
+    try {
+      const response = await fetch(`${API_URL}/api/auth/check/${telegramToken}`);
+      const data = await response.json();
+      
+      if (data.success && data.authenticated) {
+        clearInterval(telegramCheckInterval);
+        localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+        window.location.href = `${SITE_URL}/main.html`;
+      } else if (data.expired) {
+        clearInterval(telegramCheckInterval);
+        showTelegramStatus('error', '❌ Время ожидания истекло');
+      }
+    } catch (error) {
+      console.error('Ошибка проверки:', error);
+    }
+  }, 2000);
+  
+  // Таймаут через 3 минуты
+  setTimeout(() => {
+    if (telegramCheckInterval) {
+      clearInterval(telegramCheckInterval);
+      showTelegramStatus('error', '❌ Время ожидания истекло');
+    }
+  }, 3 * 60 * 1000);
+}
+
+// Яндекс авторизация (пока без логики)
+function handleYandexAuth() {
+  showTelegramStatus('loading'); // Используем Telegram статусы для простоты
+  setTimeout(() => {
+    showTelegramStatus('error', '❌ Яндекс авторизация временно недоступна');
+  }, 1500);
+}
+
+// Очистка интервалов при уходе
 window.addEventListener('beforeunload', () => {
-  clearCheckInterval();
+  if (telegramCheckInterval) clearInterval(telegramCheckInterval);
+});
+
+// Инициализация при загрузке
+document.addEventListener('DOMContentLoaded', () => {
+  initLottie();
+  hideAllStatuses();
+  
+  // Обработчики
+  document.getElementById('emailSubmitBtn').addEventListener('click', handleEmailAuth);
+  document.getElementById('telegramBtn').addEventListener('click', handleTelegramAuth);
+  document.getElementById('yandexBtn').addEventListener('click', handleYandexAuth);
+  
+  // Enter в поле email
+  document.getElementById('emailInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') handleEmailAuth();
+  });
+  
+  // Фокус на email поле
+  document.getElementById('emailInput').focus();
 });
 </script>
 </body>
