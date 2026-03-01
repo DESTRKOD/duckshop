@@ -309,28 +309,6 @@ html, body {
   border-left: 4px solid #ff2d55;
 }
 
-/* Ссылка назад */
-.back-link {
-  margin-top: 20px;
-  color: rgba(255,255,255,0.6);
-  text-decoration: none;
-  font-size: 14px;
-  transition: color 0.2s ease;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.back-link:hover {
-  color: white;
-}
-
-.back-link svg {
-  width: 16px;
-  height: 16px;
-  fill: currentColor;
-}
-
 /* Адаптация */
 @media (max-width: 380px) {
   .auth-title {
@@ -420,12 +398,32 @@ html, body {
   
   <!-- Статус сообщение -->
   <div class="status-message status-loading" id="loadingMessage">
-    ⏳ Создаем аккаунт...
+    ⏳ Отправка кода на почту...
   </div>
   <div class="status-message status-success" id="successMessage">
-    ✅ Аккаунт создан! Выполняем вход...
+    ✅ Код отправлен! Проверьте почту
   </div>
   <div class="status-message status-error" id="errorMessage"></div>
+  
+  <!-- Поле для ввода кода (появляется после отправки) -->
+  <div class="register-form" id="codeSection" style="display: none;">
+    <div class="form-group">
+      <label class="form-label">Введите код из письма</label>
+      <input type="text" class="form-input" id="codeInput" placeholder="6-значный код" maxlength="6">
+    </div>
+    <button class="register-btn" id="verifyCodeBtn">
+      <svg viewBox="0 0 24 24">
+        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+      </svg>
+      Подтвердить код
+    </button>
+    <div style="text-align: center; margin-top: 15px;">
+      <button class="login-link" id="resendCodeBtn" style="background: transparent; border: none; color: white; text-decoration: underline; cursor: pointer; padding: 10px;">
+        Отправить код снова
+      </button>
+    </div>
+    <div class="timer" id="timer" style="color: rgba(255,255,255,0.7); text-align: center; margin-top: 10px; font-size: 14px;">10:00</div>
+  </div>
   
   <!-- Разделитель -->
   <div class="divider">
@@ -459,13 +457,17 @@ html, body {
       Войти в аккаунт
     </a>
   </div>
-  
-  
+</div>
 
 <script>
 const API_URL = 'https://duck-shop-sever.onrender.com';
 const SITE_URL = 'https://destrkod.github.io/duckshop';
 const USER_KEY = 'duck_user_v1';
+
+let currentEmail = '';
+let timerInterval = null;
+let timeLeft = 600; // 10 минут в секундах
+let canResend = false;
 
 // Инициализация Lottie
 function initLottie() {
@@ -519,6 +521,35 @@ function showStatus(type, message = '') {
   }
 }
 
+// Таймер
+function startTimer(seconds) {
+  timeLeft = seconds;
+  updateTimerDisplay();
+  
+  if (timerInterval) clearInterval(timerInterval);
+  
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    updateTimerDisplay();
+    
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      canResend = true;
+      document.getElementById('timer').style.color = '#ff6b6b';
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const minutes = Math.floor(timeLeft / 60);
+  const seconds = timeLeft % 60;
+  const timerEl = document.getElementById('timer');
+  if (timerEl) {
+    timerEl.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  }
+}
+
 // Валидация формы
 function validateForm() {
   const name = document.getElementById('nameInput').value.trim();
@@ -549,41 +580,116 @@ function validateForm() {
   return true;
 }
 
-// Регистрация
-async function handleRegister() {
+// Отправка кода на почту
+async function sendVerificationCode() {
   if (!validateForm()) return;
+  
+  currentEmail = document.getElementById('emailInput').value.trim();
   
   showStatus('loading');
   
-  const name = document.getElementById('nameInput').value.trim();
-  const email = document.getElementById('emailInput').value.trim();
-  const password = document.getElementById('passwordInput').value;
-  
   try {
-    // TODO: Здесь будет API регистрации
-    // Пока эмулируем успех
-    setTimeout(() => {
+    const response = await fetch(`${API_URL}/api/auth/send-code`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: currentEmail })
+    });
+    
+    const data = await response.json();
+    
+    if (data.success) {
       showStatus('success');
       
-      // Создаем фейкового пользователя
-      const fakeUser = {
-        id: Date.now(),
-        username: name,
-        email: email,
-        auth_provider: 'email'
-      };
+      // Показываем поле для ввода кода
+      document.getElementById('codeSection').style.display = 'block';
+      document.querySelector('.register-form:first-of-type').style.display = 'none';
       
-      localStorage.setItem(USER_KEY, JSON.stringify(fakeUser));
+      // Запускаем таймер
+      startTimer(600);
+      
+    } else {
+      showStatus('error', data.error || 'Ошибка отправки кода');
+    }
+  } catch (error) {
+    showStatus('error', '❌ Ошибка соединения с сервером');
+  }
+}
+
+// Проверка кода
+async function verifyCode() {
+  const code = document.getElementById('codeInput').value.trim();
+  
+  if (!code || code.length !== 6) {
+    showStatus('error', '❌ Введите 6-значный код');
+    return;
+  }
+  
+  if (timeLeft <= 0) {
+    showStatus('error', '❌ Время действия кода истекло');
+    return;
+  }
+  
+  showStatus('loading');
+  
+  try {
+    const response = await fetch(`${API_URL}/api/auth/verify-code`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        email: currentEmail, 
+        code: code 
+      })
+    });
+    
+    const data = await response.json();
+    
+    if (data.success) {
+      // Сохраняем пользователя
+      localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+      
+      showStatus('success');
       
       // Перенаправляем в магазин
       setTimeout(() => {
-        window.location.href = `${SITE_URL}/main.html`;
+        window.location.href = `${SITE_URL}/main.html?auth=${data.token}`;
       }, 1500);
       
-    }, 1500);
-    
+    } else {
+      showStatus('error', data.error || 'Неверный код');
+    }
   } catch (error) {
-    showStatus('error', '❌ Ошибка регистрации');
+    showStatus('error', '❌ Ошибка проверки кода');
+  }
+}
+
+// Повторная отправка кода
+async function resendCode() {
+  if (!canResend && timeLeft > 0) {
+    showStatus('error', `❌ Подождите ${Math.ceil(timeLeft / 60)} мин.`);
+    return;
+  }
+  
+  showStatus('loading');
+  
+  try {
+    const response = await fetch(`${API_URL}/api/auth/send-code`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: currentEmail })
+    });
+    
+    const data = await response.json();
+    
+    if (data.success) {
+      showStatus('success');
+      startTimer(600);
+      canResend = false;
+      document.getElementById('timer').style.color = 'rgba(255,255,255,0.7)';
+    } else {
+      showStatus('error', data.error || 'Ошибка отправки');
+    }
+  } catch (error) {
+    showStatus('error', '❌ Ошибка соединения');
   }
 }
 
@@ -652,7 +758,9 @@ document.addEventListener('DOMContentLoaded', () => {
   setupPasswordToggles();
   hideStatuses();
   
-  document.getElementById('registerBtn').addEventListener('click', handleRegister);
+  document.getElementById('registerBtn').addEventListener('click', sendVerificationCode);
+  document.getElementById('verifyCodeBtn').addEventListener('click', verifyCode);
+  document.getElementById('resendCodeBtn').addEventListener('click', resendCode);
   document.getElementById('telegramBtn').addEventListener('click', handleTelegramRegister);
   document.getElementById('yandexBtn').addEventListener('click', handleYandexRegister);
   
@@ -660,13 +768,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const inputs = ['nameInput', 'emailInput', 'passwordInput', 'confirmPasswordInput'];
   inputs.forEach(id => {
     document.getElementById(id).addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') handleRegister();
+      if (e.key === 'Enter') sendVerificationCode();
     });
+  });
+  
+  document.getElementById('codeInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') verifyCode();
   });
   
   // Очистка интервала
   window.addEventListener('beforeunload', () => {
     if (telegramCheckInterval) clearInterval(telegramCheckInterval);
+    if (timerInterval) clearInterval(timerInterval);
   });
 });
 </script>
