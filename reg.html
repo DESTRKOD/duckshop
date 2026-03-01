@@ -2,416 +2,672 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8" />
-<title>Регистрация</title>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Регистрация - Duck Shop</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
-
 <style>
 html, body {
   margin: 0;
+  padding: 0;
   width: 100%;
-  height: 100%;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background: linear-gradient(180deg, #0b3c91 0%, #1565c0 55%, #42a5f5 100%);
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px;
-  box-sizing: border-box;
 }
 
-.screen {
+.auth-screen {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  max-width: 500px;
+  padding: 30px 20px;
+  box-sizing: border-box;
   width: 100%;
+  max-width: 440px;
+  min-height: 100vh;
 }
 
-.sticker {
-  width: 180px;
-  height: 180px;
-  margin-bottom: 30px;
+.auth-sticker {
+  width: 120px;
+  height: 120px;
+  margin-bottom: 16px;
 }
 
-.title {
+@media (max-width: 480px) {
+  .auth-sticker {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 12px;
+  }
+}
+
+.auth-title {
   font-size: 28px;
   font-weight: 800;
-  color: #fff;
+  color: white;
+  margin-bottom: 4px;
   text-align: center;
-  margin-bottom: 30px;
+  text-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
-.input-group {
+.auth-subtitle {
+  font-size: 15px;
+  color: rgba(255,255,255,0.9);
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+/* Форма регистрации */
+.register-form {
   width: 100%;
+  background: rgba(255,255,255,0.08);
+  border-radius: 28px;
+  padding: 24px 20px;
+  box-sizing: border-box;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.15);
   margin-bottom: 20px;
 }
 
-.input-label {
-  color: white;
-  font-weight: 700;
-  margin-bottom: 10px;
-  font-size: 16px;
-  display: block;
+.form-group {
+  margin-bottom: 16px;
 }
 
-.input-field {
+.form-label {
+  color: white;
+  font-weight: 600;
+  margin-bottom: 6px;
+  font-size: 14px;
+  display: block;
+  letter-spacing: 0.3px;
+  opacity: 0.9;
+}
+
+.form-input {
   width: 100%;
-  padding: 16px 20px;
-  font-size: 18px;
+  padding: 14px 18px;
+  font-size: 15px;
   border-radius: 16px;
-  border: 2px solid rgba(255,255,255,0.3);
-  background: rgba(255,255,255,0.08);
+  border: 2px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.1);
   color: white;
   box-sizing: border-box;
   outline: none;
-  transition: border-color .2s ease, background .2s ease;
+  transition: all .2s ease;
   font-family: inherit;
-  font-weight: 500;
 }
 
-.input-field:focus {
+.form-input:focus {
   border-color: #4fc3f7;
-  background: rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.15);
   box-shadow: 0 0 0 3px rgba(79, 195, 247, 0.2);
 }
 
-.input-field::placeholder {
-  color: rgba(255,255,255,0.6);
+.form-input::placeholder {
+  color: rgba(255,255,255,0.5);
+  font-weight: 400;
 }
 
-.button {
-  margin-top: 20px;
-  padding: 18px 48px;
-  font-size: 20px;
-  font-weight: 800;
-  background: #fff;
-  color: #0b3c91;
-  border-radius: 18px;
+/* Пароль с глазком */
+.password-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
   border: none;
   cursor: pointer;
-  transition: transform .12s ease, box-shadow .12s ease;
-  box-shadow: 0 16px 36px rgba(0,0,0,.45);
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.toggle-password:hover {
+  opacity: 1;
+}
+
+.toggle-password svg {
+  width: 22px;
+  height: 22px;
+  fill: rgba(255,255,255,0.8);
+}
+
+/* Кнопка регистрации */
+.register-btn {
   width: 100%;
-  max-width: 300px;
-}
-
-.button:hover {
-  transform: translateY(-2px);
-}
-
-.button:disabled {
-  background: #cccccc;
-  color: #666666;
-  cursor: not-allowed;
-  transform: none !important;
-}
-
-.error-message {
-  color: #ff6b6b;
-  font-weight: 600;
-  font-size: 14px;
-  margin-top: 15px;
-  text-align: center;
-  display: none;
-  padding: 10px;
-  background: rgba(255,255,255,0.1);
-  border-radius: 10px;
-  width: 100%;
-}
-
-.loading {
-  display: none;
-  color: rgba(255,255,255,0.8);
-  margin-top: 20px;
-  text-align: center;
-}
-
-.telegram-link-container {
-  display: none;
-  text-align: center;
-  margin-top: 30px;
-  width: 100%;
-}
-
-.telegram-link {
-  display: inline-block;
-  padding: 16px 32px;
-  background: #0088cc;
-  color: white;
-  text-decoration: none;
-  border-radius: 16px;
-  font-weight: 700;
+  height: 56px;
+  border-radius: 18px;
+  border: none;
+  font-weight: 800;
   font-size: 18px;
-  transition: transform 0.15s ease;
-  box-shadow: 0 10px 25px rgba(0, 136, 204, 0.4);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
-  max-width: 320px;
-  margin: 0 auto;
+  background: white;
+  color: #0b3c91;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  margin-top: 8px;
 }
 
-.telegram-link:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 14px 35px rgba(0, 136, 204, 0.5);
+.register-btn:active {
+  transform: scale(0.98);
 }
 
-.telegram-icon {
-  width: 24px;
-  height: 24px;
-  fill: white;
+.register-btn svg {
+  width: 22px;
+  height: 22px;
+  fill: #0b3c91;
 }
 
-.info-message {
-  color: rgba(255,255,255,0.8);
-  text-align: center;
-  margin-top: 20px;
+/* Разделитель */
+.divider {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+  color: rgba(255,255,255,0.6);
   font-size: 14px;
-  line-height: 1.4;
-  max-width: 400px;
+  font-weight: 500;
 }
 
-.back-link {
-  margin-top: 30px;
-  color: rgba(255,255,255,0.7);
-  text-decoration: none;
-  font-size: 15px;
-  transition: color 0.2s ease;
+.divider-line {
+  flex: 1;
+  height: 1px;
+  background: rgba(255,255,255,0.2);
+}
+
+/* Социальные кнопки */
+.social-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.social-btn {
+  width: 100%;
+  height: 56px;
+  border-radius: 18px;
+  border: none;
+  font-weight: 700;
+  font-size: 17px;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease;
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 14px;
+  padding: 0 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  background: white;
+}
+
+.social-btn:active {
+  transform: scale(0.98);
+}
+
+.social-btn img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.btn-telegram {
+  background: #27A7E7;
+  color: white;
+}
+
+.btn-yandex {
+  background: white;
+  color: #333;
+  border: 1px solid rgba(255,255,255,0.3);
+}
+
+/* Ссылка на вход */
+.login-prompt {
+  margin-top: 20px;
+  text-align: center;
+  width: 100%;
+}
+
+.login-link {
+  color: rgba(255,255,255,0.9);
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
   gap: 8px;
+  padding: 10px 20px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 40px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.15);
+  transition: all 0.2s ease;
+}
+
+.login-link:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+.login-link svg {
+  width: 18px;
+  height: 18px;
+  fill: rgba(255,255,255,0.9);
+}
+
+.login-text {
+  color: rgba(255,255,255,0.6);
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+/* Статус сообщения */
+.status-message {
+  margin: 16px 0 8px;
+  padding: 12px 16px;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  display: none;
+  width: 100%;
+  box-sizing: border-box;
+  backdrop-filter: blur(10px);
+}
+
+.status-loading {
+  background: rgba(255,255,255,0.12);
+  color: white;
+  border-left: 4px solid #4fc3f7;
+}
+
+.status-success {
+  background: rgba(0,200,83,0.15);
+  color: white;
+  border-left: 4px solid #00c853;
+}
+
+.status-error {
+  background: rgba(255,45,85,0.15);
+  color: white;
+  border-left: 4px solid #ff2d55;
+}
+
+/* Ссылка назад */
+.back-link {
+  margin-top: 20px;
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .back-link:hover {
   color: white;
 }
 
-.back-icon {
-  width: 18px;
-  height: 18px;
+.back-link svg {
+  width: 16px;
+  height: 16px;
   fill: currentColor;
 }
 
-@media (max-width: 480px) {
-  .title {
+/* Адаптация */
+@media (max-width: 380px) {
+  .auth-title {
     font-size: 24px;
-    margin-bottom: 20px;
   }
   
-  .sticker {
-    width: 150px;
-    height: 150px;
-    margin-bottom: 20px;
+  .form-input {
+    padding: 12px 16px;
+    font-size: 14px;
   }
   
-  .input-field {
-    padding: 14px 16px;
+  .register-btn {
+    height: 50px;
     font-size: 16px;
   }
   
-  .button {
-    padding: 16px 32px;
-    font-size: 18px;
-  }
-  
-  .telegram-link {
-    padding: 14px 24px;
-    font-size: 16px;
-  }
-  
-  .info-message {
-    font-size: 13px;
-  }
-}
-
-@media (max-width: 360px) {
-  .title {
-    font-size: 22px;
-  }
-  
-  .sticker {
-    width: 130px;
-    height: 130px;
-  }
-  
-  .input-field {
-    padding: 12px 14px;
+  .social-btn {
+    height: 50px;
     font-size: 15px;
   }
   
-  .button {
-    padding: 14px 24px;
-    font-size: 16px;
+  .social-btn img {
+    width: 22px;
+    height: 22px;
   }
 }
 </style>
 </head>
 
 <body>
-<div class="screen">
-  <div id="animRegistration" class="sticker"></div>
+<div class="auth-screen">
+  <!-- Анимация -->
+  <div id="lottie-animation" class="auth-sticker"></div>
   
-  <div class="title">Регистрация</div>
+  <!-- Заголовок -->
+  <div class="auth-title">Создать аккаунт</div>
+  <div class="auth-subtitle">Заполните данные для регистрации</div>
   
-  <div class="input-group">
-    <label class="input-label" for="usernameInput">Введите ваше имя:</label>
-    <input type="text" id="usernameInput" class="input-field" 
-           placeholder="Иван" autocomplete="name" maxlength="50">
-  </div>
-  
-  <div class="error-message" id="errorMessage"></div>
-  <div class="loading" id="loading">Создание ссылки...</div>
-  
-  <button class="button" id="registerBtn">Продолжить</button>
-  
-  <div class="telegram-link-container" id="telegramLinkContainer">
-    <a href="#" class="telegram-link" id="telegramLink" target="_blank">
-      <svg class="telegram-icon" viewBox="0 0 24 24">
-        <path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/>
-      </svg>
-      <span>Перейти в Telegram</span>
-    </a>
-    
-    <div class="info-message">
-      После перехода по ссылке, бот подтвердит вашу регистрацию и вы автоматически вернетесь в магазин.
+  <!-- Форма регистрации -->
+  <div class="register-form">
+    <!-- Имя -->
+    <div class="form-group">
+      <label class="form-label">Ваше имя</label>
+      <input type="text" class="form-input" id="nameInput" placeholder="Иван" autocomplete="name">
     </div>
+    
+    <!-- Email -->
+    <div class="form-group">
+      <label class="form-label">Электронная почта</label>
+      <input type="email" class="form-input" id="emailInput" placeholder="ivan@email.ru" autocomplete="email">
+    </div>
+    
+    <!-- Пароль -->
+    <div class="form-group">
+      <label class="form-label">Пароль</label>
+      <div class="password-wrapper">
+        <input type="password" class="form-input" id="passwordInput" placeholder="••••••••" autocomplete="new-password">
+        <button type="button" class="toggle-password" id="togglePassword1">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Подтверждение пароля -->
+    <div class="form-group">
+      <label class="form-label">Подтвердите пароль</label>
+      <div class="password-wrapper">
+        <input type="password" class="form-input" id="confirmPasswordInput" placeholder="••••••••" autocomplete="new-password">
+        <button type="button" class="toggle-password" id="togglePassword2">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Кнопка регистрации -->
+    <button class="register-btn" id="registerBtn">
+      <svg viewBox="0 0 24 24">
+        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+      </svg>
+      Зарегистрироваться
+    </button>
   </div>
   
-  <a href="reg_log.html" class="back-link">
-    <svg class="back-icon" viewBox="0 0 24 24">
-      <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
-    </svg>
-    <span>Назад к выбору</span>
-  </a>
-</div>
+  <!-- Статус сообщение -->
+  <div class="status-message status-loading" id="loadingMessage">
+    ⏳ Создаем аккаунт...
+  </div>
+  <div class="status-message status-success" id="successMessage">
+    ✅ Аккаунт создан! Выполняем вход...
+  </div>
+  <div class="status-message status-error" id="errorMessage"></div>
+  
+  <!-- Разделитель -->
+  <div class="divider">
+    <div class="divider-line"></div>
+    <span>или зарегистрироваться через</span>
+    <div class="divider-line"></div>
+  </div>
+  
+  <!-- Социальные кнопки (Telegram и Яндекс) -->
+  <div class="social-buttons">
+    <!-- Telegram -->
+    <button class="social-btn btn-telegram" id="telegramBtn">
+      <img src="https://i.imgur.com/uW7Hhpi.png" alt="Telegram">
+      <span>Telegram</span>
+    </button>
+    
+    <!-- Яндекс (через Imgur) -->
+    <button class="social-btn btn-yandex" id="yandexBtn">
+      <img src="https://i.imgur.com/1JqJKgr.png" alt="Yandex">
+      <span>Яндекс ID</span>
+    </button>
+  </div>
+  
+  <!-- Ссылка на вход (если уже есть аккаунт) -->
+  <div class="login-prompt">
+    <div class="login-text">Уже есть аккаунт?</div>
+    <a href="reg_log.html" class="login-link">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+      </svg>
+      Войти в аккаунт
+    </a>
+  </div>
+  
+  
 
 <script>
 const API_URL = 'https://duck-shop-sever.onrender.com';
+const SITE_URL = 'https://destrkod.github.io/duckshop';
+const USER_KEY = 'duck_user_v1';
 
-// Загружаем анимацию
-lottie.loadAnimation({
-  container: document.getElementById('animRegistration'),
-  renderer: 'svg',
-  loop: true,
-  autoplay: true,
-  path: 'registration.json'
-});
+// Инициализация Lottie
+function initLottie() {
+  try {
+    lottie.loadAnimation({
+      container: document.getElementById('lottie-animation'),
+      renderer: 'svg',
+      loop: true,
+      autoplay: true,
+      path: 'registration.json'
+    });
+  } catch (e) {
+    console.log('Lottie не загрузилась');
+  }
+}
 
-let registrationToken = null;
-let checkAuthInterval = null;
-
-// Обработка регистрации
-document.getElementById('registerBtn').addEventListener('click', async () => {
-  const usernameInput = document.getElementById('usernameInput');
-  const username = usernameInput.value.trim();
-  const errorMessage = document.getElementById('errorMessage');
-  const loading = document.getElementById('loading');
-  const registerBtn = document.getElementById('registerBtn');
-  const telegramLinkContainer = document.getElementById('telegramLinkContainer');
+// Показать/скрыть пароль
+function setupPasswordToggles() {
+  const toggle1 = document.getElementById('togglePassword1');
+  const toggle2 = document.getElementById('togglePassword2');
+  const passwordInput = document.getElementById('passwordInput');
+  const confirmInput = document.getElementById('confirmPasswordInput');
   
-  // Валидация имени
-  if (!username || username.length < 2 || username.length > 50) {
-    errorMessage.textContent = 'Имя должно быть от 2 до 50 символов';
-    errorMessage.style.display = 'block';
-    return;
+  toggle1.addEventListener('click', () => {
+    const type = passwordInput.type === 'password' ? 'text' : 'password';
+    passwordInput.type = type;
+  });
+  
+  toggle2.addEventListener('click', () => {
+    const type = confirmInput.type === 'password' ? 'text' : 'password';
+    confirmInput.type = type;
+  });
+}
+
+// Управление статусами
+function hideStatuses() {
+  document.getElementById('loadingMessage').style.display = 'none';
+  document.getElementById('successMessage').style.display = 'none';
+  document.getElementById('errorMessage').style.display = 'none';
+}
+
+function showStatus(type, message = '') {
+  hideStatuses();
+  if (type === 'loading') {
+    document.getElementById('loadingMessage').style.display = 'block';
+  } else if (type === 'success') {
+    document.getElementById('successMessage').style.display = 'block';
+  } else if (type === 'error') {
+    document.getElementById('errorMessage').textContent = message;
+    document.getElementById('errorMessage').style.display = 'block';
+  }
+}
+
+// Валидация формы
+function validateForm() {
+  const name = document.getElementById('nameInput').value.trim();
+  const email = document.getElementById('emailInput').value.trim();
+  const password = document.getElementById('passwordInput').value;
+  const confirm = document.getElementById('confirmPasswordInput').value;
+  
+  if (!name || name.length < 2) {
+    showStatus('error', '❌ Имя должно быть не менее 2 символов');
+    return false;
   }
   
-  // Показываем загрузку
-  registerBtn.disabled = true;
-  loading.style.display = 'block';
-  errorMessage.style.display = 'none';
+  if (!email || !email.includes('@')) {
+    showStatus('error', '❌ Введите корректный email');
+    return false;
+  }
+  
+  if (!password || password.length < 6) {
+    showStatus('error', '❌ Пароль должен быть не менее 6 символов');
+    return false;
+  }
+  
+  if (password !== confirm) {
+    showStatus('error', '❌ Пароли не совпадают');
+    return false;
+  }
+  
+  return true;
+}
+
+// Регистрация
+async function handleRegister() {
+  if (!validateForm()) return;
+  
+  showStatus('loading');
+  
+  const name = document.getElementById('nameInput').value.trim();
+  const email = document.getElementById('emailInput').value.trim();
+  const password = document.getElementById('passwordInput').value;
+  
+  try {
+    // TODO: Здесь будет API регистрации
+    // Пока эмулируем успех
+    setTimeout(() => {
+      showStatus('success');
+      
+      // Создаем фейкового пользователя
+      const fakeUser = {
+        id: Date.now(),
+        username: name,
+        email: email,
+        auth_provider: 'email'
+      };
+      
+      localStorage.setItem(USER_KEY, JSON.stringify(fakeUser));
+      
+      // Перенаправляем в магазин
+      setTimeout(() => {
+        window.location.href = `${SITE_URL}/main.html`;
+      }, 1500);
+      
+    }, 1500);
+    
+  } catch (error) {
+    showStatus('error', '❌ Ошибка регистрации');
+  }
+}
+
+// Telegram регистрация
+async function handleTelegramRegister() {
+  showStatus('loading');
   
   try {
     const response = await fetch(`${API_URL}/api/auth/start-register`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        username: username
-      })
+      headers: { 'Content-Type': 'application/json' }
     });
     
     const data = await response.json();
     
-    if (data.success) {
-      registrationToken = data.token;
-      
-      // Показываем ссылку на Telegram
-      document.getElementById('telegramLink').href = data.telegramLink;
-      telegramLinkContainer.style.display = 'block';
-      loading.style.display = 'none';
-      registerBtn.style.display = 'none';
+    if (data.success && data.telegramLink) {
+      window.open(data.telegramLink, '_blank');
+      showStatus('success', '✅ Перейдите в Telegram для подтверждения');
       
       // Начинаем проверку авторизации
-      startAuthPolling();
+      startTelegramPolling(data.token);
+      
     } else {
-      throw new Error(data.error || 'Ошибка регистрации');
+      showStatus('error', '❌ Ошибка получения ссылки');
     }
   } catch (error) {
-    console.error('Ошибка:', error);
-    errorMessage.textContent = 'Ошибка соединения с сервером. Попробуйте позже.';
-    errorMessage.style.display = 'block';
-    loading.style.display = 'none';
-    registerBtn.disabled = false;
+    showStatus('error', '❌ Ошибка соединения');
   }
-});
+}
 
-// Проверка статуса авторизации
-async function checkAuthStatus() {
-  if (!registrationToken) return;
+// Яндекс регистрация (пока без логики)
+function handleYandexRegister() {
+  showStatus('error', '❌ Яндекс регистрация временно недоступна');
+}
+
+// Проверка статуса Telegram
+let telegramCheckInterval = null;
+
+function startTelegramPolling(token) {
+  if (telegramCheckInterval) clearInterval(telegramCheckInterval);
   
-  try {
-    const response = await fetch(`${API_URL}/api/auth/check/${registrationToken}`);
-    const data = await response.json();
-    
-    if (data.success) {
-      if (data.authenticated) {
-        // Авторизация успешна
-        clearInterval(checkAuthInterval);
-        
-        // Сохраняем пользователя в localStorage
-        localStorage.setItem('duck_user', JSON.stringify(data.user));
-        
-        // Перенаправляем в магазин
-        alert(`✅ Регистрация успешна!\nДобро пожаловать, ${data.user.username}!`);
-        window.location.href = 'main.html';
-      } else if (data.expired) {
-        // Токен истек
-        clearInterval(checkAuthInterval);
-        alert('Время на регистрацию истекло. Пожалуйста, попробуйте снова.');
-        window.location.reload();
+  telegramCheckInterval = setInterval(async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/auth/check/${token}`);
+      const data = await response.json();
+      
+      if (data.success && data.authenticated) {
+        clearInterval(telegramCheckInterval);
+        localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+        window.location.href = `${SITE_URL}/main.html`;
       }
+    } catch (error) {}
+  }, 2000);
+  
+  setTimeout(() => {
+    if (telegramCheckInterval) {
+      clearInterval(telegramCheckInterval);
+      showStatus('error', '❌ Время ожидания истекло');
     }
-  } catch (error) {
-    console.error('Ошибка проверки статуса:', error);
-  }
+  }, 3 * 60 * 1000);
 }
 
-function startAuthPolling() {
-  if (checkAuthInterval) clearInterval(checkAuthInterval);
-  checkAuthStatus(); // Первая проверка сразу
-  checkAuthInterval = setInterval(checkAuthStatus, 3000); // Проверка каждые 3 секунды
-}
-
-// Остановка polling при уходе со страницы
-window.addEventListener('beforeunload', () => {
-  if (checkAuthInterval) clearInterval(checkAuthInterval);
-});
-
-// Разрешаем отправку по Enter
-document.getElementById('usernameInput').addEventListener('keypress', (e) => {
-  if (e.key === 'Enter') {
-    document.getElementById('registerBtn').click();
-  }
-});
-
-// Фокус на поле ввода при загрузке
+// Инициализация
 document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('usernameInput').focus();
+  initLottie();
+  setupPasswordToggles();
+  hideStatuses();
+  
+  document.getElementById('registerBtn').addEventListener('click', handleRegister);
+  document.getElementById('telegramBtn').addEventListener('click', handleTelegramRegister);
+  document.getElementById('yandexBtn').addEventListener('click', handleYandexRegister);
+  
+  // Enter в полях
+  const inputs = ['nameInput', 'emailInput', 'passwordInput', 'confirmPasswordInput'];
+  inputs.forEach(id => {
+    document.getElementById(id).addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') handleRegister();
+    });
+  });
+  
+  // Очистка интервала
+  window.addEventListener('beforeunload', () => {
+    if (telegramCheckInterval) clearInterval(telegramCheckInterval);
+  });
 });
 </script>
 </body>
