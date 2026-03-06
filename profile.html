@@ -68,6 +68,7 @@ html, body {
   color: white;
   box-sizing: border-box;
   box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  position: relative;
 }
 
 .profile-avatar {
@@ -76,6 +77,13 @@ html, body {
   border-radius: 50%;
   margin: 0 auto 20px;
   overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.profile-avatar:hover {
+  transform: scale(1.05);
 }
 
 .profile-avatar img {
@@ -98,10 +106,38 @@ html, body {
   border-radius: 50%;
 }
 
+.edit-avatar-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0,0,0,0.6);
+  color: white;
+  padding: 5px;
+  font-size: 12px;
+  text-align: center;
+  border-radius: 0 0 50% 50%;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.profile-avatar:hover .edit-avatar-overlay {
+  opacity: 1;
+}
+
 .profile-name {
   font-size: 24px;
   font-weight: 800;
   margin-bottom: 8px;
+  cursor: pointer;
+  display: inline-block;
+  padding: 5px 15px;
+  border-radius: 20px;
+  transition: background 0.2s ease;
+}
+
+.profile-name:hover {
+  background: rgba(255,255,255,0.1);
 }
 
 .profile-id {
@@ -115,7 +151,39 @@ html, body {
 .profile-username {
   font-size: 14px;
   color: rgba(255,255,255,0.7);
-  margin-bottom: 20px;
+  margin-bottom: 10px;
+}
+
+.telegram-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.15);
+  border: 2px solid rgba(255,255,255,0.3);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 10px;
+}
+
+.telegram-link-btn:hover {
+  background: rgba(255,255,255,0.25);
+  border-color: rgba(255,255,255,0.5);
+}
+
+.telegram-link-btn.linked {
+  background: rgba(76, 175, 80, 0.3);
+  border-color: #4CAF50;
+}
+
+.telegram-link-btn svg {
+  width: 18px;
+  height: 18px;
+  fill: white;
 }
 
 .profile-content {
@@ -355,6 +423,196 @@ html, body {
   max-width: 400px;
 }
 
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10001;
+  backdrop-filter: blur(5px);
+}
+
+.modal-container {
+  background: white;
+  border-radius: 24px;
+  width: 90%;
+  max-width: 400px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 24px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 22px;
+  color: #0b3c91;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+  color: #666;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.edit-section {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 20px;
+}
+
+.edit-section:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.edit-section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.avatar-edit-container {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.current-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #f0f0f0;
+}
+
+.current-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.btn {
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: none;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background: #0b3c91;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #1565c0;
+}
+
+.btn-secondary {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.btn-secondary:hover {
+  background: #e0e0e0;
+}
+
+.input-group {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.edit-input {
+  flex: 1;
+  padding: 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.edit-input:focus {
+  border-color: #0b3c91;
+}
+
+.input-hint {
+  font-size: 12px;
+  color: #666;
+  margin-top: 8px;
+}
+
+.telegram-status {
+  background: #f5f5f5;
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.telegram-status.linked {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.telegram-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.telegram-name {
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.telegram-username {
+  font-size: 13px;
+  color: #666;
+}
+
 @media (max-width: 768px) {
   .profile-content {
     padding: 15px;
@@ -380,6 +638,14 @@ html, body {
   }
   .order-total {
     font-size: 14px;
+  }
+  .avatar-edit-container {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .avatar-actions {
+    width: 100%;
   }
 }
 
@@ -551,10 +817,18 @@ html, body {
 
 <div id="profile" class="screen profile-screen">
   <div class="profile-header">
-    <div class="profile-avatar" id="profileAvatar"></div>
-    <div class="profile-name" id="profileName">Пользователь</div>
+    <div class="profile-avatar" id="profileAvatar" onclick="openEditModal()">
+      <div class="edit-avatar-overlay">Изменить</div>
+    </div>
+    <div class="profile-name" id="profileName" onclick="openEditModal()">Пользователь</div>
     <div class="profile-id" id="profileId"></div>
     <div class="profile-username" id="profileUsername"></div>
+    <button class="telegram-link-btn" id="telegramLinkBtn" onclick="openTelegramLink()">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+      </svg>
+      <span id="telegramLinkText">Привязать Telegram</span>
+    </button>
   </div>
   
   <div class="profile-content">
@@ -590,6 +864,65 @@ html, body {
   <div class="profile-actions" style="margin-top: 20px;">
     <button class="profile-btn btn-back" id="retryBtn">Повторить</button>
     <button class="profile-btn btn-back" onclick="location.href='index.html'">В магазин</button>
+  </div>
+</div>
+
+<div id="editModal" class="modal-overlay" style="display: none;">
+  <div class="modal-container">
+    <div class="modal-header">
+      <h2>Редактирование профиля</h2>
+      <button class="modal-close" onclick="closeEditModal()">&times;</button>
+    </div>
+    
+    <div class="modal-content">
+      <div class="edit-section">
+        <div class="edit-section-title">Аватар</div>
+        <div class="avatar-edit-container">
+          <div class="current-avatar" id="editAvatarPreview"></div>
+          <div class="avatar-actions">
+            <label for="avatarUpload" class="btn btn-primary">
+              <svg viewBox="0 0 24 24" width="18" height="18">
+                <path d="M3 17.46v3.04c0 .28.22.5.5.5h3.04c.13 0 .26-.05.35-.15L17.81 9.94l-3.75-3.75L3.15 17.1c-.1.1-.15.22-.15.36zM20.71 5.63l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83c.39-.39.39-1.02 0-1.41z"/>
+              </svg>
+              Загрузить фото
+            </label>
+            <input type="file" id="avatarUpload" accept="image/*" style="display: none;">
+            <button class="btn btn-secondary" id="removeAvatarBtn">
+              <svg viewBox="0 0 24 24" width="18" height="18">
+                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+              </svg>
+              Удалить
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="edit-section">
+        <div class="edit-section-title">Имя пользователя</div>
+        <div class="input-group">
+          <input type="text" id="editUsername" class="edit-input" placeholder="Введите имя" maxlength="50">
+          <button class="btn btn-primary" id="saveUsernameBtn">Сохранить</button>
+        </div>
+        <div class="input-hint">От 2 до 50 символов</div>
+      </div>
+      
+      <div class="edit-section">
+        <div class="edit-section-title">Привязка Telegram</div>
+        <div id="telegramStatus" class="telegram-status">
+          <div class="telegram-info">
+            <span class="telegram-name" id="telegramName">Не привязан</span>
+            <span class="telegram-username" id="telegramUser">—</span>
+          </div>
+          <button class="btn btn-secondary" id="unlinkTelegramBtn" style="display: none;">Отвязать</button>
+        </div>
+        <button class="btn btn-primary" id="linkTelegramBtn" style="width: 100%;" onclick="generateTelegramLink()">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+          </svg>
+          Привязать Telegram
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -785,26 +1118,25 @@ async function loadProfileData() {
 
 function updateProfileUI(user) {
   const avatar = document.getElementById('profileAvatar');
+  const editAvatarPreview = document.getElementById('editAvatarPreview');
   
-  // Аватарка
-  if (user.avatarUrl) {
-    avatar.innerHTML = `<img src="${user.avatarUrl}" alt="${user.username}" onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\\'avatar-placeholder\\'>${user.username ? user.username.charAt(0).toUpperCase() : 'U'}</div>'">`;
-  } else {
-    const firstLetter = user.username ? user.username.charAt(0).toUpperCase() : 'U';
-    avatar.innerHTML = `<div class="avatar-placeholder">${firstLetter}</div>`;
-  }
+  const avatarHtml = user.avatarUrl ? 
+    `<img src="${user.avatarUrl}" alt="${user.username}" onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\\'avatar-placeholder\\'>${user.username ? user.username.charAt(0).toUpperCase() : 'U'}</div>'">` :
+    `<div class="avatar-placeholder">${user.username ? user.username.charAt(0).toUpperCase() : 'U'}</div>`;
   
-  // Имя пользователя
+  avatar.innerHTML = avatarHtml + '<div class="edit-avatar-overlay">Изменить</div>';
+  editAvatarPreview.innerHTML = avatarHtml;
+  
   document.getElementById('profileName').textContent = user.username || 'Пользователь';
   
-  // Определяем способ регистрации
   const provider = user.auth_provider || 'email';
   
   const profileId = document.getElementById('profileId');
   const profileUsername = document.getElementById('profileUsername');
+  const telegramLinkBtn = document.getElementById('telegramLinkBtn');
+  const telegramLinkText = document.getElementById('telegramLinkText');
   
-  if (provider === 'telegram') {
-    // Telegram регистрация
+  if (provider === 'telegram' || provider === 'yandex+telegram') {
     profileId.textContent = `TG ID: ${user.tgId || '...'}`;
     if (user.telegramUsername) {
       profileUsername.textContent = `@${user.telegramUsername}`;
@@ -812,10 +1144,35 @@ function updateProfileUI(user) {
     } else {
       profileUsername.style.display = 'none';
     }
+    telegramLinkBtn.classList.add('linked');
+    telegramLinkText.textContent = 'Telegram привязан';
+    
+    const telegramStatus = document.getElementById('telegramStatus');
+    const telegramName = document.getElementById('telegramName');
+    const telegramUser = document.getElementById('telegramUser');
+    const unlinkBtn = document.getElementById('unlinkTelegramBtn');
+    
+    telegramStatus.classList.add('linked');
+    telegramName.textContent = user.firstName || user.username || 'Пользователь';
+    telegramUser.textContent = user.telegramUsername ? `@${user.telegramUsername}` : '—';
+    unlinkBtn.style.display = 'block';
+    document.getElementById('linkTelegramBtn').style.display = 'none';
   } else {
-    // Email регистрация (ручная)
-    profileId.textContent = user.email || 'Email не указан';
+    profileId.textContent = 'Аккаунт Яндекс';
     profileUsername.style.display = 'none';
+    telegramLinkBtn.classList.remove('linked');
+    telegramLinkText.textContent = 'Привязать Telegram';
+    
+    const telegramStatus = document.getElementById('telegramStatus');
+    const telegramName = document.getElementById('telegramName');
+    const telegramUser = document.getElementById('telegramUser');
+    const unlinkBtn = document.getElementById('unlinkTelegramBtn');
+    
+    telegramStatus.classList.remove('linked');
+    telegramName.textContent = 'Не привязан';
+    telegramUser.textContent = '—';
+    unlinkBtn.style.display = 'none';
+    document.getElementById('linkTelegramBtn').style.display = 'block';
   }
 }
 
@@ -1026,6 +1383,163 @@ async function verifyAuthToken(token) {
   }
 }
 
+function openEditModal() {
+  document.getElementById('editUsername').value = currentUser.username || '';
+  document.getElementById('editModal').style.display = 'flex';
+}
+
+function closeEditModal() {
+  document.getElementById('editModal').style.display = 'none';
+}
+
+document.getElementById('avatarUpload').addEventListener('change', async function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  
+  const formData = new FormData();
+  formData.append('avatar', file);
+  formData.append('userId', currentUser.id);
+  
+  try {
+    const response = await fetch(`${API_URL}/api/user/avatar`, {
+      method: 'POST',
+      body: formData
+    });
+    
+    const data = await response.json();
+    
+    if (data.success) {
+      currentUser.avatarUrl = data.avatarUrl;
+      saveUser(currentUser);
+      updateProfileUI(currentUser);
+      closeEditModal();
+    } else {
+      alert('Ошибка при загрузке аватарки');
+    }
+  } catch (error) {
+    alert('Ошибка сети');
+  }
+});
+
+document.getElementById('removeAvatarBtn').addEventListener('click', async function() {
+  const formData = new FormData();
+  formData.append('avatar', new Blob([]), 'empty');
+  formData.append('userId', currentUser.id);
+  
+  try {
+    const response = await fetch(`${API_URL}/api/user/avatar`, {
+      method: 'POST',
+      body: formData
+    });
+    
+    const data = await response.json();
+    
+    if (data.success) {
+      currentUser.avatarUrl = null;
+      saveUser(currentUser);
+      updateProfileUI(currentUser);
+      closeEditModal();
+    }
+  } catch (error) {
+    alert('Ошибка сети');
+  }
+});
+
+document.getElementById('saveUsernameBtn').addEventListener('click', async function() {
+  const newUsername = document.getElementById('editUsername').value.trim();
+  
+  if (newUsername.length < 2 || newUsername.length > 50) {
+    alert('Имя должно быть от 2 до 50 символов');
+    return;
+  }
+  
+  try {
+    const response = await fetch(`${API_URL}/api/user/username`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userId: currentUser.id,
+        username: newUsername
+      })
+    });
+    
+    const data = await response.json();
+    
+    if (data.success) {
+      currentUser.username = data.username;
+      saveUser(currentUser);
+      updateProfileUI(currentUser);
+      closeEditModal();
+    } else {
+      alert(data.error || 'Ошибка при изменении имени');
+    }
+  } catch (error) {
+    alert('Ошибка сети');
+  }
+});
+
+async function generateTelegramLink() {
+  try {
+    const response = await fetch(`${API_URL}/api/user/telegram-link/${currentUser.id}`);
+    const data = await response.json();
+    
+    if (data.success) {
+      if (confirm('Перейти в Telegram для привязки аккаунта?')) {
+        window.open(data.telegramLink, '_blank');
+      }
+    } else {
+      alert('Ошибка генерации ссылки');
+    }
+  } catch (error) {
+    alert('Ошибка сети');
+  }
+}
+
+function openTelegramLink() {
+  if (currentUser.auth_provider === 'telegram' || currentUser.auth_provider === 'yandex+telegram') {
+    return;
+  }
+  generateTelegramLink();
+}
+
+document.getElementById('unlinkTelegramBtn').addEventListener('click', async function() {
+  if (!confirm('Отвязать Telegram аккаунт?')) return;
+  
+  try {
+    const response = await fetch(`${API_URL}/api/user/link-telegram`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userId: currentUser.id,
+        tgId: null,
+        telegramUsername: null,
+        firstName: null,
+        lastName: null
+      })
+    });
+    
+    const data = await response.json();
+    
+    if (data.success) {
+      currentUser.auth_provider = 'yandex';
+      currentUser.tgId = null;
+      currentUser.telegramUsername = null;
+      currentUser.firstName = null;
+      currentUser.lastName = null;
+      saveUser(currentUser);
+      updateProfileUI(currentUser);
+    } else {
+      alert('Ошибка при отвязке Telegram');
+    }
+  } catch (error) {
+    alert('Ошибка сети');
+  }
+});
+
 document.addEventListener('DOMContentLoaded', () => {
   loadLottieAnimations();
   updateBadge();
@@ -1035,6 +1549,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }, 500);
   
   setupMobileNavigation();
+  
+  window.addEventListener('click', function(e) {
+    if (e.target === document.getElementById('editModal')) {
+      closeEditModal();
+    }
+  });
 });
 </script>
 </body>
