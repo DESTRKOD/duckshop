@@ -62,7 +62,7 @@ html, body {
 
 .profile-header {
   width: 100%;
-  padding: 20px;
+  padding: 30px 20px;
   text-align: center;
   background: linear-gradient(180deg, #0b3c91, #124fa5);
   color: white;
@@ -72,14 +72,16 @@ html, body {
 }
 
 .profile-avatar {
-  width: 100px;
-  height: 100px;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
   margin: 0 auto 20px;
   overflow: hidden;
   position: relative;
   cursor: pointer;
   transition: transform 0.2s ease;
+  border: 4px solid rgba(255,255,255,0.3);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
 }
 
 .profile-avatar:hover {
@@ -100,7 +102,7 @@ html, body {
   align-items: center;
   justify-content: center;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  font-size: 40px;
+  font-size: 48px;
   color: white;
   font-weight: 900;
   border-radius: 50%;
@@ -111,12 +113,13 @@ html, body {
   bottom: 0;
   left: 0;
   right: 0;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0,0,0,0.7);
   color: white;
-  padding: 5px;
-  font-size: 12px;
+  padding: 8px;
+  font-size: 14px;
+  font-weight: 600;
   text-align: center;
-  border-radius: 0 0 50% 50%;
+  backdrop-filter: blur(4px);
   opacity: 0;
   transition: opacity 0.2s ease;
 }
@@ -126,13 +129,13 @@ html, body {
 }
 
 .profile-name {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 800;
   margin-bottom: 8px;
   cursor: pointer;
   display: inline-block;
-  padding: 5px 15px;
-  border-radius: 20px;
+  padding: 8px 20px;
+  border-radius: 30px;
   transition: background 0.2s ease;
 }
 
@@ -149,9 +152,9 @@ html, body {
 }
 
 .profile-username {
-  font-size: 14px;
+  font-size: 15px;
   color: rgba(255,255,255,0.7);
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 
 .telegram-link-btn {
@@ -161,9 +164,9 @@ html, body {
   background: rgba(255,255,255,0.15);
   border: 2px solid rgba(255,255,255,0.3);
   color: white;
-  padding: 8px 16px;
-  border-radius: 30px;
-  font-size: 14px;
+  padding: 10px 20px;
+  border-radius: 40px;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -173,6 +176,7 @@ html, body {
 .telegram-link-btn:hover {
   background: rgba(255,255,255,0.25);
   border-color: rgba(255,255,255,0.5);
+  transform: translateY(-2px);
 }
 
 .telegram-link-btn.linked {
@@ -181,8 +185,8 @@ html, body {
 }
 
 .telegram-link-btn svg {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   fill: white;
 }
 
@@ -197,15 +201,17 @@ html, body {
 
 .profile-section {
   background: rgba(255,255,255,0.1);
-  border-radius: 20px;
+  border-radius: 24px;
   padding: 20px;
   margin-bottom: 20px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.1);
 }
 
 .section-title {
   color: white;
-  font-size: 18px;
-  font-weight: 700;
+  font-size: 20px;
+  font-weight: 800;
   margin-bottom: 15px;
   display: flex;
   align-items: center;
@@ -213,9 +219,12 @@ html, body {
 }
 
 .section-title span:last-child {
-  font-size: 14px;
-  color: rgba(255,255,255,0.7);
+  font-size: 15px;
+  color: rgba(255,255,255,0.8);
   font-weight: 600;
+  background: rgba(255,255,255,0.1);
+  padding: 4px 12px;
+  border-radius: 20px;
 }
 
 .orders-list {
@@ -226,15 +235,17 @@ html, body {
 
 .order-item {
   background: rgba(255,255,255,0.08);
-  border-radius: 12px;
-  padding: 15px;
-  transition: transform 0.2s ease, background 0.2s ease;
+  border-radius: 16px;
+  padding: 16px;
+  transition: all 0.2s ease;
   cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.05);
 }
 
 .order-item:hover {
   background: rgba(255,255,255,0.12);
   transform: translateY(-2px);
+  border-color: rgba(255,255,255,0.15);
 }
 
 .order-item.grayed {
@@ -242,14 +253,10 @@ html, body {
   opacity: 0.7;
 }
 
-.order-item.grayed:hover {
-  background: rgba(150, 150, 150, 0.2);
-}
-
 .order-header {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   align-items: flex-start;
   gap: 10px;
 }
@@ -257,19 +264,16 @@ html, body {
 .order-id {
   color: #ffd700;
   font-weight: 700;
-  font-size: 15px;
+  font-size: 16px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   flex: 1;
-  cursor: pointer;
-  text-decoration: underline;
-  text-decoration-color: rgba(255, 215, 0, 0.5);
 }
 
 .order-date {
   color: rgba(255,255,255,0.7);
-  font-size: 13px;
+  font-size: 14px;
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -278,84 +282,74 @@ html, body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 10px;
+  margin-top: 8px;
 }
 
 .order-total {
   color: white;
   font-weight: 700;
-  font-size: 16px;
+  font-size: 18px;
 }
 
 .order-status {
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 12px;
+  padding: 6px 16px;
+  border-radius: 30px;
+  font-size: 13px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #ffffff !important;
+  color: #ffffff;
   backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-  transition: all 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   min-width: 100px;
   text-align: center;
 }
 
 .order-status.completed {
-  background: rgba(76, 175, 80, 0.35);
-  border-color: rgba(76, 175, 80, 0.5);
+  background: rgba(76, 175, 80, 0.4);
 }
 
 .order-status.canceled {
-  background: rgba(255, 107, 107, 0.35);
-  border-color: rgba(255, 107, 107, 0.5);
+  background: rgba(255, 107, 107, 0.4);
 }
 
 .order-status.manyback,
 .order-status.refund {
-  background: rgba(0, 0, 0, 0.55);
-  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.6);
 }
 
 .order-status.waiting,
-.order-status.pending,
-.order-status.inwork {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.30);
-}
-
-.order-item:hover .order-status {
-  transform: scale(1.05);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+.order-status.pending {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .no-orders {
   text-align: center;
-  color: rgba(255,255,255,0.6);
-  padding: 30px 0;
+  color: rgba(255,255,255,0.8);
+  padding: 40px 0;
 }
 
 .no-orders-icon {
-  width: 60px;
-  height: 60px;
-  margin: 0 auto 15px;
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 20px;
   background-image: url('https://i.imgur.com/8Q5w6zR.png');
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
+  opacity: 0.8;
 }
 
 .no-orders-text {
-  font-size: 16px;
-  margin-bottom: 5px;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 8px;
 }
 
 .no-orders-subtext {
-  font-size: 13px;
-  color: rgba(255,255,255,0.5);
+  font-size: 14px;
+  color: rgba(255,255,255,0.6);
 }
 
 .profile-actions {
@@ -367,26 +361,34 @@ html, body {
 
 .profile-btn {
   flex: 1;
-  height: 50px;
-  border-radius: 14px;
+  height: 54px;
+  border-radius: 16px;
   border: none;
   font-weight: 700;
   font-size: 16px;
   cursor: pointer;
-  transition: transform 0.15s ease;
+  transition: all 0.15s ease;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
 }
 
 .profile-btn:active {
-  transform: scale(.98);
+  transform: scale(0.97);
+}
+
+.profile-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.4);
 }
 
 .btn-logout {
-  background: rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.15);
   color: white;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.2);
 }
 
 .btn-back {
@@ -401,13 +403,14 @@ html, body {
 }
 
 .error-icon {
-  width: 60px;
-  height: 60px;
+  width: 80px;
+  height: 80px;
   margin: 0 auto 20px;
   background-image: url('https://i.imgur.com/TdWbh8z.png');
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
+  opacity: 0.8;
 }
 
 .error-title {
@@ -429,72 +432,92 @@ html, body {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0,0,0,0.7);
+  background: rgba(0,0,0,0.8);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 10001;
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(8px);
 }
 
 .modal-container {
-  background: white;
-  border-radius: 24px;
+  background: linear-gradient(180deg, #1565c0, #0b3c91);
+  border-radius: 32px;
   width: 90%;
-  max-width: 400px;
+  max-width: 450px;
   max-height: 90vh;
   overflow-y: auto;
-  padding: 24px;
+  padding: 28px;
+  border: 1px solid rgba(255,255,255,0.2);
+  box-shadow: 0 25px 50px rgba(0,0,0,0.5);
 }
 
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
+  color: white;
 }
 
 .modal-header h2 {
   margin: 0;
-  font-size: 22px;
-  color: #0b3c91;
+  font-size: 24px;
+  font-weight: 800;
+  color: white;
 }
 
 .modal-close {
-  background: none;
-  border: none;
-  font-size: 28px;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.2);
+  font-size: 24px;
   cursor: pointer;
-  color: #666;
+  color: white;
   padding: 0;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+  background: rgba(255,255,255,0.25);
+  transform: rotate(90deg);
 }
 
 .modal-content {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 25px;
 }
 
 .edit-section {
-  border-bottom: 1px solid #eee;
-  padding-bottom: 20px;
-}
-
-.edit-section:last-child {
-  border-bottom: none;
-  padding-bottom: 0;
+  background: rgba(255,255,255,0.08);
+  border-radius: 24px;
+  padding: 20px;
+  border: 1px solid rgba(255,255,255,0.1);
 }
 
 .edit-section-title {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 700;
-  color: #333;
-  margin-bottom: 15px;
+  color: white;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.edit-section-title::before {
+  content: '';
+  width: 4px;
+  height: 20px;
+  background: #ffd700;
+  border-radius: 2px;
+  display: inline-block;
 }
 
 .avatar-edit-container {
@@ -504,11 +527,13 @@ html, body {
 }
 
 .current-avatar {
-  width: 80px;
-  height: 80px;
+  width: 90px;
+  height: 90px;
   border-radius: 50%;
   overflow: hidden;
-  background: #f0f0f0;
+  background: rgba(255,255,255,0.1);
+  border: 3px solid rgba(255,255,255,0.3);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
 }
 
 .current-avatar img {
@@ -525,11 +550,11 @@ html, body {
 }
 
 .btn {
-  padding: 10px 16px;
-  border-radius: 12px;
+  padding: 12px 18px;
+  border-radius: 16px;
   border: none;
-  font-weight: 600;
-  font-size: 14px;
+  font-weight: 700;
+  font-size: 15px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -539,21 +564,27 @@ html, body {
 }
 
 .btn-primary {
-  background: #0b3c91;
-  color: white;
+  background: #ffd700;
+  color: #0b3c91;
+  box-shadow: 0 8px 20px rgba(255, 215, 0, 0.3);
 }
 
 .btn-primary:hover {
-  background: #1565c0;
+  background: #ffed4a;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 25px rgba(255, 215, 0, 0.4);
 }
 
 .btn-secondary {
-  background: #f0f0f0;
-  color: #333;
+  background: rgba(255,255,255,0.15);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.2);
+  backdrop-filter: blur(10px);
 }
 
 .btn-secondary:hover {
-  background: #e0e0e0;
+  background: rgba(255,255,255,0.25);
+  transform: translateY(-2px);
 }
 
 .input-group {
@@ -564,37 +595,47 @@ html, body {
 
 .edit-input {
   flex: 1;
-  padding: 12px;
-  border: 2px solid #e0e0e0;
-  border-radius: 12px;
-  font-size: 14px;
+  padding: 14px 18px;
+  border: 2px solid rgba(255,255,255,0.2);
+  border-radius: 16px;
+  font-size: 16px;
   outline: none;
-  transition: border-color 0.2s ease;
+  transition: all 0.2s ease;
+  background: rgba(255,255,255,0.08);
+  color: white;
+  font-weight: 500;
+}
+
+.edit-input::placeholder {
+  color: rgba(255,255,255,0.5);
 }
 
 .edit-input:focus {
-  border-color: #0b3c91;
+  border-color: #ffd700;
+  background: rgba(255,255,255,0.12);
 }
 
 .input-hint {
-  font-size: 12px;
-  color: #666;
-  margin-top: 8px;
+  font-size: 13px;
+  color: rgba(255,255,255,0.6);
+  margin-top: 10px;
+  padding-left: 5px;
 }
 
 .telegram-status {
-  background: #f5f5f5;
-  border-radius: 12px;
-  padding: 15px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 16px;
   margin-bottom: 15px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  border: 1px solid rgba(255,255,255,0.1);
 }
 
 .telegram-status.linked {
-  background: #e8f5e9;
-  color: #2e7d32;
+  background: rgba(76, 175, 80, 0.15);
+  border-color: rgba(76, 175, 80, 0.3);
 }
 
 .telegram-info {
@@ -605,12 +646,13 @@ html, body {
 
 .telegram-name {
   font-weight: 700;
-  font-size: 15px;
+  font-size: 16px;
+  color: white;
 }
 
 .telegram-username {
-  font-size: 13px;
-  color: #666;
+  font-size: 14px;
+  color: rgba(255,255,255,0.7);
 }
 
 @media (max-width: 768px) {
@@ -619,25 +661,13 @@ html, body {
     padding-bottom: 110px;
   }
   .profile-section {
-    padding: 15px;
+    padding: 16px;
   }
   .order-item {
-    padding: 12px;
+    padding: 14px;
   }
   .profile-actions {
     flex-direction: column;
-  }
-  .section-title {
-    font-size: 16px;
-  }
-  .order-id {
-    font-size: 14px;
-  }
-  .order-date {
-    font-size: 12px;
-  }
-  .order-total {
-    font-size: 14px;
   }
   .avatar-edit-container {
     flex-direction: column;
@@ -651,51 +681,32 @@ html, body {
 
 @media (max-width: 480px) {
   .profile-header {
-    padding: 15px;
+    padding: 20px 15px;
   }
   .profile-avatar {
-    width: 80px;
-    height: 80px;
-    margin-bottom: 15px;
+    width: 100px;
+    height: 100px;
   }
   .profile-avatar .avatar-placeholder {
-    font-size: 32px;
+    font-size: 40px;
   }
   .profile-name {
-    font-size: 20px;
-  }
-  .profile-id {
-    font-size: 14px;
-  }
-  .profile-username {
-    font-size: 13px;
+    font-size: 24px;
   }
   .profile-content {
     padding: 12px;
     padding-bottom: 105px;
   }
-}
-
-@media (max-width: 360px) {
-  .profile-avatar {
-    width: 70px;
-    height: 70px;
+  .order-id {
+    font-size: 14px;
   }
-  .profile-avatar .avatar-placeholder {
-    font-size: 28px;
+  .order-total {
+    font-size: 16px;
   }
-  .profile-name {
-    font-size: 18px;
-  }
-  .order-header {
-    flex-direction: column;
-    gap: 5px;
-  }
-  .order-date {
-    align-self: flex-start;
-  }
-  .profile-content {
-    padding-bottom: 100px;
+  .order-status {
+    font-size: 12px;
+    padding: 4px 12px;
+    min-width: 80px;
   }
 }
 
@@ -707,23 +718,16 @@ html, body {
   display: none;
   align-items: center;
   justify-content: space-around;
-  background: rgba(65, 105, 225, 0.25);
+  background: rgba(65, 105, 225, 0.3);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border-radius: 40px;
+  border-radius: 50px;
   padding: 8px 12px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.15);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.15);
   z-index: 10000;
   box-sizing: border-box;
-  transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.4, 1), opacity 0.2s ease;
+  transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.4, 1);
   touch-action: pan-y;
-  cursor: grab;
-}
-
-.mobile-nav:active {
-  cursor: grabbing;
-  transform: scale(0.98);
-  transition: transform 0.05s ease;
 }
 
 @media (max-width: 768px) {
@@ -740,28 +744,25 @@ html, body {
   gap: 4px;
   background: transparent;
   border: none;
-  padding: 8px 10px;
-  border-radius: 30px;
-  min-width: 60px;
+  padding: 8px 12px;
+  border-radius: 40px;
+  min-width: 64px;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
-  color: rgba(255, 255, 255, 0.75);
-  fill: rgba(255, 255, 255, 0.75);
+  transition: all 0.2s ease;
+  color: rgba(255, 255, 255, 0.7);
+  fill: rgba(255, 255, 255, 0.7);
   position: relative;
-  text-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
 .mobile-nav-item svg {
   width: 24px;
   height: 24px;
-  transition: transform 0.2s ease, filter 0.2s ease;
   filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
 }
 
 .mobile-nav-item span {
   font-size: 11px;
   font-weight: 700;
-  transition: color 0.2s ease;
 }
 
 .mobile-nav-item.active {
@@ -770,23 +771,17 @@ html, body {
   fill: white;
   transform: scale(1.05);
   backdrop-filter: blur(5px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-}
-
-.mobile-nav-item.active svg {
-  transform: translateY(-1px);
-  filter: drop-shadow(0 3px 6px rgba(0,100,255,0.5));
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
 }
 
 .mobile-nav-item:active {
-  transform: scale(0.92);
-  background: rgba(255, 255, 255, 0.25);
+  transform: scale(0.95);
 }
 
 .mobile-nav .cart-badge-mobile {
   position: absolute;
   top: 2px;
-  right: 6px;
+  right: 8px;
   min-width: 18px;
   height: 18px;
   padding: 0 5px;
@@ -818,7 +813,7 @@ html, body {
 <div id="profile" class="screen profile-screen">
   <div class="profile-header">
     <div class="profile-avatar" id="profileAvatar" onclick="openEditModal()">
-      <div class="edit-avatar-overlay">Изменить</div>
+      <div class="edit-avatar-overlay">Изменить фото</div>
     </div>
     <div class="profile-name" id="profileName" onclick="openEditModal()">Пользователь</div>
     <div class="profile-id" id="profileId"></div>
@@ -835,7 +830,7 @@ html, body {
     <div class="profile-section">
       <div class="section-title">
         <span>История заказов</span>
-        <span id="ordersCount">0 заказов</span>
+        <span id="ordersCount">0</span>
       </div>
       <div class="orders-list" id="ordersList"></div>
     </div>
@@ -860,7 +855,7 @@ html, body {
 <div id="error" class="screen error-screen">
   <div class="error-icon"></div>
   <div class="error-title" id="errorTitle">Ошибка загрузки</div>
-  <div class="error-text" id="errorText">Не удалось загрузить данные профиля. Проверьте подключение к интернету и попробуйте снова.</div>
+  <div class="error-text" id="errorText">Не удалось загрузить данные профиля</div>
   <div class="profile-actions" style="margin-top: 20px;">
     <button class="profile-btn btn-back" id="retryBtn">Повторить</button>
     <button class="profile-btn btn-back" onclick="location.href='index.html'">В магазин</button>
@@ -870,13 +865,13 @@ html, body {
 <div id="editModal" class="modal-overlay" style="display: none;">
   <div class="modal-container">
     <div class="modal-header">
-      <h2>Редактирование профиля</h2>
-      <button class="modal-close" onclick="closeEditModal()">&times;</button>
+      <h2>Редактировать</h2>
+      <button class="modal-close" onclick="closeEditModal()">×</button>
     </div>
     
     <div class="modal-content">
       <div class="edit-section">
-        <div class="edit-section-title">Аватар</div>
+        <div class="edit-section-title">Фото профиля</div>
         <div class="avatar-edit-container">
           <div class="current-avatar" id="editAvatarPreview"></div>
           <div class="avatar-actions">
@@ -884,7 +879,7 @@ html, body {
               <svg viewBox="0 0 24 24" width="18" height="18">
                 <path d="M3 17.46v3.04c0 .28.22.5.5.5h3.04c.13 0 .26-.05.35-.15L17.81 9.94l-3.75-3.75L3.15 17.1c-.1.1-.15.22-.15.36zM20.71 5.63l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83c.39-.39.39-1.02 0-1.41z"/>
               </svg>
-              Загрузить фото
+              Загрузить
             </label>
             <input type="file" id="avatarUpload" accept="image/*" style="display: none;">
             <button class="btn btn-secondary" id="removeAvatarBtn">
@@ -898,7 +893,7 @@ html, body {
       </div>
       
       <div class="edit-section">
-        <div class="edit-section-title">Имя пользователя</div>
+        <div class="edit-section-title">Имя</div>
         <div class="input-group">
           <input type="text" id="editUsername" class="edit-input" placeholder="Введите имя" maxlength="50">
           <button class="btn btn-primary" id="saveUsernameBtn">Сохранить</button>
@@ -907,7 +902,7 @@ html, body {
       </div>
       
       <div class="edit-section">
-        <div class="edit-section-title">Привязка Telegram</div>
+        <div class="edit-section-title">Telegram</div>
         <div id="telegramStatus" class="telegram-status">
           <div class="telegram-info">
             <span class="telegram-name" id="telegramName">Не привязан</span>
@@ -966,118 +961,77 @@ const SHOP_URL = 'index.html';
 let currentUser = null;
 
 function fmtRub(n) {
-  return `${n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} ₽`;
+  return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + ' ₽';
 }
 
 function getPluralEnding(number) {
-  if (number % 10 === 1 && number % 100 !== 11) {
-    return '';
-  } else if ([2, 3, 4].includes(number % 10) && ![12, 13, 14].includes(number % 100)) {
-    return 'а';
-  } else {
-    return 'ов';
-  }
+  if (number % 10 === 1 && number % 100 !== 11) return '';
+  if ([2,3,4].includes(number % 10) && ![12,13,14].includes(number % 100)) return 'а';
+  return 'ов';
 }
 
 function formatDate(dateString) {
   const date = new Date(dateString);
   return date.toLocaleDateString('ru-RU', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
+    day: '2-digit', month: '2-digit', year: 'numeric',
+    hour: '2-digit', minute: '2-digit'
   });
 }
 
 function getDisplayStatus(status, paymentStatus, refundAmount) {
-  if (status === 'completed') {
-    return { text: 'Завершен', className: 'completed' };
-  }
-  
-  if (status === 'canceled') {
-    return { text: 'Отменен', className: 'canceled' };
-  }
-  
-  if (status === 'manyback' || refundAmount > 0) {
-    return { text: 'Возврат', className: 'manyback' };
-  }
-  
-  if (paymentStatus === 'pending' && status === 'new') {
-    return { text: 'Ожидает оплаты', className: 'pending' };
-  }
-  
+  if (status === 'completed') return { text: 'Завершен', className: 'completed' };
+  if (status === 'canceled') return { text: 'Отменен', className: 'canceled' };
+  if (status === 'manyback' || refundAmount > 0) return { text: 'Возврат', className: 'manyback' };
+  if (paymentStatus === 'pending' && status === 'new') return { text: 'Ожидает оплаты', className: 'pending' };
   return { text: 'В работе', className: 'waiting' };
 }
 
 function loadCart() {
-  try {
-    const cartData = localStorage.getItem(CART_KEY);
-    return cartData ? JSON.parse(cartData) : {};
-  } catch {
-    return {};
-  }
+  try { return JSON.parse(localStorage.getItem(CART_KEY) || '{}'); } catch { return {}; }
 }
 
 function cartCount() {
-  const cart = loadCart();
-  return Object.values(cart).reduce((a, b) => a + b, 0);
+  return Object.values(loadCart()).reduce((a, b) => a + b, 0);
 }
 
 function updateBadge() {
   const n = cartCount();
-  const cartBadgeMobile = document.getElementById('cartBadgeMobile');
-  
-  if (cartBadgeMobile) {
+  const badge = document.getElementById('cartBadgeMobile');
+  if (badge) {
     if (n > 0) {
-      cartBadgeMobile.classList.add('show');
-      cartBadgeMobile.textContent = n;
+      badge.classList.add('show');
+      badge.textContent = n;
     } else {
-      cartBadgeMobile.classList.remove('show');
+      badge.classList.remove('show');
     }
   }
 }
 
 function loadLottieAnimations() {
   try {
-    if (document.getElementById('loadingAnim')) {
-      lottie.loadAnimation({
-        container: document.getElementById('loadingAnim'),
-        renderer: 'svg',
-        loop: true,
-        autoplay: true,
-        path: 'https://assets10.lottiefiles.com/packages/lf20_puciaevh.json'
-      });
-    }
+    lottie.loadAnimation({
+      container: document.getElementById('loadingAnim'),
+      renderer: 'svg',
+      loop: true,
+      autoplay: true,
+      path: 'https://assets10.lottiefiles.com/packages/lf20_puciaevh.json'
+    });
   } catch (error) {}
 }
 
 function showScreen(id) {
-  const screens = ['loading', 'profile', 'error'];
-  screens.forEach(screen => {
-    document.getElementById(screen).classList.remove('active', 'leaving');
+  ['loading', 'profile', 'error'].forEach(s => {
+    document.getElementById(s).classList.remove('active', 'leaving');
   });
-  
-  const screen = document.getElementById(id);
-  if (screen) {
-    screen.classList.add('active');
-  }
+  document.getElementById(id).classList.add('active');
 }
 
 function loadUser() {
-  try {
-    const userData = localStorage.getItem(USER_KEY);
-    if (userData) {
-      return JSON.parse(userData);
-    }
-  } catch (error) {}
-  return null;
+  try { return JSON.parse(localStorage.getItem(USER_KEY)); } catch { return null; }
 }
 
 function saveUser(user) {
-  try {
-    localStorage.setItem(USER_KEY, JSON.stringify(user));
-  } catch (error) {}
+  try { localStorage.setItem(USER_KEY, JSON.stringify(user)); } catch (error) {}
 }
 
 function clearUser() {
@@ -1100,19 +1054,14 @@ async function loadProfileData() {
     if (data.success && data.user) {
       currentUser = { ...currentUser, ...data.user };
       saveUser(currentUser);
-      
       updateProfileUI(currentUser);
-      
-      const orders = data.orders || [];
-      
-      await loadOrders(orders);
-      
+      await loadOrders(data.orders || []);
       showScreen('profile');
     } else {
       throw new Error(data.error || 'Ошибка загрузки профиля');
     }
   } catch (error) {
-    showError('Ошибка загрузки', 'Не удалось загрузить данные профиля. Попробуйте позже.');
+    showError('Ошибка загрузки', 'Не удалось загрузить данные профиля');
   }
 }
 
@@ -1120,17 +1069,17 @@ function updateProfileUI(user) {
   const avatar = document.getElementById('profileAvatar');
   const editAvatarPreview = document.getElementById('editAvatarPreview');
   
+  const firstLetter = user.username ? user.username.charAt(0).toUpperCase() : 'U';
   const avatarHtml = user.avatarUrl ? 
-    `<img src="${user.avatarUrl}" alt="${user.username}" onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\\'avatar-placeholder\\'>${user.username ? user.username.charAt(0).toUpperCase() : 'U'}</div>'">` :
-    `<div class="avatar-placeholder">${user.username ? user.username.charAt(0).toUpperCase() : 'U'}</div>`;
+    `<img src="${user.avatarUrl}" alt="${user.username}">` :
+    `<div class="avatar-placeholder">${firstLetter}</div>`;
   
-  avatar.innerHTML = avatarHtml + '<div class="edit-avatar-overlay">Изменить</div>';
+  avatar.innerHTML = avatarHtml + '<div class="edit-avatar-overlay">Изменить фото</div>';
   editAvatarPreview.innerHTML = avatarHtml;
   
   document.getElementById('profileName').textContent = user.username || 'Пользователь';
   
   const provider = user.auth_provider || 'email';
-  
   const profileId = document.getElementById('profileId');
   const profileUsername = document.getElementById('profileUsername');
   const telegramLinkBtn = document.getElementById('telegramLinkBtn');
@@ -1138,24 +1087,15 @@ function updateProfileUI(user) {
   
   if (provider === 'telegram' || provider === 'yandex+telegram') {
     profileId.textContent = `TG ID: ${user.tgId || '...'}`;
-    if (user.telegramUsername) {
-      profileUsername.textContent = `@${user.telegramUsername}`;
-      profileUsername.style.display = 'block';
-    } else {
-      profileUsername.style.display = 'none';
-    }
+    profileUsername.textContent = user.telegramUsername ? `@${user.telegramUsername}` : '';
+    profileUsername.style.display = user.telegramUsername ? 'block' : 'none';
     telegramLinkBtn.classList.add('linked');
     telegramLinkText.textContent = 'Telegram привязан';
     
-    const telegramStatus = document.getElementById('telegramStatus');
-    const telegramName = document.getElementById('telegramName');
-    const telegramUser = document.getElementById('telegramUser');
-    const unlinkBtn = document.getElementById('unlinkTelegramBtn');
-    
-    telegramStatus.classList.add('linked');
-    telegramName.textContent = user.firstName || user.username || 'Пользователь';
-    telegramUser.textContent = user.telegramUsername ? `@${user.telegramUsername}` : '—';
-    unlinkBtn.style.display = 'block';
+    document.getElementById('telegramStatus').classList.add('linked');
+    document.getElementById('telegramName').textContent = user.firstName || user.username || 'Пользователь';
+    document.getElementById('telegramUser').textContent = user.telegramUsername ? `@${user.telegramUsername}` : '—';
+    document.getElementById('unlinkTelegramBtn').style.display = 'block';
     document.getElementById('linkTelegramBtn').style.display = 'none';
   } else {
     profileId.textContent = 'Аккаунт Яндекс';
@@ -1163,59 +1103,51 @@ function updateProfileUI(user) {
     telegramLinkBtn.classList.remove('linked');
     telegramLinkText.textContent = 'Привязать Telegram';
     
-    const telegramStatus = document.getElementById('telegramStatus');
-    const telegramName = document.getElementById('telegramName');
-    const telegramUser = document.getElementById('telegramUser');
-    const unlinkBtn = document.getElementById('unlinkTelegramBtn');
-    
-    telegramStatus.classList.remove('linked');
-    telegramName.textContent = 'Не привязан';
-    telegramUser.textContent = '—';
-    unlinkBtn.style.display = 'none';
+    document.getElementById('telegramStatus').classList.remove('linked');
+    document.getElementById('telegramName').textContent = 'Не привязан';
+    document.getElementById('telegramUser').textContent = '—';
+    document.getElementById('unlinkTelegramBtn').style.display = 'none';
     document.getElementById('linkTelegramBtn').style.display = 'block';
   }
 }
 
 async function loadOrders(orders) {
-  const ordersList = document.getElementById('ordersList');
-  const ordersCount = document.getElementById('ordersCount');
+  const list = document.getElementById('ordersList');
+  const count = document.getElementById('ordersCount');
   
-  if (!ordersList || !ordersCount) return;
+  if (!list || !count) return;
   
   if (orders.length === 0) {
-    ordersCount.textContent = '0 заказов';
-    ordersList.innerHTML = `
+    count.textContent = '0';
+    list.innerHTML = `
       <div class="no-orders">
         <div class="no-orders-icon"></div>
-        <div class="no-orders-text">У вас пока нет заказов</div>
-        <div class="no-orders-subtext">Совершите первую покупку чтобы начать историю!</div>
+        <div class="no-orders-text">Нет заказов</div>
+        <div class="no-orders-subtext">Сделайте первую покупку!</div>
       </div>
     `;
     return;
   }
   
-  ordersCount.textContent = `${orders.length} заказ${getPluralEnding(orders.length)}`;
+  count.textContent = orders.length;
   
   orders.sort((a, b) => new Date(b.date) - new Date(a.date));
   
-  ordersList.innerHTML = orders.map(order => {
-    const displayStatus = getDisplayStatus(order.status, order.paymentStatus, order.refundAmount);
+  list.innerHTML = orders.map(order => {
+    const status = getDisplayStatus(order.status, order.paymentStatus, order.refundAmount);
     const isGrayed = order.status === 'canceled' || order.status === 'manyback';
-    const grayedClass = isGrayed ? 'grayed' : '';
     
     return `
-      <div class="order-item ${grayedClass}" onclick="window.location.href='moreorder.html?order=${order.id}'">
+      <div class="order-item ${isGrayed ? 'grayed' : ''}" onclick="window.location.href='moreorder.html?order=${order.id}'">
         <div class="order-header">
-          <div class="order-id">Заказ #${order.id}</div>
+          <div class="order-id">#${order.id}</div>
           <div class="order-date">${formatDate(order.date)}</div>
         </div>
         <div class="order-details">
-          <div class="order-total">
-            ${fmtRub(order.total)}
-            ${order.refundAmount ? `<div style="font-size: 12px; color: #9c27b0; margin-top: 4px;">К возврату: ${fmtRub(order.refundAmount)}</div>` : ''}
-          </div>
-          <div class="order-status ${displayStatus.className}">${displayStatus.text}</div>
+          <div class="order-total">${fmtRub(order.total)}</div>
+          <div class="order-status ${status.className}">${status.text}</div>
         </div>
+        ${order.refundAmount ? `<div style="font-size: 12px; color: #9c27b0; margin-top: 8px;">Возврат: ${fmtRub(order.refundAmount)}</div>` : ''}
       </div>
     `;
   }).join('');
@@ -1228,104 +1160,22 @@ function showError(title, message) {
 }
 
 function setupMobileNavigation() {
-  const navWallet = document.getElementById('navWallet');
-  const navProfile = document.getElementById('navProfile');
-  const navHome = document.getElementById('navHome');
-  const navCart = document.getElementById('navCart');
-  const mobileNav = document.getElementById('mobileNav');
+  const nav = {
+    wallet: document.getElementById('navWallet'),
+    profile: document.getElementById('navProfile'),
+    home: document.getElementById('navHome'),
+    cart: document.getElementById('navCart')
+  };
   
-  navProfile.classList.add('active');
+  nav.profile.classList.add('active');
   
-  if (navWallet) {
-    navWallet.addEventListener('click', function(e) {
-      e.preventDefault();
-      window.location.href = 'wallet.html';
-    });
-  }
-  
-  if (navProfile) {
-    navProfile.addEventListener('click', function(e) {
-      e.preventDefault();
-      window.location.href = 'profile.html';
-    });
-  }
-  
-  if (navHome) {
-    navHome.addEventListener('click', function(e) {
-      e.preventDefault();
-      window.location.href = SHOP_URL;
-    });
-  }
-  
-  if (navCart) {
-    navCart.addEventListener('click', function(e) {
-      e.preventDefault();
-      localStorage.setItem('open_cart', 'true');
-      window.location.href = SHOP_URL;
-    });
-  }
-  
-  if (mobileNav) {
-    let isDragging = false;
-    let startX, startY;
-    
-    mobileNav.addEventListener('mousedown', function(e) {
-      isDragging = false;
-      startX = e.clientX;
-      startY = e.clientY;
-    });
-    
-    mobileNav.addEventListener('mousemove', function(e) {
-      if (!startX) return;
-      const dx = e.clientX - startX;
-      const dy = e.clientY - startY;
-      if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
-        isDragging = true;
-      }
-    });
-    
-    mobileNav.addEventListener('mouseup', function() {
-      startX = null;
-      startY = null;
-    });
-    
-    mobileNav.addEventListener('touchstart', function(e) {
-      isDragging = false;
-      if (e.touches.length) {
-        startX = e.touches[0].clientX;
-        startY = e.touches[0].clientY;
-      }
-    });
-    
-    mobileNav.addEventListener('touchmove', function(e) {
-      if (!startX) return;
-      if (e.touches.length) {
-        const dx = e.touches[0].clientX - startX;
-        const dy = e.touches[0].clientY - startY;
-        if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
-          isDragging = true;
-        }
-      }
-    });
-    
-    mobileNav.addEventListener('touchend', function() {
-      startX = null;
-      startY = null;
-    });
-    
-    const navItems = [navWallet, navProfile, navHome, navCart];
-    navItems.forEach(item => {
-      if (item) {
-        item.addEventListener('click', function(e) {
-          if (isDragging) {
-            e.preventDefault();
-            e.stopPropagation();
-            isDragging = false;
-          }
-        });
-      }
-    });
-  }
+  if (nav.wallet) nav.wallet.addEventListener('click', () => window.location.href = 'wallet.html');
+  if (nav.profile) nav.profile.addEventListener('click', () => window.location.href = 'profile.html');
+  if (nav.home) nav.home.addEventListener('click', () => window.location.href = SHOP_URL);
+  if (nav.cart) nav.cart.addEventListener('click', () => {
+    localStorage.setItem('open_cart', 'true');
+    window.location.href = SHOP_URL;
+  });
 }
 
 document.getElementById('logoutBtn').addEventListener('click', () => {
@@ -1338,11 +1188,8 @@ document.getElementById('backToShopBtn').addEventListener('click', () => {
 });
 
 document.getElementById('retryBtn').addEventListener('click', () => {
-  if (currentUser) {
-    loadProfileData();
-  } else {
-    window.location.href = 'reg_log.html';
-  }
+  if (currentUser) loadProfileData();
+  else window.location.href = 'reg_log.html';
 });
 
 function checkInitialAuth() {
@@ -1350,23 +1197,17 @@ function checkInitialAuth() {
   const authToken = urlParams.get('auth');
   
   if (authToken) {
-    const newUrl = window.location.pathname;
-    window.history.replaceState({}, '', newUrl);
-    
+    window.history.replaceState({}, '', window.location.pathname);
     verifyAuthToken(authToken);
   } else {
     currentUser = loadUser();
-    if (currentUser) {
-      loadProfileData();
-    } else {
-      window.location.href = 'reg_log.html';
-    }
+    if (currentUser) loadProfileData();
+    else window.location.href = 'reg_log.html';
   }
 }
 
 async function verifyAuthToken(token) {
   showScreen('loading');
-  
   try {
     const response = await fetch(`${API_URL}/api/auth/check/${token}`);
     const data = await response.json();
@@ -1376,7 +1217,7 @@ async function verifyAuthToken(token) {
       saveUser(data.user);
       loadProfileData();
     } else {
-      showError('Ошибка авторизации', 'Не удалось войти в аккаунт. Пожалуйста, попробуйте снова.');
+      showError('Ошибка авторизации', 'Не удалось войти в аккаунт');
     }
   } catch (error) {
     showError('Ошибка сети', 'Не удалось подключиться к серверу');
@@ -1456,13 +1297,8 @@ document.getElementById('saveUsernameBtn').addEventListener('click', async funct
   try {
     const response = await fetch(`${API_URL}/api/user/username`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        userId: currentUser.id,
-        username: newUsername
-      })
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId: currentUser.id, username: newUsername })
     });
     
     const data = await response.json();
@@ -1498,9 +1334,7 @@ async function generateTelegramLink() {
 }
 
 function openTelegramLink() {
-  if (currentUser.auth_provider === 'telegram' || currentUser.auth_provider === 'yandex+telegram') {
-    return;
-  }
+  if (currentUser.auth_provider === 'telegram' || currentUser.auth_provider === 'yandex+telegram') return;
   generateTelegramLink();
 }
 
@@ -1510,9 +1344,7 @@ document.getElementById('unlinkTelegramBtn').addEventListener('click', async fun
   try {
     const response = await fetch(`${API_URL}/api/user/link-telegram`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         userId: currentUser.id,
         tgId: null,
@@ -1543,17 +1375,11 @@ document.getElementById('unlinkTelegramBtn').addEventListener('click', async fun
 document.addEventListener('DOMContentLoaded', () => {
   loadLottieAnimations();
   updateBadge();
-  
-  setTimeout(() => {
-    checkInitialAuth();
-  }, 500);
-  
+  setTimeout(checkInitialAuth, 500);
   setupMobileNavigation();
   
-  window.addEventListener('click', function(e) {
-    if (e.target === document.getElementById('editModal')) {
-      closeEditModal();
-    }
+  window.addEventListener('click', (e) => {
+    if (e.target === document.getElementById('editModal')) closeEditModal();
   });
 });
 </script>
