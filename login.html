@@ -56,7 +56,7 @@ html, body {
 
 .button {
   margin-top: 20px;
-  padding: 18px 48px;
+  padding: 0;
   font-size: 20px;
   font-weight: 800;
   background: #fff;
@@ -68,6 +68,10 @@ html, body {
   box-shadow: 0 16px 36px rgba(0,0,0,.45);
   width: 100%;
   max-width: 300px;
+  height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .button:hover {
@@ -79,6 +83,26 @@ html, body {
   color: #666666;
   cursor: not-allowed;
   transform: none !important;
+}
+
+.button-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  height: 100%;
+}
+
+.button-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background-image: url('https://i.imgur.com/YCNzq9E.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: inline-block;
 }
 
 .error-message {
@@ -203,8 +227,17 @@ html, body {
   }
   
   .button {
-    padding: 16px 32px;
+    height: 60px;
+    max-width: 280px;
+  }
+  
+  .button-content {
     font-size: 18px;
+  }
+  
+  .button-icon {
+    width: 24px;
+    height: 24px;
   }
   
   .telegram-link {
@@ -229,8 +262,17 @@ html, body {
   }
   
   .button {
-    padding: 14px 24px;
+    height: 56px;
+  }
+  
+  .button-content {
     font-size: 16px;
+    gap: 8px;
+  }
+  
+  .button-icon {
+    width: 22px;
+    height: 22px;
   }
   
   .telegram-link {
@@ -268,7 +310,12 @@ html, body {
   <div class="error-message" id="errorMessage"></div>
   <div class="loading" id="loading">Создание ссылки...</div>
   
-  <button class="button" id="loginBtn">Войти через Telegram</button>
+  <button class="button" id="loginBtn">
+    <div class="button-content">
+      <span class="button-icon"></span>
+      <span>Войти через Яндекс</span>
+    </div>
+  </button>
   
   <div class="telegram-link-container" id="telegramLinkContainer">
     <a href="#" class="telegram-link" id="telegramLink" target="_blank">
@@ -375,11 +422,11 @@ async function checkAuthStatus() {
         clearInterval(checkAuthInterval);
         
         // Сохраняем пользователя в localStorage
-        localStorage.setItem('duck_user', JSON.stringify(data.user));
+        localStorage.setItem('duck_user_v1', JSON.stringify(data.user));
         
         // Перенаправляем в магазин
         alert(`✅ Вход выполнен!\nДобро пожаловать, ${data.user.username}!`);
-        window.location.href = 'main.html';
+        window.location.href = 'index.html';
       } else if (data.expired) {
         // Токен истек
         clearInterval(checkAuthInterval);
@@ -405,13 +452,13 @@ window.addEventListener('beforeunload', () => {
 
 // Проверяем, есть ли уже авторизованный пользователь
 document.addEventListener('DOMContentLoaded', () => {
-  const savedUser = localStorage.getItem('duck_user');
+  const savedUser = localStorage.getItem('duck_user_v1');
   if (savedUser) {
     try {
       const user = JSON.parse(savedUser);
       // Предлагаем перейти в магазин или выйти
       if (confirm(`Вы уже авторизованы как ${user.username}. Перейти в магазин?`)) {
-        window.location.href = 'main.html';
+        window.location.href = 'index.html';
       }
     } catch (e) {
       console.error('Ошибка парсинга пользователя:', e);
