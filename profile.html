@@ -324,21 +324,16 @@ html, body {
   background: rgba(255, 255, 255, 0.2);
 }
 
+.sticker-small {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 20px;
+}
+
 .no-orders {
   text-align: center;
   color: rgba(255,255,255,0.8);
-  padding: 40px 0;
-}
-
-.no-orders-icon {
-  width: 80px;
-  height: 80px;
-  margin: 0 auto 20px;
-  background-image: url('https://i.imgur.com/8Q5w6zR.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  opacity: 0.8;
+  padding: 30px 0;
 }
 
 .no-orders-text {
@@ -676,6 +671,10 @@ html, body {
   }
   .avatar-actions {
     width: 100%;
+  }
+  .sticker-small {
+    width: 100px;
+    height: 100px;
   }
 }
 
@@ -1019,6 +1018,26 @@ function loadLottieAnimations() {
   } catch (error) {}
 }
 
+function loadNoOrdersAnimation() {
+  const container = document.getElementById('noOrdersAnim');
+  if (!container) return;
+  
+  container.innerHTML = '';
+  
+  try {
+    lottie.loadAnimation({
+      container: container,
+      renderer: 'svg',
+      loop: true,
+      autoplay: true,
+      path: 'bad_pay.json'
+    });
+  } catch (error) {
+    console.error('Ошибка загрузки анимации:', error);
+    container.innerHTML = '<div class="no-orders-icon"></div>';
+  }
+}
+
 function showScreen(id) {
   ['loading', 'profile', 'error'].forEach(s => {
     document.getElementById(s).classList.remove('active', 'leaving');
@@ -1121,11 +1140,16 @@ async function loadOrders(orders) {
     count.textContent = '0';
     list.innerHTML = `
       <div class="no-orders">
-        <div class="no-orders-icon"></div>
-        <div class="no-orders-text">Нет заказов</div>
-        <div class="no-orders-subtext">Сделайте первую покупку!</div>
+        <div class="sticker-small" id="noOrdersAnim"></div>
+        <div class="no-orders-text">У вас пока нет заказов</div>
+        <div class="no-orders-subtext">Совершите первую покупку чтобы начать историю!</div>
       </div>
     `;
+    
+    setTimeout(() => {
+      loadNoOrdersAnimation();
+    }, 100);
+    
     return;
   }
   
@@ -1339,19 +1363,20 @@ function openTelegramLink() {
 }
 
 document.getElementById('unlinkTelegramBtn').addEventListener('click', async function() {
-  if (!confirm('Отвязать Telegram аккаунт?')) return;
+  if (!confirm('Вы уверены, что хотите отвязать Telegram аккаунт?\n\nПосле отвязки вы больше не сможете входить через Telegram.')) {
+    return;
+  }
+  
+  const btn = this;
+  const originalText = btn.innerHTML;
+  btn.innerHTML = 'Отвязываем...';
+  btn.disabled = true;
   
   try {
-    const response = await fetch(`${API_URL}/api/user/link-telegram`, {
+    const response = await fetch(`${API_URL}/api/user/unlink-telegram`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        userId: currentUser.id,
-        tgId: null,
-        telegramUsername: null,
-        firstName: null,
-        lastName: null
-      })
+      body: JSON.stringify({ userId: currentUser.id })
     });
     
     const data = await response.json();
@@ -1362,13 +1387,25 @@ document.getElementById('unlinkTelegramBtn').addEventListener('click', async fun
       currentUser.telegramUsername = null;
       currentUser.firstName = null;
       currentUser.lastName = null;
+      
+      if (currentUser.avatarUrl && currentUser.avatarUrl.includes('api.telegram.org')) {
+        currentUser.avatarUrl = null;
+      }
+      
       saveUser(currentUser);
       updateProfileUI(currentUser);
+      
+      alert('Telegram успешно отвязан');
+      closeEditModal();
     } else {
-      alert('Ошибка при отвязке Telegram');
+      alert(data.error || 'Ошибка при отвязке Telegram');
     }
   } catch (error) {
-    alert('Ошибка сети');
+    console.error('Ошибка:', error);
+    alert('Ошибка сети при отвязке Telegram');
+  } finally {
+    btn.innerHTML = originalText;
+    btn.disabled = false;
   }
 });
 
