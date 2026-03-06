@@ -534,7 +534,7 @@
 
       <button class="swap-button" id="confirmSwapBtn">
         <svg viewBox="0 0 24 24" width="20" height="20">
-          <path d="M21 6h-2v2h-2V6h-2V4h2V2h2v2h2v2zm-6-4v2h-2V2h-2v6h2V6h2v10h-4v2h6v-2h-2V2h-2zM9 2H5v16h4v2h6v-2h-2V2H9zm0 2h2v12H9V4z"/>
+          <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
         </svg>
         Подтвердить обмен
       </button>
@@ -562,7 +562,7 @@
 const API_URL = 'https://duck-shop-sever.onrender.com';
 const USER_KEY = 'duck_user_v1';
 const CART_KEY = 'duck_cart_v1';
-const SHOP_URL = 'main.html';
+const SHOP_URL = 'index.html';
 const PROFILE_URL = 'profile.html';
 const WALLET_URL = 'wallet.html';
 
@@ -782,7 +782,7 @@ async function confirmSwap() {
   swapBtn.disabled = false;
   swapBtn.innerHTML = `
    <svg viewBox="0 0 24 24" width="20" height="20">
-    <path d="M21 6h-2v2h-2V6h-2V4h2V2h2v2h2v2zm-6-4v2h-2V2h-2v6h2V6h2v10h-4v2h6v-2h-2V2h-2zM9 2H5v16h4v2h6v-2h-2V2H9zm0 2h2v12H9V4z"/>
+    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
    </svg>
    Подтвердить обмен
   `;
