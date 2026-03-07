@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Технический перерыв - Duck Shop</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+  <style>
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(180deg, #0b3c91 0%, #1565c0 55%, #42a5f5 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    
+    .container {
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 32px;
+      padding: 30px 20px;
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      position: relative;
+    }
+    
+    .time-badge {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: rgba(255,215,0,0.2);
+      border: 1px solid rgba(255,215,0,0.3);
+      border-radius: 30px;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #ffd700;
+      backdrop-filter: blur(5px);
+    }
+    
+    .sticker {
+      width: 200px;
+      height: 200px;
+      margin: 0 auto 20px;
+    }
+    
+    .title {
+      font-size: 28px;
+      font-weight: 800;
+      color: white;
+      margin-bottom: 16px;
+    }
+    
+    .text {
+      font-size: 16px;
+      color: rgba(255,255,255,0.9);
+      margin-bottom: 30px;
+      line-height: 1.5;
+    }
+    
+    .button {
+      display: inline-block;
+      padding: 16px 40px;
+      background: white;
+      color: #0b3c91;
+      text-decoration: none;
+      border-radius: 18px;
+      font-weight: 800;
+      font-size: 18px;
+      transition: transform 0.15s ease;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      border: none;
+      cursor: pointer;
+    }
+    
+    .button:hover {
+      transform: translateY(-2px);
+    }
+    
+    .button:active {
+      transform: translateY(1px);
+    }
+    
+    .info-text {
+      margin-top: 20px;
+      font-size: 14px;
+      color: rgba(255,255,255,0.6);
+    }
+    
+    @media (max-width: 480px) {
+      .sticker {
+        width: 160px;
+        height: 160px;
+      }
+      .title {
+        font-size: 24px;
+      }
+      .text {
+        font-size: 15px;
+      }
+      .button {
+        padding: 14px 32px;
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="time-badge" id="timeBadge">Скоро...</div>
+    
+    <div class="sticker" id="maintenanceAnim"></div>
+    
+    <div class="title">Технический перерыв</div>
+    <div class="text">
+      На нашем сайте ведутся технические работы.<br>
+      Пожалуйста, подождите, скоро всё заработает!
+    </div>
+    
+    <button class="button" id="retryBtn">Попробовать снова</button>
+    
+    <div class="info-text" id="endTimeText"></div>
+  </div>
+  
+  <script>
+    const API_URL = 'https://duck-shop-sever.onrender.com';
+    
+  
+    lottie.loadAnimation({
+      container: document.getElementById('maintenanceAnim'),
+      renderer: 'svg',
+      loop: true,
+      autoplay: true,
+      path: 'working.json'
+    });
+    
+  
+    async function updateMaintenanceInfo() {
+      try {
+        const response = await fetch(`${API_URL}/api/maintenance-status`);
+        const data = await response.json();
+        
+        const timeBadge = document.getElementById('timeBadge');
+        const endTimeText = document.getElementById('endTimeText');
+        
+        if (data.maintenance) {
+          if (data.endTime) {
+            const endDate = new Date(data.endTime);
+            const now = new Date();
+            
+            if (endDate > now) {
+              
+              const hours = endDate.getHours().toString().padStart(2, '0');
+              const minutes = endDate.getMinutes().toString().padStart(2, '0');
+              timeBadge.textContent = `⏰ до ${hours}:${minutes}`;
+              
+              
+              const timeLeft = Math.floor((endDate - now) / 60000);
+              if (timeLeft > 0) {
+                if (timeLeft < 60) {
+                  endTimeText.textContent = `Осталось примерно ${timeLeft} минут`;
+                } else {
+                  const hours = Math.floor(timeLeft / 60);
+                  const mins = timeLeft % 60;
+                  if (mins === 0) {
+                    endTimeText.textContent = `Осталось примерно ${hours} ${getHoursWord(hours)}`;
+                  } else {
+                    endTimeText.textContent = `Осталось примерно ${hours} ${getHoursWord(hours)} ${mins} мин`;
+                  }
+                }
+              } else {
+                endTimeText.textContent = 'Скоро заработаем...';
+              }
+            } else {
+              timeBadge.textContent = 'Скоро...';
+              endTimeText.textContent = 'Технические работы почти завершены';
+            }
+          } else {
+            timeBadge.textContent = 'Скоро...';
+          }
+        } else {
+          
+          window.location.href = 'index.html';
+        }
+      } catch (error) {
+        console.error('Ошибка получения статуса:', error);
+      }
+    }
+    
+    function getHoursWord(hours) {
+      if (hours % 10 === 1 && hours % 100 !== 11) return 'час';
+      if ([2,3,4].includes(hours % 10) && ![12,13,14].includes(hours % 100)) return 'часа';
+      return 'часов';
+    }
+    
+    
+    updateMaintenanceInfo();
+    setInterval(updateMaintenanceInfo, 30000);
+    
+    
+    document.getElementById('retryBtn').addEventListener('click', async () => {
+      try {
+        const response = await fetch(`${API_URL}/api/maintenance-status`);
+        const data = await response.json();
+        
+        if (!data.maintenance) {
+          window.location.href = 'index.html';
+        } else {
+          alert('Технические работы еще продолжаются. Пожалуйста, подождите.');
+        }
+      } catch (error) {
+        window.location.reload();
+      }
+    });
+  </script>
+</body>
+</html>
