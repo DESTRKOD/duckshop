@@ -997,6 +997,26 @@ let currentOrderId = null;
 let currentPaymentUrl = null;
 let currentUser = null;
 
+
+async function checkMaintenance() {
+  try {
+    const response = await fetch(`${API_URL}/api/maintenance-status`);
+    const data = await response.json();
+    
+    if (data.maintenance && !window.location.pathname.includes('working.html')) {
+      window.location.href = 'working.html';
+    }
+  } catch (error) {
+    console.error('Ошибка проверки статуса:', error);
+  }
+}
+
+
+checkMaintenance();
+
+
+setInterval(checkMaintenance, 30000);
+
 function loadCart() {
   try {
     const raw = localStorage.getItem(CART_KEY);
