@@ -331,7 +331,7 @@ document.getElementById('submitCode').addEventListener('click', async () => {
     const data = await response.json();
     
     if (data.success) {
-      window.location.href = `waiting_order.html?order=${orderId}`;
+      window.location.href = `waiting_order?order=${orderId}`;
     } else if (data.status === 'support_needed') {
       errorMessage.textContent = 'Превышено количество попыток. Свяжитесь с поддержкой.';
       errorMessage.style.display = 'block';
