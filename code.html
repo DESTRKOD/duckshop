@@ -194,7 +194,7 @@ html, body {
   <div id="animEnterCode" class="sticker"></div>
   <div class="title">Введите код из 6 цифр</div>
   <div class="order-number" id="orderNumber">Заказ #...</div>
-  <div class="subtitle">Код должен прийти вам от администратора</div>
+  <div class="subtitle">Код должен прийти вам на указанную почту</div>
   
   <div class="code-inputs">
     <input type="text" maxlength="1" class="code-digit" data-index="0" inputmode="numeric">
@@ -206,23 +206,23 @@ html, body {
   </div>
   
   <div class="error-message" id="errorMessage"></div>
-  <div class="loading" id="loading">Проверка кода...</div>
+  <div class="loading" id="loading">Отправка кода...</div>
   
   <button class="button" id="submitCode" disabled>Ввести код</button>
   
   <div class="info-message">
-    Если код не пришёл в течение 5 минут, свяжитесь с поддержкой
+    Если код не пришёл в течение 5 минут, пожалуйста, свяжитесь с поддержкой
   </div>
 </div>
 
 <script>
 const API_URL = 'https://duck-shop-sever.onrender.com';
 
-// Получаем order_id из URL
+
 const urlParams = new URLSearchParams(window.location.search);
 const orderId = urlParams.get('order');
 
-// Если нет order_id, показываем ошибку
+
 if (!orderId) {
   document.getElementById('orderNumber').textContent = 'Ошибка: номер заказа не указан';
   document.getElementById('submitCode').disabled = true;
@@ -230,7 +230,7 @@ if (!orderId) {
   document.getElementById('orderNumber').textContent = `Заказ #${orderId}`;
 }
 
-// Загружаем анимацию
+
 lottie.loadAnimation({
   container: document.getElementById('animEnterCode'),
   renderer: 'svg',
@@ -239,7 +239,7 @@ lottie.loadAnimation({
   path: 'enter_code.json'
 });
 
-// Настройка ввода кода
+
 function setupCodeInputs() {
   const inputs = document.querySelectorAll('.code-digit');
   const submitBtn = document.getElementById('submitCode');
@@ -256,7 +256,7 @@ function setupCodeInputs() {
         inputs[index + 1].focus();
       }
       
-      // Проверяем, все ли поля заполнены
+      
       const allFilled = Array.from(inputs).every(i => i.value.length === 1);
       submitBtn.disabled = !allFilled;
       
@@ -298,7 +298,7 @@ function setupCodeInputs() {
   });
 }
 
-// Обработка отправки кода
+
 document.getElementById('submitCode').addEventListener('click', async () => {
   const inputs = document.querySelectorAll('.code-digit');
   const code = Array.from(inputs).map(input => input.value).join('');
@@ -306,14 +306,14 @@ document.getElementById('submitCode').addEventListener('click', async () => {
   const loading = document.getElementById('loading');
   const submitBtn = document.getElementById('submitCode');
   
-  // Валидация кода
+  
   if (code.length !== 6 || !/^\d+$/.test(code)) {
     errorMessage.textContent = 'Пожалуйста, введите 6 цифр кода';
     errorMessage.style.display = 'block';
     return;
   }
   
-  // Показываем загрузку
+  
   submitBtn.disabled = true;
   loading.style.display = 'block';
   errorMessage.style.display = 'none';
@@ -350,11 +350,11 @@ document.getElementById('submitCode').addEventListener('click', async () => {
   }
 });
 
-// Инициализация при загрузке
+
 document.addEventListener('DOMContentLoaded', () => {
   setupCodeInputs();
   
-  // Фокус на первое поле
+  
   document.querySelector('.code-digit').focus();
 });
 </script>
