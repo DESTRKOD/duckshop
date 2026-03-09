@@ -37,13 +37,13 @@
       position: absolute;
       top: 16px;
       right: 16px;
-      background: rgba(255,215,0,0.2);
-      border: 1px solid rgba(255,215,0,0.3);
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.2);
       border-radius: 30px;
       padding: 8px 16px;
       font-size: 14px;
-      font-weight: 700;
-      color: #ffd700;
+      font-weight: 600;
+      color: white;
       backdrop-filter: blur(5px);
     }
     
@@ -134,7 +134,6 @@
   <script>
     const API_URL = 'https://duck-shop-sever.onrender.com';
     
-  
     lottie.loadAnimation({
       container: document.getElementById('maintenanceAnim'),
       renderer: 'svg',
@@ -143,7 +142,37 @@
       path: 'working.json'
     });
     
-  
+    function getHoursWord(hours) {
+      if (hours % 10 === 1 && hours % 100 !== 11) return 'час';
+      if ([2,3,4].includes(hours % 10) && ![12,13,14].includes(hours % 100)) return 'часа';
+      return 'часов';
+    }
+    
+    function getMinutesWord(minutes) {
+      if (minutes % 10 === 1 && minutes % 100 !== 11) return 'минута';
+      if ([2,3,4].includes(minutes % 10) && ![12,13,14].includes(minutes % 100)) return 'минуты';
+      return 'минут';
+    }
+    
+    function formatTimeLeft(ms) {
+      if (ms <= 0) return null;
+      
+      const totalMinutes = Math.floor(ms / 60000);
+      
+      if (totalMinutes < 60) {
+        return `${totalMinutes} ${getMinutesWord(totalMinutes)}`;
+      }
+      
+      const hours = Math.floor(totalMinutes / 60);
+      const minutes = totalMinutes % 60;
+      
+      if (minutes === 0) {
+        return `${hours} ${getHoursWord(hours)}`;
+      }
+      
+      return `${hours} ${getHoursWord(hours)} ${minutes} ${getMinutesWord(minutes)}`;
+    }
+    
     async function updateMaintenanceInfo() {
       try {
         const response = await fetch(`${API_URL}/api/maintenance-status`);
@@ -153,36 +182,19 @@
         const endTimeText = document.getElementById('endTimeText');
         
         if (data.maintenance) {
-          if (data.endTime) {
-            const endDate = new Date(data.endTime);
-            const now = new Date();
+          if (data.isExpired) {
+            timeBadge.textContent = 'Скоро...';
+            endTimeText.textContent = 'Технические работы почти завершены';
+          } else if (data.endTimeFormatted) {
+            timeBadge.textContent = `до ${data.endTimeFormatted}`;
             
-            if (endDate > now) {
-              
-              const hours = endDate.getHours().toString().padStart(2, '0');
-              const minutes = endDate.getMinutes().toString().padStart(2, '0');
-              timeBadge.textContent = `⏰ до ${hours}:${minutes}`;
-              
-              
-              const timeLeft = Math.floor((endDate - now) / 60000);
-              if (timeLeft > 0) {
-                if (timeLeft < 60) {
-                  endTimeText.textContent = `Осталось примерно ${timeLeft} минут`;
-                } else {
-                  const hours = Math.floor(timeLeft / 60);
-                  const mins = timeLeft % 60;
-                  if (mins === 0) {
-                    endTimeText.textContent = `Осталось примерно ${hours} ${getHoursWord(hours)}`;
-                  } else {
-                    endTimeText.textContent = `Осталось примерно ${hours} ${getHoursWord(hours)} ${mins} мин`;
-                  }
-                }
+            if (data.timeLeft) {
+              const timeLeftText = formatTimeLeft(data.timeLeft);
+              if (timeLeftText) {
+                endTimeText.textContent = `Осталось примерно ${timeLeftText}`;
               } else {
                 endTimeText.textContent = 'Скоро заработаем...';
               }
-            } else {
-              timeBadge.textContent = 'Скоро...';
-              endTimeText.textContent = 'Технические работы почти завершены';
             }
           } else {
             timeBadge.textContent = 'Скоро...';
@@ -196,16 +208,9 @@
       }
     }
     
-    function getHoursWord(hours) {
-      if (hours % 10 === 1 && hours % 100 !== 11) return 'час';
-      if ([2,3,4].includes(hours % 10) && ![12,13,14].includes(hours % 100)) return 'часа';
-      return 'часов';
-    }
-    
     
     updateMaintenanceInfo();
     setInterval(updateMaintenanceInfo, 30000);
-    
     
     document.getElementById('retryBtn').addEventListener('click', async () => {
       try {
