@@ -201,7 +201,7 @@
           }
         } else {
           
-          window.location.href = 'index.html';
+          window.location.href = 'index';
         }
       } catch (error) {
         console.error('Ошибка получения статуса:', error);
@@ -218,7 +218,7 @@
         const data = await response.json();
         
         if (!data.maintenance) {
-          window.location.href = 'index.html';
+          window.location.href = 'index';
         } else {
           alert('Технические работы еще продолжаются. Пожалуйста, подождите.');
         }
