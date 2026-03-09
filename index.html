@@ -1004,7 +1004,7 @@ async function checkMaintenance() {
     const data = await response.json();
     
     if (data.maintenance && !window.location.pathname.includes('working.html')) {
-      window.location.href = 'working.html';
+      window.location.href = 'working';
     }
   } catch (error) {
     console.error('Ошибка проверки статуса:', error);
@@ -1166,13 +1166,13 @@ function updateAuthButton() {
 
     authBtn.onclick = function(e) {
       e.preventDefault();
-      window.location.href = 'profile.html';
+      window.location.href = 'profile';
     };
   } else {
     authBtnText.textContent = 'Войти';
     authBtn.onclick = function(e) {
       e.preventDefault();
-      window.location.href = 'reg_log.html';
+      window.location.href = 'reg_log';
     };
   }
 }
@@ -1323,28 +1323,28 @@ function setupMobileNavigation() {
   if (navSupport) {
     navSupport.addEventListener('click', function(e) {
       e.preventDefault();
-      window.location.href = 'support.html';
+      window.location.href = 'support';
     });
   }
 
   if (supportDesktopBtn) {
     supportDesktopBtn.addEventListener('click', function(e) {
       e.preventDefault();
-      window.location.href = 'support.html';
+      window.location.href = 'support';
     });
   }
 
   if (navWallet) {
     navWallet.addEventListener('click', function(e) {
       e.preventDefault();
-      window.location.href = 'wallet.html';
+      window.location.href = 'wallet';
     });
   }
 
   if (navProfile) {
     navProfile.addEventListener('click', function(e) {
       e.preventDefault();
-      window.location.href = 'profile.html';
+      window.location.href = 'profile';
     });
   }
 
@@ -1853,7 +1853,7 @@ document.getElementById('proceedToPay').addEventListener('click', async () => {
     };
     localStorage.setItem('pending_order', JSON.stringify(orderData));
 
-    window.location.href = 'waitpay.html';
+    window.location.href = 'waitpay';
 
   } catch (error) {
     alert('Ошибка при переходе к оплате');
@@ -1901,7 +1901,7 @@ document.getElementById('clearCart').addEventListener('click', () => {
 
 document.getElementById('walletDesktopBtn').addEventListener('click', function(e) {
   e.preventDefault();
-  window.location.href = 'wallet.html';
+  window.location.href = 'wallet';
 });
 
 document.addEventListener('DOMContentLoaded', function() {
