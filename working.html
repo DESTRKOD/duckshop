@@ -203,19 +203,8 @@
       updateMaintenanceInfo();
       setInterval(updateMaintenanceInfo, 30000);
       
-      document.getElementById('retryBtn').addEventListener('click', async () => {
-        try {
-          const response = await fetch(`${API_URL}/api/maintenance-status`);
-          const data = await response.json();
-          
-          if (!data.maintenance) {
-            window.location.href = 'https://shopdxs.ru/';
-          } else {
-            alert('Технические работы еще продолжаются. Пожалуйста, подождите.');
-          }
-        } catch (error) {
-          window.location.reload();
-        }
+      document.getElementById('retryBtn').addEventListener('click', () => {
+        window.location.reload();
       });
     }
   </script>
