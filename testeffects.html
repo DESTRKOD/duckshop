@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>✨ Тест эффектов - Duck Shop</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Плавающие уточки */
+    .floating-duck {
+      position: fixed;
+      font-size: 40px;
+      opacity: 0.1;
+      pointer-events: none;
+      z-index: 0;
+      animation: floatAround linear infinite;
+      user-select: none;
+    }
+
+    @keyframes floatAround {
+      0% {
+        transform: translate(0, 0) rotate(0deg);
+      }
+      25% {
+        transform: translate(100px, 50px) rotate(90deg);
+      }
+      50% {
+        transform: translate(200px, 0) rotate(180deg);
+      }
+      75% {
+        transform: translate(100px, -50px) rotate(270deg);
+      }
+      100% {
+        transform: translate(0, 0) rotate(360deg);
+      }
+    }
+
+    /* Частицы */
+    .particle {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      border-radius: 50%;
+      animation: particleFade 1s ease-out forwards;
+    }
+
+    @keyframes particleFade {
+      0% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(0);
+        opacity: 0;
+      }
+    }
+
+    /* Конфетти */
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      pointer-events: none;
+      z-index: 9999;
+      animation: confettiFall 3s linear forwards;
+    }
+
+    @keyframes confettiFall {
+      0% {
+        transform: translateY(-100vh) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+      }
+    }
+
+    /* Волна */
+    .ripple {
+      position: fixed;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.6);
+      transform: scale(0);
+      animation: ripple 0.6s ease-out forwards;
+      pointer-events: none;
+      z-index: 9998;
+    }
+
+    @keyframes ripple {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+
+    /* Основной контейнер */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Хедер */
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+      color: white;
+    }
+
+    .header h1 {
+      font-size: 48px;
+      font-weight: 800;
+      margin-bottom: 10px;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 10px rgba(255,255,255,0.5); }
+      to { text-shadow: 0 0 20px rgba(255,255,255,0.8), 0 0 30px rgba(255,215,0,0.5); }
+    }
+
+    .header p {
+      font-size: 18px;
+      opacity: 0.9;
+    }
+
+    /* Стикер с анимацией */
+    .sticker-container {
+      width: 300px;
+      height: 300px;
+      margin: 0 auto 30px;
+      filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3));
+      transition: transform 0.3s ease;
+    }
+
+    .sticker-container:hover {
+      transform: scale(1.05) rotate(2deg);
+    }
+
+    /* Сетка кнопок */
+    .buttons-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    /* Карточки с эффектами */
+    .effect-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 24px;
+      padding: 24px;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .effect-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .effect-card:hover::before {
+      left: 100%;
+    }
+
+    .effect-card:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+      border-color: rgba(255,255,255,0.5);
+    }
+
+    .effect-card:active {
+      transform: translateY(-5px) scale(0.98);
+    }
+
+    .effect-icon {
+      font-size: 48px;
+      margin-bottom: 15px;
+      display: inline-block;
+      filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3));
+    }
+
+    .effect-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 10px;
+    }
+
+    .effect-desc {
+      font-size: 14px;
+      color: rgba(255,255,255,0.8);
+      margin-bottom: 15px;
+    }
+
+    .effect-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 20px;
+      font-size: 12px;
+      color: white;
+      backdrop-filter: blur(5px);
+    }
+
+    /* Специальные кнопки */
+    .special-button {
+      width: 100%;
+      padding: 20px;
+      border: none;
+      border-radius: 30px;
+      font-size: 20px;
+      font-weight: 700;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 15px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .special-button::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 5px;
+      height: 5px;
+      background: rgba(255,255,255,0.5);
+      opacity: 0;
+      border-radius: 100%;
+      transform: scale(1, 1) translate(-50%);
+      transform-origin: 50% 50%;
+    }
+
+    .special-button:focus:not(:active)::after {
+      animation: ripple 1s ease-out;
+    }
+
+    .special-button:hover {
+      transform: translateY(-5px);
+      filter: brightness(1.1);
+    }
+
+    .special-button:active {
+      transform: translateY(2px);
+    }
+
+    .btn-rainbow {
+      background: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+      background-size: 300% 100%;
+      animation: rainbow 5s ease infinite;
+    }
+
+    @keyframes rainbow {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .btn-neon {
+      background: transparent;
+      border: 2px solid #00ff88;
+      box-shadow: 0 0 20px #00ff88;
+      text-shadow: 0 0 10px #00ff88;
+    }
+
+    .btn-neon:hover {
+      box-shadow: 0 0 40px #00ff88;
+    }
+
+    .btn-galaxy {
+      background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+      position: relative;
+    }
+
+    .btn-galaxy::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+      border-radius: 32px;
+      z-index: -1;
+      animation: borderRotate 3s linear infinite;
+    }
+
+    @keyframes borderRotate {
+      0% { filter: hue-rotate(0deg); }
+      100% { filter: hue-rotate(360deg); }
+    }
+
+    /* Счетчик нажатий */
+    .counter {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 50px;
+      padding: 15px 30px;
+      display: inline-block;
+      color: white;
+      font-size: 18px;
+      font-weight: 600;
+      margin: 20px 0;
+    }
+
+    .counter-number {
+      font-size: 32px;
+      font-weight: 800;
+      color: gold;
+      margin-left: 10px;
+      display: inline-block;
+      min-width: 60px;
+    }
+
+    /* Прогресс бар эффектов */
+    .effectiveness-bar {
+      width: 100%;
+      height: 10px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 10px;
+      margin: 20px 0;
+      overflow: hidden;
+    }
+
+    .effectiveness-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #00ff88, #ffd700);
+      border-radius: 10px;
+      transition: width 0.3s ease;
+      width: 0%;
+    }
+
+    /* Тостер уведомления */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(10px);
+      color: white;
+      padding: 15px 30px;
+      border-radius: 50px;
+      font-size: 16px;
+      font-weight: 600;
+      z-index: 10000;
+      transition: transform 0.3s ease;
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .toast.success {
+      background: linear-gradient(90deg, #00b09b, #96c93d);
+    }
+
+    .toast.error {
+      background: linear-gradient(90deg, #ff416c, #ff4b2b);
+    }
+
+    .toast.warning {
+      background: linear-gradient(90deg, #f7971e, #ffd200);
+    }
+
+    /* Магическая палочка */
+    .magic-wand {
+      position: fixed;
+      width: 100px;
+      height: 100px;
+      pointer-events: none;
+      z-index: 10001;
+      background: radial-gradient(circle, rgba(255,215,0,0.8) 0%, transparent 70%);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .magic-wand.active {
+      opacity: 1;
+      animation: wandPulse 0.5s ease-out;
+    }
+
+    @keyframes wandPulse {
+      0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
+    }
+
+    /* Модалка с эффектами */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(10px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10002;
+    }
+
+    .modal.active {
+      display: flex;
+      animation: modalFadeIn 0.3s ease;
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-content {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 40px;
+      padding: 40px;
+      max-width: 500px;
+      width: 90%;
+      text-align: center;
+      color: white;
+      transform: scale(0.9);
+      transition: transform 0.3s ease;
+    }
+
+    .modal.active .modal-content {
+      transform: scale(1);
+    }
+
+    /* Адаптивность */
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 36px;
+      }
+      
+      .sticker-container {
+        width: 200px;
+        height: 200px;
+      }
+      
+      .buttons-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Плавающие уточки (фоновые) -->
+  <div class="floating-duck" style="top: 10%; left: 5%; animation-duration: 20s;">🦆</div>
+  <div class="floating-duck" style="top: 70%; right: 5%; animation-duration: 25s; font-size: 60px;">🦆</div>
+  <div class="floating-duck" style="bottom: 20%; left: 20%; animation-duration: 30s; font-size: 30px;">🦆</div>
+  <div class="floating-duck" style="top: 40%; right: 30%; animation-duration: 22s; font-size: 45px;">🦆</div>
+  <div class="floating-duck" style="bottom: 50%; left: 70%; animation-duration: 28s; font-size: 35px;">🦆</div>
+
+  <!-- Магическая палочка (след за мышкой) -->
+  <div class="magic-wand" id="magicWand"></div>
+
+  <!-- Модалка -->
+  <div class="modal" id="effectModal">
+    <div class="modal-content" id="modalContent">
+      <h2 style="font-size: 32px; margin-bottom: 20px;">✨ ВАУ! ✨</h2>
+      <div style="font-size: 24px; margin-bottom: 30px;" id="modalText">Сработал магический эффект!</div>
+      <button class="special-button btn-rainbow" onclick="closeModal()" style="margin-bottom: 0;">Закрыть</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Хедер -->
+    <div class="header">
+      <h1>✨ Тестовая лаборатория ✨</h1>
+      <p>Нажимай на кнопки и наслаждайся эффектами</p>
+    </div>
+
+    <!-- Lottie анимация -->
+    <div class="sticker-container" id="lottieAnimation"></div>
+
+    <!-- Счетчик эффектов -->
+    <div style="text-align: center;">
+      <div class="counter">
+        🎯 Эффектов активировано:
+        <span class="counter-number" id="effectCounter">0</span>
+      </div>
+    </div>
+
+    <!-- Прогресс вау-эффекта -->
+    <div class="effectiveness-bar">
+      <div class="effectiveness-fill" id="effectivenessBar"></div>
+    </div>
+
+    <!-- Сетка кнопок с эффектами -->
+    <div class="buttons-grid">
+      <!-- Вибрация -->
+      <div class="effect-card" onclick="triggerVibration('simple')">
+        <div class="effect-icon">📳</div>
+        <div class="effect-title">Вибрация</div>
+        <div class="effect-desc">Короткая вибрация при нажатии</div>
+        <span class="effect-badge">тактильный отклик</span>
+      </div>
+
+      <!-- Вибрация + паттерн -->
+      <div class="effect-card" onclick="triggerVibration('pattern')">
+        <div class="effect-icon">⚡</div>
+        <div class="effect-title">Паттерн вибрации</div>
+        <div class="effect-desc">Длинная-короткая-длинная</div>
+        <span class="effect-badge">ритмичная</span>
+      </div>
+
+      <!-- Частицы -->
+      <div class="effect-card" onclick="createParticles(event)">
+        <div class="effect-icon">✨</div>
+        <div class="effect-title">Волшебные частицы</div>
+        <div class="effect-desc">10 разноцветных частиц</div>
+        <span class="effect-badge">✧ магия ✧</span>
+      </div>
+
+      <!-- Конфетти -->
+      <div class="effect-card" onclick="createConfetti()">
+        <div class="effect-icon">🎉</div>
+        <div class="effect-title">Конфетти</div>
+        <div class="effect-desc">Праздничный салют</div>
+        <span class="effect-badge">праздник</span>
+      </div>
+
+      <!-- Волна -->
+      <div class="effect-card" onclick="createRipple(event)">
+        <div class="effect-icon">🌊</div>
+        <div class="effect-title">Водная рябь</div>
+        <div class="effect-desc">Волна от места касания</div>
+        <span class="effect-badge">🌊</span>
+      </div>
+
+      <!-- Неон -->
+      <div class="effect-card" onclick="triggerNeon()">
+        <div class="effect-icon">💡</div>
+        <div class="effect-title">Неоновая вспышка</div>
+        <div class="effect-desc">Временное свечение экрана</div>
+        <span class="effect-badge">неон</span>
+      </div>
+
+      <!-- Магия -->
+      <div class="effect-card" onclick="triggerMagic(event)">
+        <div class="effect-icon">🪄</div>
+        <div class="effect-title">Магический след</div>
+        <div class="effect-desc">Волшебная палочка за мышкой</div>
+        <span class="effect-badge">✨</span>
+      </div>
+
+      <!-- Все эффекты сразу -->
+      <div class="effect-card" onclick="triggerAllEffects(event)" style="background: linear-gradient(135deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);">
+        <div class="effect-icon">🚀</div>
+        <div class="effect-title">СУПЕР-ЭФФЕКТ</div>
+        <div class="effect-desc">ВСЁ СРАЗУ! Вибрация + частицы + конфетти + волна</div>
+        <span class="effect-badge">⚡ МЕГА ⚡</span>
+      </div>
+    </div>
+
+    <!-- Специальные кнопки -->
+    <div style="margin-top: 40px;">
+      <!-- Радужная кнопка -->
+      <button class="special-button btn-rainbow" onclick="showToast('🌈 Радуга активирована!', 'success')">
+        🌈 Радужная кнопка
+      </button>
+
+      <!-- Неоновая кнопка -->
+      <button class="special-button btn-neon" onclick="showToast('💚 Неоновое свечение!', 'warning')">
+        💚 Неон
+      </button>
+
+      <!-- Галактическая кнопка -->
+      <button class="special-button btn-galaxy" onclick="showModal('🌟 Галактический портал открыт!', '🌌')">
+        🌌 Галактика
+      </button>
+
+      <!-- Кнопка сброса -->
+      <button class="special-button" style="background: linear-gradient(90deg, #ff416c, #ff4b2b);" onclick="resetCounter()">
+        🔄 Сбросить счетчик
+      </button>
+    </div>
+
+    <!-- Тостер уведомление -->
+    <div class="toast" id="toast">✨ Эффект сработал!</div>
+  </div>
+
+  <script>
+    // Переменные
+    let effectCounter = 0;
+    let magicActive = false;
+    let mouseX = 0, mouseY = 0;
+
+    // Инициализация Lottie
+    lottie.loadAnimation({
+      container: document.getElementById('lottieAnimation'),
+      renderer: 'svg',
+      loop: true,
+      autoplay: true,
+      path: 'hello.json'
+    });
+
+    // Функция вибрации
+    function triggerVibration(type) {
+      updateCounter();
+      
+      if (window.navigator && window.navigator.vibrate) {
+        if (type === 'simple') {
+          window.navigator.vibrate(50);
+          showToast('📳 Короткая вибрация');
+        } else if (type === 'pattern') {
+          window.navigator.vibrate([100, 50, 100, 50, 300]);
+          showToast('⚡ Паттерн вибрации');
+        }
+      } else {
+        showToast('❌ Вибрация не поддерживается', 'error');
+      }
+    }
+
+    // Создание частиц
+    function createParticles(event) {
+      updateCounter();
+      
+      const x = event.clientX;
+      const y = event.clientY;
+      const colors = ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#00ff88', '#ffd700'];
+      
+      for (let i = 0; i < 20; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = x + 'px';
+        particle.style.top = y + 'px';
+        particle.style.width = Math.random() * 15 + 5 + 'px';
+        particle.style.height = particle.style.width;
+        particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+        particle.style.boxShadow = `0 0 ${Math.random() * 20 + 10}px ${particle.style.background}`;
+        particle.style.transform = `translate(${Math.random() * 200 - 100}px, ${Math.random() * 200 - 100}px)`;
+        
+        document.body.appendChild(particle);
+        setTimeout(() => particle.remove(), 1000);
+      }
+      
+      showToast('✨ Частицы созданы!', 'success');
+    }
+
+    // Создание конфетти
+    function createConfetti() {
+      updateCounter();
+      
+      const colors = ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#00ff88', '#ffd700'];
+      
+      for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + '%';
+        confetti.style.top = '-10px';
+        confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.width = Math.random() * 10 + 5 + 'px';
+        confetti.style.height = confetti.style.width;
+        confetti.style.animationDelay = Math.random() * 2 + 's';
+        confetti.style.animationDuration = Math.random() * 2 + 2 + 's';
+        
+        document.body.appendChild(confetti);
+        setTimeout(() => confetti.remove(), 4000);
+      }
+      
+      showToast('🎉 Конфетти! Праздник!', 'success');
+    }
+
+    // Создание волны
+    function createRipple(event) {
+      updateCounter();
+      
+      const x = event.clientX;
+      const y = event.clientY;
+      
+      const ripple = document.createElement('div');
+      ripple.className = 'ripple';
+      ripple.style.left = x + 'px';
+      ripple.style.top = y + 'px';
+      ripple.style.width = '20px';
+      ripple.style.height = '20px';
+      ripple.style.background = 'rgba(255, 255, 255, 0.6)';
+      
+      document.body.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 600);
+      
+      showToast('🌊 Волна пошла!');
+    }
+
+    // Неоновая вспышка
+    function triggerNeon() {
+      updateCounter();
+      
+      const overlay = document.createElement('div');
+      overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 255, 255, 0.3);
+        pointer-events: none;
+        z-index: 9997;
+        animation: neonFlash 0.3s ease;
+      `;
+      
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes neonFlash {
+          0% { opacity: 0; }
+          50% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      `;
+      
+      document.head.appendChild(style);
+      document.body.appendChild(overlay);
+      
+      setTimeout(() => {
+        overlay.remove();
+        style.remove();
+      }, 300);
+      
+      showToast('💡 Неоновая вспышка!', 'warning');
+    }
+
+    // Магический след
+    function triggerMagic(event) {
+      updateCounter();
+      
+      const wand = document.getElementById('magicWand');
+      wand.classList.add('active');
+      
+      setTimeout(() => {
+        wand.classList.remove('active');
+      }, 500);
+      
+      showToast('🪄 Волшебная палочка!', 'success');
+    }
+
+    // Все эффекты сразу
+    function triggerAllEffects(event) {
+      updateCounter();
+      
+      // Вибрация
+      if (window.navigator && window.navigator.vibrate) {
+        window.navigator.vibrate([200, 100, 200]);
+      }
+      
+      // Частицы
+      for (let i = 0; i < 30; i++) {
+        setTimeout(() => {
+          const fakeEvent = { clientX: mouseX || window.innerWidth/2, clientY: mouseY || window.innerHeight/2 };
+          createParticles(fakeEvent);
+        }, i * 50);
+      }
+      
+      // Конфетти
+      createConfetti();
+      
+      // Волна
+      const fakeEvent = { clientX: mouseX || window.innerWidth/2, clientY: mouseY || window.innerHeight/2 };
+      createRipple(fakeEvent);
+      
+      // Неон
+      triggerNeon();
+      
+      // Магия
+      triggerMagic(event);
+      
+      showToast('🚀 МЕГА-ЭФФЕКТ! ВСЁ СРАЗУ!', 'success');
+      
+      // Прогресс бар на 100%
+      document.getElementById('effectivenessBar').style.width = '100%';
+      setTimeout(() => {
+        document.getElementById('effectivenessBar').style.width = effectCounter * 2 + '%';
+      }, 2000);
+    }
+
+    // Тостер уведомление
+    function showToast(message, type = 'info') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = 'toast';
+      
+      if (type === 'success') toast.classList.add('success');
+      if (type === 'error') toast.classList.add('error');
+      if (type === 'warning') toast.classList.add('warning');
+      
+      toast.classList.add('show');
+      
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2000);
+    }
+
+    // Модалка
+    function showModal(text, emoji) {
+      document.getElementById('modalText').innerHTML = `${emoji} ${text}`;
+      document.getElementById('effectModal').classList.add('active');
+      
+      // Вибрация при открытии модалки
+      if (window.navigator && window.navigator.vibrate) {
+        window.navigator.vibrate([100, 50, 100]);
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('effectModal').classList.remove('active');
+    }
+
+    // Обновление счетчика
+    function updateCounter() {
+      effectCounter++;
+      document.getElementById('effectCounter').textContent = effectCounter;
+      
+      // Обновляем прогресс бар (макс 50)
+      const percent = Math.min(effectCounter * 2, 100);
+      document.getElementById('effectivenessBar').style.width = percent + '%';
+    }
+
+    // Сброс счетчика
+    function resetCounter() {
+      effectCounter = 0;
+      document.getElementById('effectCounter').textContent = effectCounter;
+      document.getElementById('effectivenessBar').style.width = '0%';
+      showToast('🔄 Счетчик сброшен');
+      
+      if (window.navigator && window.navigator.vibrate) {
+        window.navigator.vibrate(100);
+      }
+    }
+
+    // Отслеживание мыши для магии
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      
+      const wand = document.getElementById('magicWand');
+      wand.style.left = mouseX + 'px';
+      wand.style.top = mouseY + 'px';
+    });
+
+    // Закрытие модалки по клику вне
+    document.getElementById('effectModal').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('effectModal')) {
+        closeModal();
+      }
+    });
+
+    // Эффект при клике на фон
+    document.body.addEventListener('click', (e) => {
+      if (Math.random() > 0.7) { // 30% шанс
+        createParticles(e);
+      }
+    });
+
+    console.log('✨ Тестовая страница эффектов загружена!');
+  </script>
+</body>
+</html>
