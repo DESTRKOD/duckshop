@@ -352,8 +352,7 @@ const USER_KEY = 'duck_user_v1';
 let telegramCheckInterval = null;
 let telegramToken = null;
 
-// Проверка техперерыва и админского доступа
-(function checkMaintenanceAccess() {
+(function() {
   const urlParams = new URLSearchParams(window.location.search);
   const adminBypass = urlParams.get('admin_bypass');
   
@@ -361,7 +360,6 @@ let telegramToken = null;
     sessionStorage.setItem('admin_bypass_active', 'true');
     sessionStorage.setItem('admin_bypass_key', adminBypass);
     window.history.replaceState({}, '', window.location.pathname);
-    console.log('🔑 Админский режим активирован');
     
     setTimeout(() => {
       const adminNote = document.createElement('div');
@@ -400,15 +398,17 @@ let telegramToken = null;
     return;
   }
   
-  fetch(`${API_URL}/api/maintenance-status`)
-    .then(response => response.json())
-    .then(data => {
-      if (data.maintenance) {
-        sessionStorage.setItem('attempted_login', window.location.pathname);
-        window.location.href = 'working';
-      }
-    })
-    .catch(() => {});
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', API_URL + '/api/maintenance-status', false);
+  xhr.send();
+  
+  if (xhr.status === 200) {
+    var data = JSON.parse(xhr.responseText);
+    if (data.maintenance) {
+      sessionStorage.setItem('attempted_page', window.location.pathname);
+      window.location.href = 'working';
+    }
+  }
 })();
 
 function initLottie() {
@@ -446,7 +446,6 @@ function showTelegramStatus(type, message = '') {
 
 async function handleTelegramAuth() {
   if (sessionStorage.getItem('admin_bypass_active') === 'true') {
-    console.log('🔑 Админский режим, пропускаем проверку');
     showTelegramStatus('error', '❌ В режиме администратора вход недоступен');
     return;
   }
@@ -520,7 +519,6 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('telegramBtn').addEventListener('click', handleTelegramAuth);
 });
 
-// Добавляем стиль для анимации
 const style = document.createElement('style');
 style.textContent = `
   @keyframes fadeIn {
