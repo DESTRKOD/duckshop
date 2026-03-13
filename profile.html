@@ -1,34 +1,25 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
   <title>Профиль - Duck Shop</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
   <style>
-    * {
+    html, body {
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      width: 100%;
       min-height: 100vh;
-      padding: 20px;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(180deg, #0b3c91 0%, #1565c0 55%, #42a5f5 100%);
     }
 
-    .container {
-      max-width: 800px;
+    .profile-screen {
+      max-width: 1200px;
       margin: 0 auto;
-    }
-
-    .profile-card {
-      background: white;
-      border-radius: 20px;
-      padding: 30px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-      margin-bottom: 20px;
+      padding: 20px;
+      color: white;
     }
 
     .profile-header {
@@ -36,92 +27,117 @@
       align-items: center;
       gap: 20px;
       margin-bottom: 30px;
+      padding: 20px;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.2);
     }
 
-    .avatar {
+    .profile-avatar {
       width: 80px;
       height: 80px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: rgba(255,255,255,0.2);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: white;
       font-size: 32px;
       font-weight: bold;
+      overflow: hidden;
     }
 
-    .avatar img {
+    .profile-avatar img {
       width: 100%;
       height: 100%;
-      border-radius: 50%;
       object-fit: cover;
     }
 
-    .user-info h2 {
-      font-size: 24px;
-      margin-bottom: 5px;
-      color: #333;
+    .profile-info {
+      flex: 1;
     }
 
-    .user-info p {
-      color: #666;
+    .profile-name {
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 5px;
+    }
+
+    .profile-id {
+      color: rgba(255,255,255,0.7);
       font-size: 14px;
+    }
+
+    .logout-btn {
+      padding: 10px 20px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 10px;
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .logout-btn:hover {
+      background: rgba(255,255,255,0.2);
     }
 
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 15px;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
       margin-bottom: 30px;
     }
 
     .stat-card {
-      background: #f8f9fa;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 20px;
       padding: 20px;
-      border-radius: 15px;
       text-align: center;
     }
 
     .stat-value {
-      font-size: 28px;
-      font-weight: bold;
-      color: #667eea;
+      font-size: 32px;
+      font-weight: 800;
       margin-bottom: 5px;
     }
 
     .stat-label {
-      color: #666;
+      color: rgba(255,255,255,0.7);
       font-size: 14px;
     }
 
-    .orders-title {
+    .section-title {
       font-size: 20px;
+      font-weight: 700;
       margin-bottom: 20px;
-      color: #333;
+    }
+
+    .orders-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
     }
 
     .order-card {
-      background: #f8f9fa;
-      border-radius: 15px;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 20px;
       padding: 20px;
-      margin-bottom: 15px;
-      transition: transform 0.2s;
-    }
-
-    .order-card:hover {
-      transform: translateY(-2px);
     }
 
     .order-header {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       margin-bottom: 10px;
     }
 
     .order-id {
-      font-weight: bold;
-      color: #333;
+      font-weight: 700;
     }
 
     .order-status {
@@ -129,35 +145,63 @@
       border-radius: 20px;
       font-size: 12px;
       font-weight: 600;
+      background: rgba(255,255,255,0.2);
     }
 
-    .status-completed { background: #d4edda; color: #155724; }
-    .status-waiting { background: #fff3cd; color: #856404; }
-    .status-manyback { background: #f8d7da; color: #721c24; }
+    .status-completed {
+      background: rgba(0,255,0,0.2);
+      color: #a5d6a5;
+    }
+
+    .status-waiting {
+      background: rgba(255,255,0,0.2);
+      color: #ffe082;
+    }
+
+    .status-manyback {
+      background: rgba(255,0,0,0.2);
+      color: #ef9a9a;
+    }
 
     .order-details {
       display: flex;
       justify-content: space-between;
-      color: #666;
+      color: rgba(255,255,255,0.8);
       font-size: 14px;
     }
 
     .order-price {
-      font-weight: bold;
-      color: #28a745;
+      font-weight: 700;
+      color: #ffd700;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 20px;
+      color: white;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 10px;
+      transition: background 0.2s;
+    }
+
+    .back-link:hover {
+      background: rgba(255,255,255,0.2);
     }
 
     .loading {
       text-align: center;
       padding: 50px;
-      color: white;
-      font-size: 18px;
     }
 
     .loading-spinner {
       width: 50px;
       height: 50px;
-      border: 5px solid rgba(255,255,255,0.3);
+      border: 3px solid rgba(255,255,255,0.3);
       border-top-color: white;
       border-radius: 50%;
       animation: spin 1s linear infinite;
@@ -169,52 +213,26 @@
     }
 
     .error-message {
-      background: #f8d7da;
-      color: #721c24;
-      padding: 15px;
+      background: rgba(255,0,0,0.2);
+      border: 1px solid rgba(255,0,0,0.3);
       border-radius: 10px;
-      margin-bottom: 20px;
+      padding: 20px;
       text-align: center;
-    }
-
-    .back-button {
-      display: inline-block;
-      padding: 12px 24px;
-      background: white;
-      color: #667eea;
-      text-decoration: none;
-      border-radius: 10px;
-      font-weight: 600;
-      margin-bottom: 20px;
-      transition: transform 0.2s;
-    }
-
-    .back-button:hover {
-      transform: translateY(-2px);
-    }
-
-    .logout-button {
-      padding: 10px 20px;
-      background: #dc3545;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 14px;
-      transition: background 0.2s;
-    }
-
-    .logout-button:hover {
-      background: #c82333;
+      margin: 20px 0;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <a href="index.html" class="back-button">← На главную</a>
-    
+  <div class="profile-screen">
+    <a href="index.html" class="back-link">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+        <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+      </svg>
+      На главную
+    </a>
+
     <div id="profileContent">
-      <!-- Здесь будет отображаться профиль -->
+      <!-- Профиль будет загружен сюда -->
     </div>
   </div>
 
@@ -223,12 +241,12 @@
     const USER_KEY = 'duck_user_v1';
     const SITE_URL = 'https://shopdxs.ru';
 
-    // Загрузка пользователя из localStorage
+    // Загрузка пользователя
     function loadUser() {
       try {
         const userData = localStorage.getItem(USER_KEY);
         return userData ? JSON.parse(userData) : null;
-      } catch (e) {
+      } catch {
         return null;
       }
     }
@@ -237,10 +255,10 @@
     function saveUser(user) {
       try {
         localStorage.setItem(USER_KEY, JSON.stringify(user));
-      } catch (e) {}
+      } catch {}
     }
 
-    // Выход из аккаунта
+    // Выход
     function logout() {
       localStorage.removeItem(USER_KEY);
       window.location.href = 'index.html';
@@ -248,10 +266,10 @@
 
     // Форматирование цены
     function formatPrice(price) {
-      return new Intl.NumberFormat('ru-RU').format(price) + ' ₽';
+      return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ₽';
     }
 
-    // Статус заказа на русском
+    // Статус заказа
     function getStatusText(status) {
       const statuses = {
         'new': '🆕 Новый',
@@ -266,10 +284,10 @@
       return statuses[status] || status;
     }
 
-    // Класс статуса для стилей
+    // Класс статуса
     function getStatusClass(status) {
       if (status === 'completed') return 'status-completed';
-      if (status === 'waiting' || status === 'waiting_code_request') return 'status-waiting';
+      if (['waiting', 'waiting_code_request'].includes(status)) return 'status-waiting';
       if (status === 'manyback') return 'status-manyback';
       return '';
     }
@@ -282,58 +300,63 @@
         ? `<img src="${user.avatarUrl}" alt="avatar">`
         : `<span>${user.username ? user.username[0].toUpperCase() : '?'}</span>`;
 
-      let ordersHtml = '';
-      if (orders.length === 0) {
-        ordersHtml = '<div class="order-card">У вас пока нет заказов</div>';
-      } else {
-        ordersHtml = orders.map(order => `
-          <div class="order-card">
-            <div class="order-header">
-              <span class="order-id">Заказ #${order.id}</span>
-              <span class="order-status ${getStatusClass(order.status)}">${getStatusText(order.status)}</span>
+      const stats = {
+        total: orders.length,
+        completed: orders.filter(o => o.status === 'completed').length,
+        waiting: orders.filter(o => ['waiting', 'waiting_code_request'].includes(o.status)).length
+      };
+
+      const ordersHtml = orders.length === 0 
+        ? '<div class="order-card">У вас пока нет заказов</div>'
+        : orders.map(order => `
+            <div class="order-card">
+              <div class="order-header">
+                <span class="order-id">Заказ #${order.id}</span>
+                <span class="order-status ${getStatusClass(order.status)}">${getStatusText(order.status)}</span>
+              </div>
+              <div class="order-details">
+                <span>${new Date(order.date).toLocaleDateString('ru-RU')}</span>
+                <span class="order-price">${formatPrice(order.total)}</span>
+              </div>
+              ${order.code ? `
+                <div style="margin-top: 10px; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 8px; font-family: monospace;">
+                  Код: ${order.code}
+                </div>
+              ` : ''}
             </div>
-            <div class="order-details">
-              <span>${new Date(order.date).toLocaleDateString('ru-RU')}</span>
-              <span class="order-price">${formatPrice(order.total)}</span>
-            </div>
-            ${order.code ? `<div style="margin-top: 10px; padding: 10px; background: #e9ecef; border-radius: 8px; font-family: monospace;">Код: ${order.code}</div>` : ''}
-          </div>
-        `).join('');
-      }
+          `).join('');
 
       content.innerHTML = `
-        <div class="profile-card">
-          <div class="profile-header">
-            <div class="avatar">
-              ${avatarHtml}
-            </div>
-            <div class="user-info">
-              <h2>${user.username || 'Пользователь'}</h2>
-              <p>ID: ${user.id}</p>
-              ${user.tgId ? `<p>Telegram ID: ${user.tgId}</p>` : ''}
-              <button class="logout-button" onclick="logout()">Выйти</button>
-            </div>
+        <div class="profile-header">
+          <div class="profile-avatar">
+            ${avatarHtml}
           </div>
+          <div class="profile-info">
+            <div class="profile-name">${user.username || 'Пользователь'}</div>
+            <div class="profile-id">ID: ${user.id}</div>
+            ${user.tgId ? `<div class="profile-id">TG: ${user.tgId}</div>` : ''}
+          </div>
+          <button class="logout-btn" onclick="logout()">Выйти</button>
+        </div>
 
-          <div class="stats-grid">
-            <div class="stat-card">
-              <div class="stat-value">${orders.length}</div>
-              <div class="stat-label">Всего заказов</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-value">${orders.filter(o => o.status === 'completed').length}</div>
-              <div class="stat-label">Выполнено</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-value">${orders.filter(o => o.status === 'waiting').length}</div>
-              <div class="stat-label">В обработке</div>
-            </div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value">${stats.total}</div>
+            <div class="stat-label">Всего заказов</div>
           </div>
+          <div class="stat-card">
+            <div class="stat-value">${stats.completed}</div>
+            <div class="stat-label">Выполнено</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">${stats.waiting}</div>
+            <div class="stat-label">В обработке</div>
+          </div>
+        </div>
 
-          <div class="orders-title">История заказов</div>
-          <div id="ordersList">
-            ${ordersHtml}
-          </div>
+        <div class="section-title">История заказов</div>
+        <div class="orders-list">
+          ${ordersHtml}
         </div>
       `;
     }
@@ -353,21 +376,19 @@
       document.getElementById('profileContent').innerHTML = `
         <div class="error-message">
           ❌ ${message}
-        </div>
-        <div style="text-align: center; margin-top: 20px;">
-          <button onclick="location.reload()" class="back-button">Повторить</button>
-          <a href="index.html" class="back-button">На главную</a>
+          <div style="margin-top: 15px;">
+            <button onclick="location.reload()" class="logout-btn" style="margin-right: 10px;">Повторить</button>
+            <a href="index.html" class="logout-btn" style="text-decoration: none;">На главную</a>
+          </div>
         </div>
       `;
     }
 
-    // Загрузка профиля с сервера
+    // Загрузка профиля
     async function loadProfile() {
-      // Проверяем есть ли пользователь в localStorage
       const user = loadUser();
       
       if (!user || !user.id) {
-        console.log('Пользователь не найден, редирект на страницу входа');
         window.location.href = 'reg_log.html';
         return;
       }
@@ -375,35 +396,30 @@
       showLoading();
 
       try {
-        // ПРОСТОЙ И РАБОЧИЙ ВАРИАНТ - GET запрос с userId в URL
+        // ПРОСТОЙ GET-запрос с userId
         const response = await fetch(`${API_URL}/api/auth/profile?userId=${user.id}`, {
           method: 'GET',
           headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            'Accept': 'application/json'
           }
         });
 
         const data = await response.json();
 
         if (data.success) {
-          // Обновляем данные пользователя в localStorage
           const updatedUser = { ...user, ...data.user };
           saveUser(updatedUser);
-          
-          // Рендерим профиль
           renderProfile(data.user, data.orders || []);
         } else {
-          console.error('Ошибка сервера:', data.error);
-          showError('Не удалось загрузить профиль: ' + (data.error || 'Неизвестная ошибка'));
+          showError('Ошибка загрузки профиля: ' + (data.error || 'Неизвестная ошибка'));
         }
       } catch (error) {
-        console.error('Ошибка загрузки профиля:', error);
+        console.error('Ошибка:', error);
         showError('Ошибка соединения с сервером');
       }
     }
 
-    // Проверка техперерыва (как на всех страницах)
+    // Проверка техперерыва
     (function checkMaintenance() {
       const urlParams = new URLSearchParams(window.location.search);
       const adminBypass = urlParams.get('admin_bypass');
@@ -427,7 +443,7 @@
         .catch(() => {});
     })();
 
-    // Запускаем загрузку профиля при загрузке страницы
+    // Запуск
     document.addEventListener('DOMContentLoaded', loadProfile);
   </script>
 </body>
