@@ -998,12 +998,68 @@ let currentPaymentUrl = null;
 let currentUser = null;
 
 
+// ===== ПРОВЕРКА АДМИНСКОГО ОБХОДА (ДОБАВЛЕНО) =====
+function checkAdminBypass() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const adminBypass = urlParams.get('admin_bypass');
+  
+  if (adminBypass) {
+    console.log('🔑 Админский доступ через bypass');
+    // Сохраняем флаг в sessionStorage, чтобы не потерять при перезагрузке
+    sessionStorage.setItem('admin_bypass_active', 'true');
+    sessionStorage.setItem('admin_bypass_key', adminBypass);
+    return true;
+  }
+  return false;
+}
+
+// ===== МОДИФИЦИРОВАННАЯ ПРОВЕРКА ТЕХПЕРЕРЫВА =====
 async function checkMaintenance() {
+  // Если есть admin_bypass в URL или в sessionStorage - пропускаем проверку
+  const hasBypassInUrl = checkAdminBypass();
+  const hasBypassInStorage = sessionStorage.getItem('admin_bypass_active') === 'true';
+  
+  if (hasBypassInUrl || hasBypassInStorage) {
+    console.log('✅ Пропускаем проверку техперерыва (режим администратора)');
+    
+    // Показываем уведомление админу (опционально)
+    setTimeout(() => {
+      const adminNote = document.createElement('div');
+      adminNote.style.cssText = `
+        position: fixed;
+        bottom: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0,0,0,0.7);
+        color: #ffd700;
+        padding: 8px 16px;
+        border-radius: 30px;
+        font-size: 14px;
+        font-weight: 600;
+        z-index: 10000;
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(255,215,0,0.3);
+      `;
+      adminNote.textContent = '🔑 Режим администратора (техперерыв игнорируется)';
+      document.body.appendChild(adminNote);
+      
+      setTimeout(() => {
+        adminNote.style.opacity = '0';
+        adminNote.style.transition = 'opacity 0.5s';
+        setTimeout(() => adminNote.remove(), 500);
+      }, 5000);
+    }, 1000);
+    
+    return; // Не редиректим на working
+  }
+  
   try {
     const response = await fetch(`${API_URL}/api/maintenance-status`);
     const data = await response.json();
     
     if (data.maintenance && !window.location.pathname.includes('working.html')) {
+      // Сохраняем текущий URL для возврата после техперерыва
+      sessionStorage.setItem('return_url', window.location.href);
       window.location.href = 'working';
     }
   } catch (error) {
@@ -1011,11 +1067,18 @@ async function checkMaintenance() {
   }
 }
 
+// ===== ПРОВЕРКА ПРИ ЗАГРУЗКЕ СТРАНИЦЫ =====
+// Сначала проверяем admin_bypass, потом техперерыв
+if (!checkAdminBypass()) {
+  checkMaintenance();
+}
 
-checkMaintenance();
-
-
-setInterval(checkMaintenance, 30000);
+// Периодическая проверка (только если не админ)
+setInterval(() => {
+  if (sessionStorage.getItem('admin_bypass_active') !== 'true') {
+    checkMaintenance();
+  }
+}, 30000);
 
 function loadCart() {
   try {
@@ -1131,6 +1194,19 @@ function loadUser() {
   } catch (error) {}
   return null;
 }
+
+
+// ===== ВОССТАНОВЛЕНИЕ ПОСЛЕ ТЕХПЕРЕРЫВА =====
+function handleMaintenanceReturn() {
+  const returnUrl = sessionStorage.getItem('return_url');
+  if (returnUrl && !window.location.pathname.includes('working.html')) {
+    sessionStorage.removeItem('return_url');
+    console.log('🔄 Возврат на сохраненный URL:', returnUrl);
+  }
+}
+
+// Вызвать после загрузки
+handleMaintenanceReturn();
 
 function saveUser(user) {
   try {
