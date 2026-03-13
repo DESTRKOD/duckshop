@@ -952,12 +952,20 @@ html, body {
 </div>
 
 <script>
+
+const API_URL = 'https://duck-shop-sever.onrender.com';
+const USER_KEY = 'duck_user_v1';
+const CART_KEY = 'duck_cart_v1';
+const SHOP_URL = 'index.html';
+
+let currentUser = null;
+
+function fmtRub(n) {
+  return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + ' ₽';
+}
+
+<script>
 (function() {
-  if (typeof API_URL === 'undefined') {
-    console.error('API_URL не определен');
-    return;
-  }
-  
   var urlParams = new URLSearchParams(window.location.search);
   var adminBypass = urlParams.get('admin_bypass');
   
@@ -1003,7 +1011,6 @@ html, body {
   }
   
   if (sessionStorage.getItem('admin_bypass_active') === 'true') {
-    console.log('✅ Админский доступ (из сохранения)');
     return;
   }
   
@@ -1026,16 +1033,6 @@ html, body {
   document.head.appendChild(style);
 })();
 
-const API_URL = 'https://duck-shop-sever.onrender.com';
-const USER_KEY = 'duck_user_v1';
-const CART_KEY = 'duck_cart_v1';
-const SHOP_URL = 'index.html';
-
-let currentUser = null;
-
-function fmtRub(n) {
-  return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + ' ₽';
-}
 
 function getPluralEnding(number) {
   if (number % 10 === 1 && number % 100 !== 11) return '';
