@@ -577,7 +577,6 @@ function fmtRub(n) {
  return `${n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} ₽`;
 }
 
-<script>
 (function() {
   var urlParams = new URLSearchParams(window.location.search);
   var adminBypass = urlParams.get('admin_bypass');
