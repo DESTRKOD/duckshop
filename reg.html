@@ -287,8 +287,7 @@ const API_URL = 'https://duck-shop-sever.onrender.com';
 const SITE_URL = 'https://shopdxs.ru';
 const USER_KEY = 'duck_user_v1';
 
-// Проверка техперерыва и админского доступа
-(function checkMaintenanceAccess() {
+(function() {
   const urlParams = new URLSearchParams(window.location.search);
   const adminBypass = urlParams.get('admin_bypass');
   
@@ -296,7 +295,6 @@ const USER_KEY = 'duck_user_v1';
     sessionStorage.setItem('admin_bypass_active', 'true');
     sessionStorage.setItem('admin_bypass_key', adminBypass);
     window.history.replaceState({}, '', window.location.pathname);
-    console.log('🔑 Админский режим активирован');
     
     setTimeout(() => {
       const adminNote = document.createElement('div');
@@ -335,15 +333,17 @@ const USER_KEY = 'duck_user_v1';
     return;
   }
   
-  fetch(`${API_URL}/api/maintenance-status`)
-    .then(response => response.json())
-    .then(data => {
-      if (data.maintenance) {
-        sessionStorage.setItem('attempted_register', window.location.pathname);
-        window.location.href = 'working';
-      }
-    })
-    .catch(() => {});
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', API_URL + '/api/maintenance-status', false);
+  xhr.send();
+  
+  if (xhr.status === 200) {
+    var data = JSON.parse(xhr.responseText);
+    if (data.maintenance) {
+      sessionStorage.setItem('attempted_page', window.location.pathname);
+      window.location.href = 'working';
+    }
+  }
 })();
 
 function initLottie() {
@@ -380,7 +380,6 @@ function showStatus(type, message = '') {
 
 async function handleTelegramRegister() {
   if (sessionStorage.getItem('admin_bypass_active') === 'true') {
-    console.log('🔑 Админский режим, пропускаем регистрацию');
     showStatus('error', '❌ В режиме администратора регистрация недоступна');
     return;
   }
@@ -413,7 +412,6 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('telegramBtn').addEventListener('click', handleTelegramRegister);
 });
 
-// Добавляем стиль для анимации
 const style = document.createElement('style');
 style.textContent = `
   @keyframes fadeIn {
