@@ -2,8 +2,17 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8" />
-<title>Вход в Duck Shop</title>
+<title>Авторизация - Duck Shop</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta http-equiv="Content-Security-Policy" content="
+  default-src 'self' https://*.yandex.ru https://*.yandex.com https://*.yandex.net;
+  script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://*.yandex.ru https://*.yandex.com https://*.yandex.net;
+  style-src 'self' 'unsafe-inline' https://*.yandex.ru;
+  img-src 'self' data: https://i.imgur.com https://*.yandex.ru https://avatars.yandex.net;
+  connect-src 'self' https://duck-shop-sever.onrender.com https://*.yandex.ru https://*.yandex.com wss://*.yandex.com;
+  frame-src 'self' https://*.yandex.ru https://*.yandex.com;
+  font-src 'self' data:;
+">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 <style>
 html, body {
@@ -153,14 +162,14 @@ html, body {
   flex-shrink: 0;
 }
 
-.register-prompt {
+.mode-toggle {
   margin-top: 20px;
   text-align: center;
   width: 100%;
   padding-bottom: 20px;
 }
 
-.register-link {
+.mode-toggle-btn {
   color: rgba(255,255,255,0.9);
   text-decoration: none;
   font-size: 16px;
@@ -174,24 +183,26 @@ html, body {
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255,255,255,0.15);
   transition: all 0.2s ease;
+  cursor: pointer;
+  border: none;
 }
 
-.register-link:hover {
+.mode-toggle-btn:hover {
   background: rgba(255,255,255,0.15);
   transform: translateY(-1px);
 }
 
-.register-link:active {
+.mode-toggle-btn:active {
   transform: translateY(1px);
 }
 
-.register-link svg {
+.mode-toggle-btn svg {
   width: 20px;
   height: 20px;
   fill: rgba(255,255,255,0.9);
 }
 
-.register-text {
+.mode-text {
   color: rgba(255,255,255,0.6);
   font-size: 14px;
   margin-bottom: 8px;
@@ -286,7 +297,7 @@ html, body {
     height: 22px;
   }
   
-  .register-link {
+  .mode-toggle-btn {
     padding: 10px 20px;
     font-size: 15px;
   }
@@ -299,12 +310,12 @@ html, body {
   <div class="auth-content">
     <div id="lottie-animation" class="auth-sticker"></div>
     
-    <div class="auth-title">Добро пожаловать</div>
-    <div class="auth-subtitle">Войдите чтобы продолжить</div>
+    <div class="auth-title" id="authTitle">Добро пожаловать</div>
+    <div class="auth-subtitle" id="authSubtitle">Войдите или зарегистрируйтесь</div>
     
     <div class="divider">
       <div class="divider-line"></div>
-      <span>войти через</span>
+      <span>продолжить через</span>
       <div class="divider-line"></div>
     </div>
     
@@ -333,15 +344,22 @@ html, body {
     <div class="status-message status-error" id="telegramError"></div>
   </div>
   
-  <div class="register-prompt">
-    <div class="register-text">Еще нет аккаунта?</div>
-    <a href="reg.html" class="register-link">
-      <svg viewBox="0 0 24 24">
-        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+  <div class="mode-toggle">
+    <div class="mode-text" id="modeText">Уже есть аккаунт?</div>
+    <button class="mode-toggle-btn" id="modeToggleBtn">
+      <svg viewBox="0 0 24 24" id="modeIcon">
+        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
       </svg>
-      Создать аккаунт
-    </a>
+      <span id="modeBtnText">Войти</span>
+    </button>
   </div>
+  
+  <a href="index.html" class="back-link">
+    <svg viewBox="0 0 24 24">
+      <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+    </svg>
+    Вернуться в магазин
+  </a>
 </div>
 
 <script>
@@ -351,42 +369,54 @@ const USER_KEY = 'duck_user_v1';
 
 let telegramCheckInterval = null;
 let telegramToken = null;
+let currentMode = 'login'; // 'login' или 'register'
 
+// Проверка техперерыва
 (function() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const adminBypass = urlParams.get('admin_bypass');
+  var urlParams = new URLSearchParams(window.location.search);
+  var adminBypass = urlParams.get('admin_bypass');
+  var authToken = urlParams.get('auth');
+  
+  if (authToken) {
+    console.log('🔑 Обнаружен auth токен, пропускаем проверку');
+    return;
+  }
   
   if (adminBypass) {
     sessionStorage.setItem('admin_bypass_active', 'true');
     sessionStorage.setItem('admin_bypass_key', adminBypass);
     window.history.replaceState({}, '', window.location.pathname);
     
-    setTimeout(() => {
-      const adminNote = document.createElement('div');
-      adminNote.style.cssText = `
-        position: fixed;
-        bottom: 100px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(0,0,0,0.8);
-        color: #ffd700;
-        padding: 8px 20px;
-        border-radius: 30px;
-        font-size: 14px;
-        font-weight: 600;
-        z-index: 10000;
-        backdrop-filter: blur(5px);
-        border: 1px solid rgba(255,215,0,0.3);
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        animation: fadeIn 0.3s ease;
-      `;
+    setTimeout(function() {
+      var adminNote = document.createElement('div');
+      adminNote.style.cssText = [
+        'position: fixed',
+        'bottom: 100px',
+        'left: 50%',
+        'transform: translateX(-50%)',
+        'background: rgba(0,0,0,0.8)',
+        'color: #ffd700',
+        'padding: 8px 20px',
+        'border-radius: 30px',
+        'font-size: 14px',
+        'font-weight: 600',
+        'z-index: 10000',
+        'backdrop-filter: blur(5px)',
+        'border: 1px solid rgba(255,215,0,0.3)',
+        'box-shadow: 0 4px 15px rgba(0,0,0,0.3)',
+        'animation: fadeIn 0.3s ease'
+      ].join(';');
       adminNote.textContent = '🔑 Режим администратора (техперерыв игнорируется)';
       document.body.appendChild(adminNote);
       
-      setTimeout(() => {
+      setTimeout(function() {
         adminNote.style.opacity = '0';
         adminNote.style.transition = 'opacity 0.5s';
-        setTimeout(() => adminNote.remove(), 500);
+        setTimeout(function() {
+          if (adminNote.parentNode) {
+            adminNote.parentNode.removeChild(adminNote);
+          }
+        }, 500);
       }, 4000);
     }, 1000);
     
@@ -394,7 +424,6 @@ let telegramToken = null;
   }
   
   if (sessionStorage.getItem('admin_bypass_active') === 'true') {
-    console.log('✅ Админский доступ (из сохранения)');
     return;
   }
   
@@ -409,6 +438,12 @@ let telegramToken = null;
       window.location.href = 'working';
     }
   }
+})();
+
+(function() {
+  var style = document.createElement('style');
+  style.textContent = '@keyframes fadeIn{from{opacity:0;transform:translate(-50%,20px)}to{opacity:1;transform:translate(-50%,0)}}';
+  document.head.appendChild(style);
 })();
 
 function initLottie() {
@@ -444,16 +479,44 @@ function showTelegramStatus(type, message = '') {
   }
 }
 
+function toggleMode() {
+  currentMode = currentMode === 'login' ? 'register' : 'login';
+  
+  const title = document.getElementById('authTitle');
+  const subtitle = document.getElementById('authSubtitle');
+  const modeText = document.getElementById('modeText');
+  const modeBtnText = document.getElementById('modeBtnText');
+  const modeIcon = document.getElementById('modeIcon');
+  
+  if (currentMode === 'login') {
+    title.textContent = 'Добро пожаловать';
+    subtitle.textContent = 'Войдите в свой аккаунт';
+    modeText.textContent = 'Еще нет аккаунта?';
+    modeBtnText.textContent = 'Создать';
+    modeIcon.setAttribute('d', 'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z');
+  } else {
+    title.textContent = 'Создать аккаунт';
+    subtitle.textContent = 'Зарегистрируйтесь в магазине';
+    modeText.textContent = 'Уже есть аккаунт?';
+    modeBtnText.textContent = 'Войти';
+    modeIcon.setAttribute('d', 'M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z');
+  }
+  
+  hideAllStatuses();
+}
+
 async function handleTelegramAuth() {
   if (sessionStorage.getItem('admin_bypass_active') === 'true') {
-    showTelegramStatus('error', '❌ В режиме администратора вход недоступен');
+    showTelegramStatus('error', '❌ В режиме администратора авторизация недоступна');
     return;
   }
   
   showTelegramStatus('loading');
   
   try {
-    const response = await fetch(`${API_URL}/api/auth/start-login`, {
+    const endpoint = currentMode === 'login' ? 'start-login' : 'start-register';
+    
+    const response = await fetch(`${API_URL}/api/auth/${endpoint}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' }
     });
@@ -468,7 +531,9 @@ async function handleTelegramAuth() {
         window.open(data.telegramLink, '_blank');
       }, 1000);
       
-      startTelegramPolling();
+      if (currentMode === 'login') {
+        startTelegramPolling();
+      }
     } else {
       showTelegramStatus('error', '❌ Ошибка получения ссылки');
     }
@@ -516,17 +581,9 @@ document.addEventListener('DOMContentLoaded', () => {
   initLottie();
   hideAllStatuses();
   
+  document.getElementById('modeToggleBtn').addEventListener('click', toggleMode);
   document.getElementById('telegramBtn').addEventListener('click', handleTelegramAuth);
 });
-
-const style = document.createElement('style');
-style.textContent = `
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translate(-50%, 20px); }
-    to { opacity: 1; transform: translate(-50%, 0); }
-  }
-`;
-document.head.appendChild(style);
 </script>
 </body>
 </html>
