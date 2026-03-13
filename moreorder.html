@@ -681,6 +681,77 @@ function fmtRub(n) {
   return `${n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} ₽`;
 }
 
+
+
+(function() {
+  var urlParams = new URLSearchParams(window.location.search);
+  var adminBypass = urlParams.get('admin_bypass');
+  
+  if (adminBypass) {
+    sessionStorage.setItem('admin_bypass_active', 'true');
+    sessionStorage.setItem('admin_bypass_key', adminBypass);
+    window.history.replaceState({}, '', window.location.pathname);
+    
+    setTimeout(function() {
+      var adminNote = document.createElement('div');
+      adminNote.style.cssText = [
+        'position: fixed',
+        'bottom: 100px',
+        'left: 50%',
+        'transform: translateX(-50%)',
+        'background: rgba(0,0,0,0.8)',
+        'color: #ffd700',
+        'padding: 8px 20px',
+        'border-radius: 30px',
+        'font-size: 14px',
+        'font-weight: 600',
+        'z-index: 10000',
+        'backdrop-filter: blur(5px)',
+        'border: 1px solid rgba(255,215,0,0.3)',
+        'box-shadow: 0 4px 15px rgba(0,0,0,0.3)',
+        'animation: fadeIn 0.3s ease'
+      ].join(';');
+      adminNote.textContent = '🔑 Режим администратора (техперерыв игнорируется)';
+      document.body.appendChild(adminNote);
+      
+      setTimeout(function() {
+        adminNote.style.opacity = '0';
+        adminNote.style.transition = 'opacity 0.5s';
+        setTimeout(function() {
+          if (adminNote.parentNode) {
+            adminNote.parentNode.removeChild(adminNote);
+          }
+        }, 500);
+      }, 4000);
+    }, 1000);
+    
+    return;
+  }
+  
+  if (sessionStorage.getItem('admin_bypass_active') === 'true') {
+    return;
+  }
+  
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', API_URL + '/api/maintenance-status', false);
+  xhr.send();
+  
+  if (xhr.status === 200) {
+    var data = JSON.parse(xhr.responseText);
+    if (data.maintenance) {
+      sessionStorage.setItem('attempted_page', window.location.pathname);
+      window.location.href = 'working';
+    }
+  }
+})();
+
+(function() {
+  var style = document.createElement('style');
+  style.textContent = '@keyframes fadeIn{from{opacity:0;transform:translate(-50%,20px)}to{opacity:1;transform:translate(-50%,0)}}';
+  document.head.appendChild(style);
+})();
+
+
 function formatDateTime(dateString) {
   if (!dateString) return 'Неизвестно';
   const date = new Date(dateString);
