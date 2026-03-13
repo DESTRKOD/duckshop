@@ -134,7 +134,6 @@
     
     <button class="button" id="retryBtn">Попробовать снова</button>
     
-    <div class="info-text" id="endTimeText"></div>
     <div class="admin-note" id="adminNote" style="display: none;">🔑 Режим администратора активирован</div>
   </div>
   
@@ -147,12 +146,49 @@
       
       if (adminBypass) {
         console.log('🔑 Обнаружен admin_bypass на working.html, редирект на главную');
-        
         const redirectUrl = 'https://shopdxs.ru/?' + urlParams.toString();
         window.location.href = redirectUrl;
         return true;
       }
       return false;
+    }
+    
+    function formatTimeToMSK(date) {
+      return date.toLocaleTimeString('ru-RU', { 
+        timeZone: 'Europe/Moscow',
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: false 
+      });
+    }
+    
+    async function updateMaintenanceInfo() {
+      try {
+        const response = await fetch(`${API_URL}/api/maintenance-status`);
+        const data = await response.json();
+        
+        const timeBadge = document.getElementById('timeBadge');
+        
+        if (data.maintenance) {
+          if (data.endTime) {
+            const now = new Date();
+            const endTime = new Date(data.endTime);
+            
+            if (now > endTime) {
+              timeBadge.textContent = 'Скоро...';
+            } else {
+              const endTimeMSK = formatTimeToMSK(endTime);
+              timeBadge.textContent = `до ${endTimeMSK} МСК`;
+            }
+          } else {
+            timeBadge.textContent = 'Скоро...';
+          }
+        } else {
+          window.location.href = 'https://shopdxs.ru/';
+        }
+      } catch (error) {
+        console.error('Ошибка получения статуса:', error);
+      }
     }
     
     if (!checkAdminBypass()) {
@@ -163,71 +199,6 @@
         autoplay: true,
         path: 'working.json'
       });
-      
-      function getHoursWord(hours) {
-        if (hours % 10 === 1 && hours % 100 !== 11) return 'час';
-        if ([2,3,4].includes(hours % 10) && ![12,13,14].includes(hours % 100)) return 'часа';
-        return 'часов';
-      }
-      
-      function getMinutesWord(minutes) {
-        if (minutes % 10 === 1 && minutes % 100 !== 11) return 'минута';
-        if ([2,3,4].includes(minutes % 10) && ![12,13,14].includes(minutes % 100)) return 'минуты';
-        return 'минут';
-      }
-      
-      function formatTimeLeft(ms) {
-        if (ms <= 0) return null;
-        
-        const totalMinutes = Math.floor(ms / 60000);
-        
-        if (totalMinutes < 60) {
-          return `${totalMinutes} ${getMinutesWord(totalMinutes)}`;
-        }
-        
-        const hours = Math.floor(totalMinutes / 60);
-        const minutes = totalMinutes % 60;
-        
-        if (minutes === 0) {
-          return `${hours} ${getHoursWord(hours)}`;
-        }
-        
-        return `${hours} ${getHoursWord(hours)} ${minutes} ${getMinutesWord(minutes)}`;
-      }
-      
-      async function updateMaintenanceInfo() {
-        try {
-          const response = await fetch(`${API_URL}/api/maintenance-status`);
-          const data = await response.json();
-          
-          const timeBadge = document.getElementById('timeBadge');
-          const endTimeText = document.getElementById('endTimeText');
-          
-          if (data.maintenance) {
-            if (data.isExpired) {
-              timeBadge.textContent = 'Скоро...';
-              endTimeText.textContent = 'Технические работы почти завершены';
-            } else if (data.endTimeFormatted) {
-              timeBadge.textContent = `до ${data.endTimeFormatted}`;
-              
-              if (data.timeLeft) {
-                const timeLeftText = formatTimeLeft(data.timeLeft);
-                if (timeLeftText) {
-                  endTimeText.textContent = `Осталось примерно ${timeLeftText}`;
-                } else {
-                  endTimeText.textContent = 'Скоро заработаем...';
-                }
-              }
-            } else {
-              timeBadge.textContent = 'Скоро...';
-            }
-          } else {
-            window.location.href = 'https://shopdxs.ru/';
-          }
-        } catch (error) {
-          console.error('Ошибка получения статуса:', error);
-        }
-      }
       
       updateMaintenanceInfo();
       setInterval(updateMaintenanceInfo, 30000);
