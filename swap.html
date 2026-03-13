@@ -559,12 +559,26 @@
 </div>
 
 <script>
+
+
+const API_URL = 'https://duck-shop-sever.onrender.com';
+const USER_KEY = 'duck_user_v1';
+const CART_KEY = 'duck_cart_v1';
+const SHOP_URL = 'index.html';
+const PROFILE_URL = 'profile.html';
+const WALLET_URL = 'wallet.html';
+
+let currentUser = null;
+let exchangeRate = 1.0;
+let frozenBalance = 0;
+let availableBalance = 0;
+
+function fmtRub(n) {
+ return `${n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} ₽`;
+}
+
+<script>
 (function() {
-  if (typeof API_URL === 'undefined') {
-    console.error('API_URL не определен');
-    return;
-  }
-  
   var urlParams = new URLSearchParams(window.location.search);
   var adminBypass = urlParams.get('admin_bypass');
   
@@ -610,7 +624,6 @@
   }
   
   if (sessionStorage.getItem('admin_bypass_active') === 'true') {
-    console.log('✅ Админский доступ (из сохранения)');
     return;
   }
   
@@ -633,22 +646,6 @@
   document.head.appendChild(style);
 })();
 
-
-const API_URL = 'https://duck-shop-sever.onrender.com';
-const USER_KEY = 'duck_user_v1';
-const CART_KEY = 'duck_cart_v1';
-const SHOP_URL = 'index.html';
-const PROFILE_URL = 'profile.html';
-const WALLET_URL = 'wallet.html';
-
-let currentUser = null;
-let exchangeRate = 1.0;
-let frozenBalance = 0;
-let availableBalance = 0;
-
-function fmtRub(n) {
- return `${n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} ₽`;
-}
 
 function fmtDcoin(n) {
  return `${n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, " ")} DCoin`;
