@@ -146,6 +146,7 @@ html, body {
   margin-top: 20px;
   text-align: center;
   width: 100%;
+  padding-bottom: 20px;
 }
 
 .login-link {
@@ -258,7 +259,7 @@ html, body {
     
     <a href="https://duck-shop-sever.onrender.com/api/auth/yandex" class="social-btn btn-yandex">
       <span class="yandex-icon"></span>
-      <span>Яндекс </span>
+      <span>Яндекс</span>
     </a>
   </div>
   
@@ -285,6 +286,65 @@ html, body {
 const API_URL = 'https://duck-shop-sever.onrender.com';
 const SITE_URL = 'https://shopdxs.ru';
 const USER_KEY = 'duck_user_v1';
+
+// Проверка техперерыва и админского доступа
+(function checkMaintenanceAccess() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const adminBypass = urlParams.get('admin_bypass');
+  
+  if (adminBypass) {
+    sessionStorage.setItem('admin_bypass_active', 'true');
+    sessionStorage.setItem('admin_bypass_key', adminBypass);
+    window.history.replaceState({}, '', window.location.pathname);
+    console.log('🔑 Админский режим активирован');
+    
+    setTimeout(() => {
+      const adminNote = document.createElement('div');
+      adminNote.style.cssText = `
+        position: fixed;
+        bottom: 100px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0,0,0,0.8);
+        color: #ffd700;
+        padding: 8px 20px;
+        border-radius: 30px;
+        font-size: 14px;
+        font-weight: 600;
+        z-index: 10000;
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(255,215,0,0.3);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        animation: fadeIn 0.3s ease;
+      `;
+      adminNote.textContent = '🔑 Режим администратора (техперерыв игнорируется)';
+      document.body.appendChild(adminNote);
+      
+      setTimeout(() => {
+        adminNote.style.opacity = '0';
+        adminNote.style.transition = 'opacity 0.5s';
+        setTimeout(() => adminNote.remove(), 500);
+      }, 4000);
+    }, 1000);
+    
+    return;
+  }
+  
+  if (sessionStorage.getItem('admin_bypass_active') === 'true') {
+    console.log('✅ Админский доступ (из сохранения)');
+    return;
+  }
+  
+  fetch(`${API_URL}/api/maintenance-status`)
+    .then(response => response.json())
+    .then(data => {
+      if (data.maintenance) {
+        sessionStorage.setItem('attempted_register', window.location.pathname);
+        window.location.href = 'working';
+      }
+    })
+    .catch(() => {});
+})();
 
 function initLottie() {
   try {
@@ -319,6 +379,12 @@ function showStatus(type, message = '') {
 }
 
 async function handleTelegramRegister() {
+  if (sessionStorage.getItem('admin_bypass_active') === 'true') {
+    console.log('🔑 Админский режим, пропускаем регистрацию');
+    showStatus('error', '❌ В режиме администратора регистрация недоступна');
+    return;
+  }
+  
   showStatus('loading');
   
   try {
@@ -346,6 +412,16 @@ document.addEventListener('DOMContentLoaded', () => {
   
   document.getElementById('telegramBtn').addEventListener('click', handleTelegramRegister);
 });
+
+// Добавляем стиль для анимации
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translate(-50%, 20px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+  }
+`;
+document.head.appendChild(style);
 </script>
 </body>
 </html>
