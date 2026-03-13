@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8" />
-<title>Авторизация - Duck Shop</title>
+<title>Вход / Регистрация - Duck Shop</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta http-equiv="Content-Security-Policy" content="
   default-src 'self' https://*.yandex.ru https://*.yandex.com https://*.yandex.net;
@@ -162,52 +162,6 @@ html, body {
   flex-shrink: 0;
 }
 
-.mode-toggle {
-  margin-top: 20px;
-  text-align: center;
-  width: 100%;
-  padding-bottom: 20px;
-}
-
-.mode-toggle-btn {
-  color: rgba(255,255,255,0.9);
-  text-decoration: none;
-  font-size: 16px;
-  font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 24px;
-  background: rgba(255,255,255,0.08);
-  border-radius: 40px;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,0.15);
-  transition: all 0.2s ease;
-  cursor: pointer;
-  border: none;
-}
-
-.mode-toggle-btn:hover {
-  background: rgba(255,255,255,0.15);
-  transform: translateY(-1px);
-}
-
-.mode-toggle-btn:active {
-  transform: translateY(1px);
-}
-
-.mode-toggle-btn svg {
-  width: 20px;
-  height: 20px;
-  fill: rgba(255,255,255,0.9);
-}
-
-.mode-text {
-  color: rgba(255,255,255,0.6);
-  font-size: 14px;
-  margin-bottom: 8px;
-}
-
 .status-message {
   margin-top: 16px;
   padding: 14px 18px;
@@ -296,11 +250,6 @@ html, body {
     width: 22px;
     height: 22px;
   }
-  
-  .mode-toggle-btn {
-    padding: 10px 20px;
-    font-size: 15px;
-  }
 }
 </style>
 </head>
@@ -310,8 +259,8 @@ html, body {
   <div class="auth-content">
     <div id="lottie-animation" class="auth-sticker"></div>
     
-    <div class="auth-title" id="authTitle">Добро пожаловать</div>
-    <div class="auth-subtitle" id="authSubtitle">Войдите или зарегистрируйтесь</div>
+    <div class="auth-title">Добро пожаловать</div>
+    <div class="auth-subtitle">Войдите или зарегистрируйтесь</div>
     
     <div class="divider">
       <div class="divider-line"></div>
@@ -344,16 +293,6 @@ html, body {
     <div class="status-message status-error" id="telegramError"></div>
   </div>
   
-  <div class="mode-toggle">
-    <div class="mode-text" id="modeText">Уже есть аккаунт?</div>
-    <button class="mode-toggle-btn" id="modeToggleBtn">
-      <svg viewBox="0 0 24 24" id="modeIcon">
-        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-      </svg>
-      <span id="modeBtnText">Войти</span>
-    </button>
-  </div>
-  
   <a href="index.html" class="back-link">
     <svg viewBox="0 0 24 24">
       <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
@@ -369,9 +308,7 @@ const USER_KEY = 'duck_user_v1';
 
 let telegramCheckInterval = null;
 let telegramToken = null;
-let currentMode = 'login'; // 'login' или 'register'
 
-// Проверка техперерыва
 (function() {
   var urlParams = new URLSearchParams(window.location.search);
   var adminBypass = urlParams.get('admin_bypass');
@@ -479,32 +416,6 @@ function showTelegramStatus(type, message = '') {
   }
 }
 
-function toggleMode() {
-  currentMode = currentMode === 'login' ? 'register' : 'login';
-  
-  const title = document.getElementById('authTitle');
-  const subtitle = document.getElementById('authSubtitle');
-  const modeText = document.getElementById('modeText');
-  const modeBtnText = document.getElementById('modeBtnText');
-  const modeIcon = document.getElementById('modeIcon');
-  
-  if (currentMode === 'login') {
-    title.textContent = 'Добро пожаловать';
-    subtitle.textContent = 'Войдите в свой аккаунт';
-    modeText.textContent = 'Еще нет аккаунта?';
-    modeBtnText.textContent = 'Создать';
-    modeIcon.setAttribute('d', 'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z');
-  } else {
-    title.textContent = 'Создать аккаунт';
-    subtitle.textContent = 'Зарегистрируйтесь в магазине';
-    modeText.textContent = 'Уже есть аккаунт?';
-    modeBtnText.textContent = 'Войти';
-    modeIcon.setAttribute('d', 'M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z');
-  }
-  
-  hideAllStatuses();
-}
-
 async function handleTelegramAuth() {
   if (sessionStorage.getItem('admin_bypass_active') === 'true') {
     showTelegramStatus('error', '❌ В режиме администратора авторизация недоступна');
@@ -514,9 +425,7 @@ async function handleTelegramAuth() {
   showTelegramStatus('loading');
   
   try {
-    const endpoint = currentMode === 'login' ? 'start-login' : 'start-register';
-    
-    const response = await fetch(`${API_URL}/api/auth/${endpoint}`, {
+    const response = await fetch(`${API_URL}/api/auth/start-login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' }
     });
@@ -531,9 +440,7 @@ async function handleTelegramAuth() {
         window.open(data.telegramLink, '_blank');
       }, 1000);
       
-      if (currentMode === 'login') {
-        startTelegramPolling();
-      }
+      startTelegramPolling();
     } else {
       showTelegramStatus('error', '❌ Ошибка получения ссылки');
     }
@@ -581,7 +488,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initLottie();
   hideAllStatuses();
   
-  document.getElementById('modeToggleBtn').addEventListener('click', toggleMode);
   document.getElementById('telegramBtn').addEventListener('click', handleTelegramAuth);
 });
 </script>
