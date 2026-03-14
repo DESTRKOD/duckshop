@@ -148,6 +148,84 @@ html, body {
   border-left: 4px solid #ff2d55;
 }
 
+.status-warning {
+  background: rgba(255, 193, 7, 0.15);
+  color: white;
+  border-left: 4px solid #ffc107;
+}
+
+.fallback-box {
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(10px);
+  width: 100%;
+  max-width: 320px;
+  box-sizing: border-box;
+  display: none;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.fallback-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.fallback-link {
+  word-break: break-all;
+  background: rgba(0,0,0,0.3);
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  color: #ffd700;
+  margin-bottom: 12px;
+  text-align: center;
+  border: 1px solid rgba(255,215,0,0.3);
+}
+
+.copy-btn {
+  background: #ffd700;
+  color: #0b3c91;
+  border: none;
+  border-radius: 30px;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.15s ease;
+}
+
+.copy-btn:active {
+  transform: scale(0.97);
+}
+
+.copy-btn.copied {
+  background: #4CAF50;
+  color: white;
+}
+
+.manual-link {
+  color: rgba(255,255,255,0.8);
+  font-size: 14px;
+  margin-top: 12px;
+  text-align: center;
+}
+
+.manual-link a {
+  color: #ffd700;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.manual-link a:hover {
+  text-decoration: underline;
+}
+
 .loading-spinner {
   display: none;
   width: 48px;
@@ -236,6 +314,19 @@ html, body {
       ✅ Перейдите в Telegram для подтверждения
     </div>
     <div class="status-message status-error" id="telegramError"></div>
+    <div class="status-message status-warning" id="telegramWarning">
+      ⚠️ Не удалось открыть Telegram автоматически
+    </div>
+    
+    <!-- Fallback блок для ручного перехода -->
+    <div class="fallback-box" id="fallbackBox">
+      <div class="fallback-title">🔗 Скопируйте ссылку и откройте в Telegram</div>
+      <div class="fallback-link" id="fallbackLink">https://t.me/...</div>
+      <button class="copy-btn" id="copyLinkBtn">📋 Копировать ссылку</button>
+      <div class="manual-link">
+        или <a href="#" id="manualTelegramLink">откройте в Telegram вручную</a>
+      </div>
+    </div>
   </div>
   
   <a href="index.html" class="back-link">
@@ -253,6 +344,8 @@ const USER_KEY = 'duck_user_v1';
 
 let telegramCheckInterval = null;
 let telegramToken = null;
+let currentTelegramLink = null;
+let linkOpenAttempted = false;
 
 // ===== ПРОВЕРКА ТЕХПЕРЕРЫВА =====
 (function() {
@@ -347,7 +440,9 @@ function hideAllStatuses() {
   document.getElementById('telegramLoading').style.display = 'none';
   document.getElementById('telegramSuccess').style.display = 'none';
   document.getElementById('telegramError').style.display = 'none';
+  document.getElementById('telegramWarning').style.display = 'none';
   document.getElementById('loadingSpinner').style.display = 'none';
+  document.getElementById('fallbackBox').style.display = 'none';
 }
 
 function showTelegramStatus(type, message = '') {
@@ -359,6 +454,69 @@ function showTelegramStatus(type, message = '') {
   } else if (type === 'error') {
     document.getElementById('telegramError').textContent = message;
     document.getElementById('telegramError').style.display = 'block';
+  } else if (type === 'warning') {
+    document.getElementById('telegramWarning').style.display = 'block';
+  }
+}
+
+function showFallback(link) {
+  hideAllStatuses();
+  document.getElementById('fallbackLink').textContent = link;
+  document.getElementById('manualTelegramLink').href = link;
+  document.getElementById('fallbackBox').style.display = 'block';
+}
+
+// Функция для безопасного открытия ссылки с таймаутом
+function openTelegramLink(link) {
+  linkOpenAttempted = true;
+  
+  // Пробуем открыть через window.open
+  const newWindow = window.open(link, '_blank');
+  
+  // Если не удалось открыть (заблокировано попап-блокером или другая проблема)
+  if (!newWindow) {
+    console.log('❌ Не удалось открыть ссылку через window.open');
+    showFallback(link);
+    return;
+  }
+  
+  // Устанавливаем таймер для проверки, открылась ли ссылка
+  setTimeout(() => {
+    // Проверяем, не закрыто ли окно (если открылось успешно, оно может быть еще открыто)
+    if (newWindow.closed) {
+      // Если окно закрыто сразу - возможно, ссылка не открылась
+      console.log('⚠️ Окно было закрыто, возможно ссылка не открылась');
+      showFallback(link);
+    } else {
+      // Окно открыто - скорее всего всё хорошо
+      console.log('✅ Ссылка открыта успешно');
+      showTelegramStatus('success');
+    }
+  }, 1500);
+}
+
+// Альтернативный способ через создание временной ссылки
+function openTelegramLinkAlternative(link) {
+  const a = document.createElement('a');
+  a.href = link;
+  a.target = '_blank';
+  a.rel = 'noopener noreferrer';
+  a.style.display = 'none';
+  document.body.appendChild(a);
+  
+  try {
+    a.click();
+    setTimeout(() => {
+      document.body.removeChild(a);
+      // Показываем fallback на случай если не открылось
+      setTimeout(() => {
+        if (!linkOpenAttempted) return;
+        showFallback(link);
+      }, 2000);
+    }, 100);
+  } catch (error) {
+    document.body.removeChild(a);
+    showFallback(link);
   }
 }
 
@@ -368,6 +526,7 @@ async function handleTelegramAuth() {
     return;
   }
   
+  linkOpenAttempted = false;
   showTelegramStatus('loading');
   
   try {
@@ -380,11 +539,10 @@ async function handleTelegramAuth() {
     
     if (data.success && data.telegramLink) {
       telegramToken = data.token;
-      showTelegramStatus('success');
+      currentTelegramLink = data.telegramLink;
       
-      setTimeout(() => {
-        window.open(data.telegramLink, '_blank');
-      }, 1000);
+      // Пробуем открыть ссылку
+      openTelegramLink(data.telegramLink);
       
       startTelegramPolling();
     } else {
@@ -426,6 +584,22 @@ function startTelegramPolling() {
   }, 3 * 60 * 1000);
 }
 
+// Обработчик для копирования ссылки
+document.getElementById('copyLinkBtn').addEventListener('click', function() {
+  const link = document.getElementById('fallbackLink').textContent;
+  navigator.clipboard.writeText(link).then(() => {
+    const btn = this;
+    btn.textContent = '✅ Скопировано!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = '📋 Копировать ссылку';
+      btn.classList.remove('copied');
+    }, 2000);
+  }).catch(() => {
+    alert('Не удалось скопировать ссылку');
+  });
+});
+
 window.addEventListener('beforeunload', () => {
   if (telegramCheckInterval) clearInterval(telegramCheckInterval);
 });
@@ -435,6 +609,14 @@ document.addEventListener('DOMContentLoaded', () => {
   hideAllStatuses();
   
   document.getElementById('telegramBtn').addEventListener('click', handleTelegramAuth);
+  
+  // Обработка visibilitychange для обнаружения когда пользователь вернулся из Telegram
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && telegramToken && !linkOpenAttempted) {
+      // Если пользователь вернулся, а авторизация не произошла - показываем fallback
+      showFallback(currentTelegramLink);
+    }
+  });
 });
 </script>
 </body>
