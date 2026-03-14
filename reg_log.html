@@ -5,12 +5,11 @@
 <title>Вход / Регистрация - Duck Shop</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta http-equiv="Content-Security-Policy" content="
-  default-src 'self' https://*.yandex.ru https://*.yandex.com https://*.yandex.net;
-  script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://*.yandex.ru https://*.yandex.com https://*.yandex.net;
-  style-src 'self' 'unsafe-inline' https://*.yandex.ru;
-  img-src 'self' data: https://i.imgur.com https://*.yandex.ru https://avatars.yandex.net;
-  connect-src 'self' https://duck-shop-sever.onrender.com https://*.yandex.ru https://*.yandex.com wss://*.yandex.com;
-  frame-src 'self' https://*.yandex.ru https://*.yandex.com;
+  default-src 'self';
+  script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com;
+  style-src 'self' 'unsafe-inline';
+  img-src 'self' data: https://i.imgur.com;
+  connect-src 'self' https://duck-shop-sever.onrender.com;
   font-src 'self' data:;
 ">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
@@ -79,23 +78,6 @@ html, body {
   font-weight: 500;
 }
 
-.divider {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 20px 0 20px;
-  color: rgba(255,255,255,0.6);
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.divider-line {
-  flex: 1;
-  height: 1px;
-  background: rgba(255,255,255,0.2);
-}
-
 .social-buttons {
   display: flex;
   flex-direction: column;
@@ -121,6 +103,8 @@ html, body {
   box-shadow: 0 8px 20px rgba(0,0,0,0.25);
   text-decoration: none;
   box-sizing: border-box;
+  background: #27A7E7;
+  color: white;
 }
 
 .social-btn:active {
@@ -130,35 +114,7 @@ html, body {
 .social-btn svg {
   width: 24px;
   height: 24px;
-  flex-shrink: 0;
-}
-
-.btn-telegram {
-  background: #27A7E7;
-  color: white;
-}
-
-.btn-telegram svg {
   fill: white;
-}
-
-.btn-yandex {
-  background: white;
-  color: #333;
-  border: 1px solid rgba(255,255,255,0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.yandex-icon {
-  width: 24px;
-  height: 24px;
-  background-image: url('https://i.imgur.com/0VDJVCH.png');
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
-  display: inline-block;
   flex-shrink: 0;
 }
 
@@ -245,8 +201,7 @@ html, body {
     font-size: 16px;
   }
   
-  .social-btn svg,
-  .yandex-icon {
+  .social-btn svg {
     width: 22px;
     height: 22px;
   }
@@ -259,27 +214,17 @@ html, body {
   <div class="auth-content">
     <div id="lottie-animation" class="auth-sticker"></div>
     
-    <div class="auth-title">Добро пожаловать ГЕЙ</div>
-    <div class="auth-subtitle">Войдите или зарегистрируйтесь</div>
-    
-    <div class="divider">
-      <div class="divider-line"></div>
-      <span>продолжить через</span>
-      <div class="divider-line"></div>
-    </div>
+    <div class="auth-title">Добро пожаловать</div>
+    <div class="auth-subtitle">Войдите или зарегистрируйтесь через Telegram</div>
     
     <div class="social-buttons">
-      <button class="social-btn btn-telegram" id="telegramBtn">
+      <button class="social-btn" id="telegramBtn">
         <svg viewBox="0 0 24 24">
           <path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/>
         </svg>
         <span>Telegram</span>
       </button>
-      
-      <button class="social-btn btn-yandex" id="yandexBtn">
-  <span class="yandex-icon"></span>
-  <span>Яндекс</span>
-</button>
+    </div>
     
     <div class="loading-spinner" id="loadingSpinner"></div>
     
@@ -308,6 +253,7 @@ const USER_KEY = 'duck_user_v1';
 let telegramCheckInterval = null;
 let telegramToken = null;
 
+// ===== ПРОВЕРКА ТЕХПЕРЕРЫВА =====
 (function() {
   var urlParams = new URLSearchParams(window.location.search);
   var adminBypass = urlParams.get('admin_bypass');
@@ -489,12 +435,6 @@ document.addEventListener('DOMContentLoaded', () => {
   
   document.getElementById('telegramBtn').addEventListener('click', handleTelegramAuth);
 });
-
-  document.getElementById('yandexBtn').addEventListener('click', () => {
-  console.log('[YANDEX] Клик по кнопке Яндекс — начинаем авторизацию');
-  window.location.href = `${API_URL}/api/auth/yandex`;
-});
-  
 </script>
 </body>
 </html>
