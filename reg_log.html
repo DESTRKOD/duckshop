@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8" />
-<title>Авторизация</title>
+<title>Вход / Регистрация - Duck Shop</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 <style>
@@ -29,6 +29,7 @@ html, body {
   width: 100%;
   max-width: 400px;
   margin: 0 auto;
+  min-height: 100vh;
 }
 
 .auth-content {
@@ -37,6 +38,7 @@ html, body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  flex: 1;
 }
 
 .auth-sticker {
@@ -73,49 +75,46 @@ html, body {
   font-weight: 500;
 }
 
-.social-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 100%;
-  max-width: 320px;
-  margin: 0 auto;
-}
-
-.social-btn {
-  width: 100%;
-  height: 60px;
-  border-radius: 18px;
-  border: none;
-  font-weight: 700;
-  font-size: 18px;
-  cursor: pointer;
-  transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+.telegram-link {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 14px;
-  padding: 0 20px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
-  text-decoration: none;
-  box-sizing: border-box;
+  width: 100%;
+  max-width: 320px;
+  height: 60px;
+  border-radius: 18px;
   background: #27A7E7;
   color: white;
+  font-weight: 700;
+  font-size: 18px;
+  text-decoration: none;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  margin: 0 auto;
+  border: none;
+  cursor: pointer;
+  padding: 0 20px;
+  box-sizing: border-box;
 }
 
-.social-btn:active {
+.telegram-link:active {
   transform: scale(0.98);
 }
 
-.social-btn svg {
+.telegram-link svg {
   width: 24px;
   height: 24px;
   fill: white;
   flex-shrink: 0;
 }
 
+.telegram-link span {
+  white-space: nowrap;
+}
+
 .status-message {
-  margin-top: 16px;
+  margin-top: 20px;
   padding: 14px 18px;
   border-radius: 16px;
   font-size: 14px;
@@ -146,84 +145,6 @@ html, body {
   background: rgba(255,45,85,0.15);
   color: white;
   border-left: 4px solid #ff2d55;
-}
-
-.status-warning {
-  background: rgba(255, 193, 7, 0.15);
-  color: white;
-  border-left: 4px solid #ffc107;
-}
-
-.fallback-box {
-  margin-top: 20px;
-  padding: 20px;
-  border-radius: 18px;
-  background: rgba(255,255,255,0.1);
-  backdrop-filter: blur(10px);
-  width: 100%;
-  max-width: 320px;
-  box-sizing: border-box;
-  display: none;
-  border: 1px solid rgba(255,255,255,0.2);
-}
-
-.fallback-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: white;
-  margin-bottom: 12px;
-  text-align: center;
-}
-
-.fallback-link {
-  word-break: break-all;
-  background: rgba(0,0,0,0.3);
-  padding: 12px;
-  border-radius: 12px;
-  font-size: 14px;
-  color: #ffd700;
-  margin-bottom: 12px;
-  text-align: center;
-  border: 1px solid rgba(255,215,0,0.3);
-}
-
-.copy-btn {
-  background: #ffd700;
-  color: #0b3c91;
-  border: none;
-  border-radius: 30px;
-  padding: 12px 20px;
-  font-size: 16px;
-  font-weight: 800;
-  cursor: pointer;
-  width: 100%;
-  transition: all 0.15s ease;
-}
-
-.copy-btn:active {
-  transform: scale(0.97);
-}
-
-.copy-btn.copied {
-  background: #4CAF50;
-  color: white;
-}
-
-.manual-link {
-  color: rgba(255,255,255,0.8);
-  font-size: 14px;
-  margin-top: 12px;
-  text-align: center;
-}
-
-.manual-link a {
-  color: #ffd700;
-  text-decoration: none;
-  font-weight: 700;
-}
-
-.manual-link a:hover {
-  text-decoration: underline;
 }
 
 .loading-spinner {
@@ -275,12 +196,12 @@ html, body {
     margin-bottom: 24px;
   }
   
-  .social-btn {
+  .telegram-link {
     height: 54px;
     font-size: 16px;
   }
   
-  .social-btn svg {
+  .telegram-link svg {
     width: 22px;
     height: 22px;
   }
@@ -296,37 +217,20 @@ html, body {
     <div class="auth-title">Добро пожаловать</div>
     <div class="auth-subtitle">Войдите или зарегистрируйтесь через Telegram</div>
     
-    <div class="social-buttons">
-      <button class="social-btn" id="telegramBtn">
-        <svg viewBox="0 0 24 24">
-          <path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/>
-        </svg>
-        <span>Telegram</span>
-      </button>
-    </div>
+    <!-- Прямая ссылка на Telegram, которая сама откроется в приложении -->
+    <a href="https://t.me/duck_shop_bot?start=auth" class="telegram-link" id="telegramLink">
+      <svg viewBox="0 0 24 24">
+        <path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/>
+      </svg>
+      <span>Продолжить с Telegram</span>
+    </a>
     
     <div class="loading-spinner" id="loadingSpinner"></div>
     
     <div class="status-message status-loading" id="telegramLoading">
-      ⏳ Открываем Telegram...
-    </div>
-    <div class="status-message status-success" id="telegramSuccess">
-      ✅ Перейдите в Telegram для подтверждения
+      ⏳ Перенаправляем в Telegram...
     </div>
     <div class="status-message status-error" id="telegramError"></div>
-    <div class="status-message status-warning" id="telegramWarning">
-      ⚠️ Не удалось открыть Telegram автоматически
-    </div>
-    
-    <!-- Fallback блок для ручного перехода -->
-    <div class="fallback-box" id="fallbackBox">
-      <div class="fallback-title">🔗 Скопируйте ссылку и откройте в Telegram</div>
-      <div class="fallback-link" id="fallbackLink">https://t.me/...</div>
-      <button class="copy-btn" id="copyLinkBtn">📋 Копировать ссылку</button>
-      <div class="manual-link">
-        или <a href="#" id="manualTelegramLink">откройте в Telegram вручную</a>
-      </div>
-    </div>
   </div>
   
   <a href="index.html" class="back-link">
@@ -341,11 +245,9 @@ html, body {
 const API_URL = 'https://duck-shop-sever.onrender.com';
 const SITE_URL = 'https://shopdxs.ru';
 const USER_KEY = 'duck_user_v1';
+const BOT_USERNAME = 'duck_shop_bot'; // Замени на своего бота
 
 let telegramCheckInterval = null;
-let telegramToken = null;
-let currentTelegramLink = null;
-let linkOpenAttempted = false;
 
 // ===== ПРОВЕРКА ТЕХПЕРЕРЫВА =====
 (function() {
@@ -355,6 +257,7 @@ let linkOpenAttempted = false;
   
   if (authToken) {
     console.log('🔑 Обнаружен auth токен, пропускаем проверку');
+    window.location.href = `${SITE_URL}/index.html?auth=${authToken}`;
     return;
   }
   
@@ -438,96 +341,23 @@ function initLottie() {
 
 function hideAllStatuses() {
   document.getElementById('telegramLoading').style.display = 'none';
-  document.getElementById('telegramSuccess').style.display = 'none';
   document.getElementById('telegramError').style.display = 'none';
-  document.getElementById('telegramWarning').style.display = 'none';
   document.getElementById('loadingSpinner').style.display = 'none';
-  document.getElementById('fallbackBox').style.display = 'none';
 }
 
-function showTelegramStatus(type, message = '') {
+function showStatus(type, message = '') {
   hideAllStatuses();
   if (type === 'loading') {
     document.getElementById('telegramLoading').style.display = 'block';
-  } else if (type === 'success') {
-    document.getElementById('telegramSuccess').style.display = 'block';
   } else if (type === 'error') {
     document.getElementById('telegramError').textContent = message;
     document.getElementById('telegramError').style.display = 'block';
-  } else if (type === 'warning') {
-    document.getElementById('telegramWarning').style.display = 'block';
   }
 }
 
-function showFallback(link) {
-  hideAllStatuses();
-  document.getElementById('fallbackLink').textContent = link;
-  document.getElementById('manualTelegramLink').href = link;
-  document.getElementById('fallbackBox').style.display = 'block';
-}
-
-// Функция для безопасного открытия ссылки с таймаутом
-function openTelegramLink(link) {
-  linkOpenAttempted = true;
-  
-  // Пробуем открыть через window.open
-  const newWindow = window.open(link, '_blank');
-  
-  // Если не удалось открыть (заблокировано попап-блокером или другая проблема)
-  if (!newWindow) {
-    console.log('❌ Не удалось открыть ссылку через window.open');
-    showFallback(link);
-    return;
-  }
-  
-  // Устанавливаем таймер для проверки, открылась ли ссылка
-  setTimeout(() => {
-    // Проверяем, не закрыто ли окно (если открылось успешно, оно может быть еще открыто)
-    if (newWindow.closed) {
-      // Если окно закрыто сразу - возможно, ссылка не открылась
-      console.log('⚠️ Окно было закрыто, возможно ссылка не открылась');
-      showFallback(link);
-    } else {
-      // Окно открыто - скорее всего всё хорошо
-      console.log('✅ Ссылка открыта успешно');
-      showTelegramStatus('success');
-    }
-  }, 1500);
-}
-
-// Альтернативный способ через создание временной ссылки
-function openTelegramLinkAlternative(link) {
-  const a = document.createElement('a');
-  a.href = link;
-  a.target = '_blank';
-  a.rel = 'noopener noreferrer';
-  a.style.display = 'none';
-  document.body.appendChild(a);
-  
-  try {
-    a.click();
-    setTimeout(() => {
-      document.body.removeChild(a);
-      // Показываем fallback на случай если не открылось
-      setTimeout(() => {
-        if (!linkOpenAttempted) return;
-        showFallback(link);
-      }, 2000);
-    }, 100);
-  } catch (error) {
-    document.body.removeChild(a);
-    showFallback(link);
-  }
-}
-
-async function handleTelegramAuth() {
-  if (sessionStorage.getItem('admin_bypass_active') === 'true') {
-    showTelegramStatus('error', '❌ В режиме администратора авторизация недоступна');
-    return;
-  }
-  
-  linkOpenAttempted = false;
-  showTelegramStatus('loading');
+// Генерация уникальной ссылки для каждого пользователя
+async function generateAuthLink() {
+  showStatus('loading');
   
   try {
     const response = await fetch(`${API_URL}/api/auth/start-login`, {
@@ -538,29 +368,28 @@ async function handleTelegramAuth() {
     const data = await response.json();
     
     if (data.success && data.telegramLink) {
-      telegramToken = data.token;
-      currentTelegramLink = data.telegramLink;
+      // Обновляем ссылку в <a>
+      document.getElementById('telegramLink').href = data.telegramLink;
       
-      // Пробуем открыть ссылку
-      openTelegramLink(data.telegramLink);
+      // Показываем статус
+      showStatus('loading');
       
-      startTelegramPolling();
+      // Начинаем проверять авторизацию
+      startAuthPolling(data.token);
     } else {
-      showTelegramStatus('error', '❌ Ошибка получения ссылки');
+      showStatus('error', '❌ Ошибка получения ссылки');
     }
   } catch (error) {
-    showTelegramStatus('error', '❌ Ошибка соединения');
+    showStatus('error', '❌ Ошибка соединения');
   }
 }
 
-function startTelegramPolling() {
+function startAuthPolling(token) {
   if (telegramCheckInterval) clearInterval(telegramCheckInterval);
   
   telegramCheckInterval = setInterval(async () => {
-    if (!telegramToken) return;
-    
     try {
-      const response = await fetch(`${API_URL}/api/auth/check/${telegramToken}`);
+      const response = await fetch(`${API_URL}/api/auth/check/${token}`);
       const data = await response.json();
       
       if (data.success && data.authenticated) {
@@ -569,54 +398,40 @@ function startTelegramPolling() {
         window.location.href = `${SITE_URL}/index.html`;
       } else if (data.expired) {
         clearInterval(telegramCheckInterval);
-        showTelegramStatus('error', '❌ Время ожидания истекло');
+        showStatus('error', '❌ Время ожидания истекло. Нажмите кнопку еще раз.');
       }
     } catch (error) {
       console.error('Ошибка проверки:', error);
     }
   }, 2000);
   
+  // Таймаут через 3 минуты
   setTimeout(() => {
     if (telegramCheckInterval) {
       clearInterval(telegramCheckInterval);
-      showTelegramStatus('error', '❌ Время ожидания истекло');
+      showStatus('error', '❌ Время ожидания истекло');
     }
   }, 3 * 60 * 1000);
 }
 
-// Обработчик для копирования ссылки
-document.getElementById('copyLinkBtn').addEventListener('click', function() {
-  const link = document.getElementById('fallbackLink').textContent;
-  navigator.clipboard.writeText(link).then(() => {
-    const btn = this;
-    btn.textContent = '✅ Скопировано!';
-    btn.classList.add('copied');
-    setTimeout(() => {
-      btn.textContent = '📋 Копировать ссылку';
-      btn.classList.remove('copied');
-    }, 2000);
-  }).catch(() => {
-    alert('Не удалось скопировать ссылку');
+// При загрузке страницы генерируем ссылку
+document.addEventListener('DOMContentLoaded', () => {
+  initLottie();
+  hideAllStatuses();
+  
+  // Генерируем ссылку сразу
+  generateAuthLink();
+  
+  // Если пользователь вернулся на страницу
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      // Можно ничего не делать, просто ждем
+    }
   });
 });
 
 window.addEventListener('beforeunload', () => {
   if (telegramCheckInterval) clearInterval(telegramCheckInterval);
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-  initLottie();
-  hideAllStatuses();
-  
-  document.getElementById('telegramBtn').addEventListener('click', handleTelegramAuth);
-  
-  // Обработка visibilitychange для обнаружения когда пользователь вернулся из Telegram
-  document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible' && telegramToken && !linkOpenAttempted) {
-      // Если пользователь вернулся, а авторизация не произошла - показываем fallback
-      showFallback(currentTelegramLink);
-    }
-  });
 });
 </script>
 </body>
