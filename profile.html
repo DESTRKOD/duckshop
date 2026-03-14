@@ -1129,7 +1129,7 @@ function clearUser() {
   currentUser = null;
 }
 
-// ⚡ ЕДИНСТВЕННАЯ ИСПРАВЛЕННАЯ ФУНКЦИЯ ⚡
+
 async function loadProfileData() {
   if (!currentUser) {
     window.location.href = 'reg_log.html';
@@ -1139,8 +1139,8 @@ async function loadProfileData() {
   showScreen('loading');
 
   try {
-    // ПРАВИЛЬНЫЙ ЗАПРОС - GET с userId в URL
-    const response = await fetch(`${API_URL}/api/auth/profile?userId=${currentUser.id}`);
+    
+    const response = await fetch(`${API_URL}/api/auth/profile/${currentUser.id}`);
     
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
