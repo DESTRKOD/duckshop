@@ -4,6 +4,14 @@
 <meta charset="UTF-8" />
 <title>Мой профиль - Duck Shop</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta http-equiv="Content-Security-Policy" content="
+  default-src 'self' https://id.vk.com https://*.vk.com https://*.vk.me;
+  script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://id.vk.com https://*.vk.com;
+  style-src 'self' 'unsafe-inline';
+  img-src 'self' data: https://i.imgur.com https://*.vk.com https://*.userapi.com;
+  connect-src 'self' https://duck-shop-sever.onrender.com;
+  font-src 'self' data:;
+">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 
 <style>
@@ -149,6 +157,13 @@ html, body {
   margin-bottom: 5px;
   word-break: break-word;
   padding: 0 20px;
+}
+
+.profile-email {
+  font-size: 15px;
+  color: rgba(255,255,255,0.8);
+  margin-bottom: 15px;
+  word-break: break-word;
 }
 
 .profile-username {
@@ -650,6 +665,25 @@ html, body {
   color: rgba(255,255,255,0.7);
 }
 
+.vk-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 119, 255, 0.2);
+  border: 1px solid rgba(0, 119, 255, 0.4);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 13px;
+  color: white;
+  margin-left: 10px;
+}
+
+.vk-badge svg {
+  width: 16px;
+  height: 16px;
+  fill: white;
+}
+
 @media (max-width: 768px) {
   .profile-content {
     padding: 15px;
@@ -814,8 +848,17 @@ html, body {
     <div class="profile-avatar" id="profileAvatar" onclick="openEditModal()">
       <div class="edit-avatar-overlay">Изменить фото</div>
     </div>
-    <div class="profile-name" id="profileName" onclick="openEditModal()">Пользователь</div>
+    <div class="profile-name" id="profileName" onclick="openEditModal()">
+      Пользователь
+      <span class="vk-badge" id="vkBadge" style="display: none;">
+        <svg viewBox="0 0 24 24">
+          <path d="M15.07 2H8.93C3.33 2 2 3.33 2 8.93v6.14C2 20.67 3.33 22 8.93 22h6.14c5.6 0 6.93-1.33 6.93-6.93V8.93C22 3.33 20.67 2 15.07 2zm3.54 14.2h-1.46c-.56 0-.73-.43-1.73-1.44-.86-.86-1.24-.98-1.46-.98-.3 0-.38.08-.38.47v1.23c0 .34-.11.54-1.02.54-1.5 0-3.17-.92-4.35-2.64-1.8-2.51-2.29-4.4-2.29-4.79 0-.2.08-.39.47-.39h1.46c.35 0 .48.16.61.54.68 1.83 1.8 3.43 2.27 3.43.17 0 .25-.08.25-.52v-1.82c-.06-.96-.56-1.04-.56-1.39 0-.16.13-.3.3-.3h2.3c.26 0 .35.14.35.45v2.41c0 .26.11.35.18.35.15 0 .27-.09.53-.35 1.01-1.14 1.72-2.89 1.72-2.89.1-.17.23-.26.44-.26h1.46c.45 0 .55.23.45.54-.2.9-2.13 3.24-2.13 3.24-.16.22-.21.33 0 .59.16.21.7.68 1.06 1.1.65.75 1.15 1.38 1.15 1.8.01.41-.3.6-.74.6z"/>
+        </svg>
+        VK ID
+      </span>
+    </div>
     <div class="profile-id" id="profileId"></div>
+    <div class="profile-email" id="profileEmail"></div>
     <div class="profile-username" id="profileUsername"></div>
     <button class="telegram-link-btn" id="telegramLinkBtn" onclick="openTelegramLink()">
       <svg viewBox="0 0 24 24">
@@ -923,581 +966,4 @@ html, body {
 <div class="mobile-nav" id="mobileNav">
   <button class="mobile-nav-item" id="navWallet">
     <svg viewBox="0 0 24 24">
-      <path d="M21 18v1c0 1.1-0.9 2-2 2H5c-1.11 0-2-0.9-2-2V5c0-1.1 0.89-2 2-2h14c1.1 0 2 0.9 2 2v1h-9c-1.1 0-2 0.9-2 2v8c0 1.1 0.9 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-0.83 0-1.5-0.67-1.5-1.5s0.67-1.5 1.5-1.5 1.5 0.67 1.5 1.5-0.67 1.5-1.5 1.5z"/>
-    </svg>
-    <span>Кошелёк</span>
-  </button>
-
-  <button class="mobile-nav-item active" id="navProfile">
-    <svg viewBox="0 0 24 24">
-      <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-    </svg>
-    <span>Профиль</span>
-  </button>
-
-  <button class="mobile-nav-item" id="navHome">
-    <svg viewBox="0 0 24 24">
-      <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-    </svg>
-    <span>Главная</span>
-  </button>
-
-  <button class="mobile-nav-item" id="navCart">
-    <svg viewBox="0 0 24 24">
-      <path d="M7 18a2 2 0 1 0 0 4a2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4a2 2 0 0 0 0-4zM7.16 14h9.45a2 2 0 0 0 1.75-1.03l3.58-6.49-1.74-.99-3.58 6.49H8.53L5.21 4H1v2h3l3.6 7.59-1.35 2.44C5.52 16.37 6.48 18 8 18h12v-2H8l1.16-2z"/>
-    </svg>
-    <span>Корзина</span>
-    <div class="cart-badge-mobile" id="cartBadgeMobile">0</div>
-  </button>
-</div>
-
-<script>
-
-const API_URL = 'https://duck-shop-sever.onrender.com';
-const USER_KEY = 'duck_user_v1';
-const CART_KEY = 'duck_cart_v1';
-const SHOP_URL = 'index.html';
-
-let currentUser = null;
-
-function fmtRub(n) {
-  return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + ' ₽';
-}
-
-// ПРОВЕРКА ТЕХПЕРЕРЫВА
-(function() {
-  var urlParams = new URLSearchParams(window.location.search);
-  var adminBypass = urlParams.get('admin_bypass');
-
-  if (adminBypass) {
-    sessionStorage.setItem('admin_bypass_active', 'true');
-    sessionStorage.setItem('admin_bypass_key', adminBypass);
-    window.history.replaceState({}, '', window.location.pathname);
-
-    setTimeout(function() {
-      var adminNote = document.createElement('div');
-      adminNote.style.cssText = [
-        'position: fixed',
-        'bottom: 100px',
-        'left: 50%',
-        'transform: translateX(-50%)',
-        'background: rgba(0,0,0,0.8)',
-        'color: #ffd700',
-        'padding: 8px 20px',
-        'border-radius: 30px',
-        'font-size: 14px',
-        'font-weight: 600',
-        'z-index: 10000',
-        'backdrop-filter: blur(5px)',
-        'border: 1px solid rgba(255,215,0,0.3)',
-        'box-shadow: 0 4px 15px rgba(0,0,0,0.3)',
-        'animation: fadeIn 0.3s ease'
-      ].join(';');
-      adminNote.textContent = '🔑 Режим администратора (техперерыв игнорируется)';
-      document.body.appendChild(adminNote);
-
-      setTimeout(function() {
-        adminNote.style.opacity = '0';
-        adminNote.style.transition = 'opacity 0.5s';
-        setTimeout(function() {
-          if (adminNote.parentNode) {
-            adminNote.parentNode.removeChild(adminNote);
-          }
-        }, 500);
-      }, 4000);
-    }, 1000);
-
-    return;
-  }
-
-  if (sessionStorage.getItem('admin_bypass_active') === 'true') {
-    return;
-  }
-
-  var xhr = new XMLHttpRequest();
-  xhr.open('GET', API_URL + '/api/maintenance-status', false);
-  xhr.send();
-
-  if (xhr.status === 200) {
-    var data = JSON.parse(xhr.responseText);
-    if (data.maintenance) {
-      sessionStorage.setItem('attempted_page', window.location.pathname);
-      window.location.href = 'working';
-    }
-  }
-})();
-
-(function() {
-  var style = document.createElement('style');
-  style.textContent = '@keyframes fadeIn{from{opacity:0;transform:translate(-50%,20px)}to{opacity:1;transform:translate(-50%,0)}}';
-  document.head.appendChild(style);
-})();
-
-
-function getPluralEnding(number) {
-  if (number % 10 === 1 && number % 100 !== 11) return '';
-  if ([2,3,4].includes(number % 10) && ![12,13,14].includes(number % 100)) return 'а';
-  return 'ов';
-}
-
-function formatDate(dateString) {
-  const date = new Date(dateString);
-  return date.toLocaleDateString('ru-RU', {
-    day: '2-digit', month: '2-digit', year: 'numeric',
-    hour: '2-digit', minute: '2-digit'
-  });
-}
-
-function getDisplayStatus(status, paymentStatus, refundAmount) {
-  if (status === 'completed') return { text: 'Завершен', className: 'completed' };
-  if (status === 'canceled') return { text: 'Отменен', className: 'canceled' };
-  if (status === 'manyback' || refundAmount > 0) return { text: 'Возврат', className: 'manyback' };
-  if (paymentStatus === 'pending' && status === 'new') return { text: 'Ожидает оплаты', className: 'pending' };
-  return { text: 'В работе', className: 'waiting' };
-}
-
-function loadCart() {
-  try { return JSON.parse(localStorage.getItem(CART_KEY) || '{}'); } catch { return {}; }
-}
-
-function cartCount() {
-  return Object.values(loadCart()).reduce((a, b) => a + b, 0);
-}
-
-function updateBadge() {
-  const n = cartCount();
-  const badge = document.getElementById('cartBadgeMobile');
-  if (badge) {
-    if (n > 0) {
-      badge.classList.add('show');
-      badge.textContent = n;
-    } else {
-      badge.classList.remove('show');
-    }
-  }
-}
-
-function loadLottieAnimations() {
-  try {
-    lottie.loadAnimation({
-      container: document.getElementById('loadingAnim'),
-      renderer: 'svg',
-      loop: true,
-      autoplay: true,
-      path: 'https://assets10.lottiefiles.com/packages/lf20_puciaevh.json'
-    });
-  } catch (error) {}
-}
-
-function loadNoOrdersAnimation() {
-  const container = document.getElementById('noOrdersAnim');
-  if (!container) return;
-
-  container.innerHTML = '';
-
-  try {
-    lottie.loadAnimation({
-      container: container,
-      renderer: 'svg',
-      loop: true,
-      autoplay: true,
-      path: 'bad_pay.json'
-    });
-  } catch (error) {
-    console.error('Ошибка загрузки анимации:', error);
-    container.innerHTML = '<div class="no-orders-icon"></div>';
-  }
-}
-
-function showScreen(id) {
-  ['loading', 'profile', 'error'].forEach(s => {
-    document.getElementById(s).classList.remove('active', 'leaving');
-  });
-  document.getElementById(id).classList.add('active');
-}
-
-function loadUser() {
-  try { return JSON.parse(localStorage.getItem(USER_KEY)); } catch { return null; }
-}
-
-function saveUser(user) {
-  try { localStorage.setItem(USER_KEY, JSON.stringify(user)); } catch (error) {}
-}
-
-function clearUser() {
-  localStorage.removeItem(USER_KEY);
-  currentUser = null;
-}
-
-
-async function loadProfileData() {
-  if (!currentUser) {
-    window.location.href = 'reg_log.html';
-    return;
-  }
-
-  showScreen('loading');
-
-  try {
-    
-    const response = await fetch(`${API_URL}/api/auth/profile/${currentUser.id}`);
-    
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    
-    const data = await response.json();
-
-    if (data.success && data.user) {
-      currentUser = { ...currentUser, ...data.user };
-      saveUser(currentUser);
-      updateProfileUI(currentUser);
-      await loadOrders(data.orders || []);
-      showScreen('profile');
-    } else {
-      throw new Error(data.error || 'Ошибка загрузки профиля');
-    }
-  } catch (error) {
-    console.error('Ошибка загрузки профиля:', error);
-    showError('Ошибка загрузки', 'Не удалось загрузить данные профиля');
-  }
-}
-
-function updateProfileUI(user) {
-  const avatar = document.getElementById('profileAvatar');
-  const editAvatarPreview = document.getElementById('editAvatarPreview');
-
-  const firstLetter = user.username ? user.username.charAt(0).toUpperCase() : 'U';
-  const avatarHtml = user.avatarUrl ? 
-    `<img src="${user.avatarUrl}" alt="${user.username}">` :
-    `<div class="avatar-placeholder">${firstLetter}</div>`;
-
-  avatar.innerHTML = avatarHtml + '<div class="edit-avatar-overlay">Изменить фото</div>';
-  editAvatarPreview.innerHTML = avatarHtml;
-
-  document.getElementById('profileName').textContent = user.username || 'Пользователь';
-
-  const provider = user.auth_provider || 'email';
-  const profileId = document.getElementById('profileId');
-  const profileUsername = document.getElementById('profileUsername');
-  const telegramLinkBtn = document.getElementById('telegramLinkBtn');
-  const telegramLinkText = document.getElementById('telegramLinkText');
-
-  if (provider === 'telegram' || provider === 'yandex+telegram') {
-    profileId.textContent = `TG ID: ${user.tgId || '...'}`;
-    profileUsername.textContent = user.telegramUsername ? `@${user.telegramUsername}` : '';
-    profileUsername.style.display = user.telegramUsername ? 'block' : 'none';
-    telegramLinkBtn.classList.add('linked');
-    telegramLinkText.textContent = 'Telegram привязан';
-
-    document.getElementById('telegramStatus').classList.add('linked');
-    document.getElementById('telegramName').textContent = user.firstName || user.username || 'Пользователь';
-    document.getElementById('telegramUser').textContent = user.telegramUsername ? `@${user.telegramUsername}` : '—';
-    document.getElementById('unlinkTelegramBtn').style.display = 'block';
-    document.getElementById('linkTelegramBtn').style.display = 'none';
-  } else {
-    profileId.textContent = 'Аккаунт Яндекс';
-    profileUsername.style.display = 'none';
-    telegramLinkBtn.classList.remove('linked');
-    telegramLinkText.textContent = 'Привязать Telegram';
-
-    document.getElementById('telegramStatus').classList.remove('linked');
-    document.getElementById('telegramName').textContent = 'Не привязан';
-    document.getElementById('telegramUser').textContent = '—';
-    document.getElementById('unlinkTelegramBtn').style.display = 'none';
-    document.getElementById('linkTelegramBtn').style.display = 'block';
-  }
-}
-
-async function loadOrders(orders) {
-  const list = document.getElementById('ordersList');
-  const count = document.getElementById('ordersCount');
-
-  if (!list || !count) return;
-
-  if (orders.length === 0) {
-    count.textContent = '0';
-    list.innerHTML = `
-      <div class="no-orders">
-        <div class="sticker-small" id="noOrdersAnim"></div>
-        <div class="no-orders-text">У вас пока нет заказов</div>
-        <div class="no-orders-subtext">Совершите первую покупку чтобы начать историю!</div>
-      </div>
-    `;
-
-    setTimeout(() => {
-      loadNoOrdersAnimation();
-    }, 100);
-
-    return;
-  }
-
-  count.textContent = orders.length;
-
-  orders.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-  list.innerHTML = orders.map(order => {
-    const status = getDisplayStatus(order.status, order.paymentStatus, order.refundAmount);
-    const isGrayed = order.status === 'canceled' || order.status === 'manyback';
-
-    return `
-      <div class="order-item ${isGrayed ? 'grayed' : ''}" onclick="window.location.href='moreorder.html?order=${order.id}'">
-        <div class="order-header">
-          <div class="order-id">#${order.id}</div>
-          <div class="order-date">${formatDate(order.date)}</div>
-        </div>
-        <div class="order-details">
-          <div class="order-total">${fmtRub(order.total)}</div>
-          <div class="order-status ${status.className}">${status.text}</div>
-        </div>
-        ${order.refundAmount ? `<div style="font-size: 12px; color: #9c27b0; margin-top: 8px;">Возврат: ${fmtRub(order.refundAmount)}</div>` : ''}
-      </div>
-    `;
-  }).join('');
-}
-
-function showError(title, message) {
-  document.getElementById('errorTitle').textContent = title;
-  document.getElementById('errorText').textContent = message;
-  showScreen('error');
-}
-
-function setupMobileNavigation() {
-  const nav = {
-    wallet: document.getElementById('navWallet'),
-    profile: document.getElementById('navProfile'),
-    home: document.getElementById('navHome'),
-    cart: document.getElementById('navCart')
-  };
-
-  nav.profile.classList.add('active');
-
-  if (nav.wallet) nav.wallet.addEventListener('click', () => window.location.href = 'wallet.html');
-  if (nav.profile) nav.profile.addEventListener('click', () => window.location.href = 'profile.html');
-  if (nav.home) nav.home.addEventListener('click', () => window.location.href = SHOP_URL);
-  if (nav.cart) nav.cart.addEventListener('click', () => {
-    localStorage.setItem('open_cart', 'true');
-    window.location.href = SHOP_URL;
-  });
-}
-
-document.getElementById('logoutBtn').addEventListener('click', () => {
-  clearUser();
-  window.location.href = SHOP_URL;
-});
-
-document.getElementById('backToShopBtn').addEventListener('click', () => {
-  window.location.href = SHOP_URL;
-});
-
-document.getElementById('retryBtn').addEventListener('click', () => {
-  if (currentUser) loadProfileData();
-  else window.location.href = 'reg_log.html';
-});
-
-function checkInitialAuth() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const authToken = urlParams.get('auth');
-
-  if (authToken) {
-    window.history.replaceState({}, '', window.location.pathname);
-    verifyAuthToken(authToken);
-  } else {
-    currentUser = loadUser();
-    if (currentUser) loadProfileData();
-    else window.location.href = 'reg_log.html';
-  }
-}
-
-async function verifyAuthToken(token) {
-  showScreen('loading');
-  try {
-    const response = await fetch(`${API_URL}/api/auth/check/${token}`);
-    const data = await response.json();
-
-    if (data.success && data.authenticated && data.user) {
-      currentUser = data.user;
-      saveUser(data.user);
-      loadProfileData();
-    } else {
-      showError('Ошибка авторизации', 'Не удалось войти в аккаунт');
-    }
-  } catch (error) {
-    showError('Ошибка сети', 'Не удалось подключиться к серверу');
-  }
-}
-
-function openEditModal() {
-  document.getElementById('editUsername').value = currentUser.username || '';
-  document.getElementById('editModal').style.display = 'flex';
-}
-
-function closeEditModal() {
-  document.getElementById('editModal').style.display = 'none';
-}
-
-document.getElementById('avatarUpload').addEventListener('change', async function(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-
-  const formData = new FormData();
-  formData.append('avatar', file);
-  formData.append('userId', currentUser.id);
-
-  try {
-    const response = await fetch(`${API_URL}/api/user/avatar`, {
-      method: 'POST',
-      body: formData
-    });
-
-    const data = await response.json();
-
-    if (data.success) {
-      currentUser.avatarUrl = data.avatarUrl;
-      saveUser(currentUser);
-      updateProfileUI(currentUser);
-      closeEditModal();
-    } else {
-      alert('Ошибка при загрузке аватарки');
-    }
-  } catch (error) {
-    alert('Ошибка сети');
-  }
-});
-
-document.getElementById('removeAvatarBtn').addEventListener('click', async function() {
-  const formData = new FormData();
-  formData.append('avatar', new Blob([]), 'empty');
-  formData.append('userId', currentUser.id);
-
-  try {
-    const response = await fetch(`${API_URL}/api/user/avatar`, {
-      method: 'POST',
-      body: formData
-    });
-
-    const data = await response.json();
-
-    if (data.success) {
-      currentUser.avatarUrl = null;
-      saveUser(currentUser);
-      updateProfileUI(currentUser);
-      closeEditModal();
-    }
-  } catch (error) {
-    alert('Ошибка сети');
-  }
-});
-
-document.getElementById('saveUsernameBtn').addEventListener('click', async function() {
-  const newUsername = document.getElementById('editUsername').value.trim();
-
-  if (newUsername.length < 2 || newUsername.length > 50) {
-    alert('Имя должно быть от 2 до 50 символов');
-    return;
-  }
-
-  try {
-    const response = await fetch(`${API_URL}/api/user/username`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId: currentUser.id, username: newUsername })
-    });
-
-    const data = await response.json();
-
-    if (data.success) {
-      currentUser.username = data.username;
-      saveUser(currentUser);
-      updateProfileUI(currentUser);
-      closeEditModal();
-    } else {
-      alert(data.error || 'Ошибка при изменении имени');
-    }
-  } catch (error) {
-    alert('Ошибка сети');
-  }
-});
-
-async function generateTelegramLink() {
-  try {
-    const response = await fetch(`${API_URL}/api/user/telegram-link/${currentUser.id}`);
-    const data = await response.json();
-
-    if (data.success) {
-      if (confirm('Перейти в Telegram для привязки аккаунта?')) {
-        window.open(data.telegramLink, '_blank');
-      }
-    } else {
-      alert('Ошибка генерации ссылки');
-    }
-  } catch (error) {
-    alert('Ошибка сети');
-  }
-}
-
-function openTelegramLink() {
-  if (currentUser.auth_provider === 'telegram' || currentUser.auth_provider === 'yandex+telegram') return;
-  generateTelegramLink();
-}
-
-document.getElementById('unlinkTelegramBtn').addEventListener('click', async function() {
-  if (!confirm('Вы уверены, что хотите отвязать Telegram аккаунт?\n\nПосле отвязки вы больше не сможете входить через Telegram.')) {
-    return;
-  }
-
-  const btn = this;
-  const originalText = btn.innerHTML;
-  btn.innerHTML = 'Отвязываем...';
-  btn.disabled = true;
-
-  try {
-    const response = await fetch(`${API_URL}/api/user/unlink-telegram`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId: currentUser.id })
-    });
-
-    const data = await response.json();
-
-    if (data.success) {
-      currentUser.auth_provider = 'yandex';
-      currentUser.tgId = null;
-      currentUser.telegramUsername = null;
-      currentUser.firstName = null;
-      currentUser.lastName = null;
-
-      if (currentUser.avatarUrl && currentUser.avatarUrl.includes('api.telegram.org')) {
-        currentUser.avatarUrl = null;
-      }
-
-      saveUser(currentUser);
-      updateProfileUI(currentUser);
-
-      alert('Telegram успешно отвязан');
-      closeEditModal();
-    } else {
-      alert(data.error || 'Ошибка при отвязке Telegram');
-    }
-  } catch (error) {
-    console.error('Ошибка:', error);
-    alert('Ошибка сети при отвязке Telegram');
-  } finally {
-    btn.innerHTML = originalText;
-    btn.disabled = false;
-  }
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-  loadLottieAnimations();
-  updateBadge();
-  setTimeout(checkInitialAuth, 500);
-  setupMobileNavigation();
-
-  window.addEventListener('click', (e) => {
-    if (e.target === document.getElementById('editModal')) closeEditModal();
-  });
-});
-</script>
-</body>
-</html>
+      <path d="M21 18v1c0 1.1-0.9 2-2 2H5c-1.11 0-2-0.9-2-2V5c0-1.1 0.89-2 2-2h14c1.1 0 2 0.9 2 2v1h-9c-1.1 0-2 0.9-2 2v8c0 1.1 0.9 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-0.83 0-1.5-0.67-1.5-1.5s
