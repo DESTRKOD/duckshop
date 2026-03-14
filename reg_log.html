@@ -276,11 +276,10 @@ html, body {
         <span>Telegram</span>
       </button>
       
-      <a href="https://duck-shop-sever.onrender.com/api/auth/yandex" class="social-btn btn-yandex">
-        <span class="yandex-icon"></span>
-        <span>Яндекс</span>
-      </a>
-    </div>
+      <button class="social-btn btn-yandex" id="yandexBtn">
+  <span class="yandex-icon"></span>
+  <span>Яндекс</span>
+</button>
     
     <div class="loading-spinner" id="loadingSpinner"></div>
     
@@ -490,6 +489,12 @@ document.addEventListener('DOMContentLoaded', () => {
   
   document.getElementById('telegramBtn').addEventListener('click', handleTelegramAuth);
 });
+
+  document.getElementById('yandexBtn').addEventListener('click', () => {
+  console.log('[YANDEX] Клик по кнопке Яндекс — начинаем авторизацию');
+  window.location.href = `${API_URL}/api/auth/yandex`;
+});
+  
 </script>
 </body>
 </html>
