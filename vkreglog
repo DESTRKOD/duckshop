@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<title>Вход / Регистрация - Duck Shop</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta http-equiv="Content-Security-Policy" content="
+  default-src 'self' https://id.vk.com https://*.vk.com https://*.vk.me;
+  script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://id.vk.com https://*.vk.com https://unpkg.com;
+  style-src 'self' 'unsafe-inline';
+  img-src 'self' data: https://i.imgur.com https://*.vk.com https://*.userapi.com;
+  connect-src 'self' https://duck-shop-sever.onrender.com https://id.vk.com https://*.vk.com wss://*.vk.com;
+  frame-src 'self' https://id.vk.com https://*.vk.com;
+  font-src 'self' data:;
+">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+<script src="https://unpkg.com/@vkid/sdk@<3.0.0/dist-sdk/umd/index.js"></script>
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(180deg, #0b3c91 0%, #1565c0 55%, #42a5f5 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px 30px;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 440px;
+  min-height: 100vh;
+}
+
+.auth-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.auth-sticker {
+  width: 160px;
+  height: 160px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 480px) {
+  .auth-sticker {
+    width: 140px;
+    height: 140px;
+    margin-bottom: 15px;
+  }
+}
+
+.auth-title {
+  font-size: 32px;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 8px;
+  text-align: center;
+  text-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.auth-subtitle {
+  font-size: 16px;
+  color: rgba(255,255,255,0.9);
+  margin-bottom: 32px;
+  text-align: center;
+  max-width: 320px;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+.divider {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0 20px;
+  color: rgba(255,255,255,0.6);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.divider-line {
+  flex: 1;
+  height: 1px;
+  background: rgba(255,255,255,0.2);
+}
+
+.social-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.social-btn {
+  width: 100%;
+  height: 60px;
+  border-radius: 18px;
+  border: none;
+  font-weight: 700;
+  font-size: 18px;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 0 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+.social-btn:active {
+  transform: scale(0.98);
+}
+
+.social-btn svg {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.btn-telegram {
+  background: #27A7E7;
+  color: white;
+}
+
+.btn-telegram svg {
+  fill: white;
+}
+
+.btn-vk {
+  background: #0077FF;
+  color: white;
+}
+
+.btn-vk svg {
+  fill: white;
+}
+
+.vk-icon {
+  width: 24px;
+  height: 24px;
+  background-image: url('https://i.imgur.com/yHZvQ1k.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.status-message {
+  margin-top: 16px;
+  padding: 14px 18px;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  display: none;
+  width: 100%;
+  box-sizing: border-box;
+  backdrop-filter: blur(10px);
+}
+
+.status-loading {
+  background: rgba(255,255,255,0.12);
+  color: white;
+  border-left: 4px solid #4fc3f7;
+}
+
+.status-success {
+  background: rgba(0,200,83,0.15);
+  color: white;
+  border-left: 4px solid #00c853;
+}
+
+.status-error {
+  background: rgba(255,45,85,0.15);
+  color: white;
+  border-left: 4px solid #ff2d55;
+}
+
+.loading-spinner {
+  display: none;
+  width: 48px;
+  height: 48px;
+  border: 4px solid rgba(255,255,255,0.2);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 20px auto;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.back-link {
+  margin-top: 20px;
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+  font-size: 15px;
+  transition: color 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 0;
+}
+
+.back-link:hover {
+  color: white;
+}
+
+.back-link svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+@media (max-width: 380px) {
+  .auth-title {
+    font-size: 28px;
+  }
+  
+  .auth-subtitle {
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+  
+  .social-btn {
+    height: 54px;
+    font-size: 16px;
+  }
+  
+  .social-btn svg,
+  .vk-icon {
+    width: 22px;
+    height: 22px;
+  }
+}
+</style>
+</head>
+
+<body>
+<div class="auth-screen">
+  <div class="auth-content">
+    <div id="lottie-animation" class="auth-sticker"></div>
+    
+    <div class="auth-title">Добро пожаловать</div>
+    <div class="auth-subtitle">Войдите или зарегистрируйтесь</div>
+    
+    <div class="divider">
+      <div class="divider-line"></div>
+      <span>продолжить через</span>
+      <div class="divider-line"></div>
+    </div>
+    
+    <div class="social-buttons">
+      <!-- Кнопка Telegram -->
+      <button class="social-btn btn-telegram" id="telegramBtn">
+        <svg viewBox="0 0 24 24">
+          <path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/>
+        </svg>
+        <span>Telegram</span>
+      </button>
+      
+      <!-- Кнопка VK ID -->
+      <button class="social-btn btn-vk" id="vkBtn">
+        <svg viewBox="0 0 24 24">
+          <path d="M15.07 2H8.93C3.33 2 2 3.33 2 8.93v6.14C2 20.67 3.33 22 8.93 22h6.14c5.6 0 6.93-1.33 6.93-6.93V8.93C22 3.33 20.67 2 15.07 2zm3.54 14.2h-1.46c-.56 0-.73-.43-1.73-1.44-.86-.86-1.24-.98-1.46-.98-.3 0-.38.08-.38.47v1.23c0 .34-.11.54-1.02.54-1.5 0-3.17-.92-4.35-2.64-1.8-2.51-2.29-4.4-2.29-4.79 0-.2.08-.39.47-.39h1.46c.35 0 .48.16.61.54.68 1.83 1.8 3.43 2.27 3.43.17 0 .25-.08.25-.52v-1.82c-.06-.96-.56-1.04-.56-1.39 0-.16.13-.3.3-.3h2.3c.26 0 .35.14.35.45v2.41c0 .26.11.35.18.35.15 0 .27-.09.53-.35 1.01-1.14 1.72-2.89 1.72-2.89.1-.17.23-.26.44-.26h1.46c.45 0 .55.23.45.54-.2.9-2.13 3.24-2.13 3.24-.16.22-.21.33 0 .59.16.21.7.68 1.06 1.1.65.75 1.15 1.38 1.15 1.8.01.41-.3.6-.74.6z"/>
+        </svg>
+        <span>VK ID</span>
+      </button>
+    </div>
+    
+    <div class="loading-spinner" id="loadingSpinner"></div>
+    
+    <div class="status-message status-loading" id="telegramLoading">
+      ⏳ Открываем Telegram...
+    </div>
+    <div class="status-message status-success" id="telegramSuccess">
+      ✅ Перейдите в Telegram для подтверждения
+    </div>
+    <div class="status-message status-error" id="telegramError"></div>
+    
+    <div class="status-message status-loading" id="vkLoading" style="display: none;">
+      ⏳ Перенаправляем на VK ID...
+    </div>
+    <div class="status-message status-error" id="vkError" style="display: none;"></div>
+  </div>
+  
+  <a href="index.html" class="back-link">
+    <svg viewBox="0 0 24 24">
+      <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+    </svg>
+    Вернуться в магазин
+  </a>
+</div>
+
+<script>
+const API_URL = 'https://duck-shop-sever.onrender.com';
+const SITE_URL = 'https://shopdxs.ru';
+const USER_KEY = 'duck_user_v1';
+
+let telegramCheckInterval = null;
+let telegramToken = null;
+
+// ===== ПРОВЕРКА ТЕХПЕРЕРЫВА =====
+(function() {
+  var urlParams = new URLSearchParams(window.location.search);
+  var adminBypass = urlParams.get('admin_bypass');
+  var authToken = urlParams.get('auth');
+  
+  if (authToken) {
+    console.log('🔑 Обнаружен auth токен, пропускаем проверку');
+    return;
+  }
+  
+  if (adminBypass) {
+    sessionStorage.setItem('admin_bypass_active', 'true');
+    sessionStorage.setItem('admin_bypass_key', adminBypass);
+    window.history.replaceState({}, '', window.location.pathname);
+    
+    setTimeout(function() {
+      var adminNote = document.createElement('div');
+      adminNote.style.cssText = [
+        'position: fixed',
+        'bottom: 100px',
+        'left: 50%',
+        'transform: translateX(-50%)',
+        'background: rgba(0,0,0,0.8)',
+        'color: #ffd700',
+        'padding: 8px 20px',
+        'border-radius: 30px',
+        'font-size: 14px',
+        'font-weight: 600',
+        'z-index: 10000',
+        'backdrop-filter: blur(5px)',
+        'border: 1px solid rgba(255,215,0,0.3)',
+        'box-shadow: 0 4px 15px rgba(0,0,0,0.3)',
+        'animation: fadeIn 0.3s ease'
+      ].join(';');
+      adminNote.textContent = '🔑 Режим администратора (техперерыв игнорируется)';
+      document.body.appendChild(adminNote);
+      
+      setTimeout(function() {
+        adminNote.style.opacity = '0';
+        adminNote.style.transition = 'opacity 0.5s';
+        setTimeout(function() {
+          if (adminNote.parentNode) {
+            adminNote.parentNode.removeChild(adminNote);
+          }
+        }, 500);
+      }, 4000);
+    }, 1000);
+    
+    return;
+  }
+  
+  if (sessionStorage.getItem('admin_bypass_active') === 'true') {
+    return;
+  }
+  
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', API_URL + '/api/maintenance-status', false);
+  xhr.send();
+  
+  if (xhr.status === 200) {
+    var data = JSON.parse(xhr.responseText);
+    if (data.maintenance) {
+      sessionStorage.setItem('attempted_page', window.location.pathname);
+      window.location.href = 'working';
+    }
+  }
+})();
+
+(function() {
+  var style = document.createElement('style');
+  style.textContent = '@keyframes fadeIn{from{opacity:0;transform:translate(-50%,20px)}to{opacity:1;transform:translate(-50%,0)}}';
+  document.head.appendChild(style);
+})();
+
+function initLottie() {
+  try {
+    lottie.loadAnimation({
+      container: document.getElementById('lottie-animation'),
+      renderer: 'svg',
+      loop: true,
+      autoplay: true,
+      path: 'reg_log.json'
+    });
+  } catch (e) {
+    console.log('Lottie не загрузилась');
+  }
+}
+
+function hideAllStatuses() {
+  document.getElementById('telegramLoading').style.display = 'none';
+  document.getElementById('telegramSuccess').style.display = 'none';
+  document.getElementById('telegramError').style.display = 'none';
+  document.getElementById('vkLoading').style.display = 'none';
+  document.getElementById('vkError').style.display = 'none';
+  document.getElementById('loadingSpinner').style.display = 'none';
+}
+
+function showTelegramStatus(type, message = '') {
+  hideAllStatuses();
+  if (type === 'loading') {
+    document.getElementById('telegramLoading').style.display = 'block';
+  } else if (type === 'success') {
+    document.getElementById('telegramSuccess').style.display = 'block';
+  } else if (type === 'error') {
+    document.getElementById('telegramError').textContent = message;
+    document.getElementById('telegramError').style.display = 'block';
+  }
+}
+
+function showVkStatus(type, message = '') {
+  hideAllStatuses();
+  if (type === 'loading') {
+    document.getElementById('vkLoading').style.display = 'block';
+  } else if (type === 'error') {
+    document.getElementById('vkError').textContent = message;
+    document.getElementById('vkError').style.display = 'block';
+  }
+}
+
+// ===== TELEGRAM AUTH =====
+async function handleTelegramAuth() {
+  if (sessionStorage.getItem('admin_bypass_active') === 'true') {
+    showTelegramStatus('error', '❌ В режиме администратора авторизация недоступна');
+    return;
+  }
+  
+  showTelegramStatus('loading');
+  
+  try {
+    const response = await fetch(`${API_URL}/api/auth/start-login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    });
+    
+    const data = await response.json();
+    
+    if (data.success && data.telegramLink) {
+      telegramToken = data.token;
+      showTelegramStatus('success');
+      
+      setTimeout(() => {
+        window.open(data.telegramLink, '_blank');
+      }, 1000);
+      
+      startTelegramPolling();
+    } else {
+      showTelegramStatus('error', '❌ Ошибка получения ссылки');
+    }
+  } catch (error) {
+    showTelegramStatus('error', '❌ Ошибка соединения');
+  }
+}
+
+function startTelegramPolling() {
+  if (telegramCheckInterval) clearInterval(telegramCheckInterval);
+  
+  telegramCheckInterval = setInterval(async () => {
+    if (!telegramToken) return;
+    
+    try {
+      const response = await fetch(`${API_URL}/api/auth/check/${telegramToken}`);
+      const data = await response.json();
+      
+      if (data.success && data.authenticated) {
+        clearInterval(telegramCheckInterval);
+        localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+        window.location.href = `${SITE_URL}/index.html`;
+      } else if (data.expired) {
+        clearInterval(telegramCheckInterval);
+        showTelegramStatus('error', '❌ Время ожидания истекло');
+      }
+    } catch (error) {
+      console.error('Ошибка проверки:', error);
+    }
+  }, 2000);
+  
+  setTimeout(() => {
+    if (telegramCheckInterval) {
+      clearInterval(telegramCheckInterval);
+      showTelegramStatus('error', '❌ Время ожидания истекло');
+    }
+  }, 3 * 60 * 1000);
+}
+
+// ===== VK ID AUTH =====
+function handleVkAuth() {
+  if (sessionStorage.getItem('admin_bypass_active') === 'true') {
+    showVkStatus('error', '❌ В режиме администратора авторизация недоступна');
+    return;
+  }
+  
+  showVkStatus('loading');
+  
+  try {
+    // Простой редирект на серверный эндпоинт
+    window.location.href = `${API_URL}/api/auth/vk`;
+  } catch (error) {
+    showVkStatus('error', '❌ Ошибка при переходе на VK ID');
+  }
+}
+
+// Альтернативный вариант с SDK (если захочешь использовать)
+function initVkSdk() {
+  if ('VKIDSDK' in window) {
+    const VKID = window.VKIDSDK;
+
+    VKID.Config.init({
+      app: 54483880,
+      redirectUrl: `${API_URL}/api/auth/vk/callback`,
+      responseMode: VKID.ConfigResponseMode.Callback,
+      source: VKID.ConfigSource.LOWCODE,
+      scope: 'email photos',
+    });
+
+    const oneTap = new VKID.OneTap();
+
+    oneTap.render({
+      container: document.currentScript.parentElement,
+      showAlternativeLogin: true
+    })
+    .on(VKID.WidgetEvents.ERROR, (error) => {
+      console.error('VK OneTap error:', error);
+    });
+  }
+}
+
+window.addEventListener('beforeunload', () => {
+  if (telegramCheckInterval) clearInterval(telegramCheckInterval);
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  initLottie();
+  hideAllStatuses();
+  
+  document.getElementById('telegramBtn').addEventListener('click', handleTelegramAuth);
+  document.getElementById('vkBtn').addEventListener('click', handleVkAuth);
+  
+  // Можно раскомментировать для OneTap
+  // initVkSdk();
+});
+</script>
+</body>
+</html>
