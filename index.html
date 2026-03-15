@@ -2,112 +2,131 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8" />
-<title>Duck Shop</title>
+<title>Загрузка... - Duck Shop</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 <style>
 html, body {
   margin: 0;
   width: 100%;
   height: 100%;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   background: linear-gradient(180deg, #0b3c91 0%, #1565c0 55%, #42a5f5 100%);
   overflow: hidden;
 }
-.screen, .menu {
+
+.screen {
   position: absolute;
   inset: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   opacity: 0;
   transform: translateY(16px);
   pointer-events: none;
   transition: opacity .35s ease, transform .35s ease;
   padding: 20px;
   box-sizing: border-box;
+  overflow-y: auto;
 }
-.screen.active, .menu.active {
+
+.screen.active {
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
 }
-.screen.leaving, .menu.leaving {
+
+.screen.leaving {
   opacity: 0;
   transform: translateY(-40px);
 }
-.sticker {
-  width: 260px;
-  height: 260px;
-  margin-bottom: 20px;
+
+#loading .sticker {
+  width: 200px;
+  height: 200px;
+  margin: auto;
 }
-.title {
-  margin-top: 14px;
-  font-size: 30px;
+
+#loading .title {
+  color: white;
+  font-size: 24px;
   font-weight: 800;
-  color: #fff;
   text-align: center;
-  margin-bottom: 20px;
-}
-.button {
   margin-top: 20px;
-  padding: 20px 56px;
-  font-size: 22px;
-  font-weight: 800;
-  background: #fff;
-  color: #0b3c91;
-  border-radius: 18px;
-  box-shadow: 0 16px 36px rgba(0,0,0,.45);
-  transition: transform .12s ease, box-shadow .12s ease;
-  user-select: none;
-  cursor: pointer;
-  border: none;
-  outline: none;
-  min-width: 280px;
-  text-align: center;
 }
-.button.pressed {
-  transform: translateY(6px) scale(.9);
-  box-shadow: 0 6px 14px rgba(0,0,0,.35);
-}
-.button:disabled {
-  background: #cccccc;
-  color: #666666;
-  cursor: not-allowed;
-  transform: none !important;
-  box-shadow: 0 8px 20px rgba(0,0,0,.25) !important;
-}
-.menu {
-  justify-content: flex-start;
+
+.game-screen {
   padding: 0;
+  overflow-y: auto;
 }
-.menu-header {
+
+.game-header {
   width: 100%;
   padding: 16px 20px;
-  font-size: 26px;
-  font-weight: 900;
-  color: #fff;
   background: linear-gradient(180deg, #0b3c91, #124fa5);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  color: white;
   box-sizing: border-box;
   box-shadow: 0 4px 20px rgba(0,0,0,0.2);
   position: sticky;
   top: 0;
   z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
-.menu-header-title {
+
+.back-button {
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 14px;
+  background: rgba(255,255,255,.14);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+  color: white;
+  font-size: 24px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.back-button:hover {
+  background: rgba(255,255,255,.25);
+  transform: translateY(-1px);
+}
+
+.back-button:active {
+  transform: scale(.97);
+}
+
+.game-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid rgba(255,255,255,0.3);
+}
+
+.game-title {
+  flex: 1;
+  font-size: 22px;
+  font-weight: 800;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  flex: 1;
 }
+
+.header-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
 .auth-btn {
   position: relative;
   min-width: 44px;
@@ -128,18 +147,22 @@ html, body {
   text-decoration: none;
   transition: all 0.15s ease;
 }
+
 .auth-btn:active {
   transform: scale(.97);
 }
+
 .auth-btn:hover {
   background: rgba(255,255,255,.20);
 }
+
 .auth-btn svg {
   width: 22px;
   height: 22px;
   fill: #fff;
   flex-shrink: 0;
 }
+
 .cart-btn {
   position: relative;
   width: 44px;
@@ -154,18 +177,22 @@ html, body {
   flex-shrink: 0;
   transition: all 0.15s ease;
 }
+
 .cart-btn:hover {
   background: rgba(255,255,255,.2);
   transform: translateY(-1px);
 }
+
 .cart-btn:active {
   transform: scale(.97);
 }
+
 .cart-btn svg {
   width: 22px;
   height: 22px;
   fill: #fff;
 }
+
 .cart-badge {
   position: absolute;
   top: 6px;
@@ -183,15 +210,20 @@ html, body {
   justify-content: center;
   box-shadow: 0 8px 18px rgba(0,0,0,.25);
 }
-.menu-scroll {
-  flex: 1;
+
+.game-content {
   width: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
   padding: 16px;
   box-sizing: border-box;
-  -webkit-overflow-scrolling: touch;
+  overflow-y: visible;
+  padding-bottom: 110px;
 }
+
+.products-grid {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
 .shop-card {
   position: relative;
   height: 240px;
@@ -207,10 +239,12 @@ html, body {
   transform: translateY(0);
   margin-bottom: 18px;
 }
+
 .shop-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 18px 36px rgba(0,0,0,.35);
 }
+
 .gift {
   position: absolute;
   top: 10px;
@@ -219,11 +253,13 @@ html, body {
   height: 32px;
   z-index: 2;
 }
+
 .gift img {
   width: 100%;
   height: 100%;
   display:block;
 }
+
 .shop-top {
   position: relative;
   flex: 0 0 60%;
@@ -236,6 +272,7 @@ html, body {
   overflow: hidden;
   min-height: 0;
 }
+
 .shop-top img {
   max-width: 100%;
   max-height: 100%;
@@ -245,6 +282,7 @@ html, body {
   object-position: center;
   display: block;
 }
+
 .new-badge {
   position: absolute;
   top: 8px;
@@ -258,6 +296,7 @@ html, body {
   z-index: 2;
   box-shadow: 0 3px 8px rgba(0,0,0,0.2);
 }
+
 .shop-bottom {
   flex: 0 0 40%;
   background: #fff;
@@ -267,6 +306,7 @@ html, body {
   padding: 12px 14px;
   gap: 8px;
 }
+
 .shop-name {
   font-size: 15px;
   font-weight: 700;
@@ -279,6 +319,7 @@ html, body {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 }
+
 .shop-buy {
   min-width: 140px;
   height: 44px;
@@ -295,97 +336,72 @@ html, body {
   user-select: none;
   transition: transform 0.15s ease, background 0.15s ease;
 }
+
 .shop-buy:hover {
   background: #333;
 }
+
 .shop-buy:active {
   transform: scale(.95);
 }
+
 .shop-buy svg {
   width: 20px;
   height: 20px;
   fill: #fff;
 }
+
 .shop-price {
   color: #fff;
   font-size: 15px;
   font-weight: 800;
   white-space: nowrap;
 }
-.checkout-screen .title {
-  margin-bottom: 24px;
-}
-.checkout-summary {
-  width: 100%;
-  max-width: 400px;
-  background: rgba(255,255,255,0.1);
-  border-radius: 20px;
-  padding: 20px;
-  margin: 20px 0;
+
+.loading-products {
   color: white;
-}
-.checkout-item {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 12px;
-  font-size: 16px;
-}
-.checkout-total {
-  display: flex;
-  justify-content: space-between;
-  font-size: 22px;
-  font-weight: 900;
-  margin-top: 20px;
-  padding-top: 20px;
-  border-top: 2px solid rgba(255,255,255,0.2);
-}
-.order-number {
+  text-align: center;
+  padding: 60px;
   font-size: 18px;
-  font-weight: 700;
-  color: #ffd700;
-  margin: 10px 0 20px 0;
-  padding: 10px 20px;
-  background: rgba(255,255,255,0.1);
-  border-radius: 12px;
-  text-align: center;
-  animation: pulse 2s infinite;
 }
-@keyframes pulse {
-  0% { opacity: 0.8; }
-  50% { opacity: 1; }
-  100% { opacity: 0.8; }
-}
-.amount-error {
+
+.error-products {
   color: #ff6b6b;
-  font-weight: 800;
-  font-size: 14px;
-  margin-top: 12px;
   text-align: center;
-  display: none;
-  background: rgba(255,255,255,0.1);
-  padding: 10px;
-  border-radius: 12px;
-  max-width: 400px;
-  width: 100%;
+  padding: 60px;
+  font-size: 18px;
 }
+
+.no-products {
+  color: rgba(255,255,255,0.8);
+  text-align: center;
+  padding: 60px;
+  font-size: 18px;
+}
+
 .row-two {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 18px;
   margin-bottom: 18px;
 }
+
 .row-centered {
   display: flex;
   justify-content: center;
   margin-bottom: 18px;
 }
+
 .row-centered .shop-card {
   width: calc(50% - 9px);
+  margin-bottom: 0;
 }
+
 .empty-card {
   visibility: hidden;
   pointer-events: none;
 }
+
 .cart-overlay {
   position: fixed;
   inset: 0;
@@ -397,9 +413,11 @@ html, body {
   padding: 12px;
   box-sizing: border-box;
 }
+
 .cart-overlay.open {
   display: flex;
 }
+
 .cart-sheet {
   width: 100%;
   max-width: 540px;
@@ -414,10 +432,12 @@ html, body {
   display: flex;
   flex-direction: column;
 }
+
 .cart-overlay.open .cart-sheet {
   transform: translateY(0);
   opacity: 1;
 }
+
 .cart-head {
   background: linear-gradient(180deg, #0b3c91, #124fa5);
   color: #fff;
@@ -428,11 +448,13 @@ html, body {
   gap: 10px;
   flex-shrink: 0;
 }
+
 .cart-head h3 {
   margin: 0;
   font-size: 20px;
   font-weight: 900;
 }
+
 .cart-close {
   width: 40px;
   height: 40px;
@@ -448,9 +470,11 @@ html, body {
   align-items: center;
   justify-content: center;
 }
+
 .cart-close:active {
   transform: scale(.95);
 }
+
 .cart-body {
   flex: 1;
   overflow-y: auto;
@@ -460,16 +484,20 @@ html, body {
   scrollbar-color: rgba(0,0,0,0.2) transparent;
   max-height: 50vh;
 }
+
 .cart-body::-webkit-scrollbar {
   width: 6px;
 }
+
 .cart-body::-webkit-scrollbar-track {
   background: transparent;
 }
+
 .cart-body::-webkit-scrollbar-thumb {
   background-color: rgba(0,0,0,0.2);
   border-radius: 3px;
 }
+
 .cart-empty {
   padding: 18px 10px;
   text-align: center;
@@ -477,6 +505,7 @@ html, body {
   font-weight: 800;
   font-size: 16px;
 }
+
 .cart-row {
   display: grid;
   grid-template-columns: 56px 1fr auto;
@@ -487,6 +516,7 @@ html, body {
   background: #f6f7fb;
   margin-bottom: 8px;
 }
+
 .cart-thumb {
   width: 56px;
   height: 56px;
@@ -497,15 +527,18 @@ html, body {
   justify-content: center;
   overflow: hidden;
 }
+
 .cart-thumb img {
   max-width: 92%;
   max-height: 92%;
   object-fit: contain;
   display: block;
 }
+
 .cart-info {
   min-width: 0;
 }
+
 .cart-name {
   font-weight: 900;
   font-size: 14px;
@@ -515,17 +548,20 @@ html, body {
   text-overflow: ellipsis;
   color: #333;
 }
+
 .cart-sub {
   margin-top: 2px;
   font-size: 12px;
   font-weight: 800;
   color: rgba(0,0,0,.55);
 }
+
 .cart-qty {
   display: flex;
   align-items: center;
   gap: 8px;
 }
+
 .qty-btn {
   width: 34px;
   height: 34px;
@@ -541,15 +577,18 @@ html, body {
   align-items: center;
   justify-content: center;
 }
+
 .qty-btn:active {
   transform: scale(.95);
 }
+
 .qty-num {
   min-width: 22px;
   text-align: center;
   font-weight: 900;
   color: #333;
 }
+
 .cart-foot {
   padding: 12px;
   border-top: 1px solid rgba(0,0,0,.08);
@@ -557,6 +596,7 @@ html, body {
   gap: 10px;
   flex-shrink: 0;
 }
+
 .cart-total {
   display: flex;
   align-items: center;
@@ -565,11 +605,13 @@ html, body {
   font-size: 16px;
   color: #333;
 }
+
 .cart-actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
 }
+
 .cart-action {
   height: 46px;
   border-radius: 14px;
@@ -579,122 +621,254 @@ html, body {
   font-size: 15px;
   transition: transform 0.15s ease;
 }
+
 .cart-action:active {
   transform: scale(.98);
 }
+
 .btn-clear {
   background: #eef0f6;
   color: #333;
 }
+
 .btn-checkout {
   background: #000;
   color: #fff;
 }
+
+.mobile-nav {
+  position: fixed;
+  bottom: 16px;
+  left: 16px;
+  right: 16px;
+  display: none;
+  align-items: center;
+  justify-content: space-around;
+  background: rgba(65, 105, 225, 0.25);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-radius: 40px;
+  padding: 8px 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.15);
+  z-index: 10000;
+  box-sizing: border-box;
+  transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.4, 1), opacity 0.2s ease;
+  touch-action: pan-y;
+  cursor: grab;
+}
+
+.mobile-nav:active {
+  cursor: grabbing;
+  transform: scale(0.98);
+  transition: transform 0.05s ease;
+}
+
+.mobile-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: transparent;
+  border: none;
+  padding: 8px 10px;
+  border-radius: 30px;
+  min-width: 60px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+  color: rgba(255, 255, 255, 0.75);
+  fill: rgba(255, 255, 255, 0.75);
+  position: relative;
+  text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.mobile-nav-item svg {
+  width: 24px;
+  height: 24px;
+  transition: transform 0.2s ease, filter 0.2s ease;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+
+.mobile-nav-item span {
+  font-size: 11px;
+  font-weight: 700;
+  transition: color 0.2s ease;
+}
+
+.mobile-nav-item.active {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  fill: white;
+  transform: scale(1.05);
+  backdrop-filter: blur(5px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.mobile-nav-item.active svg {
+  transform: translateY(-1px);
+  filter: drop-shadow(0 3px 6px rgba(0,100,255,0.5));
+}
+
+.mobile-nav-item:active {
+  transform: scale(0.92);
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.mobile-nav .cart-badge-mobile {
+  position: absolute;
+  top: 2px;
+  right: 6px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #ff2d55;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 900;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(255,45,85,0.4);
+  border: 2px solid rgba(65, 105, 225, 0.4);
+}
+
+.mobile-nav .cart-badge-mobile.show {
+  display: inline-flex;
+}
+
 @media (max-width: 768px) {
-  .menu-header {
-    padding: 14px 16px;
-    font-size: 22px;
+  .game-header {
+    padding: 12px 16px;
   }
-  .menu-header .auth-btn,
-  .menu-header .cart-btn {
+  
+  .game-header .auth-btn,
+  .game-header .cart-btn {
     display: none !important;
   }
-  .menu-scroll {
+  
+  .game-title {
+    font-size: 18px;
+  }
+  
+  .game-icon {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .back-button {
+    width: 36px;
+    height: 36px;
+    font-size: 20px;
+  }
+  
+  .game-content {
     padding: 12px;
     padding-bottom: 110px;
   }
+  
   .shop-card {
     height: 220px;
     margin-bottom: 12px;
   }
+  
   .shop-top {
     flex: 0 0 55%;
     padding: 8px;
   }
+  
   .shop-bottom {
     flex: 0 0 45%;
     padding: 8px 10px;
     gap: 6px;
   }
+  
   .shop-name {
     font-size: 14px;
   }
+  
   .shop-buy {
     min-width: 120px;
     height: 40px;
     padding: 0 10px;
   }
+  
   .shop-price {
     font-size: 14px;
   }
+  
   .shop-buy svg {
     width: 18px;
     height: 18px;
   }
+  
   .new-badge {
     top: 6px;
     left: 6px;
     padding: 3px 6px;
     font-size: 10px;
   }
-  .button {
-    padding: 16px 40px;
-    font-size: 18px;
-    margin-top: 20px;
-    min-width: 240px;
+  
+  .row-two {
+    gap: 12px;
   }
-  .title {
-    font-size: 26px;
-  }
-  .sticker {
-    width: 200px;
-    height: 200px;
-  }
-  .cart-overlay {
-    padding-bottom: 95px;
-  }
-  .cart-sheet {
-    margin-bottom: 10px;
+  
+  .mobile-nav {
+    display: flex;
   }
 }
+
 @media (max-width: 480px) {
   .row-two {
     grid-template-columns: 1fr;
     gap: 12px;
   }
+  
   .shop-card {
     height: 200px;
   }
+  
   .shop-name {
     font-size: 13px;
   }
+  
   .shop-buy {
     min-width: 100px;
     height: 36px;
   }
-  .button {
-    padding: 14px 32px;
+  
+  .game-header {
+    padding: 10px 12px;
+  }
+  
+  .game-title {
     font-size: 16px;
-    min-width: 200px;
   }
-  .menu-header {
-    padding: 12px 14px;
-    font-size: 20px;
+  
+  .game-icon {
+    width: 32px;
+    height: 32px;
   }
-  .menu-header-title {
+  
+  .back-button {
+    width: 32px;
+    height: 32px;
     font-size: 18px;
   }
-  .menu-header .auth-btn,
-  .menu-header .cart-btn {
-    display: none !important;
+  
+  .auth-btn span {
+    display: none;
   }
-  .menu-scroll {
+  
+  .auth-btn {
+    padding: 0 10px;
+  }
+  
+  .game-content {
     padding-bottom: 105px;
   }
-  .cart-overlay {
-    padding-bottom: 90px;
-  }
 }
+
 @media (max-width: 360px) {
   .shop-card {
     height: 190px;
@@ -716,20 +890,11 @@ html, body {
   .shop-price {
     font-size: 12px;
   }
-  .menu-header .auth-btn,
-  .menu-header .cart-btn {
-    display: none !important;
-  }
-  .menu-scroll {
-    padding-bottom: 100px;
-  }
-  .cart-overlay {
-    padding-bottom: 85px;
-  }
 }
+
 @media (min-width: 769px) {
-  .menu-scroll {
-    padding: 18px 16px 40px;
+  .game-content {
+    padding: 20px;
   }
   .auth-btn {
     min-width: auto;
@@ -746,158 +911,48 @@ html, body {
     display: none !important;
   }
 }
+
 @media (min-width: 481px) and (max-width: 768px) {
   .row-two {
     grid-template-columns: 1fr 1fr;
   }
-  .menu-scroll {
-    padding-bottom: 110px;
-  }
-  .cart-overlay {
-    padding-bottom: 95px;
-  }
-}
-.mobile-nav {
-  position: fixed;
-  bottom: 16px;
-  left: 16px;
-  right: 16px;
-  display: none;
-  align-items: center;
-  justify-content: space-around;
-  background: rgba(65, 105, 225, 0.25);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border-radius: 40px;
-  padding: 8px 12px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.15);
-  z-index: 10000;
-  box-sizing: border-box;
-  transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.4, 1), opacity 0.2s ease;
-  touch-action: pan-y;
-  cursor: grab;
-}
-.mobile-nav:active {
-  cursor: grabbing;
-  transform: scale(0.98);
-  transition: transform 0.05s ease;
-}
-#hello .mobile-nav,
-#load .mobile-nav,
-#intro .mobile-nav,
-#waiting .mobile-nav,
-#checkout .mobile-nav,
-#badPay .mobile-nav {
-  display: none !important;
-}
-.mobile-nav-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  background: transparent;
-  border: none;
-  padding: 8px 10px;
-  border-radius: 30px;
-  min-width: 60px;
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
-  color: rgba(255, 255, 255, 0.75);
-  fill: rgba(255, 255, 255, 0.75);
-  position: relative;
-  text-shadow: 0 2px 5px rgba(0,0,0,0.2);
-}
-.mobile-nav-item svg {
-  width: 24px;
-  height: 24px;
-  transition: transform 0.2s ease, filter 0.2s ease;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
-}
-.mobile-nav-item span {
-  font-size: 11px;
-  font-weight: 700;
-  transition: color 0.2s ease;
-}
-.mobile-nav-item.active {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-  fill: white;
-  transform: scale(1.05);
-  backdrop-filter: blur(5px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-}
-.mobile-nav-item.active svg {
-  transform: translateY(-1px);
-  filter: drop-shadow(0 3px 6px rgba(0,100,255,0.5));
-}
-.mobile-nav-item:active {
-  transform: scale(0.92);
-  background: rgba(255, 255, 255, 0.25);
-}
-.mobile-nav .cart-badge-mobile {
-  position: absolute;
-  top: 2px;
-  right: 6px;
-  min-width: 18px;
-  height: 18px;
-  padding: 0 5px;
-  border-radius: 999px;
-  background: #ff2d55;
-  color: #fff;
-  font-size: 11px;
-  font-weight: 900;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 12px rgba(255,45,85,0.4);
-  border: 2px solid rgba(65, 105, 225, 0.4);
-}
-.mobile-nav .cart-badge-mobile.show {
-  display: inline-flex;
-}
-.wallet-desktop {
-  display: inline-flex !important;
-  margin-right: 8px;
 }
 </style>
 </head>
 <body>
-<div id="hello" class="screen active">
-  <div id="animHello" class="sticker"></div>
-  <div class="title">Добро пожаловать</div>
-  <div class="button" id="continueBtn">Продолжить</div>
+
+<div id="loading" class="screen active">
+  <div class="sticker" id="loadingAnim"></div>
+  <div class="title">Загрузка игры...</div>
 </div>
-<div id="load" class="screen">
-  <div id="animDownload" class="sticker"></div>
-  <div class="title">Загрузка…</div>
-</div>
-<div id="intro" class="screen">
-  <div id="animMain" class="sticker"></div>
-  <div class="title">Магазин Duck Shop</div>
-</div>
-<div id="menu" class="menu">
-  <div class="menu-header">
-    <div class="menu-header-title">Магазин Duck Shop</div>
-    <div style="display: flex; gap: 8px; align-items: center;">
-      <button class="auth-btn wallet-desktop" id="walletDesktopBtn">
+
+<div id="game" class="screen game-screen">
+  <div class="game-header">
+    <a href="index.html" class="back-button">←</a>
+    <img src="" alt="" class="game-icon" id="gameIcon">
+    <div class="game-title" id="gameTitle">Загрузка...</div>
+    <div class="header-actions">
+      <button class="auth-btn wallet-desktop" id="walletBtn">
         <svg viewBox="0 0 24 24">
           <path d="M21 18v1c0 1.1-0.9 2-2 2H5c-1.11 0-2-0.9-2-2V5c0-1.1 0.89-2 2-2h14c1.1 0 2 0.9 2 2v1h-9c-1.1 0-2 0.9-2 2v8c0 1.1 0.9 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-0.83 0-1.5-0.67-1.5-1.5s0.67-1.5 1.5-1.5 1.5 0.67 1.5 1.5-0.67 1.5-1.5 1.5z"/>
         </svg>
         <span>Кошелёк</span>
       </button>
+      
+      <button class="auth-btn" id="supportBtn">
+        <svg viewBox="0 0 24 24">
+          <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM11 9h2v2h-2V9zm0 4h2v2h-2v-2z"/>
+        </svg>
+        <span>Поддержка</span>
+      </button>
+      
       <button class="auth-btn" id="authBtn">
         <svg viewBox="0 0 24 24">
           <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
         </svg>
         <span id="authBtnText">Войти</span>
       </button>
-      <button class="auth-btn" id="supportDesktopBtn">
-        <svg viewBox="0 0 24 24">
-          <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM11 9h2v2h-2V9zm0 4h2v2h-2v-2z"/>
-        </svg>
-        <span>Поддержка</span>
-      </button>
+      
       <button class="cart-btn" id="openCart" aria-label="Корзина">
         <svg viewBox="0 0 24 24">
           <path d="M7 18a2 2 0 1 0 0 4a2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4a2 2 0 0 0 0-4zM7.16 14h9.45a2 2 0 0 0 1.75-1.03l3.58-6.49-1.74-.99-3.58 6.49H8.53L5.21 4H1v2h3l3.6 7.59-1.35 2.44C5.52 16.37 6.48 18 8 18h12v-2H8l1.16-2z"/>
@@ -906,33 +961,12 @@ html, body {
       </button>
     </div>
   </div>
-  <div class="menu-scroll" id="cardsContainer"></div>
-</div>
-<div id="waiting" class="screen">
-  <div id="animWaiting" class="sticker"></div>
-  <div class="title">Ожидайте выполнения</div>
-  <div style="color: rgba(255,255,255,0.8); text-align: center; max-width: 400px; margin: 20px 0; font-size: 18px;">
-    Ваш заказ обрабатывается администратором
+
+  <div class="game-content">
+    <div class="products-grid" id="productsContainer"></div>
   </div>
-  <div class="order-number" id="waitingOrderNumber"></div>
 </div>
-<div id="checkout" class="screen checkout-screen">
-  <div id="animCheckout" class="sticker"></div>
-  <div class="title">Оформление заказа</div>
-  <div class="checkout-summary" id="checkoutSummary"></div>
-  <div class="amount-error" id="amountError">
-    <span style="color:#ffd700;margin-right:8px;">⚠</span>
-    <span id="errorText"></span>
-  </div>
-  <button class="button" id="proceedToPay">Оплатить корзину</button>
-  <button class="button" id="backToMenu" style="margin-top: 12px; background: rgba(255,255,255,0.2); color: white;">Вернуться в меню</button>
-</div>
-<div id="badPay" class="screen">
-  <div id="animBadPay" class="sticker"></div>
-  <div class="title">Оплата не прошла</div>
-  <div class="order-number" id="badPayOrderNumber"></div>
-  <button class="button" id="toMenuFromBadPay">Вернуться в меню</button>
-</div>
+
 <div class="cart-overlay" id="cartOverlay" aria-hidden="true">
   <div class="cart-sheet" role="dialog" aria-modal="true">
     <div class="cart-head">
@@ -952,6 +986,7 @@ html, body {
     </div>
   </div>
 </div>
+
 <div class="mobile-nav" id="mobileNav">
   <button class="mobile-nav-item" id="navWallet">
     <svg viewBox="0 0 24 24">
@@ -959,24 +994,28 @@ html, body {
     </svg>
     <span>Кошелёк</span>
   </button>
+
   <button class="mobile-nav-item" id="navProfile">
     <svg viewBox="0 0 24 24">
       <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
     </svg>
     <span>Профиль</span>
   </button>
-  <button class="mobile-nav-item" id="navHome">
+
+  <button class="mobile-nav-item active" id="navHome">
     <svg viewBox="0 0 24 24">
       <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
     </svg>
     <span>Главная</span>
   </button>
+
   <button class="mobile-nav-item" id="navSupport">
     <svg viewBox="0 0 24 24">
       <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM11 9h2v2h-2V9zm0 4h2v2h-2v-2z"/>
     </svg>
     <span>Поддержка</span>
   </button>
+
   <button class="mobile-nav-item" id="navCart">
     <svg viewBox="0 0 24 24">
       <path d="M7 18a2 2 0 1 0 0 4a2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4a2 2 0 0 0 0-4zM7.16 14h9.45a2 2 0 0 0 1.75-1.03l3.58-6.49-1.74-.99-3.58 6.49H8.53L5.21 4H1v2h3l3.6 7.59-1.35 2.44C5.52 16.37 6.48 18 8 18h12v-2H8l1.16-2z"/>
@@ -990,103 +1029,18 @@ html, body {
 const API_URL = 'https://duck-shop-sever.onrender.com';
 const CART_KEY = 'duck_cart_v1';
 const USER_KEY = 'duck_user_v1';
-let PRODUCTS = [];
-let productsCheckInterval = null;
+
 let cart = {};
-let currentOrderId = null;
-let currentPaymentUrl = null;
 let currentUser = null;
+let currentGame = null;
+let products = [];
 
-
-// ===== ПРОВЕРКА АДМИНСКОГО ОБХОДА (ДОБАВЛЕНО) =====
-function checkAdminBypass() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const adminBypass = urlParams.get('admin_bypass');
-  
-  if (adminBypass) {
-    console.log('🔑 Админский доступ через bypass');
-    // Сохраняем флаг в sessionStorage, чтобы не потерять при перезагрузке
-    sessionStorage.setItem('admin_bypass_active', 'true');
-    sessionStorage.setItem('admin_bypass_key', adminBypass);
-    return true;
-  }
-  return false;
+function fmtRub(n) {
+  return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + ' ₽';
 }
-
-// ===== МОДИФИЦИРОВАННАЯ ПРОВЕРКА ТЕХПЕРЕРЫВА =====
-async function checkMaintenance() {
-  // Если есть admin_bypass в URL или в sessionStorage - пропускаем проверку
-  const hasBypassInUrl = checkAdminBypass();
-  const hasBypassInStorage = sessionStorage.getItem('admin_bypass_active') === 'true';
-  
-  if (hasBypassInUrl || hasBypassInStorage) {
-    console.log('✅ Пропускаем проверку техперерыва (режим администратора)');
-    
-    // Показываем уведомление админу (опционально)
-    setTimeout(() => {
-      const adminNote = document.createElement('div');
-      adminNote.style.cssText = `
-        position: fixed;
-        bottom: 80px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(0,0,0,0.7);
-        color: #ffd700;
-        padding: 8px 16px;
-        border-radius: 30px;
-        font-size: 14px;
-        font-weight: 600;
-        z-index: 10000;
-        backdrop-filter: blur(5px);
-        border: 1px solid rgba(255,215,0,0.3);
-      `;
-      adminNote.textContent = '🔑 Режим администратора (техперерыв игнорируется)';
-      document.body.appendChild(adminNote);
-      
-      setTimeout(() => {
-        adminNote.style.opacity = '0';
-        adminNote.style.transition = 'opacity 0.5s';
-        setTimeout(() => adminNote.remove(), 500);
-      }, 5000);
-    }, 1000);
-    
-    return; // Не редиректим на working
-  }
-  
-  try {
-    const response = await fetch(`${API_URL}/api/maintenance-status`);
-    const data = await response.json();
-    
-    if (data.maintenance && !window.location.pathname.includes('working.html')) {
-      // Сохраняем текущий URL для возврата после техперерыва
-      sessionStorage.setItem('return_url', window.location.href);
-      window.location.href = 'working';
-    }
-  } catch (error) {
-    console.error('Ошибка проверки статуса:', error);
-  }
-}
-
-// ===== ПРОВЕРКА ПРИ ЗАГРУЗКЕ СТРАНИЦЫ =====
-// Сначала проверяем admin_bypass, потом техперерыв
-if (!checkAdminBypass()) {
-  checkMaintenance();
-}
-
-// Периодическая проверка (только если не админ)
-setInterval(() => {
-  if (sessionStorage.getItem('admin_bypass_active') !== 'true') {
-    checkMaintenance();
-  }
-}, 30000);
 
 function loadCart() {
-  try {
-    const raw = localStorage.getItem(CART_KEY);
-    return raw ? JSON.parse(raw) : {};
-  } catch {
-    return {};
-  }
+  try { return JSON.parse(localStorage.getItem(CART_KEY) || '{}'); } catch { return {}; }
 }
 
 function saveCart() {
@@ -1100,124 +1054,38 @@ function cartCount() {
 function cartSum() {
   let sum = 0;
   for (const [id, qty] of Object.entries(cart)) {
-    const p = PRODUCTS.find(x => x.id === id);
+    const p = products.find(x => x.id === id);
     if (p) sum += p.price * qty;
   }
   return sum;
 }
 
-function fmtRub(n) {
-  return `${n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} ₽`;
-}
+function updateBadge() {
+  const n = cartCount();
+  const cartBadge = document.getElementById('cartBadge');
+  const cartBadgeMobile = document.getElementById('cartBadgeMobile');
 
-function loadAllLottieAnimations() {
-  try {
-    const animations = {
-      hello: 'hello.json',
-      download: 'download.json',
-      main: 'main.json',
-      waiting: 'https://assets2.lottiefiles.com/packages/lf20_puciaevh.json',
-      checkout: 'checkout.json',
-      badPay: 'https://assets2.lottiefiles.com/packages/lf20_dews0pqv.json'
-    };
-
-    if (document.getElementById('animHello')) {
-      lottie.loadAnimation({
-        container: document.getElementById('animHello'),
-        renderer: 'svg',
-        loop: true,
-        autoplay: true,
-        path: animations.hello
-      });
+  if (n > 0) {
+    cartBadge.style.display = 'inline-flex';
+    cartBadge.textContent = n;
+    if (cartBadgeMobile) {
+      cartBadgeMobile.classList.add('show');
+      cartBadgeMobile.textContent = n;
     }
-    if (document.getElementById('animDownload')) {
-      lottie.loadAnimation({
-        container: document.getElementById('animDownload'),
-        renderer: 'svg',
-        loop: true,
-        autoplay: true,
-        path: animations.download
-      });
+  } else {
+    cartBadge.style.display = 'none';
+    if (cartBadgeMobile) {
+      cartBadgeMobile.classList.remove('show');
     }
-    if (document.getElementById('animMain')) {
-      lottie.loadAnimation({
-        container: document.getElementById('animMain'),
-        renderer: 'svg',
-        loop: true,
-        autoplay: true,
-        path: animations.main
-      });
-    }
-    if (document.getElementById('animWaiting')) {
-      lottie.loadAnimation({
-        container: document.getElementById('animWaiting'),
-        renderer: 'svg',
-        loop: true,
-        autoplay: true,
-        path: animations.waiting
-      });
-    }
-    if (document.getElementById('animCheckout')) {
-      lottie.loadAnimation({
-        container: document.getElementById('animCheckout'),
-        renderer: 'svg',
-        loop: true,
-        autoplay: true,
-        path: animations.checkout
-      });
-    }
-    if (document.getElementById('animBadPay')) {
-      lottie.loadAnimation({
-        container: document.getElementById('animBadPay'),
-        renderer: 'svg',
-        loop: true,
-        autoplay: true,
-        path: animations.badPay
-      });
-    }
-  } catch (error) {
-    document.querySelectorAll('.sticker').forEach(sticker => {
-      if (!sticker.innerHTML || sticker.innerHTML.trim() === '') {
-        sticker.innerHTML = '<div style="color: white; font-size: 50px; text-align: center;">🎁</div>';
-      }
-    });
   }
 }
 
 function loadUser() {
-  try {
-    const userData = localStorage.getItem(USER_KEY);
-    if (userData) {
-      const user = JSON.parse(userData);
-      return user;
-    }
-  } catch (error) {}
-  return null;
+  try { return JSON.parse(localStorage.getItem(USER_KEY)); } catch { return null; }
 }
-
-
-// ===== ВОССТАНОВЛЕНИЕ ПОСЛЕ ТЕХПЕРЕРЫВА =====
-function handleMaintenanceReturn() {
-  const returnUrl = sessionStorage.getItem('return_url');
-  if (returnUrl && !window.location.pathname.includes('working.html')) {
-    sessionStorage.removeItem('return_url');
-    console.log('🔄 Возврат на сохраненный URL:', returnUrl);
-  }
-}
-
-// Вызвать после загрузки
-handleMaintenanceReturn();
 
 function saveUser(user) {
-  try {
-    localStorage.setItem(USER_KEY, JSON.stringify(user));
-  } catch (error) {}
-}
-
-function clearUser() {
-  localStorage.removeItem(USER_KEY);
-  currentUser = null;
-  updateAuthButton();
+  try { localStorage.setItem(USER_KEY, JSON.stringify(user)); } catch (error) {}
 }
 
 function updateAuthButton() {
@@ -1225,8 +1093,6 @@ function updateAuthButton() {
   const authBtnText = document.getElementById('authBtnText');
 
   if (!authBtn || !authBtnText) return;
-
-  authBtn.onclick = null;
 
   if (currentUser) {
     if (window.innerWidth <= 768 && currentUser.username) {
@@ -1239,303 +1105,67 @@ function updateAuthButton() {
     } else {
       authBtnText.textContent = 'Профиль';
     }
-
-    authBtn.onclick = function(e) {
-      e.preventDefault();
-      window.location.href = 'profile';
-    };
+    authBtn.onclick = () => window.location.href = 'profile.html';
   } else {
     authBtnText.textContent = 'Войти';
-    authBtn.onclick = function(e) {
-      e.preventDefault();
-      window.location.href = 'reg_log';
-    };
+    authBtn.onclick = () => window.location.href = 'reg_log.html';
   }
 }
 
-function checkAuthFromURL() {
+function getGameSlug() {
   const urlParams = new URLSearchParams(window.location.search);
-  const authToken = urlParams.get('auth');
-
-  if (authToken) {
-    verifyAuthToken(authToken);
-  } else {
-    currentUser = loadUser();
-    updateAuthButton();
-  }
+  return urlParams.get('game');
 }
 
-async function verifyAuthToken(token) {
+async function loadGameData() {
+  const slug = getGameSlug();
+  
+  if (!slug) {
+    window.location.href = 'index.html';
+    return;
+  }
+
   try {
-    const response = await fetch(`${API_URL}/api/auth/check/${token}`);
+    const response = await fetch(`${API_URL}/api/games/${slug}`);
     const data = await response.json();
 
-    if (data.success && data.authenticated && data.user) {
-      currentUser = data.user;
-      saveUser(currentUser);
-
-      const newUrl = window.location.pathname;
-      window.history.replaceState({}, '', newUrl);
-
-      updateAuthButton();
-
-      setTimeout(() => {
-        alert(`✅ Добро пожаловать, ${currentUser.username}!`);
-      }, 500);
+    if (data.success && data.game) {
+      currentGame = data.game;
+      document.title = `${currentGame.name} - Duck Shop`;
+      document.getElementById('gameTitle').textContent = currentGame.name;
+      document.getElementById('gameIcon').src = currentGame.icon_url;
+      document.getElementById('gameIcon').alt = currentGame.name;
+      
+      await loadProducts();
+      showScreen('game');
     } else {
-      updateAuthButton();
+      window.location.href = 'index.html';
     }
   } catch (error) {
-    updateAuthButton();
+    window.location.href = 'index.html';
   }
 }
 
-function show(id) {
-  const ids = ['hello', 'load', 'intro', 'menu', 'waiting', 'checkout', 'badPay'];
-  const current = ids.map(x => document.getElementById(x)).find(el => el.classList.contains('active'));
-  const next = document.getElementById(id);
+async function loadProducts() {
+  const container = document.getElementById('productsContainer');
+  if (!container || !currentGame) return;
 
-  if (current && current !== next) {
-    current.classList.add('leaving');
-    setTimeout(() => {
-      ids.forEach(x => {
-        const el = document.getElementById(x);
-        el.classList.remove('active', 'leaving');
-      });
-      next.classList.add('active');
+  container.innerHTML = '<div class="loading-products">Загрузка товаров...</div>';
 
-      if (id === 'menu') {
-        const cardsContainer = document.getElementById('cardsContainer');
-        if (cardsContainer) {
-          cardsContainer.innerHTML = '<div style="color: white; text-align: center; padding: 60px; font-size: 18px;">Загрузка товаров...</div>';
-          setTimeout(() => {
-            if (PRODUCTS.length === 0) {
-              loadProducts();
-            } else {
-              renderProducts();
-            }
-          }, 300);
-        }
-      }
+  try {
+    const response = await fetch(`${API_URL}/api/products?game=${currentGame.id}`);
+    const data = await response.json();
 
-      updateMobileNavVisibility(id);
-      updateMobileNavActiveState();
-
-    }, 350);
-  } else {
-    ids.forEach(x => document.getElementById(x).classList.remove('active', 'leaving'));
-    next.classList.add('active');
-
-    if (id === 'menu') {
-      const cardsContainer = document.getElementById('cardsContainer');
-      if (cardsContainer) {
-        cardsContainer.innerHTML = '<div style="color: white; text-align: center; padding: 60px; font-size: 18px;">Загрузка товаров...</div>';
-        setTimeout(() => {
-          if (PRODUCTS.length === 0) {
-            loadProducts();
-          } else {
-            renderProducts();
-          }
-        }, 300);
-      }
+    if (data.success && data.products) {
+      products = data.products;
+      renderProducts();
+    } else {
+      container.innerHTML = '<div class="error-products">Ошибка загрузки товаров</div>';
     }
-
-    updateMobileNavVisibility(id);
-    updateMobileNavActiveState();
+  } catch (error) {
+    container.innerHTML = '<div class="error-products">Ошибка соединения</div>';
   }
 }
-
-function updateMobileNavVisibility(currentScreen) {
-  const mobileNav = document.getElementById('mobileNav');
-  const cartOverlay = document.getElementById('cartOverlay');
-  if (!mobileNav) return;
-
-  const hiddenScreens = ['hello', 'load', 'intro', 'waiting', 'checkout', 'badPay'];
-
-  const shouldShow =
-    currentScreen === 'menu' &&
-    !cartOverlay.classList.contains('open') &&
-    !hiddenScreens.includes(currentScreen);
-
-  mobileNav.style.display = shouldShow ? 'flex' : 'none';
-}
-
-function updateMobileNavActiveState() {
-  const navItems = {
-    wallet: document.getElementById('navWallet'),
-    profile: document.getElementById('navProfile'),
-    home: document.getElementById('navHome'),
-    support: document.getElementById('navSupport'),
-    cart: document.getElementById('navCart')
-  };
-
-  const currentPath = window.location.pathname;
-  const currentScreen = document.querySelector('.screen.active, .menu.active');
-
-  navItems.wallet.classList.remove('active');
-  navItems.profile.classList.remove('active');
-  navItems.home.classList.remove('active');
-  navItems.support.classList.remove('active');
-  navItems.cart.classList.remove('active');
-
-  if (currentPath.includes('wallet.html')) {
-    navItems.wallet.classList.add('active');
-  } else if (currentPath.includes('profile.html')) {
-    navItems.profile.classList.add('active');
-  } else if (currentScreen && currentScreen.id === 'menu') {
-    navItems.home.classList.add('active');
-  }
-}
-
-function setupMobileNavigation() {
-  const navWallet = document.getElementById('navWallet');
-  const navProfile = document.getElementById('navProfile');
-  const navHome = document.getElementById('navHome');
-  const navSupport = document.getElementById('navSupport');
-  const navCart = document.getElementById('navCart');
-  const supportDesktopBtn = document.getElementById('supportDesktopBtn');
-  const mobileNav = document.getElementById('mobileNav');
-
-  if (navSupport) {
-    navSupport.addEventListener('click', function(e) {
-      e.preventDefault();
-      window.location.href = 'support';
-    });
-  }
-
-  if (supportDesktopBtn) {
-    supportDesktopBtn.addEventListener('click', function(e) {
-      e.preventDefault();
-      window.location.href = 'support';
-    });
-  }
-
-  if (navWallet) {
-    navWallet.addEventListener('click', function(e) {
-      e.preventDefault();
-      window.location.href = 'wallet';
-    });
-  }
-
-  if (navProfile) {
-    navProfile.addEventListener('click', function(e) {
-      e.preventDefault();
-      window.location.href = 'profile';
-    });
-  }
-
-  if (navHome) {
-    navHome.addEventListener('click', function(e) {
-      e.preventDefault();
-      const activeScreen = document.querySelector('.screen.active, .menu.active');
-      if (activeScreen && activeScreen.id !== 'menu') {
-        show('menu');
-      }
-      updateMobileNavActiveState();
-    });
-  }
-
-  if (navCart) {
-    navCart.addEventListener('click', function(e) {
-      e.preventDefault();
-      document.getElementById('openCart').click();
-    });
-  }
-
-  if (mobileNav) {
-    let isDragging = false;
-    let startX, startY;
-
-    mobileNav.addEventListener('mousedown', function(e) {
-      isDragging = false;
-      startX = e.clientX;
-      startY = e.clientY;
-    });
-
-    mobileNav.addEventListener('mousemove', function(e) {
-      if (!startX) return;
-      const dx = e.clientX - startX;
-      const dy = e.clientY - startY;
-      if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
-        isDragging = true;
-      }
-    });
-
-    mobileNav.addEventListener('mouseup', function(e) {
-      startX = null;
-      startY = null;
-    });
-
-    mobileNav.addEventListener('touchstart', function(e) {
-      isDragging = false;
-      if (e.touches.length) {
-        startX = e.touches[0].clientX;
-        startY = e.touches[0].clientY;
-      }
-    });
-
-    mobileNav.addEventListener('touchmove', function(e) {
-      if (!startX) return;
-      if (e.touches.length) {
-        const dx = e.touches[0].clientX - startX;
-        const dy = e.touches[0].clientY - startY;
-        if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
-          isDragging = true;
-        }
-      }
-    });
-
-    mobileNav.addEventListener('touchend', function(e) {
-      startX = null;
-      startY = null;
-    });
-
-    const navItems = [navWallet, navProfile, navHome, navSupport, navCart];
-    navItems.forEach(item => {
-      if (item) {
-        item.addEventListener('click', function(e) {
-          if (isDragging) {
-            e.preventDefault();
-            e.stopPropagation();
-            isDragging = false;
-          }
-        });
-      }
-    });
-  }
-}
-
-document.getElementById('continueBtn').addEventListener('pointerdown', function() {
-  this.classList.add('pressed');
-});
-document.getElementById('continueBtn').addEventListener('pointerup', function() {
-  this.classList.remove('pressed');
-});
-document.getElementById('continueBtn').addEventListener('pointerleave', function() {
-  this.classList.remove('pressed');
-});
-document.getElementById('continueBtn').addEventListener('click', function() {
-  show('load');
-  setTimeout(() => {
-    show('intro');
-    setTimeout(() => show('menu'), 2000);
-  }, 2500);
-});
-
-const DEFAULT_PRODUCTS = [
-  { id: "c30", name: "30 кристаллов", price: 200, image_url: "https://i.imgur.com/s4K0WIP.png", is_gift: false },
-  { id: "c80", name: "80 кристаллов", price: 550, image_url: "https://i.imgur.com/XbnZKDb.png", is_gift: false },
-  { id: "c170", name: "170 кристаллов", price: 950, image_url: "https://i.imgur.com/X0JCmMQ.png", is_gift: false },
-  { id: "c360", name: "360 кристаллов", price: 1900, image_url: "https://i.imgur.com/7z8z9Rw.png", is_gift: false },
-  { id: "c950", name: "950 кристаллов", price: 4600, image_url: "https://i.imgur.com/zzBuIxF.png", is_gift: false },
-  { id: "c2000", name: "2000 кристаллов", price: 9000, image_url: "https://i.imgur.com/FTVnycE.png", is_gift: false },
-  { id: "bp", name: "Brawl Pass", price: 900, image_url: "https://i.imgur.com/FaFAL6l.png", is_gift: false },
-  { id: "bpplus", name: "Brawl Pass Plus", price: 1200, image_url: "https://i.imgur.com/21InnIc.png", is_gift: false },
-  { id: "up", name: "Улучшение до БП+", price: 550, image_url: "https://i.imgur.com/yhaR5Ho.png", is_gift: false },
-  { id: "bp_g", name: "Brawl Pass", price: 950, image_url: "https://i.imgur.com/FaFAL6l.png", is_gift: true },
-  { id: "bpp_g", name: "Brawl Pass Plus", price: 1250, image_url: "https://i.imgur.com/21InnIc.png", is_gift: true },
-  { id: "pro", name: "Pro Pass", price: 2200, image_url: "https://i.imgur.com/6808Xnp.png", is_gift: false }
-];
 
 function sortProductsForDesktop(products) {
   const desktopOrder = [
@@ -1598,46 +1228,19 @@ function sortProductsForMobile(products) {
   return [...newProducts, ...orderedProducts, ...otherProducts];
 }
 
-async function loadProducts() {
-  try {
-    const response = await fetch(`${API_URL}/api/products`);
-
-    if (!response.ok) {
-      PRODUCTS = [...DEFAULT_PRODUCTS];
-      renderProducts();
-      return;
-    }
-
-    const data = await response.json();
-
-    if (data.success && data.products && data.products.length > 0) {
-      const serverProducts = data.products;
-      const serverProductIds = new Set(serverProducts.map(p => p.id));
-      const missingDefaultProducts = DEFAULT_PRODUCTS.filter(p => !serverProductIds.has(p.id));
-
-      PRODUCTS = [...serverProducts, ...missingDefaultProducts];
-      renderProducts();
-    } else {
-      PRODUCTS = [...DEFAULT_PRODUCTS];
-      renderProducts();
-    }
-  } catch (error) {
-    PRODUCTS = [...DEFAULT_PRODUCTS];
-    renderProducts();
-  }
-}
-
 function renderProducts() {
-  const cardsContainer = document.getElementById('cardsContainer');
-  if (!cardsContainer) return;
+  const container = document.getElementById('productsContainer');
+  if (!container) return;
+
+  if (products.length === 0) {
+    container.innerHTML = '<div class="no-products">В этой игре пока нет товаров</div>';
+    return;
+  }
 
   const isMobile = window.innerWidth <= 480;
+  const productsToShow = isMobile ? sortProductsForMobile(products) : sortProductsForDesktop(products);
 
-  const productsToShow = isMobile ?
-    sortProductsForMobile(PRODUCTS) :
-    sortProductsForDesktop(PRODUCTS);
-
-  cardsContainer.innerHTML = '';
+  container.innerHTML = '';
 
   if (isMobile) {
     productsToShow.forEach(p => {
@@ -1659,16 +1262,16 @@ function renderProducts() {
           </button>
         </div>
       `;
-      cardsContainer.appendChild(card);
+      container.appendChild(card);
     });
   } else {
     let currentRow = [];
-
+    
     productsToShow.forEach((p, index) => {
       currentRow.push(p);
 
       if (currentRow.length === 2 || index === productsToShow.length - 1) {
-        if (currentRow.length === 1 && currentRow[0].id === "pro") {
+        if (currentRow.length === 1) {
           const row = document.createElement('div');
           row.className = 'row-centered';
           row.innerHTML = `
@@ -1689,11 +1292,11 @@ function renderProducts() {
               </div>
             </div>
           `;
-          cardsContainer.appendChild(row);
+          container.appendChild(row);
         } else {
           const row = document.createElement('div');
           row.className = 'row-two';
-
+          
           currentRow.forEach(p => {
             row.innerHTML += `
               <div class="shop-card">
@@ -1714,82 +1317,14 @@ function renderProducts() {
               </div>
             `;
           });
-
-          if (currentRow.length === 1) {
-            row.innerHTML += `<div class="shop-card empty-card"></div>`;
-          }
-
-          cardsContainer.appendChild(row);
+          
+          container.appendChild(row);
         }
-
+        
         currentRow = [];
       }
     });
   }
-}
-
-window.addEventListener('resize', () => {
-  if (PRODUCTS.length > 0) {
-    renderProducts();
-  }
-  if (currentUser) {
-    updateAuthButton();
-  }
-  updateMobileNavActiveState();
-  updateMobileNavVisibility(document.querySelector('.screen.active, .menu.active')?.id || 'menu');
-});
-
-function updateBadge() {
-  const n = cartCount();
-  const cartBadge = document.getElementById('cartBadge');
-  const cartBadgeMobile = document.getElementById('cartBadgeMobile');
-
-  if (n > 0) {
-    cartBadge.style.display = 'inline-flex';
-    cartBadge.textContent = n;
-    if (cartBadgeMobile) {
-      cartBadgeMobile.classList.add('show');
-      cartBadgeMobile.textContent = n;
-    }
-  } else {
-    cartBadge.style.display = 'none';
-    if (cartBadgeMobile) {
-      cartBadgeMobile.classList.remove('show');
-    }
-  }
-}
-
-function renderCart() {
-  const cartBody = document.getElementById('cartBody');
-  const cartTotalEl = document.getElementById('cartTotal');
-
-  if (!cartBody || !cartTotalEl) return;
-
-  const entries = Object.entries(cart);
-  if (entries.length === 0) {
-    cartBody.innerHTML = `<div class="cart-empty">Корзина пуста</div>`;
-    cartTotalEl.textContent = '0 ₽';
-    return;
-  }
-  cartBody.innerHTML = entries.map(([id, qty]) => {
-    const p = PRODUCTS.find(x => x.id === id);
-    if (!p) return '';
-    return `
-      <div class="cart-row">
-        <div class="cart-thumb"><img src="${p.image_url}" alt="${p.name}"></div>
-        <div class="cart-info">
-          <div class="cart-name">${p.name}${p.is_gift ? ' 🎁' : ''}</div>
-          <div class="cart-sub">${fmtRub(p.price)} • ${fmtRub(p.price * qty)}</div>
-        </div>
-        <div class="cart-qty">
-          <button class="qty-btn" type="button" data-dec="${id}">−</button>
-          <div class="qty-num">${qty}</div>
-          <button class="qty-btn" type="button" data-inc="${id}">+</button>
-        </div>
-      </div>
-    `;
-  }).join('');
-  cartTotalEl.textContent = fmtRub(cartSum());
 }
 
 function addToCart(id) {
@@ -1821,6 +1356,131 @@ function clearCart() {
   renderCart();
 }
 
+function renderCart() {
+  const cartBody = document.getElementById('cartBody');
+  const cartTotalEl = document.getElementById('cartTotal');
+
+  if (!cartBody || !cartTotalEl) return;
+
+  const entries = Object.entries(cart);
+  if (entries.length === 0) {
+    cartBody.innerHTML = '<div class="cart-empty">Корзина пуста</div>';
+    cartTotalEl.textContent = '0 ₽';
+    return;
+  }
+
+  cartBody.innerHTML = entries.map(([id, qty]) => {
+    const p = products.find(x => x.id === id);
+    if (!p) return '';
+    return `
+      <div class="cart-row">
+        <div class="cart-thumb"><img src="${p.image_url}" alt="${p.name}"></div>
+        <div class="cart-info">
+          <div class="cart-name">${p.name}${p.is_gift ? ' 🎁' : ''}</div>
+          <div class="cart-sub">${fmtRub(p.price)} • ${fmtRub(p.price * qty)}</div>
+        </div>
+        <div class="cart-qty">
+          <button class="qty-btn" type="button" data-dec="${id}">−</button>
+          <div class="qty-num">${qty}</div>
+          <button class="qty-btn" type="button" data-inc="${id}">+</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+  cartTotalEl.textContent = fmtRub(cartSum());
+}
+
+function showScreen(id) {
+  const loading = document.getElementById('loading');
+  const game = document.getElementById('game');
+  
+  loading.classList.remove('active', 'leaving');
+  game.classList.remove('active', 'leaving');
+  
+  if (id === 'loading') {
+    loading.classList.add('active');
+  } else {
+    game.classList.add('active');
+  }
+}
+
+function loadLottieAnimations() {
+  try {
+    lottie.loadAnimation({
+      container: document.getElementById('loadingAnim'),
+      renderer: 'svg',
+      loop: true,
+      autoplay: true,
+      path: 'loading.json'
+    });
+  } catch (error) {
+    const sticker = document.getElementById('loadingAnim');
+    if (sticker) {
+      sticker.innerHTML = '<div style="color: white; font-size: 50px;">⌛</div>';
+    }
+  }
+}
+
+function setupMobileNavigation() {
+  const navWallet = document.getElementById('navWallet');
+  const navProfile = document.getElementById('navProfile');
+  const navHome = document.getElementById('navHome');
+  const navSupport = document.getElementById('navSupport');
+  const navCart = document.getElementById('navCart');
+  const mobileNav = document.getElementById('mobileNav');
+
+  if (navSupport) {
+    navSupport.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.location.href = 'support.html';
+    });
+  }
+
+  if (navWallet) {
+    navWallet.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.location.href = 'wallet.html';
+    });
+  }
+
+  if (navProfile) {
+    navProfile.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.location.href = 'profile.html';
+    });
+  }
+
+  if (navHome) {
+    navHome.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.location.href = 'index.html';
+    });
+  }
+
+  if (navCart) {
+    navCart.addEventListener('click', (e) => {
+      e.preventDefault();
+      document.getElementById('openCart').click();
+    });
+  }
+}
+
+function updateMobileNavActiveState() {
+  const navItems = {
+    wallet: document.getElementById('navWallet'),
+    profile: document.getElementById('navProfile'),
+    home: document.getElementById('navHome'),
+    support: document.getElementById('navSupport'),
+    cart: document.getElementById('navCart')
+  };
+
+  Object.values(navItems).forEach(item => {
+    if (item) item.classList.remove('active');
+  });
+
+  if (navItems.home) navItems.home.classList.add('active');
+}
+
 document.addEventListener('click', (e) => {
   const b = e.target.closest('[data-add]');
   if (!b) return;
@@ -1837,14 +1497,12 @@ document.getElementById('openCart').addEventListener('click', () => {
   cartOverlay.classList.add('open');
   cartOverlay.setAttribute('aria-hidden', 'false');
   renderCart();
-  updateMobileNavVisibility('menu');
 });
 
 function closeCart() {
   const cartOverlay = document.getElementById('cartOverlay');
   cartOverlay.classList.remove('open');
   cartOverlay.setAttribute('aria-hidden', 'true');
-  updateMobileNavVisibility('menu');
 }
 
 document.getElementById('closeCart').addEventListener('click', closeCart);
@@ -1861,159 +1519,42 @@ document.getElementById('cartBody').addEventListener('click', (e) => {
 
 document.getElementById('checkoutBtn').addEventListener('click', () => {
   closeCart();
-  showCheckout();
+  window.location.href = 'checkout.html';
 });
-
-function showCheckout() {
-  const total = cartSum();
-  const checkoutSummary = document.getElementById('checkoutSummary');
-  const proceedToPayBtn = document.getElementById('proceedToPay');
-  const amountError = document.getElementById('amountError');
-  const errorText = document.getElementById('errorText');
-
-  if (!checkoutSummary || !proceedToPayBtn || !amountError || !errorText) return;
-
-  checkoutSummary.innerHTML = '';
-
-  Object.entries(cart).forEach(([id, qty]) => {
-    const p = PRODUCTS.find(x => x.id === id);
-    if (p) {
-      const itemDiv = document.createElement('div');
-      itemDiv.className = 'checkout-item';
-      itemDiv.innerHTML = `
-        <span>${p.name} ×${qty}</span>
-        <span>${fmtRub(p.price * qty)}</span>
-      `;
-      checkoutSummary.appendChild(itemDiv);
-    }
-  });
-
-  const totalDiv = document.createElement('div');
-  totalDiv.className = 'checkout-total';
-  totalDiv.innerHTML = `
-    <span>Итого:</span>
-    <span>${fmtRub(total)}</span>
-  `;
-  checkoutSummary.appendChild(totalDiv);
-
-  if (total < 10 || total > 10000) {
-    proceedToPayBtn.disabled = true;
-    amountError.style.display = 'block';
-    if (total < 10) {
-      errorText.textContent = 'Ваша сумма заказа менее 10₽, добавьте товаров для получения возможной суммы оплаты заказа (от 10₽ до 10000₽)';
-    } else {
-      errorText.textContent = 'Ваша сумма заказа более 10000₽, удалите товаров для получения возможной суммы оплаты заказа (от 10₽ до 10000₽)';
-    }
-  } else {
-    proceedToPayBtn.disabled = false;
-    amountError.style.display = 'none';
-  }
-
-  show('checkout');
-}
-
-document.getElementById('backToMenu').addEventListener('click', () => {
-  show('menu');
-});
-
-document.getElementById('proceedToPay').addEventListener('click', async () => {
-  const total = cartSum();
-  if (total < 10 || total > 10000) return;
-
-  try {
-    const orderData = {
-      items: cart,
-      total: total,
-      userId: currentUser ? currentUser.id : null,
-      timestamp: Date.now()
-    };
-    localStorage.setItem('pending_order', JSON.stringify(orderData));
-
-    window.location.href = 'waitpay';
-
-  } catch (error) {
-    alert('Ошибка при переходе к оплате');
-  }
-});
-
-function updateOrderNumberElements(orderId) {
-  const orderNumber = `Заказ #${orderId}`;
-
-  const elements = [
-    'waitingOrderNumber',
-    'badPayOrderNumber'
-  ];
-
-  elements.forEach(elementId => {
-    const element = document.getElementById(elementId);
-    if (element) {
-      element.textContent = orderNumber;
-    }
-  });
-}
-
-document.getElementById('toMenuFromBadPay').addEventListener('click', () => {
-  show('menu');
-});
-
-function checkPaymentResult() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const status = urlParams.get('payment');
-  const orderId = urlParams.get('order');
-
-  if (status === 'fail' && orderId) {
-    currentOrderId = orderId;
-    updateOrderNumberElements(currentOrderId);
-    show('badPay');
-
-    const newUrl = window.location.pathname;
-    window.history.replaceState({}, '', newUrl);
-  }
-}
 
 document.getElementById('clearCart').addEventListener('click', () => {
   clearCart();
-});
-
-document.getElementById('walletDesktopBtn').addEventListener('click', function(e) {
-  e.preventDefault();
-  window.location.href = 'wallet';
 });
 
 document.addEventListener('DOMContentLoaded', function() {
   cart = loadCart();
   currentUser = loadUser();
 
-  loadAllLottieAnimations();
+  loadLottieAnimations();
   updateBadge();
-  checkAuthFromURL();
-  checkPaymentResult();
-
-  if (PRODUCTS.length === 0) {
-    loadProducts();
-  }
-
-  startAutoRefreshProducts();
-
+  updateAuthButton();
   setupMobileNavigation();
-
-  updateMobileNavVisibility('hello');
   updateMobileNavActiveState();
+
+  document.getElementById('walletBtn').addEventListener('click', () => {
+    window.location.href = 'wallet.html';
+  });
+
+  document.getElementById('supportBtn').addEventListener('click', () => {
+    window.location.href = 'support.html';
+  });
+
+  loadGameData();
+
+  window.addEventListener('resize', () => {
+    if (products.length > 0) {
+      renderProducts();
+    }
+    if (currentUser) {
+      updateAuthButton();
+    }
+  });
 });
-
-function startAutoRefreshProducts() {
-  if (productsCheckInterval) clearInterval(productsCheckInterval);
-
-  if (PRODUCTS.length === 0) {
-    loadProducts();
-  } else {
-    renderProducts();
-  }
-
-  productsCheckInterval = setInterval(() => {
-    loadProducts();
-  }, 10000);
-}
 </script>
 </body>
 </html>
