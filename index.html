@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8" />
-<title>Duck Shop - Магазин игровых ценностей</title>
+<title>Загрузка... - Duck Shop</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 <style>
@@ -91,7 +91,6 @@ html, body {
   font-size: 24px;
   font-weight: 600;
   text-decoration: none;
-  visibility: hidden;
 }
 
 .back-button:hover {
@@ -253,7 +252,7 @@ html, body {
 
 .game-selector {
   flex: 1;
-  max-width: 250px;
+  max-width: 300px;
   padding: 8px 14px;
   border-radius: 30px;
   border: 1px solid rgba(255,255,255,0.2);
@@ -290,14 +289,14 @@ html, body {
 
 .game-section {
   width: 100%;
-  margin-bottom: 25px;
+  margin-bottom: 30px;
 }
 
 .game-section-title {
   font-size: 24px;
   font-weight: 900;
   color: white;
-  padding: 15px 0 10px;
+  padding: 20px 0 10px;
   text-shadow: 0 2px 5px rgba(0,0,0,0.3);
 }
 
@@ -869,7 +868,7 @@ html, body {
   
   .game-section-title {
     font-size: 22px;
-    padding: 10px 0 5px;
+    padding: 15px 0 8px;
   }
   
   .game-content {
@@ -1033,14 +1032,14 @@ html, body {
 
 <div id="loading" class="screen active">
   <div class="sticker" id="loadingAnim"></div>
-  <div class="title">Загрузка магазина...</div>
+  <div class="title">Загрузка игры...</div>
 </div>
 
 <div id="game" class="screen game-screen">
   <div class="game-header">
-    <div class="back-button" style="visibility: hidden;">←</div>
-    <img src="https://i.imgur.com/3JxvXtR.png" alt="Duck Shop" class="game-icon" id="gameIcon">
-    <div class="game-title" id="gameTitle">Duck Shop</div>
+    <a href="index.html" class="back-button">←</a>
+    <img src="" alt="" class="game-icon" id="gameIcon">
+    <div class="game-title" id="gameTitle">Загрузка...</div>
     <div class="header-actions">
       <button class="auth-btn wallet-desktop" id="walletBtn">
         <svg viewBox="0 0 24 24">
@@ -1074,9 +1073,8 @@ html, body {
 
   <div class="filter-section">
     <div class="filter-tabs">
-      <button class="filter-btn active" id="filterAllBtn">Все игры</button>
       <select class="game-selector" id="gameSelector">
-        <option value="">Выберите игру</option>
+        <option value="all">Все игры</option>
       </select>
     </div>
   </div>
@@ -1159,7 +1157,6 @@ let currentGame = null;
 let products = [];
 let games = [];
 let allProducts = [];
-let currentMode = 'all';
 
 function fmtRub(n) {
   return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + ' ₽';
@@ -1261,7 +1258,7 @@ function populateGameSelector() {
   const selector = document.getElementById('gameSelector');
   if (!selector) return;
   
-  selector.innerHTML = '<option value="">Выберите игру</option>';
+  selector.innerHTML = '<option value="all">Все игры</option>';
   
   games.forEach(game => {
     const option = document.createElement('option');
@@ -1271,32 +1268,56 @@ function populateGameSelector() {
   });
 }
 
-function setMode(mode, gameId = null) {
-  currentMode = mode;
+async function loadGameData() {
+  const slug = getGameSlug();
   
-  const filterAllBtn = document.getElementById('filterAllBtn');
-  const gameSelector = document.getElementById('gameSelector');
-  const gameBanner = document.getElementById('gameBanner');
-  
-  if (mode === 'all') {
-    filterAllBtn.classList.add('active');
-    gameSelector.value = '';
-    gameBanner.classList.remove('show');
-    renderAllProducts();
-  } else {
-    filterAllBtn.classList.remove('active');
-    gameSelector.value = gameId;
+  if (!slug) {
+    document.title = 'Duck Shop - Магазин игровых ценностей';
+    document.getElementById('gameTitle').textContent = 'Duck Shop';
+    document.getElementById('gameIcon').src = 'https://i.imgur.com/3JxvXtR.png';
     
-    const selectedGame = games.find(g => g.id === gameId);
-    if (selectedGame && selectedGame.banner_url) {
-      const bannerImg = document.getElementById('bannerImage');
-      bannerImg.src = selectedGame.banner_url;
-      bannerImg.alt = selectedGame.name;
-      gameBanner.classList.add('show');
-    } else {
-      gameBanner.classList.remove('show');
+    try {
+      const response = await fetch(`${API_URL}/api/products`);
+      const data = await response.json();
+
+      if (data.success && data.products) {
+        products = data.products;
+        allProducts = data.products;
+        renderAllProducts();
+      }
+    } catch (error) {
+      console.error('Ошибка загрузки товаров:', error);
     }
-    renderGameProducts(gameId);
+
+    await loadGames();
+    showScreen('game');
+    return;
+  }
+
+  try {
+    const response = await fetch(`${API_URL}/api/games/${slug}`);
+    const data = await response.json();
+
+    if (data.success && data.game) {
+      currentGame = data.game;
+      document.title = `${currentGame.name} - Duck Shop`;
+      document.getElementById('gameTitle').textContent = currentGame.name;
+      document.getElementById('gameIcon').src = currentGame.icon_url;
+      document.getElementById('gameIcon').alt = currentGame.name;
+      
+      const productsResponse = await fetch(`${API_URL}/api/products?game=${currentGame.id}`);
+      const productsData = await productsResponse.json();
+
+      if (productsData.success && productsData.products) {
+        products = productsData.products;
+        allProducts = productsData.products;
+        renderProducts();
+      }
+      
+      showScreen('game');
+    }
+  } catch (error) {
+    console.error('Ошибка загрузки игры:', error);
   }
 }
 
@@ -1364,52 +1385,6 @@ function renderAllProducts() {
   container.innerHTML = html;
 }
 
-function renderGameProducts(gameId) {
-  const container = document.getElementById('productsContainer');
-  if (!container) return;
-
-  const gameProducts = allProducts.filter(p => (p.game_id || 'brawlstars') === gameId);
-  
-  if (!gameProducts.length) {
-    container.innerHTML = '<div class="no-products">В этой игре пока нет товаров</div>';
-    return;
-  }
-
-  const isMobile = window.innerWidth <= 480;
-  const productsToShow = isMobile ? sortProductsForMobile(gameProducts) : sortProductsForDesktop(gameProducts);
-
-  let html = '';
-
-  if (isMobile) {
-    productsToShow.forEach(p => {
-      html += renderProductCard(p);
-    });
-  } else {
-    let currentRow = [];
-    
-    productsToShow.forEach((p, index) => {
-      currentRow.push(p);
-
-      if (currentRow.length === 2 || index === productsToShow.length - 1) {
-        if (currentRow.length === 1) {
-          html += `<div class="row-centered">`;
-          html += renderProductCard(currentRow[0]);
-          html += `</div>`;
-        } else {
-          html += `<div class="row-two">`;
-          currentRow.forEach(p => {
-            html += renderProductCard(p);
-          });
-          html += `</div>`;
-        }
-        currentRow = [];
-      }
-    });
-  }
-
-  container.innerHTML = html;
-}
-
 function renderProductCard(product) {
   return `
     <div class="shop-card">
@@ -1429,59 +1404,6 @@ function renderProductCard(product) {
       </div>
     </div>
   `;
-}
-
-async function loadGameData() {
-  const slug = getGameSlug();
-  
-  if (!slug) {
-    document.title = 'Duck Shop - Магазин игровых ценностей';
-    document.getElementById('gameTitle').textContent = 'Duck Shop';
-    document.getElementById('gameIcon').src = 'https://i.imgur.com/3JxvXtR.png';
-    
-    try {
-      const response = await fetch(`${API_URL}/api/products`);
-      const data = await response.json();
-
-      if (data.success && data.products) {
-        products = data.products;
-        allProducts = data.products;
-      }
-    } catch (error) {
-      console.error('Ошибка загрузки товаров:', error);
-    }
-
-    await loadGames();
-    showScreen('game');
-    return;
-  }
-
-  try {
-    const response = await fetch(`${API_URL}/api/games/${slug}`);
-    const data = await response.json();
-
-    if (data.success && data.game) {
-      currentGame = data.game;
-      document.title = `${currentGame.name} - Duck Shop`;
-      document.getElementById('gameTitle').textContent = currentGame.name;
-      document.getElementById('gameIcon').src = currentGame.icon_url;
-      document.getElementById('gameIcon').alt = currentGame.name;
-      
-      const productsResponse = await fetch(`${API_URL}/api/products?game=${currentGame.id}`);
-      const productsData = await productsResponse.json();
-
-      if (productsData.success && productsData.products) {
-        products = productsData.products;
-        allProducts = productsData.products;
-        renderProducts();
-      }
-      
-      showScreen('game');
-    }
-  } catch (error) {
-    console.error('Ошибка загрузки игры:', error);
-    window.location.href = '/';
-  }
 }
 
 function sortProductsForDesktop(products) {
@@ -1728,7 +1650,7 @@ function loadLottieAnimations() {
       renderer: 'svg',
       loop: true,
       autoplay: true,
-      path: 'hello.json'
+      path: 'download.json'
     });
   } catch (error) {
     const sticker = document.getElementById('loadingAnim');
@@ -1769,7 +1691,7 @@ function setupMobileNavigation() {
   if (navHome) {
     navHome.addEventListener('click', (e) => {
       e.preventDefault();
-      window.location.href = '/';
+      window.location.href = 'index.html';
     });
   }
 
@@ -1842,25 +1764,36 @@ document.getElementById('clearCart').addEventListener('click', () => {
   clearCart();
 });
 
-document.getElementById('filterAllBtn').addEventListener('click', () => {
-  setMode('all');
-});
-
 document.getElementById('gameSelector').addEventListener('change', (e) => {
   const gameId = e.target.value;
-  if (gameId) {
-    setMode('game', gameId);
+  
+  if (gameId === 'all') {
+    renderAllProducts();
+    document.getElementById('gameBanner').classList.remove('show');
   } else {
-    setMode('all');
+    const gameProducts = allProducts.filter(p => (p.game_id || 'brawlstars') === gameId);
+    if (gameProducts.length) {
+      products = gameProducts;
+      renderProducts();
+    }
+    
+    const selectedGame = games.find(g => g.id === gameId);
+    if (selectedGame && selectedGame.banner_url) {
+      const bannerImg = document.getElementById('bannerImage');
+      bannerImg.src = selectedGame.banner_url;
+      bannerImg.alt = selectedGame.name;
+      document.getElementById('gameBanner').classList.add('show');
+    } else {
+      document.getElementById('gameBanner').classList.remove('show');
+    }
   }
 });
 
 window.addEventListener('resize', () => {
   if (products.length > 0) {
-    if (currentMode === 'all' && allProducts.length > 0) {
+    const gameId = document.getElementById('gameSelector').value;
+    if (gameId === 'all') {
       renderAllProducts();
-    } else if (currentMode === 'game') {
-      renderGameProducts(currentGameId);
     } else {
       renderProducts();
     }
