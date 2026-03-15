@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8" />
-<title>Профиль</title>
+<title>Мой профиль - Duck Shop</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 
@@ -58,11 +58,12 @@ html, body {
 
 .profile-screen {
   padding: 0;
+  overflow-y: auto;
 }
 
 .profile-header {
   width: 100%;
-  padding: 30px 20px;
+  padding: 30px 20px 20px;
   text-align: center;
   background: linear-gradient(180deg, #0b3c91, #124fa5);
   color: white;
@@ -71,21 +72,43 @@ html, body {
   position: relative;
 }
 
-.profile-avatar {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  margin: 0 auto 20px;
-  overflow: hidden;
-  position: relative;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-  border: 4px solid rgba(255,255,255,0.3);
-  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+.profile-header-top {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
 }
 
-.profile-avatar:hover {
-  transform: scale(1.05);
+.edit-button {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px 18px;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(10px);
+  letter-spacing: 0.5px;
+}
+
+.edit-button:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+.edit-button:active {
+  transform: scale(0.97);
+}
+
+.profile-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin: 0 auto 15px;
+  overflow: hidden;
+  border: 4px solid rgba(255,255,255,0.3);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
 }
 
 .profile-avatar img {
@@ -102,67 +125,36 @@ html, body {
   align-items: center;
   justify-content: center;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  font-size: 48px;
+  font-size: 42px;
   color: white;
   font-weight: 900;
   border-radius: 50%;
 }
 
-.edit-avatar-overlay {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(0,0,0,0.7);
-  color: white;
-  padding: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  text-align: center;
-  backdrop-filter: blur(4px);
-  opacity: 0;
-  transition: opacity 0.2s ease;
-}
-
-.profile-avatar:hover .edit-avatar-overlay {
-  opacity: 1;
+.profile-name-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 8px;
 }
 
 .profile-name {
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 800;
-  margin-bottom: 8px;
-  cursor: pointer;
-  display: inline-block;
-  padding: 8px 20px;
-  border-radius: 30px;
-  transition: background 0.2s ease;
-}
-
-.profile-name:hover {
-  background: rgba(255,255,255,0.1);
 }
 
 .profile-id {
-  font-size: 16px;
+  font-size: 15px;
   color: rgba(255,255,255,0.9);
   margin-bottom: 5px;
   word-break: break-word;
-  padding: 0 20px;
-}
-
-.profile-email {
-  font-size: 15px;
-  color: rgba(255,255,255,0.8);
-  margin-bottom: 15px;
-  word-break: break-word;
-  display: none;
 }
 
 .profile-username {
-  font-size: 15px;
+  font-size: 14px;
   color: rgba(255,255,255,0.7);
-  margin-bottom: 15px;
+  margin-bottom: 12px;
 }
 
 .telegram-link-btn {
@@ -172,13 +164,13 @@ html, body {
   background: rgba(255,255,255,0.15);
   border: 2px solid rgba(255,255,255,0.3);
   color: white;
-  padding: 10px 20px;
+  padding: 8px 18px;
   border-radius: 40px;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  margin-top: 10px;
+  margin-top: 5px;
 }
 
 .telegram-link-btn:hover {
@@ -193,17 +185,16 @@ html, body {
 }
 
 .telegram-link-btn svg {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   fill: white;
 }
 
 .profile-content {
-  flex: 1;
   width: 100%;
   padding: 20px;
   box-sizing: border-box;
-  overflow-y: auto;
+  overflow-y: visible;
   padding-bottom: 110px;
 }
 
@@ -322,13 +313,11 @@ html, body {
   background: rgba(255, 107, 107, 0.4);
 }
 
-.order-status.manyback,
-.order-status.refund {
+.order-status.manyback {
   background: rgba(0, 0, 0, 0.6);
 }
 
-.order-status.waiting,
-.order-status.pending {
+.order-status.waiting {
   background: rgba(255, 255, 255, 0.2);
 }
 
@@ -353,50 +342,6 @@ html, body {
 .no-orders-subtext {
   font-size: 14px;
   color: rgba(255,255,255,0.6);
-}
-
-.profile-actions {
-  display: flex;
-  gap: 12px;
-  margin-top: 30px;
-  margin-bottom: 30px;
-}
-
-.profile-btn {
-  flex: 1;
-  height: 54px;
-  border-radius: 16px;
-  border: none;
-  font-weight: 700;
-  font-size: 16px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-}
-
-.profile-btn:active {
-  transform: scale(0.97);
-}
-
-.profile-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 25px rgba(0,0,0,0.4);
-}
-
-.btn-logout {
-  background: rgba(255,255,255,0.15);
-  color: white;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,0.2);
-}
-
-.btn-back {
-  background: white;
-  color: #0b3c91;
 }
 
 .error-screen {
@@ -444,14 +389,13 @@ html, body {
 }
 
 .modal-container {
-  background: linear-gradient(180deg, #1565c0, #0b3c91);
+  background: white;
   border-radius: 32px;
   width: 90%;
   max-width: 450px;
-  max-height: 90vh;
+  max-height: 85vh;
   overflow-y: auto;
-  padding: 28px;
-  border: 1px solid rgba(255,255,255,0.2);
+  padding: 0;
   box-shadow: 0 25px 50px rgba(0,0,0,0.5);
 }
 
@@ -459,26 +403,26 @@ html, body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 25px;
-  color: white;
+  padding: 22px 24px;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
 }
 
 .modal-header h2 {
   margin: 0;
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 800;
-  color: white;
+  color: #0b3c91;
 }
 
 .modal-close {
-  background: rgba(255,255,255,0.15);
-  border: 1px solid rgba(255,255,255,0.2);
-  font-size: 24px;
+  background: #f0f2f5;
+  border: none;
+  font-size: 20px;
   cursor: pointer;
-  color: white;
+  color: #666;
   padding: 0;
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -487,28 +431,28 @@ html, body {
 }
 
 .modal-close:hover {
-  background: rgba(255,255,255,0.25);
+  background: #e0e2e5;
   transform: rotate(90deg);
 }
 
 .modal-content {
   display: flex;
   flex-direction: column;
-  gap: 25px;
+  padding: 24px;
 }
 
 .edit-section {
-  background: rgba(255,255,255,0.08);
-  border-radius: 24px;
+  background: #f8f9fc;
+  border-radius: 20px;
   padding: 20px;
-  border: 1px solid rgba(255,255,255,0.1);
+  margin-bottom: 20px;
 }
 
 .edit-section-title {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
-  color: white;
-  margin-bottom: 20px;
+  color: #333;
+  margin-bottom: 16px;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -517,7 +461,7 @@ html, body {
 .edit-section-title::before {
   content: '';
   width: 4px;
-  height: 20px;
+  height: 18px;
   background: #ffd700;
   border-radius: 2px;
   display: inline-block;
@@ -530,19 +474,31 @@ html, body {
 }
 
 .current-avatar {
-  width: 90px;
-  height: 90px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   overflow: hidden;
-  background: rgba(255,255,255,0.1);
-  border: 3px solid rgba(255,255,255,0.3);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: 3px solid #ffd700;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  flex-shrink: 0;
 }
 
 .current-avatar img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.current-avatar .avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  color: white;
+  font-weight: 900;
 }
 
 .avatar-actions {
@@ -553,7 +509,7 @@ html, body {
 }
 
 .btn {
-  padding: 12px 18px;
+  padding: 12px 16px;
   border-radius: 16px;
   border: none;
   font-weight: 700;
@@ -567,26 +523,35 @@ html, body {
 }
 
 .btn-primary {
-  background: #ffd700;
-  color: #0b3c91;
-  box-shadow: 0 8px 20px rgba(255, 215, 0, 0.3);
+  background: #0b3c91;
+  color: white;
+  box-shadow: 0 8px 20px rgba(11, 60, 145, 0.2);
 }
 
 .btn-primary:hover {
-  background: #ffed4a;
+  background: #124fa5;
   transform: translateY(-2px);
-  box-shadow: 0 12px 25px rgba(255, 215, 0, 0.4);
 }
 
 .btn-secondary {
-  background: rgba(255,255,255,0.15);
-  color: white;
-  border: 1px solid rgba(255,255,255,0.2);
-  backdrop-filter: blur(10px);
+  background: #eef0f6;
+  color: #333;
 }
 
 .btn-secondary:hover {
-  background: rgba(255,255,255,0.25);
+  background: #e0e2e8;
+  transform: translateY(-2px);
+}
+
+.btn-danger {
+  background: #fee2e2;
+  color: #dc2626;
+  font-weight: 800;
+  border: 1px solid rgba(220, 38, 38, 0.2);
+}
+
+.btn-danger:hover {
+  background: #fecaca;
   transform: translateY(-2px);
 }
 
@@ -599,46 +564,39 @@ html, body {
 .edit-input {
   flex: 1;
   padding: 14px 18px;
-  border: 2px solid rgba(255,255,255,0.2);
+  border: 2px solid #eef0f6;
   border-radius: 16px;
   font-size: 16px;
   outline: none;
   transition: all 0.2s ease;
-  background: rgba(255,255,255,0.08);
-  color: white;
+  background: white;
+  color: #333;
   font-weight: 500;
 }
 
-.edit-input::placeholder {
-  color: rgba(255,255,255,0.5);
-}
-
 .edit-input:focus {
-  border-color: #ffd700;
-  background: rgba(255,255,255,0.12);
+  border-color: #0b3c91;
 }
 
 .input-hint {
   font-size: 13px;
-  color: rgba(255,255,255,0.6);
+  color: #888;
   margin-top: 10px;
   padding-left: 5px;
 }
 
 .telegram-status {
-  background: rgba(255,255,255,0.08);
+  background: #f0f2f5;
   border-radius: 16px;
   padding: 16px;
   margin-bottom: 15px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border: 1px solid rgba(255,255,255,0.1);
 }
 
 .telegram-status.linked {
-  background: rgba(76, 175, 80, 0.15);
-  border-color: rgba(76, 175, 80, 0.3);
+  background: #e6f7e6;
 }
 
 .telegram-info {
@@ -650,31 +608,44 @@ html, body {
 .telegram-name {
   font-weight: 700;
   font-size: 16px;
-  color: white;
+  color: #333;
 }
 
 .telegram-username {
   font-size: 14px;
-  color: rgba(255,255,255,0.7);
+  color: #666;
 }
 
 .vk-badge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(0, 119, 255, 0.2);
-  border: 1px solid rgba(0, 119, 255, 0.4);
+  background: rgba(0, 119, 255, 0.15);
+  border: 1px solid rgba(0, 119, 255, 0.3);
   border-radius: 20px;
   padding: 4px 12px;
-  font-size: 13px;
-  color: white;
+  font-size: 12px;
+  color: #0077FF;
   margin-left: 10px;
 }
 
 .vk-badge svg {
-  width: 16px;
-  height: 16px;
-  fill: white;
+  width: 14px;
+  height: 14px;
+  fill: #0077FF;
+}
+
+.logout-section {
+  margin-top: 10px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(0,0,0,0.08);
+}
+
+.logout-section .btn-danger {
+  width: 100%;
+  justify-content: center;
+  padding: 14px;
+  font-size: 16px;
 }
 
 @media (max-width: 768px) {
@@ -688,9 +659,6 @@ html, body {
   .order-item {
     padding: 14px;
   }
-  .profile-actions {
-    flex-direction: column;
-  }
   .avatar-edit-container {
     flex-direction: column;
     align-items: center;
@@ -703,21 +671,24 @@ html, body {
     width: 100px;
     height: 100px;
   }
+  .modal-container {
+    width: 95%;
+  }
 }
 
 @media (max-width: 480px) {
   .profile-header {
-    padding: 20px 15px;
+    padding: 20px 15px 15px;
   }
   .profile-avatar {
-    width: 100px;
-    height: 100px;
+    width: 90px;
+    height: 90px;
   }
   .profile-avatar .avatar-placeholder {
-    font-size: 40px;
+    font-size: 36px;
   }
   .profile-name {
-    font-size: 24px;
+    font-size: 22px;
   }
   .profile-content {
     padding: 12px;
@@ -734,9 +705,12 @@ html, body {
     padding: 4px 12px;
     min-width: 80px;
   }
+  .edit-button {
+    padding: 6px 16px;
+    font-size: 13px;
+  }
 }
 
-/* ===== ОСТРОВОК (mobile-nav) ===== */
 .mobile-nav {
   position: fixed;
   bottom: 16px;
@@ -753,7 +727,7 @@ html, body {
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.15);
   z-index: 10000;
   box-sizing: border-box;
-  transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.4, 1), opacity 0.2s ease;
+  transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.4, 1);
   touch-action: pan-y;
   cursor: grab;
 }
@@ -792,14 +766,13 @@ html, body {
 .mobile-nav-item svg {
   width: 24px;
   height: 24px;
-  transition: transform 0.2s ease, filter 0.2s ease;
+  transition: transform 0.2s ease;
   filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
 }
 
 .mobile-nav-item span {
   font-size: 11px;
   font-weight: 700;
-  transition: color 0.2s ease;
 }
 
 .mobile-nav-item.active {
@@ -809,11 +782,6 @@ html, body {
   transform: scale(1.05);
   backdrop-filter: blur(5px);
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-}
-
-.mobile-nav-item.active svg {
-  transform: translateY(-1px);
-  filter: drop-shadow(0 3px 6px rgba(0,100,255,0.5));
 }
 
 .mobile-nav-item:active {
@@ -844,7 +812,6 @@ html, body {
   display: inline-flex;
 }
 
-/* Скрываем десктопные кнопки на мобилках */
 @media (max-width: 768px) {
   .profile-actions .btn-back {
     display: none;
@@ -862,11 +829,12 @@ html, body {
 
 <div id="profile" class="screen profile-screen">
   <div class="profile-header">
-    <div class="profile-avatar" id="profileAvatar" onclick="openEditModal()">
-      <div class="edit-avatar-overlay">Изменить фото</div>
+    <div class="profile-header-top">
+      <button class="edit-button" onclick="openEditModal()">✎ Изменить</button>
     </div>
-    <div class="profile-name" id="profileName">
-      Пользователь
+    <div class="profile-avatar" id="profileAvatar"></div>
+    <div class="profile-name-row">
+      <div class="profile-name" id="profileName">Пользователь</div>
       <span class="vk-badge" id="vkBadge" style="display: none;">
         <svg viewBox="0 0 24 24">
           <path d="M15.07 2H8.93C3.33 2 2 3.33 2 8.93v6.14C2 20.67 3.33 22 8.93 22h6.14c5.6 0 6.93-1.33 6.93-6.93V8.93C22 3.33 20.67 2 15.07 2zm3.54 14.2h-1.46c-.56 0-.73-.43-1.73-1.44-.86-.86-1.24-.98-1.46-.98-.3 0-.38.08-.38.47v1.23c0 .34-.11.54-1.02.54-1.5 0-3.17-.92-4.35-2.64-1.8-2.51-2.29-4.4-2.29-4.79 0-.2.08-.39.47-.39h1.46c.35 0 .48.16.61.54.68 1.83 1.8 3.43 2.27 3.43.17 0 .25-.08.25-.52v-1.82c-.06-.96-.56-1.04-.56-1.39 0-.16.13-.3.3-.3h2.3c.26 0 .35.14.35.45v2.41c0 .26.11.35.18.35.15 0 .27-.09.53-.35 1.01-1.14 1.72-2.89 1.72-2.89.1-.17.23-.26.44-.26h1.46c.45 0 .55.23.45.54-.2.9-2.13 3.24-2.13 3.24-.16.22-.21.33 0 .59.16.21.7.68 1.06 1.1.65.75 1.15 1.38 1.15 1.8.01.41-.3.6-.74.6z"/>
@@ -875,7 +843,6 @@ html, body {
       </span>
     </div>
     <div class="profile-id" id="profileId"></div>
-    <div class="profile-email" id="profileEmail"></div>
     <div class="profile-username" id="profileUsername"></div>
     <button class="telegram-link-btn" id="telegramLinkBtn" onclick="openTelegramLink()">
       <svg viewBox="0 0 24 24">
@@ -893,21 +860,6 @@ html, body {
       </div>
       <div class="orders-list" id="ordersList"></div>
     </div>
-
-    <div class="profile-actions">
-      <button class="profile-btn btn-logout" id="logoutBtn">
-        <svg viewBox="0 0 24 24" width="20" height="20">
-          <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" fill="currentColor"/>
-        </svg>
-        Выйти
-      </button>
-      <button class="profile-btn btn-back" id="backToShopBtn">
-        <svg viewBox="0 0 24 24" width="20" height="20">
-          <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" fill="currentColor"/>
-        </svg>
-        В магазин
-      </button>
-    </div>
   </div>
 </div>
 
@@ -915,7 +867,7 @@ html, body {
   <div class="error-icon"></div>
   <div class="error-title" id="errorTitle">Ошибка загрузки</div>
   <div class="error-text" id="errorText">Не удалось загрузить данные профиля</div>
-  <div class="profile-actions" style="margin-top: 20px;">
+  <div style="display: flex; gap: 12px; margin-top: 20px;">
     <button class="profile-btn btn-back" id="retryBtn">Повторить</button>
     <button class="profile-btn btn-back" onclick="location.href='index.html'">В магазин</button>
   </div>
@@ -924,7 +876,7 @@ html, body {
 <div id="editModal" class="modal-overlay" style="display: none;">
   <div class="modal-container">
     <div class="modal-header">
-      <h2>Редактировать</h2>
+      <h2>Редактировать профиль</h2>
       <button class="modal-close" onclick="closeEditModal()">×</button>
     </div>
 
@@ -935,24 +887,24 @@ html, body {
           <div class="current-avatar" id="editAvatarPreview"></div>
           <div class="avatar-actions">
             <label for="avatarUpload" class="btn btn-primary">
-              <svg viewBox="0 0 24 24" width="18" height="18">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="white">
                 <path d="M3 17.46v3.04c0 .28.22.5.5.5h3.04c.13 0 .26-.05.35-.15L17.81 9.94l-3.75-3.75L3.15 17.1c-.1.1-.15.22-.15.36zM20.71 5.63l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83c.39-.39.39-1.02 0-1.41z"/>
               </svg>
-              Загрузить
+              Загрузить фото
             </label>
             <input type="file" id="avatarUpload" accept="image/*" style="display: none;">
             <button class="btn btn-secondary" id="removeAvatarBtn">
-              <svg viewBox="0 0 24 24" width="18" height="18">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
                 <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
               </svg>
-              Удалить
+              Удалить фото
             </button>
           </div>
         </div>
       </div>
 
       <div class="edit-section">
-        <div class="edit-section-title">Имя</div>
+        <div class="edit-section-title">Имя пользователя</div>
         <div class="input-group">
           <input type="text" id="editUsername" class="edit-input" placeholder="Введите имя" maxlength="50">
           <button class="btn btn-primary" id="saveUsernameBtn">Сохранить</button>
@@ -976,10 +928,18 @@ html, body {
           Привязать Telegram
         </button>
       </div>
+
+      <div class="logout-section">
+        <button class="btn btn-danger" id="logoutBtn">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+            <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
+          </svg>
+          Выйти из аккаунта
+        </button>
+      </div>
     </div>
   </div>
 </div>
-
 
 <div class="mobile-nav" id="mobileNav">
   <button class="mobile-nav-item" id="navWallet">
@@ -1003,7 +963,6 @@ html, body {
     <span>Главная</span>
   </button>
 
-  
   <button class="mobile-nav-item" id="navSupport">
     <svg viewBox="0 0 24 24">
       <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM11 9h2v2h-2V9zm0 4h2v2h-2v-2z"/>
@@ -1019,7 +978,7 @@ html, body {
     <div class="cart-badge-mobile" id="cartBadgeMobile">0</div>
   </button>
 </div>
-  
+
 <script>
 const API_URL = 'https://duck-shop-sever.onrender.com';
 const USER_KEY = 'duck_user_v1';
@@ -1032,7 +991,6 @@ function fmtRub(n) {
   return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + ' ₽';
 }
 
-// ===== ПРОВЕРКА ТЕХПЕРЕРЫВА =====
 (function() {
   var urlParams = new URLSearchParams(window.location.search);
   var adminBypass = urlParams.get('admin_bypass');
@@ -1044,23 +1002,22 @@ function fmtRub(n) {
 
     setTimeout(function() {
       var adminNote = document.createElement('div');
-      adminNote.style.cssText = [
-        'position: fixed',
-        'bottom: 100px',
-        'left: 50%',
-        'transform: translateX(-50%)',
-        'background: rgba(0,0,0,0.8)',
-        'color: #ffd700',
-        'padding: 8px 20px',
-        'border-radius: 30px',
-        'font-size: 14px',
-        'font-weight: 600',
-        'z-index: 10000',
-        'backdrop-filter: blur(5px)',
-        'border: 1px solid rgba(255,215,0,0.3)',
-        'box-shadow: 0 4px 15px rgba(0,0,0,0.3)',
-        'animation: fadeIn 0.3s ease'
-      ].join(';');
+      adminNote.style.cssText = `
+        position: fixed;
+        bottom: 100px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0,0,0,0.8);
+        color: #ffd700;
+        padding: 8px 20px;
+        border-radius: 30px;
+        font-size: 14px;
+        font-weight: 600;
+        z-index: 10000;
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(255,215,0,0.3);
+        animation: fadeIn 0.3s ease;
+      `;
       adminNote.textContent = '🔑 Режим администратора (техперерыв игнорируется)';
       document.body.appendChild(adminNote);
 
@@ -1101,7 +1058,6 @@ function fmtRub(n) {
   document.head.appendChild(style);
 })();
 
-// ===== ФУНКЦИИ ДЛЯ РАБОТЫ С КОРЗИНОЙ (для бейджа) =====
 function loadCart() {
   try { return JSON.parse(localStorage.getItem(CART_KEY) || '{}'); } catch { return {}; }
 }
@@ -1123,19 +1079,16 @@ function updateBadge() {
   }
 }
 
-// ===== ФУНКЦИИ ДЛЯ АНИМАЦИЙ =====
 function loadLottieAnimations() {
   try {
-    // Используем локальные JSON файлы вместо lottiefiles
     lottie.loadAnimation({
       container: document.getElementById('loadingAnim'),
       renderer: 'svg',
       loop: true,
       autoplay: true,
-      path: 'loading.json' // Создай локальный файл
+      path: 'loading.json'
     });
   } catch (error) {
-    console.log('Lottie не загрузилась, используем заглушку');
     const sticker = document.getElementById('loadingAnim');
     if (sticker) {
       sticker.innerHTML = '<div style="color: white; font-size: 50px;">⌛</div>';
@@ -1153,14 +1106,13 @@ function loadNoOrdersAnimation() {
       renderer: 'svg',
       loop: true,
       autoplay: true,
-      path: 'bad_pay.json' // Создай локальный файл
+      path: 'bad_pay.json'
     });
   } catch (error) {
     container.innerHTML = '<div style="color: white; font-size: 40px;">📭</div>';
   }
 }
 
-// ===== ФУНКЦИИ ДЛЯ ЭКРАНОВ =====
 function showScreen(id) {
   ['loading', 'profile', 'error'].forEach(s => {
     const el = document.getElementById(s);
@@ -1174,7 +1126,6 @@ function showScreen(id) {
   }
 }
 
-// ===== РАБОТА С ПОЛЬЗОВАТЕЛЕМ =====
 function loadUser() {
   try { return JSON.parse(localStorage.getItem(USER_KEY)); } catch { return null; }
 }
@@ -1188,33 +1139,25 @@ function clearUser() {
   currentUser = null;
 }
 
-// ===== ФУНКЦИИ ДЛЯ ОСТРОВКА (mobile-nav) =====
 function setupMobileNavigation() {
   const navWallet = document.getElementById('navWallet');
   const navProfile = document.getElementById('navProfile');
-  const navSupport = document.getElementById('navSupport'); 
   const navHome = document.getElementById('navHome');
+  const navSupport = document.getElementById('navSupport');
   const navCart = document.getElementById('navCart');
   const mobileNav = document.getElementById('mobileNav');
 
   if (navWallet) {
     navWallet.addEventListener('click', function(e) {
       e.preventDefault();
-      window.location.href = 'wallet';
-    });
-  }
-
-  if (navSupport) {
-    navSupport.addEventListener('click', function(e) {
-      e.preventDefault();
-      window.location.href = 'support';
+      window.location.href = 'wallet.html';
     });
   }
 
   if (navProfile) {
     navProfile.addEventListener('click', function(e) {
       e.preventDefault();
-      window.location.href = 'profile';
+      window.location.href = 'profile.html';
     });
   }
 
@@ -1222,6 +1165,13 @@ function setupMobileNavigation() {
     navHome.addEventListener('click', function(e) {
       e.preventDefault();
       window.location.href = SHOP_URL;
+    });
+  }
+
+  if (navSupport) {
+    navSupport.addEventListener('click', function(e) {
+      e.preventDefault();
+      window.location.href = 'support.html';
     });
   }
 
@@ -1233,7 +1183,6 @@ function setupMobileNavigation() {
     });
   }
 
-  // Добавляем логику для определения активного пункта
   updateMobileNavActiveState();
 
   if (mobileNav) {
@@ -1284,7 +1233,7 @@ function setupMobileNavigation() {
       startY = null;
     });
 
-    const navItems = [navWallet, navProfile, navHome, navCart];
+    const navItems = [navWallet, navProfile, navHome, navSupport, navCart];
     navItems.forEach(item => {
       if (item) {
         item.addEventListener('click', function(e) {
@@ -1304,11 +1253,10 @@ function updateMobileNavActiveState() {
     wallet: document.getElementById('navWallet'),
     profile: document.getElementById('navProfile'),
     home: document.getElementById('navHome'),
-    support: document.getElementById('navSupport'), 
+    support: document.getElementById('navSupport'),
     cart: document.getElementById('navCart')
   };
 
- 
   Object.values(navItems).forEach(item => {
     if (item) item.classList.remove('active');
   });
@@ -1324,7 +1272,7 @@ function updateMobileNavActiveState() {
     if (navItems.home) navItems.home.classList.add('active');
   }
 }
-// ===== ЗАГРУЗКА ДАННЫХ ПРОФИЛЯ =====
+
 async function loadProfileData() {
   if (!currentUser) {
     window.location.href = 'reg_log.html';
@@ -1358,13 +1306,11 @@ async function loadProfileData() {
 }
 
 function updateProfileUI(user) {
-  // Проверяем существование элементов перед обращением
   const avatar = document.getElementById('profileAvatar');
   const editAvatarPreview = document.getElementById('editAvatarPreview');
   const profileName = document.getElementById('profileName');
   const profileId = document.getElementById('profileId');
   const profileUsername = document.getElementById('profileUsername');
-  const profileEmail = document.getElementById('profileEmail');
   const telegramLinkBtn = document.getElementById('telegramLinkBtn');
   const telegramLinkText = document.getElementById('telegramLinkText');
   const vkBadge = document.getElementById('vkBadge');
@@ -1382,7 +1328,7 @@ function updateProfileUI(user) {
     const avatarHtml = user.avatarUrl ? 
       `<img src="${user.avatarUrl}" alt="${user.username}">` :
       `<div class="avatar-placeholder">${firstLetter}</div>`;
-    avatar.innerHTML = avatarHtml + '<div class="edit-avatar-overlay">Изменить фото</div>';
+    avatar.innerHTML = avatarHtml;
   }
   
   if (editAvatarPreview) {
@@ -1397,22 +1343,11 @@ function updateProfileUI(user) {
 
   const provider = user.auth_provider || 'email';
 
-  // Показываем VK бейдж если провайдер VK
   if (vkBadge) {
     if (provider === 'vk' || provider === 'vk+telegram') {
       vkBadge.style.display = 'inline-flex';
     } else {
       vkBadge.style.display = 'none';
-    }
-  }
-
-  // Показываем email если есть
-  if (profileEmail) {
-    if (user.email) {
-      profileEmail.textContent = user.email;
-      profileEmail.style.display = 'block';
-    } else {
-      profileEmail.style.display = 'none';
     }
   }
 
@@ -1515,64 +1450,6 @@ function showError(title, message) {
   showScreen('error');
 }
 
-// ===== ОБРАБОТЧИКИ СОБЫТИЙ =====
-const logoutBtn = document.getElementById('logoutBtn');
-if (logoutBtn) {
-  logoutBtn.addEventListener('click', () => {
-    clearUser();
-    window.location.href = SHOP_URL;
-  });
-}
-
-const backToShopBtn = document.getElementById('backToShopBtn');
-if (backToShopBtn) {
-  backToShopBtn.addEventListener('click', () => {
-    window.location.href = SHOP_URL;
-  });
-}
-
-const retryBtn = document.getElementById('retryBtn');
-if (retryBtn) {
-  retryBtn.addEventListener('click', () => {
-    if (currentUser) loadProfileData();
-    else window.location.href = 'reg_log.html';
-  });
-}
-
-// ===== ПРОВЕРКА АВТОРИЗАЦИИ =====
-function checkInitialAuth() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const authToken = urlParams.get('auth');
-
-  if (authToken) {
-    window.history.replaceState({}, '', window.location.pathname);
-    verifyAuthToken(authToken);
-  } else {
-    currentUser = loadUser();
-    if (currentUser) loadProfileData();
-    else window.location.href = 'reg_log.html';
-  }
-}
-
-async function verifyAuthToken(token) {
-  showScreen('loading');
-  try {
-    const response = await fetch(`${API_URL}/api/auth/check/${token}`);
-    const data = await response.json();
-
-    if (data.success && data.authenticated && data.user) {
-      currentUser = data.user;
-      saveUser(data.user);
-      loadProfileData();
-    } else {
-      showError('Ошибка авторизации', 'Не удалось войти в аккаунт');
-    }
-  } catch (error) {
-    showError('Ошибка сети', 'Не удалось подключиться к серверу');
-  }
-}
-
-// ===== ФУНКЦИИ ДЛЯ МОДАЛЬНОГО ОКНА =====
 function openEditModal() {
   const editUsername = document.getElementById('editUsername');
   if (editUsername && currentUser) {
@@ -1714,7 +1591,7 @@ if (unlinkTelegramBtn) {
   unlinkTelegramBtn.addEventListener('click', async function() {
     if (!currentUser) return;
     
-    if (!confirm('Вы уверены, что хотите отвязать Telegram аккаунт?\n\nПосле отвязки вы больше не сможете входить через Telegram.')) {
+    if (!confirm('Вы уверены, что хотите отвязать Telegram аккаунт?')) {
       return;
     }
 
@@ -1761,7 +1638,56 @@ if (unlinkTelegramBtn) {
   });
 }
 
-// ===== ИНИЦИАЛИЗАЦИЯ =====
+const logoutBtn = document.getElementById('logoutBtn');
+if (logoutBtn) {
+  logoutBtn.addEventListener('click', () => {
+    if (confirm('Вы уверены, что хотите выйти?')) {
+      clearUser();
+      window.location.href = SHOP_URL;
+    }
+  });
+}
+
+const retryBtn = document.getElementById('retryBtn');
+if (retryBtn) {
+  retryBtn.addEventListener('click', () => {
+    if (currentUser) loadProfileData();
+    else window.location.href = 'reg_log.html';
+  });
+}
+
+function checkInitialAuth() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const authToken = urlParams.get('auth');
+
+  if (authToken) {
+    window.history.replaceState({}, '', window.location.pathname);
+    verifyAuthToken(authToken);
+  } else {
+    currentUser = loadUser();
+    if (currentUser) loadProfileData();
+    else window.location.href = 'reg_log.html';
+  }
+}
+
+async function verifyAuthToken(token) {
+  showScreen('loading');
+  try {
+    const response = await fetch(`${API_URL}/api/auth/check/${token}`);
+    const data = await response.json();
+
+    if (data.success && data.authenticated && data.user) {
+      currentUser = data.user;
+      saveUser(data.user);
+      loadProfileData();
+    } else {
+      showError('Ошибка авторизации', 'Не удалось войти в аккаунт');
+    }
+  } catch (error) {
+    showError('Ошибка сети', 'Не удалось подключиться к серверу');
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   loadLottieAnimations();
   updateBadge();
