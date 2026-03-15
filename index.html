@@ -4,14 +4,11 @@
     <meta charset="UTF-8">
     <title>Duck Shop</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-    <!-- Lottie -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
     <style>
-        /* ===== ОСНОВНЫЕ СТИЛИ ===== */
         * {
             margin: 0;
             padding: 0;
@@ -26,7 +23,6 @@
             overflow: hidden;
         }
 
-        /* ===== ЭКРАНЫ ===== */
         .screen, .menu {
             position: absolute;
             inset: 0;
@@ -52,7 +48,6 @@
             transform: translateY(-40px);
         }
 
-        /* ===== ОБЩИЕ ЭЛЕМЕНТЫ ===== */
         .sticker {
             width: 260px;
             height: 260px;
@@ -92,11 +87,10 @@
             background: #cccccc;
             color: #666666;
             cursor: not-allowed;
-            transform: none !important;
-            box-shadow: 0 8px 20px rgba(0,0,0,.25) !important;
+            transform: none;
+            box-shadow: 0 8px 20px rgba(0,0,0,.25);
         }
 
-        /* ===== МЕНЮ ===== */
         .menu {
             justify-content: flex-start;
             padding: 0;
@@ -126,7 +120,6 @@
             flex: 1;
         }
 
-        /* ===== КНОПКИ ===== */
         .auth-btn, .cart-btn {
             height: 44px;
             border: 0;
@@ -169,7 +162,6 @@
             fill: #fff;
         }
 
-        /* ===== ЗНАЧКИ ===== */
         .cart-badge {
             position: absolute;
             top: 6px;
@@ -211,7 +203,6 @@
             display: inline-flex;
         }
 
-        /* ===== СКРОЛЛ МЕНЮ ===== */
         .menu-scroll {
             flex: 1;
             width: 100%;
@@ -221,7 +212,6 @@
             -webkit-overflow-scrolling: touch;
         }
 
-        /* ===== КАРТОЧКИ ТОВАРОВ ===== */
         .shop-card {
             position: relative;
             height: 240px;
@@ -349,7 +339,6 @@
             pointer-events: none;
         }
 
-        /* ===== СЕТКА ===== */
         .row-two {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -367,7 +356,6 @@
             width: calc(50% - 9px);
         }
 
-        /* ===== КОРЗИНА (OVERLAY) ===== */
         .cart-overlay {
             position: fixed;
             inset: 0;
@@ -585,7 +573,6 @@
             color: #fff;
         }
 
-        /* ===== ЭКРАН ОФОРМЛЕНИЯ ===== */
         .checkout-summary {
             width: 100%;
             max-width: 400px;
@@ -645,7 +632,6 @@
             width: 100%;
         }
 
-        /* ===== МОБИЛЬНАЯ НАВИГАЦИЯ ===== */
         .mobile-nav {
             position: fixed;
             bottom: 16px;
@@ -720,65 +706,52 @@
             background: rgba(255, 255, 255, 0.25);
         }
 
-        /* ===== МЕДИА-ЗАПРОСЫ ===== */
         @media (max-width: 768px) {
             .menu-header {
                 padding: 14px 16px;
                 font-size: 22px;
             }
-            
             .menu-header .auth-btn,
             .menu-header .cart-btn {
-                display: none !important;
+                display: none;
             }
-            
             .menu-scroll {
                 padding: 12px;
                 padding-bottom: 110px;
             }
-            
             .shop-card {
                 height: 220px;
                 margin-bottom: 12px;
             }
-            
             .shop-top {
                 flex: 0 0 55%;
             }
-            
             .shop-bottom {
                 flex: 0 0 45%;
                 padding: 8px 10px;
             }
-            
             .shop-name {
                 font-size: 14px;
             }
-            
             .shop-buy {
                 min-width: 120px;
                 height: 40px;
             }
-            
             .button {
                 padding: 16px 40px;
                 font-size: 18px;
                 min-width: 240px;
             }
-            
             .title {
                 font-size: 26px;
             }
-            
             .sticker {
                 width: 200px;
                 height: 200px;
             }
-            
             .cart-overlay {
                 padding-bottom: 95px;
             }
-            
             .row-two {
                 grid-template-columns: 1fr 1fr;
             }
@@ -789,34 +762,27 @@
                 grid-template-columns: 1fr;
                 gap: 12px;
             }
-            
             .shop-card {
                 height: 200px;
             }
-            
             .shop-name {
                 font-size: 13px;
             }
-            
             .shop-buy {
                 min-width: 100px;
                 height: 36px;
             }
-            
             .button {
                 padding: 14px 32px;
                 font-size: 16px;
                 min-width: 200px;
             }
-            
             .menu-header-title {
                 font-size: 18px;
             }
-            
             .menu-scroll {
                 padding-bottom: 105px;
             }
-            
             .cart-overlay {
                 padding-bottom: 90px;
             }
@@ -826,28 +792,22 @@
             .shop-card {
                 height: 190px;
             }
-            
             .shop-top {
                 flex: 0 0 50%;
             }
-            
             .shop-bottom {
                 flex: 0 0 50%;
             }
-            
             .shop-name {
                 font-size: 12px;
             }
-            
             .shop-buy {
                 min-width: 90px;
                 height: 34px;
             }
-            
             .menu-scroll {
                 padding-bottom: 100px;
             }
-            
             .cart-overlay {
                 padding-bottom: 85px;
             }
@@ -857,53 +817,46 @@
             .menu-scroll {
                 padding: 18px 16px 40px;
             }
-            
             .auth-btn span {
                 display: inline;
             }
-            
             .mobile-nav {
-                display: none !important;
+                display: none;
             }
         }
 
-        /* ===== УТИЛИТЫ ===== */
         #hello .mobile-nav,
         #load .mobile-nav,
         #intro .mobile-nav,
         #waiting .mobile-nav,
         #checkout .mobile-nav,
         #badPay .mobile-nav {
-            display: none !important;
+            display: none;
         }
 
         .wallet-desktop {
-            display: inline-flex !important;
+            display: inline-flex;
             margin-right: 8px;
         }
     </style>
 </head>
 <body>
-    <!-- ===== ЭКРАН ПРИВЕТСТВИЯ ===== -->
     <div id="hello" class="screen active">
         <div id="animHello" class="sticker"></div>
         <div class="title">Добро пожаловать</div>
         <div class="button" id="continueBtn">Продолжить</div>
     </div>
 
-    <!-- ===== ЭКРАН ЗАГРУЗКИ ===== -->
     <div id="load" class="screen">
         <div id="animDownload" class="sticker"></div>
         <div class="title">Загрузка…</div>
     </div>
 
-    <!-- ===== ЭКРАН ИНТРО ===== -->
     <div id="intro" class="screen">
         <div id="animMain" class="sticker"></div>
         <div class="title">Магазин Duck Shop</div>
     </div>
 
-    <!-- ===== ГЛАВНОЕ МЕНЮ (МАГАЗИН) ===== -->
     <div id="menu" class="menu">
         <div class="menu-header">
             <div class="menu-header-title">Магазин Duck Shop</div>
@@ -937,7 +890,6 @@
         <div class="menu-scroll" id="cardsContainer"></div>
     </div>
 
-    <!-- ===== ЭКРАН ОЖИДАНИЯ ===== -->
     <div id="waiting" class="screen">
         <div id="animWaiting" class="sticker"></div>
         <div class="title">Ожидайте выполнения</div>
@@ -947,7 +899,6 @@
         <div class="order-number" id="waitingOrderNumber"></div>
     </div>
 
-    <!-- ===== ЭКРАН ОФОРМЛЕНИЯ ЗАКАЗА ===== -->
     <div id="checkout" class="screen checkout-screen">
         <div id="animCheckout" class="sticker"></div>
         <div class="title">Оформление заказа</div>
@@ -960,7 +911,6 @@
         <button class="button" id="backToMenu" style="margin-top: 12px; background: rgba(255,255,255,0.2); color: white;">Вернуться в меню</button>
     </div>
 
-    <!-- ===== ЭКРАН ОШИБКИ ОПЛАТЫ ===== -->
     <div id="badPay" class="screen">
         <div id="animBadPay" class="sticker"></div>
         <div class="title">Оплата не прошла</div>
@@ -968,7 +918,6 @@
         <button class="button" id="toMenuFromBadPay">Вернуться в меню</button>
     </div>
 
-    <!-- ===== ОВЕРЛЕЙ КОРЗИНЫ ===== -->
     <div class="cart-overlay" id="cartOverlay" aria-hidden="true">
         <div class="cart-sheet" role="dialog" aria-modal="true">
             <div class="cart-head">
@@ -989,7 +938,6 @@
         </div>
     </div>
 
-    <!-- ===== МОБИЛЬНАЯ НАВИГАЦИЯ ===== -->
     <div class="mobile-nav" id="mobileNav">
         <button class="mobile-nav-item" id="navWallet">
             <svg viewBox="0 0 24 24">
@@ -1025,19 +973,16 @@
     </div>
 
     <script>
-        // ===== КОНСТАНТЫ =====
         const API_URL = 'https://duck-shop-sever.onrender.com';
         const CART_KEY = 'duck_cart_v1';
         const USER_KEY = 'duck_user_v1';
 
-        // ===== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ =====
         let PRODUCTS = [];
         let productsCheckInterval = null;
         let cart = {};
         let currentOrderId = null;
         let currentUser = null;
 
-        // ===== ТОВАРЫ ПО УМОЛЧАНИЮ =====
         const DEFAULT_PRODUCTS = [
             { id: "c30", name: "30 кристаллов", price: 200, image_url: "https://i.imgur.com/s4K0WIP.png", is_gift: false },
             { id: "c80", name: "80 кристаллов", price: 550, image_url: "https://i.imgur.com/XbnZKDb.png", is_gift: false },
@@ -1053,12 +998,10 @@
             { id: "pro", name: "Pro Pass", price: 2200, image_url: "https://i.imgur.com/6808Xnp.png", is_gift: false }
         ];
 
-        // ===== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ =====
         function fmtRub(n) {
             return `${n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} ₽`;
         }
 
-        // ===== РАБОТА С КОРЗИНОЙ =====
         function loadCart() {
             try {
                 const raw = localStorage.getItem(CART_KEY);
@@ -1073,11 +1016,13 @@
         }
 
         function cartCount() {
+            if (!cart || typeof cart !== 'object') return 0;
             return Object.values(cart).reduce((a, b) => a + b, 0);
         }
 
         function cartSum() {
             let sum = 0;
+            if (!cart || typeof cart !== 'object') return 0;
             for (const [id, qty] of Object.entries(cart)) {
                 const p = PRODUCTS.find(x => x.id === id);
                 if (p) sum += p.price * qty;
@@ -1089,7 +1034,7 @@
             const n = cartCount();
             const cartBadge = document.getElementById('cartBadge');
             const cartBadgeMobile = document.getElementById('cartBadgeMobile');
-
+            if (!cartBadge) return;
             if (n > 0) {
                 cartBadge.style.display = 'inline-flex';
                 cartBadge.textContent = n;
@@ -1108,16 +1053,14 @@
         function renderCart() {
             const cartBody = document.getElementById('cartBody');
             const cartTotalEl = document.getElementById('cartTotal');
-
             if (!cartBody || !cartTotalEl) return;
-
+            if (!cart || typeof cart !== 'object') cart = {};
             const entries = Object.entries(cart);
             if (entries.length === 0) {
-                cartBody.innerHTML = `<div class="cart-empty">Корзина пуста</div>`;
+                cartBody.innerHTML = '<div class="cart-empty">Корзина пуста</div>';
                 cartTotalEl.textContent = '0 ₽';
                 return;
             }
-
             cartBody.innerHTML = entries.map(([id, qty]) => {
                 const p = PRODUCTS.find(x => x.id === id);
                 if (!p) return '';
@@ -1136,7 +1079,6 @@
                     </div>
                 `;
             }).join('');
-
             cartTotalEl.textContent = fmtRub(cartSum());
         }
 
@@ -1170,21 +1112,19 @@
             renderCart();
         }
 
-        // ===== УПРАВЛЕНИЕ ЭКРАНАМИ =====
         function show(id) {
             const ids = ['hello', 'load', 'intro', 'menu', 'waiting', 'checkout', 'badPay'];
-            const current = ids.map(x => document.getElementById(x)).find(el => el.classList.contains('active'));
+            const current = ids.map(x => document.getElementById(x)).find(el => el && el.classList.contains('active'));
             const next = document.getElementById(id);
-
+            if (!next) return;
             if (current && current !== next) {
                 current.classList.add('leaving');
                 setTimeout(() => {
                     ids.forEach(x => {
                         const el = document.getElementById(x);
-                        el.classList.remove('active', 'leaving');
+                        if (el) el.classList.remove('active', 'leaving');
                     });
                     next.classList.add('active');
-                    
                     if (id === 'menu') {
                         const cardsContainer = document.getElementById('cardsContainer');
                         if (cardsContainer) {
@@ -1198,14 +1138,15 @@
                             }, 300);
                         }
                     }
-
                     updateMobileNavVisibility(id);
                     updateMobileNavActiveState();
                 }, 350);
             } else {
-                ids.forEach(x => document.getElementById(x).classList.remove('active', 'leaving'));
+                ids.forEach(x => {
+                    const el = document.getElementById(x);
+                    if (el) el.classList.remove('active', 'leaving');
+                });
                 next.classList.add('active');
-
                 if (id === 'menu') {
                     const cardsContainer = document.getElementById('cardsContainer');
                     if (cardsContainer) {
@@ -1219,7 +1160,6 @@
                         }, 300);
                     }
                 }
-
                 updateMobileNavVisibility(id);
                 updateMobileNavActiveState();
             }
@@ -1229,10 +1169,8 @@
             const mobileNav = document.getElementById('mobileNav');
             const cartOverlay = document.getElementById('cartOverlay');
             if (!mobileNav) return;
-
             const hiddenScreens = ['hello', 'load', 'intro', 'waiting', 'checkout', 'badPay'];
             const shouldShow = currentScreen === 'menu' && !cartOverlay.classList.contains('open') && !hiddenScreens.includes(currentScreen);
-
             mobileNav.style.display = shouldShow ? 'flex' : 'none';
         }
 
@@ -1244,28 +1182,22 @@
                 support: document.getElementById('navSupport'),
                 cart: document.getElementById('navCart')
             };
-
             const currentPath = window.location.pathname;
-            const currentScreen = document.querySelector('.screen.active, .menu.active');
-
             Object.values(navItems).forEach(item => item?.classList.remove('active'));
-
             if (currentPath.includes('wallet.html')) {
                 navItems.wallet?.classList.add('active');
             } else if (currentPath.includes('profile.html')) {
                 navItems.profile?.classList.add('active');
-            } else if (currentScreen && currentScreen.id === 'menu') {
+            } else if (document.querySelector('.screen.active, .menu.active')?.id === 'menu') {
                 navItems.home?.classList.add('active');
             }
         }
 
-        // ===== РАБОТА С ТОВАРАМИ =====
         function sortProductsForDesktop(products) {
             const desktopOrder = ["c30", "c80", "c170", "c360", "c950", "c2000", "bp", "bpplus", "bp_g", "bpp_g", "pro", "up"];
             const orderedProducts = [];
             const newProducts = products.filter(p => p.id.startsWith('prod_'));
             const otherProducts = products.filter(p => !p.id.startsWith('prod_') && !desktopOrder.includes(p.id));
-
             newProducts.sort((a, b) => {
                 const getTimestamp = (id) => {
                     const match = id.match(/prod_(\d+)_/);
@@ -1273,12 +1205,10 @@
                 };
                 return getTimestamp(b.id) - getTimestamp(a.id);
             });
-
             desktopOrder.forEach(id => {
                 const product = products.find(p => p.id === id);
                 if (product) orderedProducts.push(product);
             });
-
             otherProducts.sort((a, b) => a.price - b.price);
             return [...newProducts, ...orderedProducts, ...otherProducts];
         }
@@ -1288,7 +1218,6 @@
             const orderedProducts = [];
             const newProducts = products.filter(p => p.id.startsWith('prod_'));
             const otherProducts = products.filter(p => !p.id.startsWith('prod_') && !mobileOrder.includes(p.id));
-
             newProducts.sort((a, b) => {
                 const getTimestamp = (id) => {
                     const match = id.match(/prod_(\d+)_/);
@@ -1296,12 +1225,10 @@
                 };
                 return getTimestamp(b.id) - getTimestamp(a.id);
             });
-
             mobileOrder.forEach(id => {
                 const product = products.find(p => p.id === id);
                 if (product) orderedProducts.push(product);
             });
-
             otherProducts.sort((a, b) => a.price - b.price);
             return [...newProducts, ...orderedProducts, ...otherProducts];
         }
@@ -1309,15 +1236,12 @@
         async function loadProducts() {
             try {
                 const response = await fetch(`${API_URL}/api/products`);
-
                 if (!response.ok) {
                     PRODUCTS = [...DEFAULT_PRODUCTS];
                     renderProducts();
                     return;
                 }
-
                 const data = await response.json();
-
                 if (data.success && data.products && data.products.length > 0) {
                     const serverProducts = data.products;
                     const serverProductIds = new Set(serverProducts.map(p => p.id));
@@ -1326,7 +1250,6 @@
                 } else {
                     PRODUCTS = [...DEFAULT_PRODUCTS];
                 }
-                
                 renderProducts();
             } catch (error) {
                 PRODUCTS = [...DEFAULT_PRODUCTS];
@@ -1337,12 +1260,9 @@
         function renderProducts() {
             const cardsContainer = document.getElementById('cardsContainer');
             if (!cardsContainer) return;
-
             const isMobile = window.innerWidth <= 480;
             const productsToShow = isMobile ? sortProductsForMobile(PRODUCTS) : sortProductsForDesktop(PRODUCTS);
-
             cardsContainer.innerHTML = '';
-
             if (isMobile) {
                 productsToShow.forEach(p => {
                     const card = document.createElement('div');
@@ -1367,10 +1287,8 @@
                 });
             } else {
                 let currentRow = [];
-
                 productsToShow.forEach((p, index) => {
                     currentRow.push(p);
-
                     if (currentRow.length === 2 || index === productsToShow.length - 1) {
                         if (currentRow.length === 1 && currentRow[0].id === "pro") {
                             const row = document.createElement('div');
@@ -1397,7 +1315,6 @@
                         } else {
                             const row = document.createElement('div');
                             row.className = 'row-two';
-
                             currentRow.forEach(p => {
                                 row.innerHTML += `
                                     <div class="shop-card">
@@ -1418,14 +1335,11 @@
                                     </div>
                                 `;
                             });
-
                             if (currentRow.length === 1) {
-                                row.innerHTML += `<div class="shop-card empty-card"></div>`;
+                                row.innerHTML += '<div class="shop-card empty-card"></div>';
                             }
-
                             cardsContainer.appendChild(row);
                         }
-
                         currentRow = [];
                     }
                 });
@@ -1442,7 +1356,6 @@
             productsCheckInterval = setInterval(loadProducts, 10000);
         }
 
-        // ===== РАБОТА С ПОЛЬЗОВАТЕЛЕМ =====
         function loadUser() {
             try {
                 const userData = localStorage.getItem(USER_KEY);
@@ -1458,32 +1371,20 @@
             } catch (error) {}
         }
 
-        function clearUser() {
-            localStorage.removeItem(USER_KEY);
-            currentUser = null;
-            updateAuthButton();
-        }
-
         function updateAuthButton() {
             const authBtn = document.getElementById('authBtn');
             const authBtnText = document.getElementById('authBtnText');
-
             if (!authBtn || !authBtnText) return;
-
             authBtn.onclick = null;
-
             if (currentUser) {
                 if (window.innerWidth <= 768 && currentUser.username) {
-                    const shortName = currentUser.username.length > 6
-                        ? currentUser.username.substring(0, 6) + '...'
-                        : currentUser.username;
+                    const shortName = currentUser.username.length > 6 ? currentUser.username.substring(0, 6) + '...' : currentUser.username;
                     authBtnText.textContent = shortName;
                 } else if (currentUser.username) {
                     authBtnText.textContent = currentUser.username;
                 } else {
                     authBtnText.textContent = 'Профиль';
                 }
-
                 authBtn.onclick = function(e) {
                     e.preventDefault();
                     window.location.href = 'profile';
@@ -1500,7 +1401,6 @@
         function checkAuthFromURL() {
             const urlParams = new URLSearchParams(window.location.search);
             const authToken = urlParams.get('auth');
-
             if (authToken) {
                 verifyAuthToken(authToken);
             } else {
@@ -1513,19 +1413,12 @@
             try {
                 const response = await fetch(`${API_URL}/api/auth/check/${token}`);
                 const data = await response.json();
-
                 if (data.success && data.authenticated && data.user) {
                     currentUser = data.user;
                     saveUser(currentUser);
-
                     const newUrl = window.location.pathname;
                     window.history.replaceState({}, '', newUrl);
-
                     updateAuthButton();
-
-                    setTimeout(() => {
-                        alert(`✅ Добро пожаловать, ${currentUser.username}!`);
-                    }, 500);
                 } else {
                     updateAuthButton();
                 }
@@ -1534,11 +1427,9 @@
             }
         }
 
-        // ===== ПРОВЕРКА ТЕХНИЧЕСКОГО ПЕРЕРЫВА =====
         function checkAdminBypass() {
             const urlParams = new URLSearchParams(window.location.search);
             const adminBypass = urlParams.get('admin_bypass');
-
             if (adminBypass) {
                 sessionStorage.setItem('admin_bypass_active', 'true');
                 sessionStorage.setItem('admin_bypass_key', adminBypass);
@@ -1550,42 +1441,10 @@
         async function checkMaintenance() {
             const hasBypassInUrl = checkAdminBypass();
             const hasBypassInStorage = sessionStorage.getItem('admin_bypass_active') === 'true';
-
-            if (hasBypassInUrl || hasBypassInStorage) {
-                setTimeout(() => {
-                    const adminNote = document.createElement('div');
-                    adminNote.style.cssText = `
-                        position: fixed;
-                        bottom: 80px;
-                        left: 50%;
-                        transform: translateX(-50%);
-                        background: rgba(0,0,0,0.7);
-                        color: #ffd700;
-                        padding: 8px 16px;
-                        border-radius: 30px;
-                        font-size: 14px;
-                        font-weight: 600;
-                        z-index: 10000;
-                        backdrop-filter: blur(5px);
-                        border: 1px solid rgba(255,215,0,0.3);
-                    `;
-                    adminNote.textContent = '🔑 Режим администратора (техперерыв игнорируется)';
-                    document.body.appendChild(adminNote);
-
-                    setTimeout(() => {
-                        adminNote.style.opacity = '0';
-                        adminNote.style.transition = 'opacity 0.5s';
-                        setTimeout(() => adminNote.remove(), 500);
-                    }, 5000);
-                }, 1000);
-
-                return;
-            }
-
+            if (hasBypassInUrl || hasBypassInStorage) return;
             try {
                 const response = await fetch(`${API_URL}/api/maintenance-status`);
                 const data = await response.json();
-
                 if (data.maintenance && !window.location.pathname.includes('working.html')) {
                     sessionStorage.setItem('return_url', window.location.href);
                     window.location.href = 'working';
@@ -1595,32 +1454,15 @@
             }
         }
 
-        function handleMaintenanceReturn() {
-            const returnUrl = sessionStorage.getItem('return_url');
-            if (returnUrl && !window.location.pathname.includes('working.html')) {
-                sessionStorage.removeItem('return_url');
-            }
-        }
-
-        // ===== АНИМАЦИИ LOTTIE =====
         function loadAllLottieAnimations() {
             try {
-                const animations = {
-                    hello: 'hello.json',
-                    download: 'download.json',
-                    main: 'main.json',
-                    waiting: 'https://assets2.lottiefiles.com/packages/lf20_puciaevh.json',
-                    checkout: 'checkout.json',
-                    badPay: 'https://assets2.lottiefiles.com/packages/lf20_dews0pqv.json'
-                };
-
                 if (document.getElementById('animHello')) {
                     lottie.loadAnimation({
                         container: document.getElementById('animHello'),
                         renderer: 'svg',
                         loop: true,
                         autoplay: true,
-                        path: animations.hello
+                        path: 'hello.json'
                     });
                 }
                 if (document.getElementById('animDownload')) {
@@ -1629,7 +1471,7 @@
                         renderer: 'svg',
                         loop: true,
                         autoplay: true,
-                        path: animations.download
+                        path: 'download.json'
                     });
                 }
                 if (document.getElementById('animMain')) {
@@ -1638,7 +1480,7 @@
                         renderer: 'svg',
                         loop: true,
                         autoplay: true,
-                        path: animations.main
+                        path: 'main.json'
                     });
                 }
                 if (document.getElementById('animWaiting')) {
@@ -1647,7 +1489,7 @@
                         renderer: 'svg',
                         loop: true,
                         autoplay: true,
-                        path: animations.waiting
+                        path: 'https://assets2.lottiefiles.com/packages/lf20_puciaevh.json'
                     });
                 }
                 if (document.getElementById('animCheckout')) {
@@ -1656,7 +1498,7 @@
                         renderer: 'svg',
                         loop: true,
                         autoplay: true,
-                        path: animations.checkout
+                        path: 'checkout.json'
                     });
                 }
                 if (document.getElementById('animBadPay')) {
@@ -1665,7 +1507,7 @@
                         renderer: 'svg',
                         loop: true,
                         autoplay: true,
-                        path: animations.badPay
+                        path: 'https://assets2.lottiefiles.com/packages/lf20_dews0pqv.json'
                     });
                 }
             } catch (error) {
@@ -1677,18 +1519,14 @@
             }
         }
 
-        // ===== ОФОРМЛЕНИЕ ЗАКАЗА =====
         function showCheckout() {
             const total = cartSum();
             const checkoutSummary = document.getElementById('checkoutSummary');
             const proceedToPayBtn = document.getElementById('proceedToPay');
             const amountError = document.getElementById('amountError');
             const errorText = document.getElementById('errorText');
-
             if (!checkoutSummary || !proceedToPayBtn || !amountError || !errorText) return;
-
             checkoutSummary.innerHTML = '';
-
             Object.entries(cart).forEach(([id, qty]) => {
                 const p = PRODUCTS.find(x => x.id === id);
                 if (p) {
@@ -1701,7 +1539,6 @@
                     checkoutSummary.appendChild(itemDiv);
                 }
             });
-
             const totalDiv = document.createElement('div');
             totalDiv.className = 'checkout-total';
             totalDiv.innerHTML = `
@@ -1709,7 +1546,6 @@
                 <span>${fmtRub(total)}</span>
             `;
             checkoutSummary.appendChild(totalDiv);
-
             if (total < 10 || total > 10000) {
                 proceedToPayBtn.disabled = true;
                 amountError.style.display = 'block';
@@ -1720,7 +1556,6 @@
                 proceedToPayBtn.disabled = false;
                 amountError.style.display = 'none';
             }
-
             show('checkout');
         }
 
@@ -1736,18 +1571,15 @@
             const urlParams = new URLSearchParams(window.location.search);
             const status = urlParams.get('payment');
             const orderId = urlParams.get('order');
-
             if (status === 'fail' && orderId) {
                 currentOrderId = orderId;
                 updateOrderNumberElements(currentOrderId);
                 show('badPay');
-
                 const newUrl = window.location.pathname;
                 window.history.replaceState({}, '', newUrl);
             }
         }
 
-        // ===== НАСТРОЙКА МОБИЛЬНОЙ НАВИГАЦИИ =====
         function setupMobileNavigation() {
             const navWallet = document.getElementById('navWallet');
             const navProfile = document.getElementById('navProfile');
@@ -1763,28 +1595,24 @@
                     window.location.href = 'support';
                 });
             }
-
             if (supportDesktopBtn) {
                 supportDesktopBtn.addEventListener('click', (e) => {
                     e.preventDefault();
                     window.location.href = 'support';
                 });
             }
-
             if (navWallet) {
                 navWallet.addEventListener('click', (e) => {
                     e.preventDefault();
                     window.location.href = 'wallet';
                 });
             }
-
             if (navProfile) {
                 navProfile.addEventListener('click', (e) => {
                     e.preventDefault();
                     window.location.href = 'profile';
                 });
             }
-
             if (navHome) {
                 navHome.addEventListener('click', (e) => {
                     e.preventDefault();
@@ -1795,38 +1623,30 @@
                     updateMobileNavActiveState();
                 });
             }
-
             if (navCart) {
                 navCart.addEventListener('click', (e) => {
                     e.preventDefault();
                     document.getElementById('openCart').click();
                 });
             }
-
             if (mobileNav) {
                 let isDragging = false;
                 let startX, startY;
-
                 mobileNav.addEventListener('mousedown', (e) => {
                     isDragging = false;
                     startX = e.clientX;
                     startY = e.clientY;
                 });
-
                 mobileNav.addEventListener('mousemove', (e) => {
                     if (!startX) return;
                     const dx = e.clientX - startX;
                     const dy = e.clientY - startY;
-                    if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
-                        isDragging = true;
-                    }
+                    if (Math.abs(dx) > 5 || Math.abs(dy) > 5) isDragging = true;
                 });
-
                 mobileNav.addEventListener('mouseup', () => {
                     startX = null;
                     startY = null;
                 });
-
                 mobileNav.addEventListener('touchstart', (e) => {
                     isDragging = false;
                     if (e.touches.length) {
@@ -1834,21 +1654,16 @@
                         startY = e.touches[0].clientY;
                     }
                 });
-
                 mobileNav.addEventListener('touchmove', (e) => {
                     if (!startX || !e.touches.length) return;
                     const dx = e.touches[0].clientX - startX;
                     const dy = e.touches[0].clientY - startY;
-                    if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
-                        isDragging = true;
-                    }
+                    if (Math.abs(dx) > 5 || Math.abs(dy) > 5) isDragging = true;
                 });
-
                 mobileNav.addEventListener('touchend', () => {
                     startX = null;
                     startY = null;
                 });
-
                 const navItems = [navWallet, navProfile, navHome, navSupport, navCart];
                 navItems.forEach(item => {
                     if (item) {
@@ -1864,9 +1679,7 @@
             }
         }
 
-        // ===== ОБРАБОТЧИКИ СОБЫТИЙ =====
         function setupEventListeners() {
-            // Кнопка продолжения
             document.getElementById('continueBtn').addEventListener('pointerdown', function() {
                 this.classList.add('pressed');
             });
@@ -1884,11 +1697,9 @@
                 }, 2500);
             });
 
-            // Добавление в корзину
             document.addEventListener('click', (e) => {
                 const b = e.target.closest('[data-add]');
                 if (!b) return;
-
                 const id = b.getAttribute('data-add');
                 addToCart(id);
                 b.style.transform = 'scale(.98)';
@@ -1896,7 +1707,6 @@
                 if (document.getElementById('cartOverlay').classList.contains('open')) renderCart();
             });
 
-            // Открытие корзины
             document.getElementById('openCart').addEventListener('click', () => {
                 const cartOverlay = document.getElementById('cartOverlay');
                 cartOverlay.classList.add('open');
@@ -1905,7 +1715,6 @@
                 updateMobileNavVisibility('menu');
             });
 
-            // Закрытие корзины
             const closeCart = () => {
                 const cartOverlay = document.getElementById('cartOverlay');
                 cartOverlay.classList.remove('open');
@@ -1918,7 +1727,6 @@
                 if (e.target === document.getElementById('cartOverlay')) closeCart();
             });
 
-            // Изменение количества в корзине
             document.getElementById('cartBody').addEventListener('click', (e) => {
                 const incBtn = e.target.closest('[data-inc]');
                 const decBtn = e.target.closest('[data-dec]');
@@ -1926,15 +1734,12 @@
                 if (decBtn) dec(decBtn.getAttribute('data-dec'));
             });
 
-            // Кнопки корзины
             document.getElementById('checkoutBtn').addEventListener('click', () => {
                 closeCart();
                 showCheckout();
             });
 
             document.getElementById('clearCart').addEventListener('click', clearCart);
-
-            // Навигация
             document.getElementById('backToMenu').addEventListener('click', () => show('menu'));
             document.getElementById('toMenuFromBadPay').addEventListener('click', () => show('menu'));
             document.getElementById('walletDesktopBtn').addEventListener('click', (e) => {
@@ -1942,11 +1747,9 @@
                 window.location.href = 'wallet';
             });
 
-            // Оплата
             document.getElementById('proceedToPay').addEventListener('click', async () => {
                 const total = cartSum();
                 if (total < 10 || total > 10000) return;
-
                 try {
                     const orderData = {
                         items: cart,
@@ -1962,9 +1765,7 @@
             });
         }
 
-        // ===== ИНИЦИАЛИЗАЦИЯ =====
         document.addEventListener('DOMContentLoaded', function() {
-            // Проверка техперерыва
             if (!checkAdminBypass()) {
                 checkMaintenance();
             }
@@ -1974,16 +1775,13 @@
                 }
             }, 30000);
 
-            // Загрузка данных
-            cart = loadCart();
+            loadCart();
             currentUser = loadUser();
 
-            // Инициализация
             loadAllLottieAnimations();
             updateBadge();
             checkAuthFromURL();
             checkPaymentResult();
-            handleMaintenanceReturn();
 
             if (PRODUCTS.length === 0) {
                 loadProducts();
@@ -1997,7 +1795,6 @@
             updateMobileNavActiveState();
         });
 
-        // ===== ОБРАБОТКА РЕСАЙЗА =====
         window.addEventListener('resize', () => {
             if (PRODUCTS.length > 0) {
                 renderProducts();
