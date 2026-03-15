@@ -271,8 +271,39 @@
             width: 100%;
             overflow-y: auto;
             overflow-x: hidden;
-            padding: 16px;
             -webkit-overflow-scrolling: touch;
+        }
+
+        /* Баннер игры */
+        .game-banner {
+            width: 100%;
+            height: 200px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 20px;
+            border-radius: 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .game-banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+        }
+
+        .game-banner-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+        }
+
+        .products-container {
+            padding: 0 16px 16px 16px;
         }
 
         .shop-card {
@@ -776,6 +807,7 @@
             flex-shrink: 0;
         }
 
+        /* Медиа-запросы для мобильных устройств */
         @media (max-width: 768px) {
             .menu-header {
                 padding: 10px 12px;
@@ -797,13 +829,15 @@
                 padding: 8px 32px 8px 12px;
                 font-size: 13px;
             }
+            .game-banner {
+                height: 150px;
+            }
             .menu-header .auth-btn,
             .menu-header .cart-btn {
                 display: none;
             }
-            .menu-scroll {
-                padding: 12px;
-                padding-bottom: 110px;
+            .products-container {
+                padding: 0 12px 12px 12px;
             }
             .shop-card {
                 height: 220px;
@@ -868,6 +902,9 @@
                 padding: 6px 28px 6px 10px;
                 font-size: 12px;
             }
+            .game-banner {
+                height: 120px;
+            }
             .row-two {
                 grid-template-columns: 1fr;
                 gap: 12px;
@@ -887,8 +924,8 @@
                 font-size: 16px;
                 min-width: 200px;
             }
-            .menu-scroll {
-                padding-bottom: 105px;
+            .products-container {
+                padding: 0 10px 10px 10px;
             }
             .cart-overlay {
                 padding-bottom: 90px;
@@ -913,6 +950,9 @@
             .game-selector-wrapper {
                 min-width: 100px;
             }
+            .game-banner {
+                height: 100px;
+            }
             .shop-card {
                 height: 190px;
             }
@@ -929,8 +969,8 @@
                 min-width: 90px;
                 height: 34px;
             }
-            .menu-scroll {
-                padding-bottom: 100px;
+            .products-container {
+                padding: 0 8px 8px 8px;
             }
             .cart-overlay {
                 padding-bottom: 85px;
@@ -941,8 +981,8 @@
         }
 
         @media (min-width: 769px) {
-            .menu-scroll {
-                padding: 18px 16px 40px;
+            .products-container {
+                padding: 0 16px 16px 16px;
             }
             .auth-btn span {
                 display: inline;
@@ -1031,7 +1071,16 @@
             </div>
         </div>
 
-        <div class="menu-scroll" id="cardsContainer"></div>
+        <!-- Баннер игры -->
+        <div class="game-banner" id="gameBanner">
+            <img id="bannerImage" src="" alt="Game banner">
+            <div class="game-banner-overlay"></div>
+        </div>
+
+        <!-- Контейнер с товарами -->
+        <div class="menu-scroll">
+            <div class="products-container" id="cardsContainer"></div>
+        </div>
     </div>
 
     <div id="waiting" class="screen">
@@ -1153,7 +1202,7 @@
                 name: "Brawl Stars", 
                 slug: "brawlstars",
                 icon_url: "https://i.imgur.com/3JxvXtR.png",
-                banner_url: "https://i.imgur.com/3JxvXtR.png"
+                banner_url: "https://i.imgur.com/brawlstars_banner.jpg"
             }
         ];
 
@@ -1385,15 +1434,18 @@
         function updateGameHeader() {
             const gameLogo = document.getElementById('gameLogo');
             const gameName = document.getElementById('gameName');
+            const bannerImage = document.getElementById('bannerImage');
             
             const currentGame = GAMES.find(g => g.id === selectedGameId);
             
             if (currentGame) {
-                gameLogo.src = currentGame.banner_url || currentGame.icon_url || '';
+                gameLogo.src = currentGame.icon_url || '';
                 gameName.textContent = currentGame.name;
+                bannerImage.src = currentGame.banner_url || currentGame.icon_url || '';
             } else {
                 gameLogo.src = '';
                 gameName.textContent = 'Duck Shop';
+                bannerImage.src = '';
             }
         }
 
