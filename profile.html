@@ -151,6 +151,14 @@ html, body {
   padding: 0 20px;
 }
 
+.profile-email {
+  font-size: 15px;
+  color: rgba(255,255,255,0.8);
+  margin-bottom: 15px;
+  word-break: break-word;
+  display: none;
+}
+
 .profile-username {
   font-size: 15px;
   color: rgba(255,255,255,0.7);
@@ -867,6 +875,7 @@ html, body {
       </span>
     </div>
     <div class="profile-id" id="profileId"></div>
+    <div class="profile-email" id="profileEmail"></div>
     <div class="profile-username" id="profileUsername"></div>
     <button class="telegram-link-btn" id="telegramLinkBtn" onclick="openTelegramLink()">
       <svg viewBox="0 0 24 24">
@@ -971,7 +980,7 @@ html, body {
   </div>
 </div>
 
-<!-- ===== ОСТРОВОК (mobile-nav) ===== -->
+
 <div class="mobile-nav" id="mobileNav">
   <button class="mobile-nav-item" id="navWallet">
     <svg viewBox="0 0 24 24">
@@ -994,6 +1003,14 @@ html, body {
     <span>Главная</span>
   </button>
 
+  
+  <button class="mobile-nav-item" id="navSupport">
+    <svg viewBox="0 0 24 24">
+      <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM11 9h2v2h-2V9zm0 4h2v2h-2v-2z"/>
+    </svg>
+    <span>Поддержка</span>
+  </button>
+
   <button class="mobile-nav-item" id="navCart">
     <svg viewBox="0 0 24 24">
       <path d="M7 18a2 2 0 1 0 0 4a2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4a2 2 0 0 0 0-4zM7.16 14h9.45a2 2 0 0 0 1.75-1.03l3.58-6.49-1.74-.99-3.58 6.49H8.53L5.21 4H1v2h3l3.6 7.59-1.35 2.44C5.52 16.37 6.48 18 8 18h12v-2H8l1.16-2z"/>
@@ -1002,7 +1019,7 @@ html, body {
     <div class="cart-badge-mobile" id="cartBadgeMobile">0</div>
   </button>
 </div>
-
+  
 <script>
 const API_URL = 'https://duck-shop-sever.onrender.com';
 const USER_KEY = 'duck_user_v1';
@@ -1109,14 +1126,21 @@ function updateBadge() {
 // ===== ФУНКЦИИ ДЛЯ АНИМАЦИЙ =====
 function loadLottieAnimations() {
   try {
+    // Используем локальные JSON файлы вместо lottiefiles
     lottie.loadAnimation({
       container: document.getElementById('loadingAnim'),
       renderer: 'svg',
       loop: true,
       autoplay: true,
-      path: 'https://assets10.lottiefiles.com/packages/lf20_puciaevh.json'
+      path: 'loading.json' // Создай локальный файл
     });
-  } catch (error) {}
+  } catch (error) {
+    console.log('Lottie не загрузилась, используем заглушку');
+    const sticker = document.getElementById('loadingAnim');
+    if (sticker) {
+      sticker.innerHTML = '<div style="color: white; font-size: 50px;">⌛</div>';
+    }
+  }
 }
 
 function loadNoOrdersAnimation() {
@@ -1129,19 +1153,25 @@ function loadNoOrdersAnimation() {
       renderer: 'svg',
       loop: true,
       autoplay: true,
-      path: 'bad_pay.json'
+      path: 'bad_pay.json' // Создай локальный файл
     });
   } catch (error) {
-    console.error('Ошибка загрузки анимации:', error);
+    container.innerHTML = '<div style="color: white; font-size: 40px;">📭</div>';
   }
 }
 
 // ===== ФУНКЦИИ ДЛЯ ЭКРАНОВ =====
 function showScreen(id) {
   ['loading', 'profile', 'error'].forEach(s => {
-    document.getElementById(s).classList.remove('active', 'leaving');
+    const el = document.getElementById(s);
+    if (el) {
+      el.classList.remove('active', 'leaving');
+    }
   });
-  document.getElementById(id).classList.add('active');
+  const next = document.getElementById(id);
+  if (next) {
+    next.classList.add('active');
+  }
 }
 
 // ===== РАБОТА С ПОЛЬЗОВАТЕЛЕМ =====
@@ -1162,6 +1192,7 @@ function clearUser() {
 function setupMobileNavigation() {
   const navWallet = document.getElementById('navWallet');
   const navProfile = document.getElementById('navProfile');
+  const navSupport = document.getElementById('navSupport'); 
   const navHome = document.getElementById('navHome');
   const navCart = document.getElementById('navCart');
   const mobileNav = document.getElementById('mobileNav');
@@ -1169,14 +1200,21 @@ function setupMobileNavigation() {
   if (navWallet) {
     navWallet.addEventListener('click', function(e) {
       e.preventDefault();
-      window.location.href = 'wallet.html';
+      window.location.href = 'wallet';
+    });
+  }
+
+  if (navSupport) {
+    navSupport.addEventListener('click', function(e) {
+      e.preventDefault();
+      window.location.href = 'support';
     });
   }
 
   if (navProfile) {
     navProfile.addEventListener('click', function(e) {
       e.preventDefault();
-      window.location.href = 'profile.html';
+      window.location.href = 'profile';
     });
   }
 
@@ -1266,24 +1304,26 @@ function updateMobileNavActiveState() {
     wallet: document.getElementById('navWallet'),
     profile: document.getElementById('navProfile'),
     home: document.getElementById('navHome'),
+    support: document.getElementById('navSupport'), 
     cart: document.getElementById('navCart')
   };
 
-  navItems.wallet?.classList.remove('active');
-  navItems.profile?.classList.remove('active');
-  navItems.home?.classList.remove('active');
-  navItems.cart?.classList.remove('active');
+ 
+  Object.values(navItems).forEach(item => {
+    if (item) item.classList.remove('active');
+  });
 
   const currentPath = window.location.pathname;
   if (currentPath.includes('wallet.html')) {
-    navItems.wallet?.classList.add('active');
+    if (navItems.wallet) navItems.wallet.classList.add('active');
   } else if (currentPath.includes('profile.html')) {
-    navItems.profile?.classList.add('active');
+    if (navItems.profile) navItems.profile.classList.add('active');
+  } else if (currentPath.includes('support.html')) {
+    if (navItems.support) navItems.support.classList.add('active');
   } else if (currentPath.includes('index.html') || currentPath === '/' || currentPath === '') {
-    navItems.home?.classList.add('active');
+    if (navItems.home) navItems.home.classList.add('active');
   }
 }
-
 // ===== ЗАГРУЗКА ДАННЫХ ПРОФИЛЯ =====
 async function loadProfileData() {
   if (!currentUser) {
@@ -1318,56 +1358,89 @@ async function loadProfileData() {
 }
 
 function updateProfileUI(user) {
+  // Проверяем существование элементов перед обращением
   const avatar = document.getElementById('profileAvatar');
   const editAvatarPreview = document.getElementById('editAvatarPreview');
-
-  const firstLetter = user.username ? user.username.charAt(0).toUpperCase() : 'U';
-  const avatarHtml = user.avatarUrl ? 
-    `<img src="${user.avatarUrl}" alt="${user.username}">` :
-    `<div class="avatar-placeholder">${firstLetter}</div>`;
-
-  avatar.innerHTML = avatarHtml + '<div class="edit-avatar-overlay">Изменить фото</div>';
-  editAvatarPreview.innerHTML = avatarHtml;
-
-  document.getElementById('profileName').textContent = user.username || 'Пользователь';
-
-  const provider = user.auth_provider || 'email';
+  const profileName = document.getElementById('profileName');
   const profileId = document.getElementById('profileId');
   const profileUsername = document.getElementById('profileUsername');
+  const profileEmail = document.getElementById('profileEmail');
   const telegramLinkBtn = document.getElementById('telegramLinkBtn');
   const telegramLinkText = document.getElementById('telegramLinkText');
   const vkBadge = document.getElementById('vkBadge');
+  const telegramStatus = document.getElementById('telegramStatus');
+  const telegramName = document.getElementById('telegramName');
+  const telegramUser = document.getElementById('telegramUser');
+  const unlinkTelegramBtn = document.getElementById('unlinkTelegramBtn');
+  const linkTelegramBtn = document.getElementById('linkTelegramBtn');
+
+  if (!user) return;
+
+  const firstLetter = user.username ? user.username.charAt(0).toUpperCase() : 'U';
+  
+  if (avatar) {
+    const avatarHtml = user.avatarUrl ? 
+      `<img src="${user.avatarUrl}" alt="${user.username}">` :
+      `<div class="avatar-placeholder">${firstLetter}</div>`;
+    avatar.innerHTML = avatarHtml + '<div class="edit-avatar-overlay">Изменить фото</div>';
+  }
+  
+  if (editAvatarPreview) {
+    editAvatarPreview.innerHTML = user.avatarUrl ? 
+      `<img src="${user.avatarUrl}" alt="${user.username}">` :
+      `<div class="avatar-placeholder">${firstLetter}</div>`;
+  }
+
+  if (profileName) {
+    profileName.textContent = user.username || 'Пользователь';
+  }
+
+  const provider = user.auth_provider || 'email';
 
   // Показываем VK бейдж если провайдер VK
-  if (provider === 'vk' || provider === 'vk+telegram') {
-    vkBadge.style.display = 'inline-flex';
-  } else {
-    vkBadge.style.display = 'none';
+  if (vkBadge) {
+    if (provider === 'vk' || provider === 'vk+telegram') {
+      vkBadge.style.display = 'inline-flex';
+    } else {
+      vkBadge.style.display = 'none';
+    }
+  }
+
+  // Показываем email если есть
+  if (profileEmail) {
+    if (user.email) {
+      profileEmail.textContent = user.email;
+      profileEmail.style.display = 'block';
+    } else {
+      profileEmail.style.display = 'none';
+    }
   }
 
   if (provider === 'telegram' || provider === 'vk+telegram') {
-    profileId.textContent = `TG ID: ${user.tgId || '...'}`;
-    profileUsername.textContent = user.telegramUsername ? `@${user.telegramUsername}` : '';
-    profileUsername.style.display = user.telegramUsername ? 'block' : 'none';
-    telegramLinkBtn.classList.add('linked');
-    telegramLinkText.textContent = 'Telegram привязан';
+    if (profileId) profileId.textContent = `TG ID: ${user.tgId || '...'}`;
+    if (profileUsername) {
+      profileUsername.textContent = user.telegramUsername ? `@${user.telegramUsername}` : '';
+      profileUsername.style.display = user.telegramUsername ? 'block' : 'none';
+    }
+    if (telegramLinkBtn) telegramLinkBtn.classList.add('linked');
+    if (telegramLinkText) telegramLinkText.textContent = 'Telegram привязан';
 
-    document.getElementById('telegramStatus').classList.add('linked');
-    document.getElementById('telegramName').textContent = user.firstName || user.username || 'Пользователь';
-    document.getElementById('telegramUser').textContent = user.telegramUsername ? `@${user.telegramUsername}` : '—';
-    document.getElementById('unlinkTelegramBtn').style.display = 'block';
-    document.getElementById('linkTelegramBtn').style.display = 'none';
+    if (telegramStatus) telegramStatus.classList.add('linked');
+    if (telegramName) telegramName.textContent = user.firstName || user.username || 'Пользователь';
+    if (telegramUser) telegramUser.textContent = user.telegramUsername ? `@${user.telegramUsername}` : '—';
+    if (unlinkTelegramBtn) unlinkTelegramBtn.style.display = 'block';
+    if (linkTelegramBtn) linkTelegramBtn.style.display = 'none';
   } else {
-    profileId.textContent = 'Аккаунт VK ID';
-    profileUsername.style.display = 'none';
-    telegramLinkBtn.classList.remove('linked');
-    telegramLinkText.textContent = 'Привязать Telegram';
+    if (profileId) profileId.textContent = 'Аккаунт VK ID';
+    if (profileUsername) profileUsername.style.display = 'none';
+    if (telegramLinkBtn) telegramLinkBtn.classList.remove('linked');
+    if (telegramLinkText) telegramLinkText.textContent = 'Привязать Telegram';
 
-    document.getElementById('telegramStatus').classList.remove('linked');
-    document.getElementById('telegramName').textContent = 'Не привязан';
-    document.getElementById('telegramUser').textContent = '—';
-    document.getElementById('unlinkTelegramBtn').style.display = 'none';
-    document.getElementById('linkTelegramBtn').style.display = 'block';
+    if (telegramStatus) telegramStatus.classList.remove('linked');
+    if (telegramName) telegramName.textContent = 'Не привязан';
+    if (telegramUser) telegramUser.textContent = '—';
+    if (unlinkTelegramBtn) unlinkTelegramBtn.style.display = 'none';
+    if (linkTelegramBtn) linkTelegramBtn.style.display = 'block';
   }
 }
 
@@ -1435,25 +1508,36 @@ async function loadOrders(orders) {
 }
 
 function showError(title, message) {
-  document.getElementById('errorTitle').textContent = title;
-  document.getElementById('errorText').textContent = message;
+  const errorTitle = document.getElementById('errorTitle');
+  const errorText = document.getElementById('errorText');
+  if (errorTitle) errorTitle.textContent = title;
+  if (errorText) errorText.textContent = message;
   showScreen('error');
 }
 
 // ===== ОБРАБОТЧИКИ СОБЫТИЙ =====
-document.getElementById('logoutBtn').addEventListener('click', () => {
-  clearUser();
-  window.location.href = SHOP_URL;
-});
+const logoutBtn = document.getElementById('logoutBtn');
+if (logoutBtn) {
+  logoutBtn.addEventListener('click', () => {
+    clearUser();
+    window.location.href = SHOP_URL;
+  });
+}
 
-document.getElementById('backToShopBtn').addEventListener('click', () => {
-  window.location.href = SHOP_URL;
-});
+const backToShopBtn = document.getElementById('backToShopBtn');
+if (backToShopBtn) {
+  backToShopBtn.addEventListener('click', () => {
+    window.location.href = SHOP_URL;
+  });
+}
 
-document.getElementById('retryBtn').addEventListener('click', () => {
-  if (currentUser) loadProfileData();
-  else window.location.href = 'reg_log.html';
-});
+const retryBtn = document.getElementById('retryBtn');
+if (retryBtn) {
+  retryBtn.addEventListener('click', () => {
+    if (currentUser) loadProfileData();
+    else window.location.href = 'reg_log.html';
+  });
+}
 
 // ===== ПРОВЕРКА АВТОРИЗАЦИИ =====
 function checkInitialAuth() {
@@ -1490,98 +1574,119 @@ async function verifyAuthToken(token) {
 
 // ===== ФУНКЦИИ ДЛЯ МОДАЛЬНОГО ОКНА =====
 function openEditModal() {
-  document.getElementById('editUsername').value = currentUser.username || '';
-  document.getElementById('editModal').style.display = 'flex';
+  const editUsername = document.getElementById('editUsername');
+  if (editUsername && currentUser) {
+    editUsername.value = currentUser.username || '';
+  }
+  const modal = document.getElementById('editModal');
+  if (modal) modal.style.display = 'flex';
 }
 
 function closeEditModal() {
-  document.getElementById('editModal').style.display = 'none';
+  const modal = document.getElementById('editModal');
+  if (modal) modal.style.display = 'none';
 }
 
-document.getElementById('avatarUpload').addEventListener('change', async function(e) {
-  const file = e.target.files[0];
-  if (!file) return;
+const avatarUpload = document.getElementById('avatarUpload');
+if (avatarUpload) {
+  avatarUpload.addEventListener('change', async function(e) {
+    const file = e.target.files[0];
+    if (!file || !currentUser) return;
 
-  const formData = new FormData();
-  formData.append('avatar', file);
-  formData.append('userId', currentUser.id);
+    const formData = new FormData();
+    formData.append('avatar', file);
+    formData.append('userId', currentUser.id);
 
-  try {
-    const response = await fetch(`${API_URL}/api/user/avatar`, {
-      method: 'POST',
-      body: formData
-    });
+    try {
+      const response = await fetch(`${API_URL}/api/user/avatar`, {
+        method: 'POST',
+        body: formData
+      });
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (data.success) {
-      currentUser.avatarUrl = data.avatarUrl;
-      saveUser(currentUser);
-      updateProfileUI(currentUser);
-      closeEditModal();
-    } else {
-      alert('Ошибка при загрузке аватарки');
+      if (data.success) {
+        currentUser.avatarUrl = data.avatarUrl;
+        saveUser(currentUser);
+        updateProfileUI(currentUser);
+        closeEditModal();
+      } else {
+        alert('Ошибка при загрузке аватарки');
+      }
+    } catch (error) {
+      alert('Ошибка сети');
     }
-  } catch (error) {
-    alert('Ошибка сети');
-  }
-});
+  });
+}
 
-document.getElementById('removeAvatarBtn').addEventListener('click', async function() {
-  const formData = new FormData();
-  formData.append('avatar', new Blob([]), 'empty');
-  formData.append('userId', currentUser.id);
+const removeAvatarBtn = document.getElementById('removeAvatarBtn');
+if (removeAvatarBtn) {
+  removeAvatarBtn.addEventListener('click', async function() {
+    if (!currentUser) return;
+    
+    const formData = new FormData();
+    formData.append('avatar', new Blob([]), 'empty');
+    formData.append('userId', currentUser.id);
 
-  try {
-    const response = await fetch(`${API_URL}/api/user/avatar`, {
-      method: 'POST',
-      body: formData
-    });
+    try {
+      const response = await fetch(`${API_URL}/api/user/avatar`, {
+        method: 'POST',
+        body: formData
+      });
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (data.success) {
-      currentUser.avatarUrl = null;
-      saveUser(currentUser);
-      updateProfileUI(currentUser);
-      closeEditModal();
+      if (data.success) {
+        currentUser.avatarUrl = null;
+        saveUser(currentUser);
+        updateProfileUI(currentUser);
+        closeEditModal();
+      }
+    } catch (error) {
+      alert('Ошибка сети');
     }
-  } catch (error) {
-    alert('Ошибка сети');
-  }
-});
+  });
+}
 
-document.getElementById('saveUsernameBtn').addEventListener('click', async function() {
-  const newUsername = document.getElementById('editUsername').value.trim();
+const saveUsernameBtn = document.getElementById('saveUsernameBtn');
+if (saveUsernameBtn) {
+  saveUsernameBtn.addEventListener('click', async function() {
+    const editUsername = document.getElementById('editUsername');
+    if (!editUsername || !currentUser) return;
+    
+    const newUsername = editUsername.value.trim();
 
-  if (newUsername.length < 2 || newUsername.length > 50) {
-    alert('Имя должно быть от 2 до 50 символов');
-    return;
-  }
-
-  try {
-    const response = await fetch(`${API_URL}/api/user/username`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId: currentUser.id, username: newUsername })
-    });
-
-    const data = await response.json();
-
-    if (data.success) {
-      currentUser.username = data.username;
-      saveUser(currentUser);
-      updateProfileUI(currentUser);
-      closeEditModal();
-    } else {
-      alert(data.error || 'Ошибка при изменении имени');
+    if (newUsername.length < 2 || newUsername.length > 50) {
+      alert('Имя должно быть от 2 до 50 символов');
+      return;
     }
-  } catch (error) {
-    alert('Ошибка сети');
-  }
-});
+
+    try {
+      const response = await fetch(`${API_URL}/api/user/username`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: currentUser.id, username: newUsername })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        currentUser.username = data.username;
+        saveUser(currentUser);
+        updateProfileUI(currentUser);
+        closeEditModal();
+      } else {
+        alert(data.error || 'Ошибка при изменении имени');
+      }
+    } catch (error) {
+      alert('Ошибка сети');
+    }
+  });
+}
 
 async function generateTelegramLink() {
+  if (!currentUser) return;
+  
   try {
     const response = await fetch(`${API_URL}/api/user/telegram-link/${currentUser.id}`);
     const data = await response.json();
@@ -1599,56 +1704,62 @@ async function generateTelegramLink() {
 }
 
 function openTelegramLink() {
+  if (!currentUser) return;
   if (currentUser.auth_provider === 'telegram' || currentUser.auth_provider === 'vk+telegram') return;
   generateTelegramLink();
 }
 
-document.getElementById('unlinkTelegramBtn').addEventListener('click', async function() {
-  if (!confirm('Вы уверены, что хотите отвязать Telegram аккаунт?\n\nПосле отвязки вы больше не сможете входить через Telegram.')) {
-    return;
-  }
-
-  const btn = this;
-  const originalText = btn.innerHTML;
-  btn.innerHTML = 'Отвязываем...';
-  btn.disabled = true;
-
-  try {
-    const response = await fetch(`${API_URL}/api/user/unlink-telegram`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId: currentUser.id })
-    });
-
-    const data = await response.json();
-
-    if (data.success) {
-      currentUser.auth_provider = 'vk';
-      currentUser.tgId = null;
-      currentUser.telegramUsername = null;
-      currentUser.firstName = null;
-      currentUser.lastName = null;
-
-      if (currentUser.avatarUrl && currentUser.avatarUrl.includes('api.telegram.org')) {
-        currentUser.avatarUrl = null;
-      }
-
-      saveUser(currentUser);
-      updateProfileUI(currentUser);
-
-      alert('Telegram успешно отвязан');
-      closeEditModal();
-    } else {
-      alert(data.error || 'Ошибка при отвязке Telegram');
+const unlinkTelegramBtn = document.getElementById('unlinkTelegramBtn');
+if (unlinkTelegramBtn) {
+  unlinkTelegramBtn.addEventListener('click', async function() {
+    if (!currentUser) return;
+    
+    if (!confirm('Вы уверены, что хотите отвязать Telegram аккаунт?\n\nПосле отвязки вы больше не сможете входить через Telegram.')) {
+      return;
     }
-  } catch (error) {
-    console.error('Ошибка:', error);
-    alert('Ошибка сети при отвязке Telegram');
-  } finally {
-    btn.innerHTML = originalText;
-    btn.disabled = false;
-  }
-});
+
+    const btn = this;
+    const originalText = btn.innerHTML;
+    btn.innerHTML = 'Отвязываем...';
+    btn.disabled = true;
+
+    try {
+      const response = await fetch(`${API_URL}/api/user/unlink-telegram`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: currentUser.id })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        currentUser.auth_provider = 'vk';
+        currentUser.tgId = null;
+        currentUser.telegramUsername = null;
+        currentUser.firstName = null;
+        currentUser.lastName = null;
+
+        if (currentUser.avatarUrl && currentUser.avatarUrl.includes('api.telegram.org')) {
+          currentUser.avatarUrl = null;
+        }
+
+        saveUser(currentUser);
+        updateProfileUI(currentUser);
+
+        alert('Telegram успешно отвязан');
+        closeEditModal();
+      } else {
+        alert(data.error || 'Ошибка при отвязке Telegram');
+      }
+    } catch (error) {
+      console.error('Ошибка:', error);
+      alert('Ошибка сети при отвязке Telegram');
+    } finally {
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+    }
+  });
+}
 
 // ===== ИНИЦИАЛИЗАЦИЯ =====
 document.addEventListener('DOMContentLoaded', () => {
@@ -1658,7 +1769,8 @@ document.addEventListener('DOMContentLoaded', () => {
   setupMobileNavigation();
 
   window.addEventListener('click', (e) => {
-    if (e.target === document.getElementById('editModal')) closeEditModal();
+    const modal = document.getElementById('editModal');
+    if (e.target === modal) closeEditModal();
   });
 });
 </script>
