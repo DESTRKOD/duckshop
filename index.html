@@ -995,7 +995,7 @@
             </div>
         </div>
 
-        <!-- ===== СЕЛЕКТОР ИГР ===== -->
+        <!-- Селектор игр -->
         <div class="game-selector" id="gameSelector"></div>
 
         <div class="menu-scroll" id="cardsContainer"></div>
@@ -1095,8 +1095,9 @@
         let cart = {};
         let currentOrderId = null;
         let currentUser = null;
-        let selectedGameId = 'brawlstars'; // По умолчанию Brawl Stars
+        let selectedGameId = 'brawlstars';
 
+        // Дефолтные товары с game_id
         const DEFAULT_PRODUCTS = [
             { id: "c30", name: "30 кристаллов", price: 200, image_url: "https://i.imgur.com/s4K0WIP.png", is_gift: false, game_id: "brawlstars" },
             { id: "c80", name: "80 кристаллов", price: 550, image_url: "https://i.imgur.com/XbnZKDb.png", is_gift: false, game_id: "brawlstars" },
@@ -1110,6 +1111,31 @@
             { id: "bp_g", name: "Brawl Pass", price: 950, image_url: "https://i.imgur.com/FaFAL6l.png", is_gift: true, game_id: "brawlstars" },
             { id: "bpp_g", name: "Brawl Pass Plus", price: 1250, image_url: "https://i.imgur.com/21InnIc.png", is_gift: true, game_id: "brawlstars" },
             { id: "pro", name: "Pro Pass", price: 2200, image_url: "https://i.imgur.com/6808Xnp.png", is_gift: false, game_id: "brawlstars" }
+        ];
+
+        // Дефолтные игры
+        const DEFAULT_GAMES = [
+            { 
+                id: "brawlstars", 
+                name: "Brawl Stars", 
+                slug: "brawlstars",
+                icon_url: "https://i.imgur.com/3JxvXtR.png",
+                banner_url: "https://i.imgur.com/brawlstars_banner.jpg"
+            },
+            { 
+                id: "clashroyale", 
+                name: "Clash Royale", 
+                slug: "clashroyale",
+                icon_url: "https://i.imgur.com/clashroyale_icon.png",
+                banner_url: "https://i.imgur.com/clashroyale_banner.jpg"
+            },
+            { 
+                id: "clashofclans", 
+                name: "Clash of Clans", 
+                slug: "clashofclans",
+                icon_url: "https://i.imgur.com/clashofclans_icon.png",
+                banner_url: "https://i.imgur.com/clashofclans_banner.jpg"
+            }
         ];
 
         function fmtRub(n) {
@@ -1318,7 +1344,7 @@
             try {
                 const response = await fetch(`${API_URL}/api/games`);
                 if (!response.ok) {
-                    GAMES = [{ id: 'brawlstars', name: 'Brawl Stars', icon_url: 'https://i.imgur.com/3JxvXtR.png', slug: 'brawlstars' }];
+                    GAMES = DEFAULT_GAMES;
                     renderGameSelector();
                     return;
                 }
@@ -1327,12 +1353,12 @@
                 if (data.success && data.games && data.games.length > 0) {
                     GAMES = data.games;
                 } else {
-                    GAMES = [{ id: 'brawlstars', name: 'Brawl Stars', icon_url: 'https://i.imgur.com/3JxvXtR.png', slug: 'brawlstars' }];
+                    GAMES = DEFAULT_GAMES;
                 }
                 
                 renderGameSelector();
             } catch (error) {
-                GAMES = [{ id: 'brawlstars', name: 'Brawl Stars', icon_url: 'https://i.imgur.com/3JxvXtR.png', slug: 'brawlstars' }];
+                GAMES = DEFAULT_GAMES;
                 renderGameSelector();
             }
         }
@@ -1341,7 +1367,6 @@
             const selector = document.getElementById('gameSelector');
             if (!selector) return;
 
-            // Загружаем сохраненную игру
             try {
                 const savedGame = localStorage.getItem(SELECTED_GAME_KEY);
                 if (savedGame && GAMES.some(g => g.id === savedGame)) {
@@ -1357,7 +1382,7 @@
                 btn.setAttribute('data-game', game.id);
                 
                 btn.innerHTML = `
-                    <img src="${game.icon_url}" alt="${game.name}" loading="lazy">
+                    <img src="${game.icon_url || 'https://i.imgur.com/default_game_icon.png'}" alt="${game.name}" loading="lazy">
                     <span>${game.name}</span>
                 `;
                 
@@ -1365,13 +1390,11 @@
                     selectedGameId = game.id;
                     localStorage.setItem(SELECTED_GAME_KEY, selectedGameId);
                     
-                    // Обновляем активный класс у всех кнопок
                     document.querySelectorAll('.game-btn').forEach(b => {
                         b.classList.remove('active');
                     });
                     btn.classList.add('active');
                     
-                    // Перезагружаем товары для выбранной игры
                     loadProducts();
                 });
                 
@@ -1427,12 +1450,10 @@
 
         async function loadProducts() {
             try {
-                // Загружаем товары для выбранной игры
                 const url = selectedGameId ? `${API_URL}/api/products?game=${selectedGameId}` : `${API_URL}/api/products`;
                 const response = await fetch(url);
                 
                 if (!response.ok) {
-                    // Если API не работает, фильтруем дефолтные товары
                     PRODUCTS = DEFAULT_PRODUCTS.filter(p => p.game_id === selectedGameId);
                     renderProducts();
                     return;
@@ -1442,13 +1463,11 @@
                 if (data.success && data.products && data.products.length > 0) {
                     PRODUCTS = data.products;
                 } else {
-                    // Если нет товаров для игры, показываем пустой список
                     PRODUCTS = [];
                 }
                 
                 renderProducts();
             } catch (error) {
-                // При ошибке фильтруем дефолтные товары
                 PRODUCTS = DEFAULT_PRODUCTS.filter(p => p.game_id === selectedGameId);
                 renderProducts();
             }
@@ -1989,7 +2008,6 @@
             checkAuthFromURL();
             checkPaymentResult();
 
-            // Загружаем игры и товары
             loadGames().then(() => {
                 loadProducts();
             });
