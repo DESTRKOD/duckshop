@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8" />
-<title>Вход / Регистрация - Duck Shop</title>
+<title>Авторизация</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 <style>
@@ -217,7 +217,7 @@ html, body {
     <div class="auth-title">Добро пожаловать</div>
     <div class="auth-subtitle">Войдите или зарегистрируйтесь через Telegram</div>
     
-    <!-- Прямая ссылка на Telegram, которая сама откроется в приложении -->
+    <!-- Прямая ссылка на Telegram -->
     <a href="https://t.me/duck_shop_bot?start=auth" class="telegram-link" id="telegramLink">
       <svg viewBox="0 0 24 24">
         <path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/>
@@ -227,10 +227,10 @@ html, body {
     
     <div class="loading-spinner" id="loadingSpinner"></div>
     
-    <div class="status-message status-loading" id="telegramLoading">
-      ⏳ Перенаправляем в Telegram...
+    <div class="status-message status-loading" id="telegramLoading" style="display: none;">
+      ⏳ Проверяем статус...
     </div>
-    <div class="status-message status-error" id="telegramError"></div>
+    <div class="status-message status-error" id="telegramError" style="display: none;"></div>
   </div>
   
   <a href="index.html" class="back-link">
@@ -245,9 +245,40 @@ html, body {
 const API_URL = 'https://duck-shop-sever.onrender.com';
 const SITE_URL = 'https://shopdxs.ru';
 const USER_KEY = 'duck_user_v1';
-const BOT_USERNAME = 'duck_shop_bot'; // Замени на своего бота
+const BOT_USERNAME = 'duck_shop_bot';
 
 let telegramCheckInterval = null;
+let currentToken = null;
+
+// ===== ПРОВЕРКА АВТОРИЗАЦИИ ПРИ ЗАГРУЗКЕ =====
+(function checkExistingAuth() {
+  const savedUser = localStorage.getItem(USER_KEY);
+  if (savedUser) {
+    console.log('✅ Пользователь уже авторизован, перенаправляем на профиль');
+    window.location.href = 'profile.html';
+    return;
+  }
+})();
+
+// ===== ОПРЕДЕЛЕНИЕ ПЛАТФОРМЫ =====
+function getPlatform() {
+  const ua = navigator.userAgent || navigator.vendor || window.opera;
+  
+  // iOS devices
+  if (/iPad|iPhone|iPod/.test(ua) && !window.MSStream) {
+    return 'ios';
+  }
+  // Android devices
+  if (/android/i.test(ua)) {
+    return 'android';
+  }
+  // Windows Phone
+  if (/windows phone/i.test(ua)) {
+    return 'windows-phone';
+  }
+  // Desktop
+  return 'desktop';
+}
 
 // ===== ПРОВЕРКА ТЕХПЕРЕРЫВА =====
 (function() {
@@ -256,8 +287,8 @@ let telegramCheckInterval = null;
   var authToken = urlParams.get('auth');
   
   if (authToken) {
-    console.log('🔑 Обнаружен auth токен, пропускаем проверку');
-    window.location.href = `${SITE_URL}/index.html?auth=${authToken}`;
+    console.log('🔑 Обнаружен auth токен');
+    verifyAuthToken(authToken);
     return;
   }
   
@@ -340,25 +371,31 @@ function initLottie() {
 }
 
 function hideAllStatuses() {
-  document.getElementById('telegramLoading').style.display = 'none';
-  document.getElementById('telegramError').style.display = 'none';
-  document.getElementById('loadingSpinner').style.display = 'none';
+  const loading = document.getElementById('telegramLoading');
+  const error = document.getElementById('telegramError');
+  const spinner = document.getElementById('loadingSpinner');
+  
+  if (loading) loading.style.display = 'none';
+  if (error) error.style.display = 'none';
+  if (spinner) spinner.style.display = 'none';
 }
 
 function showStatus(type, message = '') {
   hideAllStatuses();
   if (type === 'loading') {
-    document.getElementById('telegramLoading').style.display = 'block';
+    const el = document.getElementById('telegramLoading');
+    if (el) el.style.display = 'block';
   } else if (type === 'error') {
-    document.getElementById('telegramError').textContent = message;
-    document.getElementById('telegramError').style.display = 'block';
+    const el = document.getElementById('telegramError');
+    if (el) {
+      el.textContent = message;
+      el.style.display = 'block';
+    }
   }
 }
 
-// Генерация уникальной ссылки для каждого пользователя
+// Генерация уникальной ссылки
 async function generateAuthLink() {
-  showStatus('loading');
-  
   try {
     const response = await fetch(`${API_URL}/api/auth/start-login`, {
       method: 'POST',
@@ -368,11 +405,24 @@ async function generateAuthLink() {
     const data = await response.json();
     
     if (data.success && data.telegramLink) {
-      // Обновляем ссылку в <a>
-      document.getElementById('telegramLink').href = data.telegramLink;
+      currentToken = data.token;
       
-      // Показываем статус
-      showStatus('loading');
+      // Обновляем ссылку
+      const link = document.getElementById('telegramLink');
+      if (link) {
+        link.href = data.telegramLink;
+      }
+      
+      // Определяем платформу и открываем ссылку если не iOS
+      const platform = getPlatform();
+      console.log('📱 Платформа:', platform);
+      
+      if (platform !== 'ios') {
+        // На не-iOS открываем автоматически
+        setTimeout(() => {
+          window.open(data.telegramLink, '_blank');
+        }, 300);
+      }
       
       // Начинаем проверять авторизацию
       startAuthPolling(data.token);
@@ -380,6 +430,7 @@ async function generateAuthLink() {
       showStatus('error', '❌ Ошибка получения ссылки');
     }
   } catch (error) {
+    console.error('Ошибка:', error);
     showStatus('error', '❌ Ошибка соединения');
   }
 }
@@ -395,7 +446,7 @@ function startAuthPolling(token) {
       if (data.success && data.authenticated) {
         clearInterval(telegramCheckInterval);
         localStorage.setItem(USER_KEY, JSON.stringify(data.user));
-        window.location.href = `${SITE_URL}/index.html`;
+        window.location.href = 'profile.html';
       } else if (data.expired) {
         clearInterval(telegramCheckInterval);
         showStatus('error', '❌ Время ожидания истекло. Нажмите кнопку еще раз.');
@@ -405,7 +456,6 @@ function startAuthPolling(token) {
     }
   }, 2000);
   
-  // Таймаут через 3 минуты
   setTimeout(() => {
     if (telegramCheckInterval) {
       clearInterval(telegramCheckInterval);
@@ -414,12 +464,44 @@ function startAuthPolling(token) {
   }, 3 * 60 * 1000);
 }
 
-// При загрузке страницы генерируем ссылку
+async function verifyAuthToken(token) {
+  showStatus('loading');
+  try {
+    const response = await fetch(`${API_URL}/api/auth/check/${token}`);
+    const data = await response.json();
+
+    if (data.success && data.authenticated && data.user) {
+      localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+      window.location.href = 'profile.html';
+    } else {
+      // Токен невалидный, просто продолжаем
+      hideAllStatuses();
+    }
+  } catch (error) {
+    console.error('Ошибка проверки токена:', error);
+    hideAllStatuses();
+  }
+}
+
+// Обработчик клика по ссылке
+document.getElementById('telegramLink')?.addEventListener('click', function(e) {
+  const platform = getPlatform();
+  
+  // На iOS не показываем статус, просто даем ссылке работать
+  if (platform === 'ios') {
+    return; // Ссылка откроется стандартным образом
+  }
+  
+  // На других платформах показываем статус
+  showStatus('loading');
+});
+
+// При загрузке страницы
 document.addEventListener('DOMContentLoaded', () => {
   initLottie();
   hideAllStatuses();
   
-  // Генерируем ссылку сразу
+  // Генерируем ссылку
   generateAuthLink();
   
   // Если пользователь вернулся на страницу
