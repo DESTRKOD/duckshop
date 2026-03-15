@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8" />
-<title>Загрузка... - Duck Shop</title>
+<title>Duck Shop - Магазин игровых ценностей</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 <style>
@@ -91,6 +91,7 @@ html, body {
   font-size: 24px;
   font-weight: 600;
   text-decoration: none;
+  visibility: hidden;
 }
 
 .back-button:hover {
@@ -1032,14 +1033,14 @@ html, body {
 
 <div id="loading" class="screen active">
   <div class="sticker" id="loadingAnim"></div>
-  <div class="title">Загрузка игры...</div>
+  <div class="title">Загрузка магазина...</div>
 </div>
 
 <div id="game" class="screen game-screen">
   <div class="game-header">
-    <a href="/" class="back-button">←</a>
-    <img src="" alt="" class="game-icon" id="gameIcon">
-    <div class="game-title" id="gameTitle">Загрузка...</div>
+    <div class="back-button" style="visibility: hidden;">←</div>
+    <img src="https://i.imgur.com/3JxvXtR.png" alt="Duck Shop" class="game-icon" id="gameIcon">
+    <div class="game-title" id="gameTitle">Duck Shop</div>
     <div class="header-actions">
       <button class="auth-btn wallet-desktop" id="walletBtn">
         <svg viewBox="0 0 24 24">
@@ -1304,7 +1305,7 @@ function renderAllProducts() {
   if (!container) return;
 
   if (!allProducts.length) {
-    renderProducts();
+    container.innerHTML = '<div class="no-products">Товары не найдены</div>';
     return;
   }
 
@@ -1343,7 +1344,7 @@ function renderAllProducts() {
         if (currentRow.length === 2 || index === productsToShow.length - 1) {
           if (currentRow.length === 1) {
             html += `<div class="row-centered">`;
-            html += renderProductCard(currentRow[0], true);
+            html += renderProductCard(currentRow[0]);
             html += `</div>`;
           } else {
             html += `<div class="row-two">`;
@@ -1392,7 +1393,7 @@ function renderGameProducts(gameId) {
       if (currentRow.length === 2 || index === productsToShow.length - 1) {
         if (currentRow.length === 1) {
           html += `<div class="row-centered">`;
-          html += renderProductCard(currentRow[0], true);
+          html += renderProductCard(currentRow[0]);
           html += `</div>`;
         } else {
           html += `<div class="row-two">`;
@@ -1434,7 +1435,24 @@ async function loadGameData() {
   const slug = getGameSlug();
   
   if (!slug) {
-    window.location.href = 'index.html';
+    document.title = 'Duck Shop - Магазин игровых ценностей';
+    document.getElementById('gameTitle').textContent = 'Duck Shop';
+    document.getElementById('gameIcon').src = 'https://i.imgur.com/3JxvXtR.png';
+    
+    try {
+      const response = await fetch(`${API_URL}/api/products`);
+      const data = await response.json();
+
+      if (data.success && data.products) {
+        products = data.products;
+        allProducts = data.products;
+      }
+    } catch (error) {
+      console.error('Ошибка загрузки товаров:', error);
+    }
+
+    await loadGames();
+    showScreen('game');
     return;
   }
 
@@ -1449,35 +1467,20 @@ async function loadGameData() {
       document.getElementById('gameIcon').src = currentGame.icon_url;
       document.getElementById('gameIcon').alt = currentGame.name;
       
-      await loadProducts();
+      const productsResponse = await fetch(`${API_URL}/api/products?game=${currentGame.id}`);
+      const productsData = await productsResponse.json();
+
+      if (productsData.success && productsData.products) {
+        products = productsData.products;
+        allProducts = productsData.products;
+        renderProducts();
+      }
+      
       showScreen('game');
-    } else {
-      window.location.href = 'index.html';
     }
   } catch (error) {
-    window.location.href = 'index.html';
-  }
-}
-
-async function loadProducts() {
-  const container = document.getElementById('productsContainer');
-  if (!container || !currentGame) return;
-
-  container.innerHTML = '<div class="loading-products">Загрузка товаров...</div>';
-
-  try {
-    const response = await fetch(`${API_URL}/api/products?game=${currentGame.id}`);
-    const data = await response.json();
-
-    if (data.success && data.products) {
-      products = data.products;
-      allProducts = data.products;
-      renderProducts();
-    } else {
-      container.innerHTML = '<div class="error-products">Ошибка загрузки товаров</div>';
-    }
-  } catch (error) {
-    container.innerHTML = '<div class="error-products">Ошибка соединения</div>';
+    console.error('Ошибка загрузки игры:', error);
+    window.location.href = '/';
   }
 }
 
@@ -1725,7 +1728,7 @@ function loadLottieAnimations() {
       renderer: 'svg',
       loop: true,
       autoplay: true,
-      path: 'loading.json'
+      path: 'hello.json'
     });
   } catch (error) {
     const sticker = document.getElementById('loadingAnim');
@@ -1741,7 +1744,6 @@ function setupMobileNavigation() {
   const navHome = document.getElementById('navHome');
   const navSupport = document.getElementById('navSupport');
   const navCart = document.getElementById('navCart');
-  const mobileNav = document.getElementById('mobileNav');
 
   if (navSupport) {
     navSupport.addEventListener('click', (e) => {
@@ -1767,7 +1769,7 @@ function setupMobileNavigation() {
   if (navHome) {
     navHome.addEventListener('click', (e) => {
       e.preventDefault();
-      window.location.href = 'index.html';
+      window.location.href = '/';
     });
   }
 
@@ -1853,6 +1855,21 @@ document.getElementById('gameSelector').addEventListener('change', (e) => {
   }
 });
 
+window.addEventListener('resize', () => {
+  if (products.length > 0) {
+    if (currentMode === 'all' && allProducts.length > 0) {
+      renderAllProducts();
+    } else if (currentMode === 'game') {
+      renderGameProducts(currentGameId);
+    } else {
+      renderProducts();
+    }
+  }
+  if (currentUser) {
+    updateAuthButton();
+  }
+});
+
 document.addEventListener('DOMContentLoaded', function() {
   cart = loadCart();
   currentUser = loadUser();
@@ -1873,19 +1890,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
   loadGames();
   loadGameData();
-
-  window.addEventListener('resize', () => {
-    if (products.length > 0) {
-      if (currentMode === 'all' && allProducts.length > 0) {
-        renderAllProducts();
-      } else {
-        renderProducts();
-      }
-    }
-    if (currentUser) {
-      updateAuthButton();
-    }
-  });
 });
 </script>
 </body>
