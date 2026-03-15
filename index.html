@@ -120,6 +120,70 @@
             flex: 1;
         }
 
+        .game-selector {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            margin: 0 16px;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,0.3) transparent;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .game-selector::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .game-selector::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .game-selector::-webkit-scrollbar-thumb {
+            background-color: rgba(255,255,255,0.3);
+            border-radius: 4px;
+        }
+
+        .game-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 12px;
+            padding: 8px 12px;
+            min-width: 80px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .game-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .game-btn.active {
+            background: rgba(255,255,255,0.3);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .game-btn img {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .game-btn span {
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
         .auth-btn, .cart-btn {
             height: 44px;
             border: 0;
@@ -715,6 +779,21 @@
             .menu-header .cart-btn {
                 display: none;
             }
+            .game-selector {
+                margin: 0 12px;
+                padding: 6px 12px;
+            }
+            .game-btn {
+                min-width: 70px;
+                padding: 6px 10px;
+            }
+            .game-btn img {
+                width: 28px;
+                height: 28px;
+            }
+            .game-btn span {
+                font-size: 11px;
+            }
             .menu-scroll {
                 padding: 12px;
                 padding-bottom: 110px;
@@ -755,11 +834,9 @@
             .row-two {
                 grid-template-columns: 1fr 1fr;
             }
-            
             .mobile-nav {
                 display: flex;
             }
-            
             .wallet-desktop {
                 display: none !important;
             }
@@ -788,13 +865,26 @@
             .menu-header-title {
                 font-size: 18px;
             }
+            .game-selector {
+                margin: 0 10px;
+            }
+            .game-btn {
+                min-width: 65px;
+                padding: 5px 8px;
+            }
+            .game-btn img {
+                width: 24px;
+                height: 24px;
+            }
+            .game-btn span {
+                font-size: 10px;
+            }
             .menu-scroll {
                 padding-bottom: 105px;
             }
             .cart-overlay {
                 padding-bottom: 90px;
             }
-            
             .mobile-nav {
                 display: flex;
             }
@@ -823,7 +913,6 @@
             .cart-overlay {
                 padding-bottom: 85px;
             }
-            
             .mobile-nav {
                 display: flex;
             }
@@ -905,6 +994,10 @@
                 </button>
             </div>
         </div>
+
+        <!-- ===== СЕЛЕКТОР ИГР ===== -->
+        <div class="game-selector" id="gameSelector"></div>
+
         <div class="menu-scroll" id="cardsContainer"></div>
     </div>
 
@@ -994,26 +1087,29 @@
         const API_URL = 'https://duck-shop-sever.onrender.com';
         const CART_KEY = 'duck_cart_v1';
         const USER_KEY = 'duck_user_v1';
+        const SELECTED_GAME_KEY = 'duck_selected_game_v1';
 
         let PRODUCTS = [];
+        let GAMES = [];
         let productsCheckInterval = null;
         let cart = {};
         let currentOrderId = null;
         let currentUser = null;
+        let selectedGameId = 'brawlstars'; // По умолчанию Brawl Stars
 
         const DEFAULT_PRODUCTS = [
-            { id: "c30", name: "30 кристаллов", price: 200, image_url: "https://i.imgur.com/s4K0WIP.png", is_gift: false },
-            { id: "c80", name: "80 кристаллов", price: 550, image_url: "https://i.imgur.com/XbnZKDb.png", is_gift: false },
-            { id: "c170", name: "170 кристаллов", price: 950, image_url: "https://i.imgur.com/X0JCmMQ.png", is_gift: false },
-            { id: "c360", name: "360 кристаллов", price: 1900, image_url: "https://i.imgur.com/7z8z9Rw.png", is_gift: false },
-            { id: "c950", name: "950 кристаллов", price: 4600, image_url: "https://i.imgur.com/zzBuIxF.png", is_gift: false },
-            { id: "c2000", name: "2000 кристаллов", price: 9000, image_url: "https://i.imgur.com/FTVnycE.png", is_gift: false },
-            { id: "bp", name: "Brawl Pass", price: 900, image_url: "https://i.imgur.com/FaFAL6l.png", is_gift: false },
-            { id: "bpplus", name: "Brawl Pass Plus", price: 1200, image_url: "https://i.imgur.com/21InnIc.png", is_gift: false },
-            { id: "up", name: "Улучшение до БП+", price: 550, image_url: "https://i.imgur.com/yhaR5Ho.png", is_gift: false },
-            { id: "bp_g", name: "Brawl Pass", price: 950, image_url: "https://i.imgur.com/FaFAL6l.png", is_gift: true },
-            { id: "bpp_g", name: "Brawl Pass Plus", price: 1250, image_url: "https://i.imgur.com/21InnIc.png", is_gift: true },
-            { id: "pro", name: "Pro Pass", price: 2200, image_url: "https://i.imgur.com/6808Xnp.png", is_gift: false }
+            { id: "c30", name: "30 кристаллов", price: 200, image_url: "https://i.imgur.com/s4K0WIP.png", is_gift: false, game_id: "brawlstars" },
+            { id: "c80", name: "80 кристаллов", price: 550, image_url: "https://i.imgur.com/XbnZKDb.png", is_gift: false, game_id: "brawlstars" },
+            { id: "c170", name: "170 кристаллов", price: 950, image_url: "https://i.imgur.com/X0JCmMQ.png", is_gift: false, game_id: "brawlstars" },
+            { id: "c360", name: "360 кристаллов", price: 1900, image_url: "https://i.imgur.com/7z8z9Rw.png", is_gift: false, game_id: "brawlstars" },
+            { id: "c950", name: "950 кристаллов", price: 4600, image_url: "https://i.imgur.com/zzBuIxF.png", is_gift: false, game_id: "brawlstars" },
+            { id: "c2000", name: "2000 кристаллов", price: 9000, image_url: "https://i.imgur.com/FTVnycE.png", is_gift: false, game_id: "brawlstars" },
+            { id: "bp", name: "Brawl Pass", price: 900, image_url: "https://i.imgur.com/FaFAL6l.png", is_gift: false, game_id: "brawlstars" },
+            { id: "bpplus", name: "Brawl Pass Plus", price: 1200, image_url: "https://i.imgur.com/21InnIc.png", is_gift: false, game_id: "brawlstars" },
+            { id: "up", name: "Улучшение до БП+", price: 550, image_url: "https://i.imgur.com/yhaR5Ho.png", is_gift: false, game_id: "brawlstars" },
+            { id: "bp_g", name: "Brawl Pass", price: 950, image_url: "https://i.imgur.com/FaFAL6l.png", is_gift: true, game_id: "brawlstars" },
+            { id: "bpp_g", name: "Brawl Pass Plus", price: 1250, image_url: "https://i.imgur.com/21InnIc.png", is_gift: true, game_id: "brawlstars" },
+            { id: "pro", name: "Pro Pass", price: 2200, image_url: "https://i.imgur.com/6808Xnp.png", is_gift: false, game_id: "brawlstars" }
         ];
 
         function fmtRub(n) {
@@ -1217,11 +1313,78 @@
             }
         }
 
+        // ===== ФУНКЦИИ ДЛЯ РАБОТЫ С ИГРАМИ =====
+        async function loadGames() {
+            try {
+                const response = await fetch(`${API_URL}/api/games`);
+                if (!response.ok) {
+                    GAMES = [{ id: 'brawlstars', name: 'Brawl Stars', icon_url: 'https://i.imgur.com/3JxvXtR.png', slug: 'brawlstars' }];
+                    renderGameSelector();
+                    return;
+                }
+                
+                const data = await response.json();
+                if (data.success && data.games && data.games.length > 0) {
+                    GAMES = data.games;
+                } else {
+                    GAMES = [{ id: 'brawlstars', name: 'Brawl Stars', icon_url: 'https://i.imgur.com/3JxvXtR.png', slug: 'brawlstars' }];
+                }
+                
+                renderGameSelector();
+            } catch (error) {
+                GAMES = [{ id: 'brawlstars', name: 'Brawl Stars', icon_url: 'https://i.imgur.com/3JxvXtR.png', slug: 'brawlstars' }];
+                renderGameSelector();
+            }
+        }
+
+        function renderGameSelector() {
+            const selector = document.getElementById('gameSelector');
+            if (!selector) return;
+
+            // Загружаем сохраненную игру
+            try {
+                const savedGame = localStorage.getItem(SELECTED_GAME_KEY);
+                if (savedGame && GAMES.some(g => g.id === savedGame)) {
+                    selectedGameId = savedGame;
+                }
+            } catch (e) {}
+
+            selector.innerHTML = '';
+            
+            GAMES.forEach(game => {
+                const btn = document.createElement('button');
+                btn.className = `game-btn ${game.id === selectedGameId ? 'active' : ''}`;
+                btn.setAttribute('data-game', game.id);
+                
+                btn.innerHTML = `
+                    <img src="${game.icon_url}" alt="${game.name}" loading="lazy">
+                    <span>${game.name}</span>
+                `;
+                
+                btn.addEventListener('click', () => {
+                    selectedGameId = game.id;
+                    localStorage.setItem(SELECTED_GAME_KEY, selectedGameId);
+                    
+                    // Обновляем активный класс у всех кнопок
+                    document.querySelectorAll('.game-btn').forEach(b => {
+                        b.classList.remove('active');
+                    });
+                    btn.classList.add('active');
+                    
+                    // Перезагружаем товары для выбранной игры
+                    loadProducts();
+                });
+                
+                selector.appendChild(btn);
+            });
+        }
+
         function sortProductsForDesktop(products) {
             const desktopOrder = ["c30", "c80", "c170", "c360", "c950", "c2000", "bp", "bpplus", "bp_g", "bpp_g", "pro", "up"];
             const orderedProducts = [];
             const newProducts = products.filter(p => p.id.startsWith('prod_'));
             const otherProducts = products.filter(p => !p.id.startsWith('prod_') && !desktopOrder.includes(p.id));
+
             newProducts.sort((a, b) => {
                 const getTimestamp = (id) => {
                     const match = id.match(/prod_(\d+)_/);
@@ -1229,10 +1392,12 @@
                 };
                 return getTimestamp(b.id) - getTimestamp(a.id);
             });
+
             desktopOrder.forEach(id => {
                 const product = products.find(p => p.id === id);
                 if (product) orderedProducts.push(product);
             });
+
             otherProducts.sort((a, b) => a.price - b.price);
             return [...newProducts, ...orderedProducts, ...otherProducts];
         }
@@ -1242,6 +1407,7 @@
             const orderedProducts = [];
             const newProducts = products.filter(p => p.id.startsWith('prod_'));
             const otherProducts = products.filter(p => !p.id.startsWith('prod_') && !mobileOrder.includes(p.id));
+
             newProducts.sort((a, b) => {
                 const getTimestamp = (id) => {
                     const match = id.match(/prod_(\d+)_/);
@@ -1249,34 +1415,41 @@
                 };
                 return getTimestamp(b.id) - getTimestamp(a.id);
             });
+
             mobileOrder.forEach(id => {
                 const product = products.find(p => p.id === id);
                 if (product) orderedProducts.push(product);
             });
+
             otherProducts.sort((a, b) => a.price - b.price);
             return [...newProducts, ...orderedProducts, ...otherProducts];
         }
 
         async function loadProducts() {
             try {
-                const response = await fetch(`${API_URL}/api/products`);
+                // Загружаем товары для выбранной игры
+                const url = selectedGameId ? `${API_URL}/api/products?game=${selectedGameId}` : `${API_URL}/api/products`;
+                const response = await fetch(url);
+                
                 if (!response.ok) {
-                    PRODUCTS = [...DEFAULT_PRODUCTS];
+                    // Если API не работает, фильтруем дефолтные товары
+                    PRODUCTS = DEFAULT_PRODUCTS.filter(p => p.game_id === selectedGameId);
                     renderProducts();
                     return;
                 }
+                
                 const data = await response.json();
                 if (data.success && data.products && data.products.length > 0) {
-                    const serverProducts = data.products;
-                    const serverProductIds = new Set(serverProducts.map(p => p.id));
-                    const missingDefaultProducts = DEFAULT_PRODUCTS.filter(p => !serverProductIds.has(p.id));
-                    PRODUCTS = [...serverProducts, ...missingDefaultProducts];
+                    PRODUCTS = data.products;
                 } else {
-                    PRODUCTS = [...DEFAULT_PRODUCTS];
+                    // Если нет товаров для игры, показываем пустой список
+                    PRODUCTS = [];
                 }
+                
                 renderProducts();
             } catch (error) {
-                PRODUCTS = [...DEFAULT_PRODUCTS];
+                // При ошибке фильтруем дефолтные товары
+                PRODUCTS = DEFAULT_PRODUCTS.filter(p => p.game_id === selectedGameId);
                 renderProducts();
             }
         }
@@ -1284,9 +1457,18 @@
         function renderProducts() {
             const cardsContainer = document.getElementById('cardsContainer');
             if (!cardsContainer) return;
+
+            if (PRODUCTS.length === 0) {
+                const gameName = GAMES.find(g => g.id === selectedGameId)?.name || 'этой игры';
+                cardsContainer.innerHTML = `<div style="color: white; text-align: center; padding: 60px; font-size: 18px;">Нет товаров для ${gameName}</div>`;
+                return;
+            }
+
             const isMobile = window.innerWidth <= 480;
             const productsToShow = isMobile ? sortProductsForMobile(PRODUCTS) : sortProductsForDesktop(PRODUCTS);
+
             cardsContainer.innerHTML = '';
+
             if (isMobile) {
                 productsToShow.forEach(p => {
                     const card = document.createElement('div');
@@ -1807,9 +1989,10 @@
             checkAuthFromURL();
             checkPaymentResult();
 
-            if (PRODUCTS.length === 0) {
+            // Загружаем игры и товары
+            loadGames().then(() => {
                 loadProducts();
-            }
+            });
 
             startAutoRefreshProducts();
             setupMobileNavigation();
