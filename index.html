@@ -98,10 +98,7 @@
 
         .menu-header {
             width: 100%;
-            padding: 16px 20px;
-            font-size: 26px;
-            font-weight: 900;
-            color: #fff;
+            padding: 12px 16px;
             background: linear-gradient(180deg, #0b3c91, #124fa5);
             display: flex;
             align-items: center;
@@ -113,47 +110,52 @@
             z-index: 100;
         }
 
-        .menu-header-title {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            flex: 1;
-        }
-
-        /* Выпадающий список игр */
-        .game-selector-container {
-            padding: 12px 16px;
-            background: rgba(255,255,255,0.1);
-            margin: 8px 16px;
-            border-radius: 14px;
+        .game-info {
             display: flex;
             align-items: center;
             gap: 12px;
+            flex: 1;
+            min-width: 0;
         }
 
-        .game-selector-label {
-            color: rgba(255,255,255,0.8);
-            font-size: 15px;
-            font-weight: 600;
+        .game-logo {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            object-fit: cover;
+            background: rgba(255,255,255,0.1);
+            flex-shrink: 0;
+        }
+
+        .game-name {
+            font-size: 22px;
+            font-weight: 900;
+            color: #fff;
             white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .game-selector-wrapper {
+            position: relative;
+            min-width: 160px;
+            margin-left: auto;
         }
 
         .game-selector {
-            flex: 1;
-            padding: 12px 16px;
+            width: 100%;
+            padding: 10px 36px 10px 16px;
             border: none;
-            border-radius: 12px;
+            border-radius: 30px;
             background: rgba(255,255,255,0.2);
             color: white;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 600;
             cursor: pointer;
             outline: none;
             appearance: none;
-            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='white'><path d='M7 10l5 5 5-5z'/></svg>");
-            background-repeat: no-repeat;
-            background-position: right 12px center;
-            background-size: 20px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
 
         .game-selector option {
@@ -168,6 +170,17 @@
 
         .game-selector:focus {
             background: rgba(255,255,255,0.3);
+        }
+
+        .selector-arrow {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            pointer-events: none;
+            fill: white;
         }
 
         .auth-btn, .cart-btn {
@@ -756,22 +769,37 @@
             background: rgba(255, 255, 255, 0.25);
         }
 
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
         @media (max-width: 768px) {
             .menu-header {
-                padding: 14px 16px;
-                font-size: 22px;
+                padding: 10px 12px;
+            }
+            .game-info {
+                gap: 8px;
+            }
+            .game-logo {
+                width: 30px;
+                height: 30px;
+            }
+            .game-name {
+                font-size: 18px;
+            }
+            .game-selector-wrapper {
+                min-width: 140px;
+            }
+            .game-selector {
+                padding: 8px 32px 8px 12px;
+                font-size: 13px;
             }
             .menu-header .auth-btn,
             .menu-header .cart-btn {
                 display: none;
-            }
-            .game-selector-container {
-                margin: 8px 12px;
-                padding: 10px 12px;
-            }
-            .game-selector {
-                padding: 10px 14px;
-                font-size: 14px;
             }
             .menu-scroll {
                 padding: 12px;
@@ -822,6 +850,24 @@
         }
 
         @media (max-width: 480px) {
+            .game-info {
+                gap: 6px;
+            }
+            .game-logo {
+                width: 26px;
+                height: 26px;
+            }
+            .game-name {
+                font-size: 16px;
+                max-width: 120px;
+            }
+            .game-selector-wrapper {
+                min-width: 120px;
+            }
+            .game-selector {
+                padding: 6px 28px 6px 10px;
+                font-size: 12px;
+            }
             .row-two {
                 grid-template-columns: 1fr;
                 gap: 12px;
@@ -841,19 +887,6 @@
                 font-size: 16px;
                 min-width: 200px;
             }
-            .menu-header-title {
-                font-size: 18px;
-            }
-            .game-selector-container {
-                margin: 6px 10px;
-            }
-            .game-selector-label {
-                font-size: 13px;
-            }
-            .game-selector {
-                font-size: 13px;
-                padding: 8px 12px;
-            }
             .menu-scroll {
                 padding-bottom: 105px;
             }
@@ -866,6 +899,20 @@
         }
 
         @media (max-width: 360px) {
+            .game-info {
+                gap: 4px;
+            }
+            .game-logo {
+                width: 24px;
+                height: 24px;
+            }
+            .game-name {
+                font-size: 14px;
+                max-width: 100px;
+            }
+            .game-selector-wrapper {
+                min-width: 100px;
+            }
             .shop-card {
                 height: 190px;
             }
@@ -941,8 +988,22 @@
 
     <div id="menu" class="menu">
         <div class="menu-header">
-            <div class="menu-header-title">Магазин Duck Shop</div>
-            <div style="display: flex; gap: 8px; align-items: center;">
+            <!-- Информация о выбранной игре -->
+            <div class="game-info" id="gameInfo">
+                <img class="game-logo" id="gameLogo" src="" alt="Game logo">
+                <span class="game-name" id="gameName">Duck Shop</span>
+            </div>
+
+            <!-- Выпадающий список игр -->
+            <div class="game-selector-wrapper">
+                <select class="game-selector" id="gameSelector"></select>
+                <svg class="selector-arrow" viewBox="0 0 24 24">
+                    <path d="M7 10l5 5 5-5z"/>
+                </svg>
+            </div>
+
+            <!-- Кнопки справа -->
+            <div class="header-right">
                 <button class="auth-btn wallet-desktop" id="walletDesktopBtn">
                     <svg viewBox="0 0 24 24">
                         <path d="M21 18v1c0 1.1-0.9 2-2 2H5c-1.11 0-2-0.9-2-2V5c0-1.1 0.89-2 2-2h14c1.1 0 2 0.9 2 2v1h-9c-1.1 0-2 0.9-2 2v8c0 1.1 0.9 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-0.83 0-1.5-0.67-1.5-1.5s0.67-1.5 1.5-1.5 1.5 0.67 1.5 1.5-0.67 1.5-1.5 1.5z"/>
@@ -968,12 +1029,6 @@
                     <div class="cart-badge" id="cartBadge">0</div>
                 </button>
             </div>
-        </div>
-
-        <!-- Выпадающий список игр -->
-        <div class="game-selector-container">
-            <span class="game-selector-label">🎮 Игра:</span>
-            <select class="game-selector" id="gameSelector"></select>
         </div>
 
         <div class="menu-scroll" id="cardsContainer"></div>
@@ -1097,7 +1152,8 @@
                 id: "brawlstars", 
                 name: "Brawl Stars", 
                 slug: "brawlstars",
-                icon_url: "https://i.imgur.com/3JxvXtR.png"
+                icon_url: "https://i.imgur.com/3JxvXtR.png",
+                banner_url: "https://i.imgur.com/3JxvXtR.png"
             }
         ];
 
@@ -1326,6 +1382,21 @@
             }
         }
 
+        function updateGameHeader() {
+            const gameLogo = document.getElementById('gameLogo');
+            const gameName = document.getElementById('gameName');
+            
+            const currentGame = GAMES.find(g => g.id === selectedGameId);
+            
+            if (currentGame) {
+                gameLogo.src = currentGame.banner_url || currentGame.icon_url || '';
+                gameName.textContent = currentGame.name;
+            } else {
+                gameLogo.src = '';
+                gameName.textContent = 'Duck Shop';
+            }
+        }
+
         function renderGameSelector() {
             const selector = document.getElementById('gameSelector');
             if (!selector) return;
@@ -1350,8 +1421,11 @@
             selector.addEventListener('change', (e) => {
                 selectedGameId = e.target.value;
                 localStorage.setItem(SELECTED_GAME_KEY, selectedGameId);
+                updateGameHeader();
                 loadProducts();
             });
+
+            updateGameHeader();
         }
 
         function sortProductsForDesktop(products) {
@@ -1402,7 +1476,6 @@
 
         async function loadProducts() {
             try {
-                // Загружаем ВСЕ товары с сервера, потом фильтруем на клиенте
                 const response = await fetch(`${API_URL}/api/products`);
                 
                 if (!response.ok) {
@@ -1413,7 +1486,6 @@
                 
                 const data = await response.json();
                 if (data.success && data.products) {
-                    // Фильтруем товары по выбранной игре
                     PRODUCTS = data.products.filter(p => p.game_id === selectedGameId);
                 } else {
                     PRODUCTS = DEFAULT_PRODUCTS.filter(p => p.game_id === selectedGameId);
@@ -1961,7 +2033,6 @@
             checkAuthFromURL();
             checkPaymentResult();
 
-            // Загружаем игры и товары
             loadGames().then(() => {
                 loadProducts();
             });
