@@ -755,6 +755,14 @@
             .row-two {
                 grid-template-columns: 1fr 1fr;
             }
+            
+            .mobile-nav {
+                display: flex;
+            }
+            
+            .wallet-desktop {
+                display: none !important;
+            }
         }
 
         @media (max-width: 480px) {
@@ -786,6 +794,10 @@
             .cart-overlay {
                 padding-bottom: 90px;
             }
+            
+            .mobile-nav {
+                display: flex;
+            }
         }
 
         @media (max-width: 360px) {
@@ -811,6 +823,10 @@
             .cart-overlay {
                 padding-bottom: 85px;
             }
+            
+            .mobile-nav {
+                display: flex;
+            }
         }
 
         @media (min-width: 769px) {
@@ -821,7 +837,10 @@
                 display: inline;
             }
             .mobile-nav {
-                display: none;
+                display: none !important;
+            }
+            .wallet-desktop {
+                display: inline-flex !important;
             }
         }
 
@@ -831,11 +850,10 @@
         #waiting .mobile-nav,
         #checkout .mobile-nav,
         #badPay .mobile-nav {
-            display: none;
+            display: none !important;
         }
 
         .wallet-desktop {
-            display: inline-flex;
             margin-right: 8px;
         }
     </style>
@@ -1169,6 +1187,12 @@
             const mobileNav = document.getElementById('mobileNav');
             const cartOverlay = document.getElementById('cartOverlay');
             if (!mobileNav) return;
+            
+            if (window.innerWidth > 768) {
+                mobileNav.style.display = 'none';
+                return;
+            }
+            
             const hiddenScreens = ['hello', 'load', 'intro', 'waiting', 'checkout', 'badPay'];
             const shouldShow = currentScreen === 'menu' && !cartOverlay.classList.contains('open') && !hiddenScreens.includes(currentScreen);
             mobileNav.style.display = shouldShow ? 'flex' : 'none';
