@@ -2,16 +2,34 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8" />
-<title>Авторизация</title>
+<title>Вход / Регистрация - Duck Shop</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&display=swap" rel="stylesheet">
 <style>
+@font-face {
+  font-family: 'Pusia';
+  src: url('/fonts/Pusia-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Pusia';
+  src: url('/fonts/Pusia-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 html, body {
   margin: 0;
   padding: 0;
   width: 100%;
   min-height: 100vh;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Pusia', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background: linear-gradient(180deg, #0b3c91 0%, #1565c0 55%, #42a5f5 100%);
   display: flex;
   align-items: center;
@@ -57,22 +75,24 @@ html, body {
 
 .auth-title {
   font-size: 32px;
-  font-weight: 800;
+  font-weight: 700;
   color: white;
   margin-bottom: 8px;
   text-align: center;
   text-shadow: 0 4px 12px rgba(0,0,0,0.2);
   width: 100%;
+  font-family: 'Lilita One', cursive;
+  letter-spacing: 0.5px;
 }
 
 .auth-subtitle {
   font-size: 16px;
+  font-weight: 400;
   color: rgba(255,255,255,0.9);
   margin-bottom: 32px;
   text-align: center;
   max-width: 280px;
   line-height: 1.5;
-  font-weight: 500;
 }
 
 .telegram-link {
@@ -96,6 +116,7 @@ html, body {
   cursor: pointer;
   padding: 0 20px;
   box-sizing: border-box;
+  font-family: 'Pusia', sans-serif;
 }
 
 .telegram-link:active {
@@ -127,6 +148,7 @@ html, body {
   backdrop-filter: blur(10px);
   margin-left: auto;
   margin-right: auto;
+  font-family: 'Pusia', sans-serif;
 }
 
 .status-loading {
@@ -174,6 +196,7 @@ html, body {
   gap: 8px;
   padding: 12px 0;
   width: 100%;
+  font-family: 'Pusia', sans-serif;
 }
 
 .back-link:hover {
@@ -184,6 +207,12 @@ html, body {
   width: 18px;
   height: 18px;
   fill: currentColor;
+}
+
+.price-highlight {
+  font-family: 'Lilita One', cursive;
+  color: #ffd700;
+  font-size: 1.2em;
 }
 
 @media (max-width: 380px) {
@@ -207,8 +236,8 @@ html, body {
   }
 }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 </head>
-
 <body>
 <div class="auth-screen">
   <div class="auth-content">
@@ -217,7 +246,6 @@ html, body {
     <div class="auth-title">Добро пожаловать</div>
     <div class="auth-subtitle">Войдите или зарегистрируйтесь через Telegram</div>
     
-    <!-- Прямая ссылка на Telegram -->
     <a href="https://t.me/duck_shop_bot?start=auth" class="telegram-link" id="telegramLink">
       <svg viewBox="0 0 24 24">
         <path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/>
@@ -245,49 +273,38 @@ html, body {
 const API_URL = 'https://duck-shop-sever.onrender.com';
 const SITE_URL = 'https://shopdxs.ru';
 const USER_KEY = 'duck_user_v1';
-const BOT_USERNAME = 'duck_shop_bot';
 
 let telegramCheckInterval = null;
 let currentToken = null;
 
-// ===== ПРОВЕРКА АВТОРИЗАЦИИ ПРИ ЗАГРУЗКЕ =====
 (function checkExistingAuth() {
   const savedUser = localStorage.getItem(USER_KEY);
   if (savedUser) {
-    console.log('✅ Пользователь уже авторизован, перенаправляем на профиль');
     window.location.href = 'profile.html';
     return;
   }
 })();
 
-// ===== ОПРЕДЕЛЕНИЕ ПЛАТФОРМЫ =====
 function getPlatform() {
   const ua = navigator.userAgent || navigator.vendor || window.opera;
-  
-  // iOS devices
   if (/iPad|iPhone|iPod/.test(ua) && !window.MSStream) {
     return 'ios';
   }
-  // Android devices
   if (/android/i.test(ua)) {
     return 'android';
   }
-  // Windows Phone
   if (/windows phone/i.test(ua)) {
     return 'windows-phone';
   }
-  // Desktop
   return 'desktop';
 }
 
-// ===== ПРОВЕРКА ТЕХПЕРЕРЫВА =====
 (function() {
   var urlParams = new URLSearchParams(window.location.search);
   var adminBypass = urlParams.get('admin_bypass');
   var authToken = urlParams.get('auth');
   
   if (authToken) {
-    console.log('🔑 Обнаружен auth токен');
     verifyAuthToken(authToken);
     return;
   }
@@ -299,23 +316,22 @@ function getPlatform() {
     
     setTimeout(function() {
       var adminNote = document.createElement('div');
-      adminNote.style.cssText = [
-        'position: fixed',
-        'bottom: 100px',
-        'left: 50%',
-        'transform: translateX(-50%)',
-        'background: rgba(0,0,0,0.8)',
-        'color: #ffd700',
-        'padding: 8px 20px',
-        'border-radius: 30px',
-        'font-size: 14px',
-        'font-weight: 600',
-        'z-index: 10000',
-        'backdrop-filter: blur(5px)',
-        'border: 1px solid rgba(255,215,0,0.3)',
-        'box-shadow: 0 4px 15px rgba(0,0,0,0.3)',
-        'animation: fadeIn 0.3s ease'
-      ].join(';');
+      adminNote.style.cssText = `
+        position: fixed;
+        bottom: 100px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0,0,0,0.8);
+        color: #ffd700;
+        padding: 8px 20px;
+        border-radius: 30px;
+        font-size: 14px;
+        font-weight: 600;
+        z-index: 10000;
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(255,215,0,0.3);
+        animation: fadeIn 0.3s ease;
+      `;
       adminNote.textContent = '🔑 Режим администратора (техперерыв игнорируется)';
       document.body.appendChild(adminNote);
       
@@ -394,7 +410,6 @@ function showStatus(type, message = '') {
   }
 }
 
-// Генерация уникальной ссылки
 async function generateAuthLink() {
   try {
     const response = await fetch(`${API_URL}/api/auth/start-login`, {
@@ -406,31 +421,24 @@ async function generateAuthLink() {
     
     if (data.success && data.telegramLink) {
       currentToken = data.token;
-      
-      // Обновляем ссылку
       const link = document.getElementById('telegramLink');
       if (link) {
         link.href = data.telegramLink;
       }
       
-      // Определяем платформу и открываем ссылку если не iOS
       const platform = getPlatform();
-      console.log('📱 Платформа:', platform);
       
       if (platform !== 'ios') {
-        // На не-iOS открываем автоматически
         setTimeout(() => {
           window.open(data.telegramLink, '_blank');
         }, 300);
       }
       
-      // Начинаем проверять авторизацию
       startAuthPolling(data.token);
     } else {
       showStatus('error', '❌ Ошибка получения ссылки');
     }
   } catch (error) {
-    console.error('Ошибка:', error);
     showStatus('error', '❌ Ошибка соединения');
   }
 }
@@ -474,40 +482,28 @@ async function verifyAuthToken(token) {
       localStorage.setItem(USER_KEY, JSON.stringify(data.user));
       window.location.href = 'profile.html';
     } else {
-      // Токен невалидный, просто продолжаем
       hideAllStatuses();
     }
   } catch (error) {
-    console.error('Ошибка проверки токена:', error);
     hideAllStatuses();
   }
 }
 
-// Обработчик клика по ссылке
-document.getElementById('telegramLink')?.addEventListener('click', function(e) {
+document.getElementById('telegramLink').addEventListener('click', function(e) {
   const platform = getPlatform();
-  
-  // На iOS не показываем статус, просто даем ссылке работать
   if (platform === 'ios') {
-    return; // Ссылка откроется стандартным образом
+    return;
   }
-  
-  // На других платформах показываем статус
   showStatus('loading');
 });
 
-// При загрузке страницы
 document.addEventListener('DOMContentLoaded', () => {
   initLottie();
   hideAllStatuses();
-  
-  // Генерируем ссылку
   generateAuthLink();
   
-  // Если пользователь вернулся на страницу
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible') {
-      // Можно ничего не делать, просто ждем
     }
   });
 });
