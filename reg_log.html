@@ -4,32 +4,13 @@
 <meta charset="UTF-8" />
 <title>Вход / Регистрация - Duck Shop</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Lilita+One&display=swap" rel="stylesheet">
 <style>
-@font-face {
-  font-family: 'Pusia';
-  src: url('/fonts/Pusia-Bold.woff2') format('woff2');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Pusia';
-  src: url('/fonts/Pusia-Regular.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
 html, body {
   margin: 0;
   padding: 0;
   width: 100%;
   min-height: 100vh;
-  font-family: 'Pusia', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   background: linear-gradient(180deg, #0b3c91 0%, #1565c0 55%, #42a5f5 100%);
   display: flex;
   align-items: center;
@@ -81,8 +62,8 @@ html, body {
   text-align: center;
   text-shadow: 0 4px 12px rgba(0,0,0,0.2);
   width: 100%;
-  font-family: 'Lilita One', cursive;
-  letter-spacing: 0.5px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  letter-spacing: -0.5px;
 }
 
 .auth-subtitle {
@@ -93,6 +74,7 @@ html, body {
   text-align: center;
   max-width: 280px;
   line-height: 1.5;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
 .telegram-link {
@@ -106,7 +88,7 @@ html, body {
   border-radius: 18px;
   background: #27A7E7;
   color: white;
-  font-weight: 700;
+  font-weight: 600;
   font-size: 18px;
   text-decoration: none;
   box-shadow: 0 8px 20px rgba(0,0,0,0.25);
@@ -116,7 +98,7 @@ html, body {
   cursor: pointer;
   padding: 0 20px;
   box-sizing: border-box;
-  font-family: 'Pusia', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
 .telegram-link:active {
@@ -139,7 +121,7 @@ html, body {
   padding: 14px 18px;
   border-radius: 16px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   text-align: center;
   display: none;
   width: 100%;
@@ -148,7 +130,7 @@ html, body {
   backdrop-filter: blur(10px);
   margin-left: auto;
   margin-right: auto;
-  font-family: 'Pusia', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
 .status-loading {
@@ -196,7 +178,7 @@ html, body {
   gap: 8px;
   padding: 12px 0;
   width: 100%;
-  font-family: 'Pusia', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
 .back-link:hover {
@@ -207,12 +189,6 @@ html, body {
   width: 18px;
   height: 18px;
   fill: currentColor;
-}
-
-.price-highlight {
-  font-family: 'Lilita One', cursive;
-  color: #ffd700;
-  font-size: 1.2em;
 }
 
 @media (max-width: 380px) {
