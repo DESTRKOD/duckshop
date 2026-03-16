@@ -1231,6 +1231,7 @@ html, body {
         let currentOrderId = null;
         let currentUser = null;
         let selectedGameId = 'brawlstars';
+        let authPollingInterval = null;
 
         const DEFAULT_PRODUCTS = [
             { id: "c30", name: "30 кристаллов", price: 200, image_url: "https://i.imgur.com/s4K0WIP.png", is_gift: false, game_id: "brawlstars" },
@@ -1758,13 +1759,13 @@ html, body {
                 }
                 authBtn.onclick = function(e) {
                     e.preventDefault();
-                    window.location.href = 'profile';
+                    window.location.href = 'profile.html';
                 };
             } else {
                 authBtnText.textContent = 'Войти';
                 authBtn.onclick = function(e) {
                     e.preventDefault();
-                    window.location.href = 'reg_log';
+                    window.location.href = 'reg_log.html';
                 };
             }
         }
@@ -1818,7 +1819,7 @@ html, body {
                 const data = await response.json();
                 if (data.maintenance && !window.location.pathname.includes('working.html')) {
                     sessionStorage.setItem('return_url', window.location.href);
-                    window.location.href = 'working';
+                    window.location.href = 'working.html';
                 }
             } catch (error) {
                 console.error('Ошибка проверки статуса:', error);
@@ -1963,25 +1964,25 @@ html, body {
             if (navSupport) {
                 navSupport.addEventListener('click', (e) => {
                     e.preventDefault();
-                    window.location.href = 'support';
+                    window.location.href = 'support.html';
                 });
             }
             if (supportDesktopBtn) {
                 supportDesktopBtn.addEventListener('click', (e) => {
                     e.preventDefault();
-                    window.location.href = 'support';
+                    window.location.href = 'support.html';
                 });
             }
             if (navWallet) {
                 navWallet.addEventListener('click', (e) => {
                     e.preventDefault();
-                    window.location.href = 'wallet';
+                    window.location.href = 'wallet.html';
                 });
             }
             if (navProfile) {
                 navProfile.addEventListener('click', (e) => {
                     e.preventDefault();
-                    window.location.href = 'profile';
+                    window.location.href = 'profile.html';
                 });
             }
             if (navHome) {
@@ -2115,7 +2116,7 @@ html, body {
             document.getElementById('toMenuFromBadPay').addEventListener('click', () => show('menu'));
             document.getElementById('walletDesktopBtn').addEventListener('click', (e) => {
                 e.preventDefault();
-                window.location.href = 'wallet';
+                window.location.href = 'wallet.html';
             });
 
             document.getElementById('proceedToPay').addEventListener('click', async () => {
@@ -2129,7 +2130,7 @@ html, body {
                         timestamp: Date.now()
                     };
                     localStorage.setItem('pending_order', JSON.stringify(orderData));
-                    window.location.href = 'waitpay';
+                    window.location.href = 'waitpay.html';
                 } catch (error) {
                     alert('Ошибка при переходе к оплате');
                 }
