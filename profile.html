@@ -1278,7 +1278,7 @@ function fmtRub(n) {
     var data = JSON.parse(xhr.responseText);
     if (data.maintenance) {
       sessionStorage.setItem('attempted_page', window.location.pathname);
-      window.location.href = 'working';
+      window.location.href = 'working.html';
     }
   }
 })();
