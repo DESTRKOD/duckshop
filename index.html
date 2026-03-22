@@ -1655,14 +1655,13 @@ html, body {
                         ${p.is_gift ? '<div class="gift"><img src="https://i.imgur.com/Tdajl7F.png" alt="🎁"></div>' : ''}
                         <div class="shop-top">
                             <img src="${p.image_url}" alt="${p.name}" loading="lazy">
-                            ${p.is_new ? '<div class="new-badge"></div>' : ''}
                         </div>
                         <div class="shop-bottom">
                             <div class="shop-name">
-                            ${p.name}
-                            ${p.is_new ? '<div class="new-badge"></div>' : ''}
-                        </div>
-                        <button class="shop-buy" type="button" data-add="${p.id}">
+                                ${p.name}
+                                ${p.is_new ? '<div class="new-badge"></div>' : ''}
+                            </div>
+                            <button class="shop-buy" type="button" data-add="${p.id}">
                                 <svg viewBox="0 0 24 24">
                                     <path d="M7 18a2 2 0 1 0 0 4a2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4a2 2 0 0 0 0-4zM7.16 14h9.45a2 2 0 0 0 1.75-1.03l3.58-6.49-1.74-.99-3.58 6.49H8.53L5.21 4H1v2h3l3.6 7.59-1.35 2.44C5.52 16.37 6.48 18 8 18h12v-2H8l1.16-2z"/>
                                 </svg>
@@ -1685,14 +1684,13 @@ html, body {
                                     ${currentRow[0].is_gift ? '<div class="gift"><img src="https://i.imgur.com/Tdajl7F.png" alt="🎁"></div>' : ''}
                                     <div class="shop-top">
                                         <img src="${currentRow[0].image_url}" alt="${currentRow[0].name}" loading="lazy">
-                                        ${currentRow[0].is_new ? '<div class="new-badge"></div>' : ''}
                                     </div>
                                     <div class="shop-bottom">
                                         <div class="shop-name">
-                                        ${p.name}
-                                        ${p.is_new ? '<div class="new-badge"></div>' : ''}
-                                    </div>
-                                    <button class="shop-buy" type="button" data-add="${p.id}">
+                                            ${p.name}
+                                            ${p.is_new ? '<div class="new-badge"></div>' : ''}
+                                        </div>
+                                        <button class="shop-buy" type="button" data-add="${p.id}">
                                             <svg viewBox="0 0 24 24">
                                                 <path d="M7 18a2 2 0 1 0 0 4a2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4a2 2 0 0 0 0-4zM7.16 14h9.45a2 2 0 0 0 1.75-1.03l3.58-6.49-1.74-.99-3.58 6.49H8.53L5.21 4H1v2h3l3.6 7.59-1.35 2.44C5.52 16.37 6.48 18 8 18h12v-2H8l1.16-2z"/>
                                             </svg>
@@ -1711,10 +1709,12 @@ html, body {
                                         ${p.is_gift ? '<div class="gift"><img src="https://i.imgur.com/Tdajl7F.png" alt="🎁"></div>' : ''}
                                         <div class="shop-top">
                                             <img src="${p.image_url}" alt="${p.name}" loading="lazy">
-                                            ${p.is_new ? '<div class="new-badge"></div>' : ''}
                                         </div>
                                         <div class="shop-bottom">
-                                            <div class="shop-name">${p.name}</div>
+                                            <div class="shop-name">
+                                                ${p.name}
+                                                ${p.is_new ? '<div class="new-badge"></div>' : ''}
+                                            </div>
                                             <button class="shop-buy" type="button" data-add="${p.id}">
                                                 <svg viewBox="0 0 24 24">
                                                     <path d="M7 18a2 2 0 1 0 0 4a2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4a2 2 0 0 0 0-4zM7.16 14h9.45a2 2 0 0 0 1.75-1.03l3.58-6.49-1.74-.99-3.58 6.49H8.53L5.21 4H1v2h3l3.6 7.59-1.35 2.44C5.52 16.37 6.48 18 8 18h12v-2H8l1.16-2z"/>
