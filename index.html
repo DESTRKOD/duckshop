@@ -370,34 +370,44 @@ html, body {
 }
 
 .new-badge {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    width: 70px;
-    height: 70px;
+    display: inline-block;
+    width: 72px;
+    height: 72px;
     background-image: url('https://i.imgur.com/1sZVCJT.png');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
-    z-index: 2;
-    pointer-events: none;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+    vertical-align: middle;
+    margin-left: 12px;
+    flex-shrink: 0;
 }
 
 @media (max-width: 480px) {
     .new-badge {
-        width: 40px;
-        height: 40px;
+        width: 56px;
+        height: 56px;
+        margin-left: 10px;
     }
 }
 
 @media (max-width: 360px) {
     .new-badge {
-        width: 35px;
-        height: 35px;
+        width: 50px;
+        height: 50px;
+        margin-left: 8px;
     }
 }
 
+.shop-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: #000;
+    line-height: 1.3;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
 .shop-bottom {
     flex: 0 0 40%;
     background: #fff;
@@ -408,17 +418,6 @@ html, body {
     gap: 8px;
 }
 
-.shop-name {
-    font-size: 15px;
-    font-weight: 700;
-    color: #000;
-    line-height: 1.2;
-    flex: 1;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-}
 
 .shop-buy {
     min-width: 140px;
@@ -1659,8 +1658,11 @@ html, body {
                             ${p.is_new ? '<div class="new-badge"></div>' : ''}
                         </div>
                         <div class="shop-bottom">
-                            <div class="shop-name">${p.name}</div>
-                            <button class="shop-buy" type="button" data-add="${p.id}">
+                            <div class="shop-name">
+                            ${p.name}
+                            ${p.is_new ? '<div class="new-badge"></div>' : ''}
+                        </div>
+                        <button class="shop-buy" type="button" data-add="${p.id}">
                                 <svg viewBox="0 0 24 24">
                                     <path d="M7 18a2 2 0 1 0 0 4a2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4a2 2 0 0 0 0-4zM7.16 14h9.45a2 2 0 0 0 1.75-1.03l3.58-6.49-1.74-.99-3.58 6.49H8.53L5.21 4H1v2h3l3.6 7.59-1.35 2.44C5.52 16.37 6.48 18 8 18h12v-2H8l1.16-2z"/>
                                 </svg>
@@ -1686,8 +1688,11 @@ html, body {
                                         ${currentRow[0].is_new ? '<div class="new-badge"></div>' : ''}
                                     </div>
                                     <div class="shop-bottom">
-                                        <div class="shop-name">${currentRow[0].name}</div>
-                                        <button class="shop-buy" type="button" data-add="${currentRow[0].id}">
+                                        <div class="shop-name">
+                                        ${p.name}
+                                        ${p.is_new ? '<div class="new-badge"></div>' : ''}
+                                    </div>
+                                    <button class="shop-buy" type="button" data-add="${p.id}">
                                             <svg viewBox="0 0 24 24">
                                                 <path d="M7 18a2 2 0 1 0 0 4a2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4a2 2 0 0 0 0-4zM7.16 14h9.45a2 2 0 0 0 1.75-1.03l3.58-6.49-1.74-.99-3.58 6.49H8.53L5.21 4H1v2h3l3.6 7.59-1.35 2.44C5.52 16.37 6.48 18 8 18h12v-2H8l1.16-2z"/>
                                             </svg>
