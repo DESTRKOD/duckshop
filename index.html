@@ -148,11 +148,12 @@
             margin-left: auto;
         }
 
+        /* Прямоугольный селектор вместо овального */
         .game-selector {
             width: 100%;
             padding: 12px 40px 12px 16px;
             border: none;
-            border-radius: 30px;
+            border-radius: 12px;
             background: rgba(255,255,255,0.2);
             color: white;
             font-size: 15px;
@@ -369,7 +370,7 @@
             object-fit: contain;
         }
 
-        
+        /* ОБНОВЛЕННЫЕ СТИЛИ - значок NEW справа от названия */
         .shop-name {
             font-size: 15px;
             font-weight: 700;
@@ -393,8 +394,6 @@
             flex-shrink: 0;
             margin: 0;
         }
-
-
 
         .shop-bottom {
             flex: 0 0 40%;
@@ -821,31 +820,7 @@
             flex-shrink: 0;
         }
 
-        
-        @media (max-width: 480px) {
-            .new-badge {
-                width: 40px;
-                height: 40px;
-            }
-    
-            .shop-name {
-                gap: 6px;
-                font-size: 13px;
-            }
-        }
-
-        @media (max-width: 360px) {
-            .new-badge {
-                width: 36px;
-                height: 36px;
-            }
-    
-            .shop-name {
-                gap: 5px;
-                font-size: 12px;
-            }
-        }
-
+        /* Медиа-запросы для адаптивности */
         @media (max-width: 768px) {
             .game-logo {
                 width: 70px;
@@ -855,6 +830,10 @@
             
             .game-name {
                 font-size: 24px;
+                max-width: 150px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
             
             .game-selector-wrapper {
@@ -864,6 +843,7 @@
             .game-selector {
                 padding: 10px 36px 10px 14px;
                 font-size: 14px;
+                border-radius: 10px;
             }
             
             .game-banner {
@@ -892,6 +872,16 @@
             .shop-bottom {
                 flex: 0 0 45%;
                 padding: 8px 10px;
+            }
+            
+            .shop-name {
+                font-size: 14px;
+                gap: 6px;
+            }
+            
+            .new-badge {
+                width: 40px;
+                height: 40px;
             }
             
             .shop-buy {
@@ -928,6 +918,141 @@
             
             .wallet-desktop {
                 display: none !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .game-logo {
+                width: 60px;
+                height: 60px;
+                border-radius: 12px;
+            }
+            
+            .game-name {
+                font-size: 20px;
+                max-width: 120px;
+            }
+            
+            .game-selector-wrapper {
+                min-width: 140px;
+            }
+            
+            .game-selector {
+                padding: 8px 32px 8px 12px;
+                font-size: 13px;
+                border-radius: 8px;
+            }
+            
+            .game-banner {
+                height: 140px;
+            }
+            
+            .row-two {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .shop-card {
+                height: 200px;
+            }
+            
+            .shop-name {
+                font-size: 13px;
+                gap: 5px;
+            }
+            
+            .new-badge {
+                width: 36px;
+                height: 36px;
+            }
+            
+            .shop-buy {
+                min-width: 100px;
+                height: 36px;
+            }
+            
+            .button {
+                padding: 14px 32px;
+                font-size: 16px;
+                min-width: 200px;
+            }
+            
+            .products-container {
+                padding: 0 10px 10px 10px;
+            }
+            
+            .cart-overlay {
+                padding-bottom: 90px;
+            }
+            
+            .mobile-nav {
+                display: flex;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .game-logo {
+                width: 50px;
+                height: 50px;
+                border-radius: 10px;
+            }
+            
+            .game-name {
+                font-size: 18px;
+                max-width: 100px;
+            }
+            
+            .game-selector-wrapper {
+                min-width: 120px;
+            }
+            
+            .game-selector {
+                padding: 6px 28px 6px 10px;
+                font-size: 12px;
+                border-radius: 6px;
+            }
+            
+            .game-banner {
+                height: 120px;
+            }
+            
+            .shop-card {
+                height: 190px;
+            }
+            
+            .shop-top {
+                flex: 0 0 50%;
+            }
+            
+            .shop-bottom {
+                flex: 0 0 50%;
+            }
+            
+            .shop-name {
+                font-size: 12px;
+                gap: 4px;
+            }
+            
+            .new-badge {
+                width: 32px;
+                height: 32px;
+            }
+            
+            .shop-buy {
+                min-width: 90px;
+                height: 34px;
+            }
+            
+            .products-container {
+                padding: 0 8px 8px 8px;
+            }
+            
+            .cart-overlay {
+                padding-bottom: 85px;
+            }
+            
+            .mobile-nav {
+                display: flex;
             }
         }
 
@@ -1002,7 +1127,7 @@
             <div class="header-right">
                 <button class="auth-btn wallet-desktop" id="walletDesktopBtn">
                     <svg viewBox="0 0 24 24">
-                        <path d="M21 18v1c0 1.1-0.9 2-2 2H5c-1.11 0-2-0.9-2-2V5c0-1.1 0.89-2 2-2h14c1.1 0 2 0.9 2 2v1h-9c-1.1 0-2 0.9-2 2v8c0 1.1 0.9 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-0.83 0-1.5-0.67-1.5-1.5s0.67-1.5 1.5-1.5 1.5 0.67 1.5 1.5-0.67 1.5-1.5 1.5z"/>
+                        <path d="M21 18v1c0 1.1-0.9 2-2 2H5c-1.11 0-2-0.9-2-2V5c0-1.1 0.89-2 2-2h14c1.1 0 2 0.9 2 2v1h-9c-1.1 0-2 0.9-2 2v8c0 1.1 0.9 2 2 2h9z"/>
                     </svg>
                     <span>Кошелёк</span>
                 </button>
@@ -1087,7 +1212,7 @@
     <div class="mobile-nav" id="mobileNav">
         <button class="mobile-nav-item" id="navWallet">
             <svg viewBox="0 0 24 24">
-                <path d="M21 18v1c0 1.1-0.9 2-2 2H5c-1.11 0-2-0.9-2-2V5c0-1.1 0.89-2 2-2h14c1.1 0 2 0.9 2 2v1h-9c-1.1 0-2 0.9-2 2v8c0 1.1 0.9 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-0.83 0-1.5-0.67-1.5-1.5s0.67-1.5 1.5-1.5 1.5 0.67 1.5 1.5-0.67 1.5-1.5 1.5z"/>
+                <path d="M21 18v1c0 1.1-0.9 2-2 2H5c-1.11 0-2-0.9-2-2V5c0-1.1 0.89-2 2-2h14c1.1 0 2 0.9 2 2v1h-9c-1.1 0-2 0.9-2 2v8c0 1.1 0.9 2 2 2h9z"/>
             </svg>
             <span>Кошелёк</span>
         </button>
@@ -1105,7 +1230,7 @@
         </button>
         <button class="mobile-nav-item" id="navSupport">
             <svg viewBox="0 0 24 24">
-                <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM11 9h2v2h-2V9zm0 4h2v2h-2v-2z"/>
+                <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z"/>
             </svg>
             <span>Поддержка</span>
         </button>
@@ -1133,18 +1258,18 @@
         let selectedGameId = 'brawlstars';
 
         const DEFAULT_PRODUCTS = [
-            { id: "c30", name: "30 кристаллов", price: 200, image_url: "https://i.imgur.com/s4K0WIP.png", is_gift: false, game_id: "brawlstars" },
-            { id: "c80", name: "80 кристаллов", price: 550, image_url: "https://i.imgur.com/XbnZKDb.png", is_gift: false, game_id: "brawlstars" },
-            { id: "c170", name: "170 кристаллов", price: 950, image_url: "https://i.imgur.com/X0JCmMQ.png", is_gift: false, game_id: "brawlstars" },
-            { id: "c360", name: "360 кристаллов", price: 1900, image_url: "https://i.imgur.com/7z8z9Rw.png", is_gift: false, game_id: "brawlstars" },
-            { id: "c950", name: "950 кристаллов", price: 4600, image_url: "https://i.imgur.com/zzBuIxF.png", is_gift: false, game_id: "brawlstars" },
-            { id: "c2000", name: "2000 кристаллов", price: 9000, image_url: "https://i.imgur.com/FTVnycE.png", is_gift: false, game_id: "brawlstars" },
-            { id: "bp", name: "Brawl Pass", price: 900, image_url: "https://i.imgur.com/FaFAL6l.png", is_gift: false, game_id: "brawlstars" },
-            { id: "bpplus", name: "Brawl Pass Plus", price: 1200, image_url: "https://i.imgur.com/21InnIc.png", is_gift: false, game_id: "brawlstars" },
-            { id: "up", name: "Улучшение до БП+", price: 550, image_url: "https://i.imgur.com/yhaR5Ho.png", is_gift: false, game_id: "brawlstars" },
-            { id: "bp_g", name: "Brawl Pass", price: 950, image_url: "https://i.imgur.com/FaFAL6l.png", is_gift: true, game_id: "brawlstars" },
-            { id: "bpp_g", name: "Brawl Pass Plus", price: 1250, image_url: "https://i.imgur.com/21InnIc.png", is_gift: true, game_id: "brawlstars" },
-            { id: "pro", name: "Pro Pass", price: 2200, image_url: "https://i.imgur.com/6808Xnp.png", is_gift: false, game_id: "brawlstars" }
+            { id: "c30", name: "30 кристаллов", price: 200, image_url: "https://i.imgur.com/s4K0WIP.png", is_gift: false, game_id: "brawlstars", is_new: true },
+            { id: "c80", name: "80 кристаллов", price: 550, image_url: "https://i.imgur.com/XbnZKDb.png", is_gift: false, game_id: "brawlstars", is_new: false },
+            { id: "c170", name: "170 кристаллов", price: 950, image_url: "https://i.imgur.com/X0JCmMQ.png", is_gift: false, game_id: "brawlstars", is_new: false },
+            { id: "c360", name: "360 кристаллов", price: 1900, image_url: "https://i.imgur.com/7z8z9Rw.png", is_gift: false, game_id: "brawlstars", is_new: false },
+            { id: "c950", name: "950 кристаллов", price: 4600, image_url: "https://i.imgur.com/zzBuIxF.png", is_gift: false, game_id: "brawlstars", is_new: false },
+            { id: "c2000", name: "2000 кристаллов", price: 9000, image_url: "https://i.imgur.com/FTVnycE.png", is_gift: false, game_id: "brawlstars", is_new: false },
+            { id: "bp", name: "Brawl Pass", price: 900, image_url: "https://i.imgur.com/FaFAL6l.png", is_gift: false, game_id: "brawlstars", is_new: true },
+            { id: "bpplus", name: "Brawl Pass Plus", price: 1200, image_url: "https://i.imgur.com/21InnIc.png", is_gift: false, game_id: "brawlstars", is_new: false },
+            { id: "up", name: "Улучшение до БП+", price: 550, image_url: "https://i.imgur.com/yhaR5Ho.png", is_gift: false, game_id: "brawlstars", is_new: false },
+            { id: "bp_g", name: "Brawl Pass", price: 950, image_url: "https://i.imgur.com/FaFAL6l.png", is_gift: true, game_id: "brawlstars", is_new: false },
+            { id: "bpp_g", name: "Brawl Pass Plus", price: 1250, image_url: "https://i.imgur.com/21InnIc.png", is_gift: true, game_id: "brawlstars", is_new: false },
+            { id: "pro", name: "Pro Pass", price: 2200, image_url: "https://i.imgur.com/6808Xnp.png", is_gift: false, game_id: "brawlstars", is_new: true }
         ];
 
         const DEFAULT_GAMES = [
@@ -1154,6 +1279,13 @@
                 slug: "brawlstars",
                 icon_url: "https://i.imgur.com/3JxvXtR.png",
                 banner_url: "https://i.imgur.com/brawlstars_banner.jpg"
+            },
+            { 
+                id: "clashroyale", 
+                name: "Clash Royale", 
+                slug: "clashroyale",
+                icon_url: "https://i.imgur.com/clashroyale_icon.png",
+                banner_url: "https://i.imgur.com/clashroyale_banner.jpg"
             }
         ];
 
