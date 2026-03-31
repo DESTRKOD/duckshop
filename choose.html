@@ -82,9 +82,9 @@
         }
 
         .method-item.selected {
-            background: rgba(33, 150, 243, 0.2);
-            border-color: #2196f3;
-            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.2);
+            background: rgba(76, 175, 80, 0.2);
+            border-color: #4caf50;
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
         }
 
         .method-info {
@@ -101,7 +101,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            overflow: hidden;
+        }
+
+        .method-icon img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
         }
 
         .method-name {
@@ -120,9 +126,9 @@
         }
 
         .method-item.selected .radio-circle {
-            background: #2196f3;
-            border-color: #2196f3;
-            box-shadow: 0 0 8px #2196f3;
+            background: #4caf50;
+            border-color: #4caf50;
+            box-shadow: 0 0 8px #4caf50;
         }
 
         .pay-button {
@@ -173,7 +179,10 @@
             .method-icon {
                 width: 40px;
                 height: 40px;
-                font-size: 20px;
+            }
+            .method-icon img {
+                width: 28px;
+                height: 28px;
             }
             .pay-button {
                 font-size: 18px;
@@ -188,44 +197,67 @@
     <div class="title">Выберите способ оплаты</div>
 
     <div class="payment-methods">
+        <!-- 1. Автоматическая оплата (серая, недоступна) -->
         <div class="method-item disabled" data-method="auto" data-value="auto">
             <div class="method-info">
-                <div class="method-icon">🤖</div>
+                <div class="method-icon">
+                    <img src="" alt="🤖" id="iconAuto" onerror="this.style.display='none';this.parentElement.innerHTML='🤖'">
+                </div>
                 <div class="method-name">Автоматическая оплата</div>
             </div>
             <div class="radio-circle"></div>
         </div>
+        
+        <!-- 2. Сбербанк -->
         <div class="method-item" data-method="sber" data-value="sber">
             <div class="method-info">
-                <div class="method-icon">🏦</div>
+                <div class="method-icon">
+                    <img src="" alt="🏦" id="iconSber" onerror="this.style.display='none';this.parentElement.innerHTML='🏦'">
+                </div>
                 <div class="method-name">Сбербанк</div>
             </div>
             <div class="radio-circle"></div>
         </div>
+        
+        <!-- 3. Альфа Банк -->
         <div class="method-item" data-method="alfa" data-value="alfa">
             <div class="method-info">
-                <div class="method-icon">🔵</div>
+                <div class="method-icon">
+                    <img src="" alt="🔵" id="iconAlfa" onerror="this.style.display='none';this.parentElement.innerHTML='🔵'">
+                </div>
                 <div class="method-name">Альфа Банк</div>
             </div>
             <div class="radio-circle"></div>
         </div>
+        
+        <!-- 4. Озон Банк -->
         <div class="method-item" data-method="ozon" data-value="ozon">
             <div class="method-info">
-                <div class="method-icon">🟣</div>
+                <div class="method-icon">
+                    <img src="" alt="🟣" id="iconOzon" onerror="this.style.display='none';this.parentElement.innerHTML='🟣'">
+                </div>
                 <div class="method-name">Озон Банк</div>
             </div>
             <div class="radio-circle"></div>
         </div>
+        
+        <!-- 5. Альфа Банк СБП -->
         <div class="method-item" data-method="alfa_sbp" data-value="alfa_sbp">
             <div class="method-info">
-                <div class="method-icon">💳</div>
+                <div class="method-icon">
+                    <img src="" alt="💳" id="iconAlfaSbp" onerror="this.style.display='none';this.parentElement.innerHTML='💳'">
+                </div>
                 <div class="method-name">Альфа Банк СБП</div>
             </div>
             <div class="radio-circle"></div>
         </div>
+        
+        <!-- 6. Озон СБП -->
         <div class="method-item" data-method="ozon_sbp" data-value="ozon_sbp">
             <div class="method-info">
-                <div class="method-icon">📱</div>
+                <div class="method-icon">
+                    <img src="" alt="📱" id="iconOzonSbp" onerror="this.style.display='none';this.parentElement.innerHTML='📱'">
+                </div>
                 <div class="method-name">Озон СБП</div>
             </div>
             <div class="radio-circle"></div>
@@ -237,6 +269,24 @@
 
 <script>
     let selectedMethod = null;
+    
+    // КОНСТАНТЫ ДЛЯ ИКОНОК (ЗАМЕНИТЕ НА СВОИ URL)
+    const ICONS = {
+        auto: 'https://i.imgur.com/auto_icon.png',      // ваша иконка
+        sber: 'https://i.imgur.com/sber_icon.png',      // ваша иконка
+        alfa: 'https://i.imgur.com/alfa_icon.png',      // ваша иконка
+        ozon: 'https://i.imgur.com/ozon_icon.png',      // ваша иконка
+        alfa_sbp: 'https://i.imgur.com/alfa_sbp.png',   // ваша иконка
+        ozon_sbp: 'https://i.imgur.com/ozon_sbp.png'    // ваша иконка
+    };
+    
+    // УСТАНОВКА ИКОНОК
+    document.getElementById('iconAuto').src = ICONS.auto;
+    document.getElementById('iconSber').src = ICONS.sber;
+    document.getElementById('iconAlfa').src = ICONS.alfa;
+    document.getElementById('iconOzon').src = ICONS.ozon;
+    document.getElementById('iconAlfaSbp').src = ICONS.alfa_sbp;
+    document.getElementById('iconOzonSbp').src = ICONS.ozon_sbp;
 
     lottie.loadAnimation({
         container: document.getElementById('lottie-animation'),
