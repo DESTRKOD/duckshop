@@ -198,10 +198,10 @@
 
     <div class="payment-methods">
         <!-- 1. Автоматическая оплата (серая, недоступна) -->
-        <div class="method-item disabled" data-method="auto" data-value="auto">
+        <div class="method-item disabled" data-method="auto">
             <div class="method-info">
-                <div class="method-icon">
-                    <img src="" alt="🤖" id="iconAuto" onerror="this.style.display='none';this.parentElement.innerHTML='🤖'">
+                <div class="method-icon" id="iconAutoContainer">
+                    <img id="iconAuto" src="" alt="🤖" onerror="this.style.display='none';this.parentElement.innerHTML='🤖'">
                 </div>
                 <div class="method-name">Автоматическая оплата</div>
             </div>
@@ -209,10 +209,10 @@
         </div>
         
         <!-- 2. Сбербанк -->
-        <div class="method-item" data-method="sber" data-value="sber">
+        <div class="method-item" data-method="sber">
             <div class="method-info">
-                <div class="method-icon">
-                    <img src="" alt="🏦" id="iconSber" onerror="this.style.display='none';this.parentElement.innerHTML='🏦'">
+                <div class="method-icon" id="iconSberContainer">
+                    <img id="iconSber" src="" alt="🏦" onerror="this.style.display='none';this.parentElement.innerHTML='🏦'">
                 </div>
                 <div class="method-name">Сбербанк</div>
             </div>
@@ -220,10 +220,10 @@
         </div>
         
         <!-- 3. Альфа Банк -->
-        <div class="method-item" data-method="alfa" data-value="alfa">
+        <div class="method-item" data-method="alfa">
             <div class="method-info">
-                <div class="method-icon">
-                    <img src="" alt="🔵" id="iconAlfa" onerror="this.style.display='none';this.parentElement.innerHTML='🔵'">
+                <div class="method-icon" id="iconAlfaContainer">
+                    <img id="iconAlfa" src="" alt="🔵" onerror="this.style.display='none';this.parentElement.innerHTML='🔵'">
                 </div>
                 <div class="method-name">Альфа Банк</div>
             </div>
@@ -231,10 +231,10 @@
         </div>
         
         <!-- 4. Озон Банк -->
-        <div class="method-item" data-method="ozon" data-value="ozon">
+        <div class="method-item" data-method="ozon">
             <div class="method-info">
-                <div class="method-icon">
-                    <img src="" alt="🟣" id="iconOzon" onerror="this.style.display='none';this.parentElement.innerHTML='🟣'">
+                <div class="method-icon" id="iconOzonContainer">
+                    <img id="iconOzon" src="" alt="🟣" onerror="this.style.display='none';this.parentElement.innerHTML='🟣'">
                 </div>
                 <div class="method-name">Озон Банк</div>
             </div>
@@ -242,10 +242,10 @@
         </div>
         
         <!-- 5. Альфа Банк СБП -->
-        <div class="method-item" data-method="alfa_sbp" data-value="alfa_sbp">
+        <div class="method-item" data-method="alfa_sbp">
             <div class="method-info">
-                <div class="method-icon">
-                    <img src="" alt="💳" id="iconAlfaSbp" onerror="this.style.display='none';this.parentElement.innerHTML='💳'">
+                <div class="method-icon" id="iconAlfaSbpContainer">
+                    <img id="iconAlfaSbp" src="" alt="💳" onerror="this.style.display='none';this.parentElement.innerHTML='💳'">
                 </div>
                 <div class="method-name">Альфа Банк СБП</div>
             </div>
@@ -253,10 +253,10 @@
         </div>
         
         <!-- 6. Озон СБП -->
-        <div class="method-item" data-method="ozon_sbp" data-value="ozon_sbp">
+        <div class="method-item" data-method="ozon_sbp">
             <div class="method-info">
-                <div class="method-icon">
-                    <img src="" alt="📱" id="iconOzonSbp" onerror="this.style.display='none';this.parentElement.innerHTML='📱'">
+                <div class="method-icon" id="iconOzonSbpContainer">
+                    <img id="iconOzonSbp" src="" alt="📱" onerror="this.style.display='none';this.parentElement.innerHTML='📱'">
                 </div>
                 <div class="method-name">Озон СБП</div>
             </div>
@@ -272,12 +272,12 @@
     
     // КОНСТАНТЫ ДЛЯ ИКОНОК (ЗАМЕНИТЕ НА СВОИ URL)
     const ICONS = {
-        auto: 'https://i.imgur.com/auto_icon.png',      // ваша иконка
-        sber: 'https://i.imgur.com/sber_icon.png',      // ваша иконка
-        alfa: 'https://i.imgur.com/alfa_icon.png',      // ваша иконка
-        ozon: 'https://i.imgur.com/ozon_icon.png',      // ваша иконка
-        alfa_sbp: 'https://i.imgur.com/alfa_sbp.png',   // ваша иконка
-        ozon_sbp: 'https://i.imgur.com/ozon_sbp.png'    // ваша иконка
+        auto: 'https://i.imgur.com/auto_icon.png',
+        sber: 'https://i.imgur.com/sber_icon.png',
+        alfa: 'https://i.imgur.com/alfa_icon.png',
+        ozon: 'https://i.imgur.com/ozon_icon.png',
+        alfa_sbp: 'https://i.imgur.com/alfa_sbp.png',
+        ozon_sbp: 'https://i.imgur.com/ozon_sbp.png'
     };
     
     // УСТАНОВКА ИКОНОК
@@ -322,7 +322,8 @@
         pendingOrder.selectedPaymentMethod = selectedMethod;
         localStorage.setItem('pending_order', JSON.stringify(pendingOrder));
         
-        window.location.href = `pay.html?method=${selectedMethod}`;
+        // Переход БЕЗ .html
+        window.location.href = `/pay?method=${selectedMethod}`;
     });
 </script>
 </body>
