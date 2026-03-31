@@ -117,7 +117,7 @@
         const checkInterval = setInterval(async () => {
             checkCount++;
             try {
-                const response = await fetch(`/api/order-status/${orderId}`);
+                const response = await fetch(`https://duck-shop-sever.onrender.com/api/order-status/${orderId}`);
                 const data = await response.json();
                 
                 if (data.success) {
