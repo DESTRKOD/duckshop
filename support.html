@@ -278,7 +278,6 @@
       max-width: 280px;
     }
 
-    /* Кнопка нового разговора на всю ширину */
     .new-chat-button {
       background: var(--accent);
       border: none;
@@ -310,7 +309,6 @@
       fill: white;
     }
 
-    /* Сообщение о закрытии диалога */
     .closed-message {
       background: #e8f0fe;
       border-left: 4px solid var(--accent);
@@ -396,7 +394,6 @@
 
     <div class="messages" id="messages"></div>
 
-    <!-- Контейнер для сообщения о закрытии диалога -->
     <div id="closedMessageContainer"></div>
 
     <div class="input-area" id="inputArea">
@@ -427,8 +424,27 @@
     let closedMessageShown = false;
     let buttonShownThisSession = false;
     
-    // Ключ для localStorage чтобы запомнить, что пользователь начал новый диалог
     const NEW_DIALOG_STARTED_KEY = 'duck_support_new_dialog_started';
+
+    // ========== Функции для безопасного экранирования ==========
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')
+        .replace(/`/g, '&#96;')
+        .replace(/\//g, '&#47;');
+    }
+
+    // Безопасное преобразование текста с сохранением переносов строк
+    function formatSafeText(text) {
+      if (!text) return '';
+      // Сначала экранируем HTML, потом заменяем \n на <br>
+      return escapeHtml(text).replace(/\n/g, '<br>');
+    }
 
     function loadUser() {
       try {
@@ -469,7 +485,6 @@
       `;
       closedMessageShown = true;
       
-      // Автоматически скрываем сообщение через 5 секунд
       setTimeout(() => {
         hideClosedMessage();
       }, 5000);
@@ -546,17 +561,10 @@
         Начать новый разговор
       `;
       newChatBtn.onclick = () => {
-        // Запоминаем, что пользователь начал новый диалог
         localStorage.setItem(NEW_DIALOG_STARTED_KEY, 'true');
-        
-        // Прячем кнопку и сообщение
         hideNewChatButton();
         hideClosedMessage();
-        
-        // Показываем пустой чат
         showEmptyState();
-        
-        // Сбрасываем состояние
         isDialogClosed = false;
         currentDialogId = null;
         lastMessageId = 0;
@@ -608,14 +616,12 @@
         
         if (data.dialog_id) currentDialogId = data.dialog_id;
         
-        // Проверяем, начинал ли пользователь новый диалог
         const startedNewDialog = localStorage.getItem(NEW_DIALOG_STARTED_KEY) === 'true';
         
         if (data.is_closed) {
           console.log('Диалог закрыт!');
           
           if (!isDialogClosed && !buttonShownThisSession && !startedNewDialog) {
-            // Показываем кнопку только если пользователь не начинал новый диалог
             isDialogClosed = true;
             
             document.getElementById('input').disabled = true;
@@ -631,7 +637,6 @@
               pollingInterval = null;
             }
           } else {
-            // Если пользователь начинал новый диалог или возвращался - показываем пустой чат
             showEmptyState();
             
             document.getElementById('input').disabled = false;
@@ -664,17 +669,23 @@
           if (msg.metadata?.file) {
             const f = msg.metadata.file;
             if (f.isImage || f.type?.startsWith('image/')) {
-              content = `<img src="${f.url}" class="message-image" onclick="window.open('${f.url}','_blank')">`;
+              // URL безопасен, экранируем для атрибута
+              const safeUrl = escapeHtml(f.url);
+              content = `<img src="${safeUrl}" class="message-image" onclick="window.open('${safeUrl}','_blank')">`;
             } else {
-              content = `<div class="file-message ${isUser ? 'user' : 'support'}">📎 ${f.name} (${(f.size/1024).toFixed(1)} KB)</div>`;
+              // Экранируем имя файла
+              const safeName = escapeHtml(f.name);
+              const fileSize = (f.size/1024).toFixed(1);
+              content = `<div class="file-message ${isUser ? 'user' : 'support'}">📎 ${safeName} (${fileSize} KB)</div>`;
             }
           } else {
-            content = msg.message || '';
+            // БЕЗОПАСНО: экранируем текст сообщения, затем заменяем переносы строк на <br>
+            content = formatSafeText(msg.message || '');
           }
           
           html += `
             <div class="msg ${isUser ? 'user' : 'support'}">
-              <div class="bubble">${content.replace(/\n/g,'<br>')}</div>
+              <div class="bubble">${content}</div>
               <div class="time">${formatTime(msg.created_at)}</div>
             </div>
           `;
@@ -739,10 +750,9 @@
         if (f && !isDialogClosed) sendMessage('', f);
       });
 
-      // При нажатии на стрелку
       back.addEventListener('click', (e) => {
         e.preventDefault();
-        buttonShownThisSession = false; // Сбрасываем флаг
+        buttonShownThisSession = false;
         location.href = 'index.html';
       });
 
