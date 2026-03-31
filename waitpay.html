@@ -3,7 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <title>Обработка оплаты - Duck Shop</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="icon" type="image/png" href="https://i.imgur.com/S4nWZZp.png">
+<link rel="shortcut icon" type="image/png" href="https://i.imgur.com/S4nWZZp.png">
+<link rel="apple-touch-icon" href="https://i.imgur.com/YOUhVyG.png">
+<meta name="theme-color" content="#0b3c91">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 <style>
 * {
@@ -21,7 +25,6 @@ body {
   align-items: center;
   justify-content: center;
   padding: 20px;
-  overflow: hidden;
 }
 
 .container {
@@ -186,7 +189,7 @@ body {
   <h1 class="title" id="pageTitle">Перенаправляем на оплату...</h1>
   
   <div class="message" id="pageMessage">
-    Подготавливаем ваш заказ и создаём платёжную ссылку
+    Подготавливаем ваш заказ
   </div>
   
   <div class="order-info" id="orderInfo" style="display: none;">
@@ -344,36 +347,35 @@ async function processPayment() {
     
     pageMessage.textContent = 'Создаём ваш заказ...';
     
+    // СОЗДАЁМ ЗАКАЗ ЧЕРЕЗ API (Bileepay)
     const result = await createOrder(orderData, user);
     
-    if (result.success && result.paymentUrl) {
-      orderNumber.textContent = `Заказ #${result.orderId}`;
-      pageTitle.textContent = 'Переход к оплате';
-      pageMessage.textContent = 'Ваш заказ успешно создан. Сейчас вы будете перенаправлены на страницу оплаты...';
-      
-      paymentLink.href = result.paymentUrl;
-      paymentLink.style.display = 'inline-block';
-      
-      setTimeout(() => {
-        window.open(result.paymentUrl, '_blank');
-        
-        pageMessage.textContent = 'Открыта страница оплаты. Пожалуйста, завершите платёж в открывшейся вкладке.';
-        loadingDots.style.display = 'none';
-      }, 2000);
-      
-      localStorage.removeItem('pending_order');
-      
-      localStorage.setItem('last_order', JSON.stringify({
+    if (result.success && result.orderId) {
+      // СОХРАНЯЕМ orderId В localStorage ДЛЯ СЛЕДУЮЩИХ СТРАНИЦ
+      const pendingOrder = {
         orderId: result.orderId,
-        paymentUrl: result.paymentUrl,
+        items: orderData.items,
+        total: orderData.total,
         timestamp: Date.now()
-      }));
+      };
+      localStorage.setItem('pending_order', JSON.stringify(pendingOrder));
+      
+      orderNumber.textContent = `Заказ #${result.orderId}`;
+      
+      pageTitle.textContent = 'Выберите способ оплаты';
+      pageMessage.textContent = 'Заказ создан. Переходим к выбору способа оплаты...';
+      
+      // ПЕРЕНАПРАВЛЯЕМ НА choose.html (а не на bileepay напрямую)
+      setTimeout(() => {
+        window.location.href = 'choose.html';
+      }, 1500);
       
     } else {
-      throw new Error('Не удалось получить ссылку для оплаты');
+      throw new Error('Не удалось создать заказ');
     }
     
   } catch (error) {
+    console.error('Ошибка:', error);
     pageTitle.textContent = 'Ошибка обработки';
     pageMessage.textContent = 'Произошла ошибка при создании заказа';
     errorMessage.textContent = error.message || 'Неизвестная ошибка';
