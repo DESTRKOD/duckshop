@@ -2,8 +2,12 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Ожидание подтверждения | Duck Shop</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <link rel="icon" type="image/png" href="https://i.imgur.com/S4nWZZp.png">
+    <link rel="shortcut icon" type="image/png" href="https://i.imgur.com/S4nWZZp.png">
+    <link rel="apple-touch-icon" href="https://i.imgur.com/YOUhVyG.png">
+    <meta name="theme-color" content="#0b3c91">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
     <style>
         * {
@@ -12,52 +16,86 @@
             box-sizing: border-box;
         }
 
-        body {
-            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #0b3c91 0%, #1e2a6e 100%);
+        html, body {
+            width: 100%;
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(180deg, #0b3c91 0%, #1565c0 55%, #42a5f5 100%);
         }
 
         .container {
             max-width: 500px;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(10px);
-            border-radius: 32px;
-            padding: 32px 24px;
+            margin: 0 auto;
+            padding: 32px 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             text-align: center;
         }
 
-        .animation-container {
-            width: 200px;
-            height: 200px;
-            margin: 0 auto 20px;
+        .sticker {
+            width: 220px;
+            height: 220px;
+            margin: 0 auto 24px;
         }
 
         .title {
+            font-size: 28px;
+            font-weight: 800;
             color: white;
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
         }
 
         .message {
+            font-size: 18px;
             color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .order-number {
             font-size: 16px;
-            line-height: 1.5;
+            font-weight: 600;
+            color: #ffd966;
+            background: rgba(255,255,255,0.1);
+            padding: 10px 20px;
+            border-radius: 40px;
+            display: inline-block;
+            margin-top: 16px;
+        }
+
+        .small-note {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 24px;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px 16px;
+            }
+            .sticker {
+                width: 160px;
+                height: 160px;
+            }
+            .title {
+                font-size: 24px;
+            }
+            .message {
+                font-size: 16px;
+            }
         }
     </style>
 </head>
 <body>
 <div class="container">
-    <div class="animation-container" id="lottie-animation"></div>
+    <div class="sticker" id="lottie-animation"></div>
     <div class="title">Ожидание подтверждения</div>
     <div class="message">Ожидайте, когда администратор проверит платеж.</div>
-    <div class="message" style="margin-top: 12px; font-size: 14px; opacity: 0.7;">Страница обновится автоматически</div>
+    <div class="order-number" id="orderNumber"></div>
+    <div class="small-note">Страница обновится автоматически</div>
 </div>
 
 <script>
@@ -69,33 +107,37 @@
         path: 'waitinggood.json'
     });
     
-    // Получаем номер заказа из URL
     const urlParams = new URLSearchParams(window.location.search);
     const orderId = urlParams.get('order');
     
     if (orderId) {
-        // Периодически проверяем статус заказа
+        document.getElementById('orderNumber').innerText = `Заказ #${orderId}`;
+        
+        let checkCount = 0;
         const checkInterval = setInterval(async () => {
+            checkCount++;
             try {
                 const response = await fetch(`/api/order-status/${orderId}`);
                 const data = await response.json();
                 
                 if (data.success) {
-                    // Если заказ завершен (оплата подтверждена)
                     if (data.status === 'completed' || data.paymentStatus === 'confirmed') {
                         clearInterval(checkInterval);
                         window.location.href = '/success.html';
                     }
-                    // Если заказ отменен или проблемы
-                    if (data.status === 'canceled') {
+                    if (data.status === 'payment_failed' || data.status === 'canceled') {
                         clearInterval(checkInterval);
                         window.location.href = '/badpay.html';
                     }
                 }
+                
+                if (checkCount > 120) {
+                    clearInterval(checkInterval);
+                }
             } catch (error) {
                 console.error('Ошибка проверки статуса:', error);
             }
-        }, 5000); // Проверяем каждые 5 секунд
+        }, 5000);
     }
 </script>
 </body>
