@@ -321,7 +321,7 @@
         pendingOrder.selectedPaymentMethod = selectedMethod;
         localStorage.setItem('pending_order', JSON.stringify(pendingOrder));
         
-        // Переход БЕЗ .html
+        
         window.location.href = `/pay?method=${selectedMethod}`;
     });
 </script>
