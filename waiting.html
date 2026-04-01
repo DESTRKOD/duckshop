@@ -123,11 +123,11 @@
                 if (data.success) {
                     if (data.status === 'completed' || data.paymentStatus === 'confirmed') {
                         clearInterval(checkInterval);
-                        window.location.href = '/success.html';
+                        window.location.href = '/success?order=${orderId}';
                     }
                     if (data.status === 'payment_failed' || data.status === 'canceled') {
                         clearInterval(checkInterval);
-                        window.location.href = '/badpay.html';
+                        window.location.href = '/badpay?order=${orderId}';
                     }
                 }
                 
