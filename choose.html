@@ -95,7 +95,6 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            font-size: 28px;
         }
 
         .method-icon img {
@@ -211,7 +210,10 @@
             .method-icon {
                 width: 40px;
                 height: 40px;
-                font-size: 22px;
+            }
+            .method-icon img {
+                width: 28px;
+                height: 28px;
             }
             .pay-button {
                 font-size: 18px;
@@ -229,9 +231,54 @@
         <div class="method-item" data-method="self_payanyway">
             <div class="method-info">
                 <div class="method-icon">
-                    💳
+                    <img src="https://self.payanyway.ru/favicon.ico" alt="Self" onerror="this.style.display='none';this.parentElement.innerHTML='💳'">
                 </div>
-                <div class="method-name">Self.PayAnyWay (для самозанятых)</div>
+                <div class="method-name">Self.PayAnyWay (автоматически)</div>
+            </div>
+            <div class="radio-circle"></div>
+        </div>
+        <div class="method-item" data-method="sber">
+            <div class="method-info">
+                <div class="method-icon">
+                    <img src="https://storage.yandexcloud.net/ds-ods/files/media/hub/icon/170957ff3ff5/sber.png" alt="Сбербанк" onerror="this.style.display='none';this.parentElement.innerHTML='🏦'">
+                </div>
+                <div class="method-name">Сбербанк</div>
+            </div>
+            <div class="radio-circle"></div>
+        </div>
+        <div class="method-item" data-method="alfa">
+            <div class="method-info">
+                <div class="method-icon">
+                    <img src="https://centergoroda.com/upload/iblock/3e6/xl5xrnhm0qpjfkgf9ekv60k7h7ndkgou/footer_alfa_logo_1025x1025_common_19_01_2021.png" alt="Альфа Банк" onerror="this.style.display='none';this.parentElement.innerHTML='🔵'">
+                </div>
+                <div class="method-name">Альфа Банк</div>
+            </div>
+            <div class="radio-circle"></div>
+        </div>
+        <div class="method-item" data-method="ozon">
+            <div class="method-info">
+                <div class="method-icon">
+                    <img src="https://i.imgur.com/X97MqKx.png" alt="Озон Банк" onerror="this.style.display='none';this.parentElement.innerHTML='🟣'">
+                </div>
+                <div class="method-name">Озон Банк</div>
+            </div>
+            <div class="radio-circle"></div>
+        </div>
+        <div class="method-item" data-method="alfa_sbp">
+            <div class="method-info">
+                <div class="method-icon">
+                    <img src="https://kb.gbsmarket.ru/faq/_images/2024_04_26-23_31_30.png" alt="Альфа Банк СБП" onerror="this.style.display='none';this.parentElement.innerHTML='📱'">
+                </div>
+                <div class="method-name">Альфа Банк СБП</div>
+            </div>
+            <div class="radio-circle"></div>
+        </div>
+        <div class="method-item" data-method="ozon_sbp">
+            <div class="method-info">
+                <div class="method-icon">
+                    <img src="https://kb.gbsmarket.ru/faq/_images/2024_04_26-23_31_30.png" alt="Озон СБП" onerror="this.style.display='none';this.parentElement.innerHTML='📱'">
+                </div>
+                <div class="method-name">Озон СБП</div>
             </div>
             <div class="radio-circle"></div>
         </div>
@@ -246,6 +293,7 @@
 </div>
 
 <script>
+    const API_BASE_URL = 'https://duck-shop-sever.onrender.com';
     let selectedMethod = null;
 
     lottie.loadAnimation({
@@ -275,37 +323,47 @@
         });
     });
 
+    async function createSelfPayment(orderId, total) {
+        const response = await fetch(`${API_BASE_URL}/api/self-pay/create`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                orderId: orderId,
+                amount: total,
+                description: `Оплата заказа #${orderId} в Duck Shop`,
+                successUrl: `${window.location.origin}/success?order=${orderId}`,
+                failUrl: `${window.location.origin}/badPay?order=${orderId}`
+            })
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+        
+        const data = await response.json();
+        return data;
+    }
+
     document.getElementById('payButton').addEventListener('click', async () => {
         if (!selectedMethod) return;
         
+        const pendingOrder = JSON.parse(localStorage.getItem('pending_order'));
+        const orderId = pendingOrder.orderId;
+        const total = pendingOrder.total;
+        
+        const payBtn = document.getElementById('payButton');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const loadingText = document.getElementById('loadingText');
+        
+        payBtn.disabled = true;
+        payBtn.classList.add('disabled');
+        
         if (selectedMethod === 'self_payanyway') {
-            const pendingOrder = JSON.parse(localStorage.getItem('pending_order'));
-            const orderId = pendingOrder.orderId;
-            const total = pendingOrder.total;
-            
-            const payBtn = document.getElementById('payButton');
-            const loadingOverlay = document.getElementById('loadingOverlay');
-            const loadingText = document.getElementById('loadingText');
-            
-            payBtn.disabled = true;
-            payBtn.classList.add('disabled');
             loadingOverlay.classList.add('active');
             loadingText.textContent = 'Создание платежа...';
             
             try {
-                const response = await fetch('/api/self-pay/create', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        orderId: orderId,
-                        amount: total,
-                        description: `Оплата заказа #${orderId} в Duck Shop`,
-                        successUrl: `${window.location.origin}/success?order=${orderId}`,
-                        failUrl: `${window.location.origin}/badPay?order=${orderId}`
-                    })
-                });
-                
-                const data = await response.json();
+                const data = await createSelfPayment(orderId, total);
                 
                 if (data.success && data.paymentUrl) {
                     loadingText.textContent = 'Перенаправление на оплату...';
@@ -321,12 +379,11 @@
             } catch (error) {
                 console.error('Ошибка:', error);
                 loadingOverlay.classList.remove('active');
-                alert('Ошибка соединения с сервером');
+                alert('Ошибка соединения с сервером. Попробуйте позже.');
                 payBtn.disabled = false;
                 payBtn.classList.remove('disabled');
             }
         } else {
-            const pendingOrder = JSON.parse(localStorage.getItem('pending_order'));
             pendingOrder.selectedPaymentMethod = selectedMethod;
             localStorage.setItem('pending_order', JSON.stringify(pendingOrder));
             window.location.href = `/pay?method=${selectedMethod}`;
