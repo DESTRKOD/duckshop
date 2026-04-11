@@ -253,7 +253,6 @@
       background-size: 60%;
       background-position: center;
       background-repeat: no-repeat;
-      background-color: rgba(33, 150, 243, 0.15));
       flex-shrink: 0;
     }
 
@@ -419,6 +418,29 @@
       border: 1px solid rgba(255,107,107,0.3);
     }
 
+    .cart-badge-mobile {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      border-radius: 999px;
+      background: #ff2d55;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 900;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(255,45,85,0.4);
+      border: 2px solid rgba(65, 105, 225, 0.4);
+    }
+
+    .cart-badge-mobile.show {
+      display: inline-flex;
+    }
+
     @media (min-width: 768px) {
       .swap-row, .swap-result-row {
         flex-direction: row;
@@ -560,13 +582,9 @@
 
 <script>
 
-
 const API_URL = 'https://duck-shop-sever.onrender.com';
 const USER_KEY = 'duck_user_v1';
 const CART_KEY = 'duck_cart_v1';
-const SHOP_URL = 'index.html';
-const PROFILE_URL = 'profile.html';
-const WALLET_URL = 'wallet.html';
 
 let currentUser = null;
 let exchangeRate = 1.0;
@@ -644,7 +662,6 @@ function fmtRub(n) {
   style.textContent = '@keyframes fadeIn{from{opacity:0;transform:translate(-50%,20px)}to{opacity:1;transform:translate(-50%,0)}}';
   document.head.appendChild(style);
 })();
-
 
 function fmtDcoin(n) {
  return `${n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, " ")} DCoin`;
@@ -729,7 +746,7 @@ function loadUser() {
 
 async function loadSwapData() {
  if (!currentUser) {
-  window.location.href = 'reg_log.html';
+  window.location.href = 'reg_log';
   return;
  }
  
@@ -861,18 +878,18 @@ async function confirmSwap() {
 }
 
 document.getElementById('backToWalletBtn').addEventListener('click', () => {
- window.location.href = WALLET_URL;
+ window.location.href = 'wallet';
 });
 
 document.getElementById('backToWalletSuccessBtn').addEventListener('click', () => {
- window.location.href = WALLET_URL;
+ window.location.href = 'wallet';
 });
 
 document.getElementById('retryBtn').addEventListener('click', () => {
  if (currentUser) {
   loadSwapData();
  } else {
-  window.location.href = 'reg_log.html';
+  window.location.href = 'reg_log';
  }
 });
 
@@ -892,7 +909,7 @@ function checkInitialAuth() {
   if (currentUser) {
    loadSwapData();
   } else {
-   window.location.href = 'reg_log.html';
+   window.location.href = 'reg_log';
   }
  }
 }
