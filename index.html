@@ -138,21 +138,9 @@
             border: none;
         }
 
-        .game-name {
-            font-size: 28px;
-            font-weight: 900;
-            color: #fff;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            line-height: 1.2;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
-
         .game-selector-wrapper {
             position: relative;
             min-width: 180px;
-            margin-left: auto;
         }
 
         .game-selector {
@@ -894,23 +882,19 @@
 
         @media (max-width: 768px) {
             .game-logo {
-                width: 70px;
-                height: 70px;
-                border-radius: 14px;
+                width: 60px;
+                height: 60px;
+                border-radius: 12px;
             }
             
-             .game-name {
-                display: none;
-            }
             .game-selector-wrapper {
-                min-width: 160px;
-                margin-left: 0;
+                min-width: 140px;
             }
             
             .game-selector {
-                padding: 10px 36px 10px 14px;
-                font-size: 14px;
-                border-radius: 10px;
+                padding: 8px 32px 8px 12px;
+                font-size: 13px;
+                border-radius: 8px;
             }
             
             .game-banner {
@@ -996,24 +980,19 @@
 
         @media (max-width: 480px) {
             .game-logo {
-                width: 60px;
-                height: 60px;
-                border-radius: 12px;
-            }
-            
-            .game-name {
-                font-size: 20px;
-                max-width: 120px;
+                width: 50px;
+                height: 50px;
+                border-radius: 10px;
             }
             
             .game-selector-wrapper {
-                min-width: 140px;
+                min-width: 120px;
             }
             
             .game-selector {
-                padding: 8px 32px 8px 12px;
-                font-size: 13px;
-                border-radius: 8px;
+                padding: 6px 28px 6px 10px;
+                font-size: 12px;
+                border-radius: 6px;
             }
             
             .game-banner {
@@ -1065,24 +1044,19 @@
 
         @media (max-width: 360px) {
             .game-logo {
-                width: 50px;
-                height: 50px;
-                border-radius: 10px;
-            }
-            
-            .game-name {
-                font-size: 18px;
-                max-width: 100px;
+                width: 40px;
+                height: 40px;
+                border-radius: 8px;
             }
             
             .game-selector-wrapper {
-                min-width: 120px;
+                min-width: 100px;
             }
             
             .game-selector {
-                padding: 6px 28px 6px 10px;
-                font-size: 12px;
-                border-radius: 6px;
+                padding: 5px 24px 5px 8px;
+                font-size: 11px;
+                border-radius: 5px;
             }
             
             .game-banner {
@@ -1187,7 +1161,7 @@
         <div class="menu-header">
             <div class="game-info" id="gameInfo">
                 <img class="game-logo" id="gameLogo" src="" alt="Game logo">
-                <div class="game-selector-wrapper" style="margin-left: 0;">
+                <div class="game-selector-wrapper">
                     <select class="game-selector" id="gameSelector"></select>
                     <svg class="selector-arrow" viewBox="0 0 24 24">
                         <path d="M7 10l5 5 5-5z"/>
@@ -1202,21 +1176,20 @@
                     </svg>
                     <span>Кошелёк</span>
                 </button>
-                </button>
                 <button class="auth-btn" id="authBtn">
-                    <svg viewBox="0 0 24 24">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="white">
                         <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
                     </svg>
                     <span id="authBtnText">Войти</span>
                 </button>
                 <button class="auth-btn" id="supportDesktopBtn">
-                    <svg viewBox="0 0 24 24">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="white">
                         <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zM4 6h16v2l-8 5-8-5V6z"/>
                     </svg>
                     <span>Поддержка</span>
                 </button>
                 <button class="cart-btn" id="openCart">
-                    <svg viewBox="0 0 24 24">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="white">
                         <path d="M7 18a2 2 0 1 0 0 4a2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4a2 2 0 0 0 0-4zM7.16 14h9.45a2 2 0 0 0 1.75-1.03l3.58-6.49-1.74-.99-3.58 6.49H8.53L5.21 4H1v2h3l3.6 7.59-1.35 2.44C5.52 16.37 6.48 18 8 18h12v-2H8l1.16-2z"/>
                     </svg>
                     <div class="cart-badge" id="cartBadge">0</div>
@@ -1251,7 +1224,6 @@
                         <a class="footer-link" href="https://shopdxs.ru/offer" target="_blank" rel="noopener noreferrer">📄 Публичная оферта</a>
                         <a class="footer-link" href="https://shopdxs.ru/privacy" target="_blank" rel="noopener noreferrer">🔒 Политика конфиденциальности</a>
                     </div>
-                    
                 </div>
             </div>
         </div>
@@ -1313,25 +1285,25 @@
             <span>Кошелёк</span>
         </button>
         <button class="mobile-nav-item" id="navProfile">
-            <svg viewBox="0 0 24 24">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
                 <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
             </svg>
             <span>Профиль</span>
         </button>
         <button class="mobile-nav-item" id="navHome">
-            <svg viewBox="0 0 24 24">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
                 <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
             </svg>
             <span>Главная</span>
         </button>
         <button class="mobile-nav-item" id="navSupport">
-            <svg viewBox="0 0 24 24">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
                 <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zM4 6h16v2l-8 5-8-5V6z"/>
             </svg>
             <span>Поддержка</span>
         </button>
         <button class="mobile-nav-item" id="navCart">
-            <svg viewBox="0 0 24 24">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
                 <path d="M7 18a2 2 0 1 0 0 4a2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4a2 2 0 0 0 0-4zM7.16 14h9.45a2 2 0 0 0 1.75-1.03l3.58-6.49-1.74-.99-3.58 6.49H8.53L5.21 4H1v2h3l3.6 7.59-1.35 2.44C5.52 16.37 6.48 18 8 18h12v-2H8l1.16-2z"/>
             </svg>
             <span>Корзина</span>
@@ -1344,7 +1316,6 @@
         const CART_KEY = 'duck_cart_v1';
         const USER_KEY = 'duck_user_v1';
         const SELECTED_GAME_KEY = 'duck_selected_game_v1';
-        const ALL_PRODUCTS_KEY = 'duck_all_products_v1';
         const LAST_ANIMATION_KEY = 'duck_last_animation_time';
 
         let PRODUCTS = [];
@@ -1375,20 +1346,8 @@
         ];
 
         const DEFAULT_GAMES = [
-            { 
-                id: "brawlstars", 
-                name: "Brawl Stars", 
-                slug: "brawlstars",
-                icon_url: "https://i.imgur.com/3JxvXtR.png",
-                banner_url: "https://i.imgur.com/brawlstars_banner.jpg"
-            },
-            { 
-                id: "clashroyale", 
-                name: "Clash Royale", 
-                slug: "clashroyale",
-                icon_url: "https://i.imgur.com/clashroyale_icon.png",
-                banner_url: "https://i.imgur.com/clashroyale_banner.jpg"
-            }
+            { id: "brawlstars", name: "Brawl Stars", slug: "brawlstars", icon_url: "https://i.imgur.com/3JxvXtR.png", banner_url: "https://i.imgur.com/brawlstars_banner.jpg" },
+            { id: "clashroyale", name: "Clash Royale", slug: "clashroyale", icon_url: "https://i.imgur.com/clashroyale_icon.png", banner_url: "https://i.imgur.com/clashroyale_banner.jpg" }
         ];
 
         function shouldShowAnimations() {
@@ -1411,9 +1370,7 @@
             try {
                 const raw = localStorage.getItem(CART_KEY);
                 cart = raw ? JSON.parse(raw) : {};
-            } catch {
-                cart = {};
-            }
+            } catch { cart = {}; }
         }
 
         function saveCart() {
@@ -1453,9 +1410,7 @@
                 }
             } else {
                 cartBadge.style.display = 'none';
-                if (cartBadgeMobile) {
-                    cartBadgeMobile.classList.remove('show');
-                }
+                if (cartBadgeMobile) cartBadgeMobile.classList.remove('show');
             }
         }
 
@@ -1470,7 +1425,6 @@
                 cartTotalEl.textContent = '0 ₽';
                 return;
             }
-            
             cartBody.innerHTML = entries.map(([id, qty]) => {
                 const p = getProductInfo(id);
                 if (!p) return '';
@@ -1529,66 +1483,33 @@
             const current = ids.map(x => document.getElementById(x)).find(el => el && el.classList.contains('active'));
             const next = document.getElementById(id);
             const gameBanner = document.getElementById('gameBanner');
-            
             if (!next) return;
-            
-            if (current && current.id === 'menu' && gameBanner) {
-                gameBanner.classList.add('hidden');
-            }
-            
+            if (current && current.id === 'menu' && gameBanner) gameBanner.classList.add('hidden');
             if (current && current !== next) {
                 current.classList.add('leaving');
                 setTimeout(() => {
-                    ids.forEach(x => {
-                        const el = document.getElementById(x);
-                        if (el) el.classList.remove('active', 'leaving');
-                    });
+                    ids.forEach(x => { const el = document.getElementById(x); if (el) el.classList.remove('active', 'leaving'); });
                     next.classList.add('active');
-                    
-                    if (id === 'menu' && gameBanner) {
-                        setTimeout(() => {
-                            gameBanner.classList.remove('hidden');
-                        }, 50);
-                    }
-                    
+                    if (id === 'menu' && gameBanner) setTimeout(() => gameBanner.classList.remove('hidden'), 50);
                     if (id === 'menu') {
                         const cardsContainer = document.getElementById('cardsContainer');
                         if (cardsContainer) {
                             cardsContainer.innerHTML = '<div style="color: white; text-align: center; padding: 60px; font-size: 18px;">Загрузка товаров...</div>';
-                            setTimeout(() => {
-                                if (PRODUCTS.length === 0) {
-                                    loadProducts();
-                                } else {
-                                    renderProducts();
-                                }
-                            }, 300);
+                            setTimeout(() => { if (PRODUCTS.length === 0) loadProducts(); else renderProducts(); }, 300);
                         }
                     }
                     updateMobileNavVisibility(id);
                     updateMobileNavActiveState();
                 }, 350);
             } else {
-                ids.forEach(x => {
-                    const el = document.getElementById(x);
-                    if (el) el.classList.remove('active', 'leaving');
-                });
+                ids.forEach(x => { const el = document.getElementById(x); if (el) el.classList.remove('active', 'leaving'); });
                 next.classList.add('active');
-                
-                if (id === 'menu' && gameBanner) {
-                    gameBanner.classList.remove('hidden');
-                }
-                
+                if (id === 'menu' && gameBanner) gameBanner.classList.remove('hidden');
                 if (id === 'menu') {
                     const cardsContainer = document.getElementById('cardsContainer');
                     if (cardsContainer) {
                         cardsContainer.innerHTML = '<div style="color: white; text-align: center; padding: 60px; font-size: 18px;">Загрузка товаров...</div>';
-                        setTimeout(() => {
-                            if (PRODUCTS.length === 0) {
-                                loadProducts();
-                            } else {
-                                renderProducts();
-                            }
-                        }, 300);
+                        setTimeout(() => { if (PRODUCTS.length === 0) loadProducts(); else renderProducts(); }, 300);
                     }
                 }
                 updateMobileNavVisibility(id);
@@ -1600,69 +1521,44 @@
             const mobileNav = document.getElementById('mobileNav');
             const cartOverlay = document.getElementById('cartOverlay');
             if (!mobileNav) return;
-            
-            if (window.innerWidth > 768) {
-                mobileNav.style.display = 'none';
-                return;
-            }
-            
+            if (window.innerWidth > 768) { mobileNav.style.display = 'none'; return; }
             const hiddenScreens = ['hello', 'load', 'intro', 'waiting', 'checkout', 'badPay'];
             const shouldShow = currentScreen === 'menu' && !cartOverlay.classList.contains('open') && !hiddenScreens.includes(currentScreen);
             mobileNav.style.display = shouldShow ? 'flex' : 'none';
         }
 
         function updateMobileNavActiveState() {
-            const navItems = {
-                wallet: document.getElementById('navWallet'),
-                profile: document.getElementById('navProfile'),
-                home: document.getElementById('navHome'),
-                support: document.getElementById('navSupport'),
-                cart: document.getElementById('navCart')
-            };
-            Object.values(navItems).forEach(item => item?.classList.remove('active'));
+            const navItems = ['navWallet', 'navProfile', 'navHome', 'navSupport', 'navCart'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.remove('active');
+            });
             const activeScreen = document.querySelector('.screen.active, .menu.active');
             if (activeScreen && activeScreen.id === 'menu') {
-                navItems.home?.classList.add('active');
+                const homeBtn = document.getElementById('navHome');
+                if (homeBtn) homeBtn.classList.add('active');
             }
         }
 
         async function loadGames() {
             try {
                 const response = await fetch(`${API_URL}/api/games`);
-                if (!response.ok) {
-                    GAMES = DEFAULT_GAMES;
-                    renderGameSelector();
-                    return;
-                }
-                
+                if (!response.ok) { GAMES = DEFAULT_GAMES; renderGameSelector(); return; }
                 const data = await response.json();
-                if (data.success && data.games && data.games.length > 0) {
-                    GAMES = data.games;
-                } else {
-                    GAMES = DEFAULT_GAMES;
-                }
-                
+                if (data.success && data.games && data.games.length > 0) GAMES = data.games;
+                else GAMES = DEFAULT_GAMES;
                 renderGameSelector();
-            } catch (error) {
-                GAMES = DEFAULT_GAMES;
-                renderGameSelector();
-            }
+            } catch (error) { GAMES = DEFAULT_GAMES; renderGameSelector(); }
         }
 
         function updateGameHeader() {
             const gameLogo = document.getElementById('gameLogo');
-            const gameName = document.getElementById('gameName');
             const bannerImage = document.getElementById('bannerImage');
-            
             const currentGame = GAMES.find(g => g.id === selectedGameId);
-            
             if (currentGame) {
                 gameLogo.src = currentGame.icon_url || '';
-                gameName.textContent = currentGame.name;
                 bannerImage.src = currentGame.banner_url || currentGame.icon_url || '';
             } else {
                 gameLogo.src = '';
-                gameName.textContent = 'Duck Shop';
                 bannerImage.src = '';
             }
         }
@@ -1670,16 +1566,11 @@
         function renderGameSelector() {
             const selector = document.getElementById('gameSelector');
             if (!selector) return;
-
             try {
                 const savedGame = localStorage.getItem(SELECTED_GAME_KEY);
-                if (savedGame && GAMES.some(g => g.id === savedGame)) {
-                    selectedGameId = savedGame;
-                }
+                if (savedGame && GAMES.some(g => g.id === savedGame)) selectedGameId = savedGame;
             } catch (e) {}
-
             selector.innerHTML = '';
-            
             GAMES.forEach(game => {
                 const option = document.createElement('option');
                 option.value = game.id;
@@ -1687,41 +1578,27 @@
                 option.selected = game.id === selectedGameId;
                 selector.appendChild(option);
             });
-            
             selector.addEventListener('change', (e) => {
                 selectedGameId = e.target.value;
                 localStorage.setItem(SELECTED_GAME_KEY, selectedGameId);
                 updateGameHeader();
                 loadProducts();
             });
-
             updateGameHeader();
         }
 
         async function loadAllProducts() {
             try {
                 const response = await fetch(`${API_URL}/api/products`);
-                
-                if (!response.ok) {
-                    ALL_PRODUCTS = [...DEFAULT_PRODUCTS];
-                    return;
-                }
-                
+                if (!response.ok) { ALL_PRODUCTS = [...DEFAULT_PRODUCTS]; return; }
                 const data = await response.json();
-                if (data.success && data.products) {
-                    ALL_PRODUCTS = data.products;
-                } else {
-                    ALL_PRODUCTS = [...DEFAULT_PRODUCTS];
-                }
-            } catch (error) {
-                ALL_PRODUCTS = [...DEFAULT_PRODUCTS];
-            }
+                if (data.success && data.products) ALL_PRODUCTS = data.products;
+                else ALL_PRODUCTS = [...DEFAULT_PRODUCTS];
+            } catch (error) { ALL_PRODUCTS = [...DEFAULT_PRODUCTS]; }
         }
 
         async function loadProducts() {
-            if (ALL_PRODUCTS.length === 0) {
-                await loadAllProducts();
-            }
+            if (ALL_PRODUCTS.length === 0) await loadAllProducts();
             PRODUCTS = ALL_PRODUCTS.filter(p => p.game_id === selectedGameId);
             renderProducts();
         }
@@ -1729,35 +1606,23 @@
         function renderProducts() {
             const cardsContainer = document.getElementById('cardsContainer');
             if (!cardsContainer) return;
-
             if (PRODUCTS.length === 0) {
-                const gameName = GAMES.find(g => g.id === selectedGameId)?.name || 'этой игры';
-                cardsContainer.innerHTML = `<div style="color: white; text-align: center; padding: 60px; font-size: 18px;">Нет товаров для ${gameName}</div>`;
+                cardsContainer.innerHTML = `<div style="color: white; text-align: center; padding: 60px; font-size: 18px;">Нет товаров</div>`;
                 return;
             }
-
             const isMobile = window.innerWidth <= 480;
-
             cardsContainer.innerHTML = '';
-
             if (isMobile) {
                 PRODUCTS.forEach(p => {
                     const card = document.createElement('div');
                     card.className = 'shop-card';
                     card.innerHTML = `
                         ${p.is_gift ? '<div class="gift"><img src="https://i.imgur.com/Tdajl7F.png" alt="🎁"></div>' : ''}
-                        <div class="shop-top">
-                            <img src="${p.image_url}" alt="${p.name}" loading="lazy">
-                        </div>
+                        <div class="shop-top"><img src="${p.image_url}" alt="${p.name}" loading="lazy"></div>
                         <div class="shop-bottom">
-                            <div class="shop-name">
-                                ${p.name}
-                                ${p.is_new ? '<div class="new-badge"></div>' : ''}
-                            </div>
+                            <div class="shop-name">${p.name}${p.is_new ? '<div class="new-badge"></div>' : ''}</div>
                             <button class="shop-buy" type="button" data-add="${p.id}">
-                                <svg viewBox="0 0 24 24">
-                                    <path d="M7 18a2 2 0 1 0 0 4a2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4a2 2 0 0 0 0-4zM7.16 14h9.45a2 2 0 0 0 1.75-1.03l3.58-6.49-1.74-.99-3.58 6.49H8.53L5.21 4H1v2h3l3.6 7.59-1.35 2.44C5.52 16.37 6.48 18 8 18h12v-2H8l1.16-2z"/>
-                                </svg>
+                                <svg viewBox="0 0 24 24"><path d="M7 18a2 2 0 1 0 0 4a2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4a2 2 0 0 0 0-4zM7.16 14h9.45a2 2 0 0 0 1.75-1.03l3.58-6.49-1.74-.99-3.58 6.49H8.53L5.21 4H1v2h3l3.6 7.59-1.35 2.44C5.52 16.37 6.48 18 8 18h12v-2H8l1.16-2z"/></svg>
                                 <div class="shop-price">${fmtRub(p.price)}</div>
                             </button>
                         </div>
@@ -1773,18 +1638,11 @@
                         row.innerHTML += `
                             <div class="shop-card">
                                 ${p.is_gift ? '<div class="gift"><img src="https://i.imgur.com/Tdajl7F.png" alt="🎁"></div>' : ''}
-                                <div class="shop-top">
-                                    <img src="${p.image_url}" alt="${p.name}" loading="lazy">
-                                </div>
+                                <div class="shop-top"><img src="${p.image_url}" alt="${p.name}" loading="lazy"></div>
                                 <div class="shop-bottom">
-                                    <div class="shop-name">
-                                        ${p.name}
-                                        ${p.is_new ? '<div class="new-badge"></div>' : ''}
-                                    </div>
+                                    <div class="shop-name">${p.name}${p.is_new ? '<div class="new-badge"></div>' : ''}</div>
                                     <button class="shop-buy" type="button" data-add="${p.id}">
-                                        <svg viewBox="0 0 24 24">
-                                            <path d="M7 18a2 2 0 1 0 0 4a2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4a2 2 0 0 0 0-4zM7.16 14h9.45a2 2 0 0 0 1.75-1.03l3.58-6.49-1.74-.99-3.58 6.49H8.53L5.21 4H1v2h3l3.6 7.59-1.35 2.44C5.52 16.37 6.48 18 8 18h12v-2H8l1.16-2z"/>
-                                        </svg>
+                                        <svg viewBox="0 0 24 24"><path d="M7 18a2 2 0 1 0 0 4a2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4a2 2 0 0 0 0-4zM7.16 14h9.45a2 2 0 0 0 1.75-1.03l3.58-6.49-1.74-.99-3.58 6.49H8.53L5.21 4H1v2h3l3.6 7.59-1.35 2.44C5.52 16.37 6.48 18 8 18h12v-2H8l1.16-2z"/></svg>
                                         <div class="shop-price">${fmtRub(p.price)}</div>
                                     </button>
                                 </div>
@@ -1794,7 +1652,6 @@
                     cardsContainer.appendChild(row);
                 }
             }
-            
             document.querySelectorAll('[data-add]').forEach(btn => {
                 btn.onclick = (e) => {
                     e.stopPropagation();
@@ -1812,19 +1669,10 @@
         }
 
         function loadUser() {
-            try {
-                const userData = localStorage.getItem(USER_KEY);
-                return userData ? JSON.parse(userData) : null;
-            } catch {
-                return null;
-            }
+            try { const userData = localStorage.getItem(USER_KEY); return userData ? JSON.parse(userData) : null; } catch { return null; }
         }
 
-        function saveUser(user) {
-            try {
-                localStorage.setItem(USER_KEY, JSON.stringify(user));
-            } catch (error) {}
-        }
+        function saveUser(user) { try { localStorage.setItem(USER_KEY, JSON.stringify(user)); } catch (error) {} }
 
         function updateAuthButton() {
             const authBtn = document.getElementById('authBtn');
@@ -1833,35 +1681,24 @@
             authBtn.onclick = null;
             if (currentUser) {
                 if (window.innerWidth <= 768 && currentUser.username) {
-                    const shortName = currentUser.username.length > 6 ? currentUser.username.substring(0, 6) + '...' : currentUser.username;
-                    authBtnText.textContent = shortName;
+                    authBtnText.textContent = currentUser.username.length > 6 ? currentUser.username.substring(0, 6) + '...' : currentUser.username;
                 } else if (currentUser.username) {
                     authBtnText.textContent = currentUser.username;
                 } else {
                     authBtnText.textContent = 'Профиль';
                 }
-                authBtn.onclick = function(e) {
-                    e.preventDefault();
-                    window.location.href = 'profile';
-                };
+                authBtn.onclick = (e) => { e.preventDefault(); window.location.href = 'profile'; };
             } else {
                 authBtnText.textContent = 'Войти';
-                authBtn.onclick = function(e) {
-                    e.preventDefault();
-                    window.location.href = 'reg_log';
-                };
+                authBtn.onclick = (e) => { e.preventDefault(); window.location.href = 'reg_log'; };
             }
         }
 
         function checkAuthFromURL() {
             const urlParams = new URLSearchParams(window.location.search);
             const authToken = urlParams.get('auth');
-            if (authToken) {
-                verifyAuthToken(authToken);
-            } else {
-                currentUser = loadUser();
-                updateAuthButton();
-            }
+            if (authToken) verifyAuthToken(authToken);
+            else { currentUser = loadUser(); updateAuthButton(); }
         }
 
         async function verifyAuthToken(token) {
@@ -1871,15 +1708,10 @@
                 if (data.success && data.authenticated && data.user) {
                     currentUser = data.user;
                     saveUser(currentUser);
-                    const newUrl = window.location.pathname;
-                    window.history.replaceState({}, '', newUrl);
+                    window.history.replaceState({}, '', window.location.pathname);
                     updateAuthButton();
-                } else {
-                    updateAuthButton();
-                }
-            } catch (error) {
-                updateAuthButton();
-            }
+                } else updateAuthButton();
+            } catch (error) { updateAuthButton(); }
         }
 
         function checkAdminBypass() {
@@ -1904,72 +1736,20 @@
                     sessionStorage.setItem('return_url', window.location.href);
                     window.location.href = 'working';
                 }
-            } catch (error) {
-                console.error('Ошибка проверки статуса:', error);
-            }
+            } catch (error) { console.error('Ошибка проверки статуса:', error); }
         }
 
         function loadAllLottieAnimations() {
             try {
-                if (document.getElementById('animHello')) {
-                    lottie.loadAnimation({
-                        container: document.getElementById('animHello'),
-                        renderer: 'svg',
-                        loop: true,
-                        autoplay: true,
-                        path: 'hello.json'
-                    });
-                }
-                if (document.getElementById('animDownload')) {
-                    lottie.loadAnimation({
-                        container: document.getElementById('animDownload'),
-                        renderer: 'svg',
-                        loop: true,
-                        autoplay: true,
-                        path: 'download.json'
-                    });
-                }
-                if (document.getElementById('animMain')) {
-                    lottie.loadAnimation({
-                        container: document.getElementById('animMain'),
-                        renderer: 'svg',
-                        loop: true,
-                        autoplay: true,
-                        path: 'main.json'
-                    });
-                }
-                if (document.getElementById('animWaiting')) {
-                    lottie.loadAnimation({
-                        container: document.getElementById('animWaiting'),
-                        renderer: 'svg',
-                        loop: true,
-                        autoplay: true,
-                        path: 'https://assets2.lottiefiles.com/packages/lf20_puciaevh.json'
-                    });
-                }
-                if (document.getElementById('animCheckout')) {
-                    lottie.loadAnimation({
-                        container: document.getElementById('animCheckout'),
-                        renderer: 'svg',
-                        loop: true,
-                        autoplay: true,
-                        path: 'checkout.json'
-                    });
-                }
-                if (document.getElementById('animBadPay')) {
-                    lottie.loadAnimation({
-                        container: document.getElementById('animBadPay'),
-                        renderer: 'svg',
-                        loop: true,
-                        autoplay: true,
-                        path: 'https://assets2.lottiefiles.com/packages/lf20_dews0pqv.json'
-                    });
-                }
+                if (document.getElementById('animHello')) lottie.loadAnimation({ container: document.getElementById('animHello'), renderer: 'svg', loop: true, autoplay: true, path: 'hello.json' });
+                if (document.getElementById('animDownload')) lottie.loadAnimation({ container: document.getElementById('animDownload'), renderer: 'svg', loop: true, autoplay: true, path: 'download.json' });
+                if (document.getElementById('animMain')) lottie.loadAnimation({ container: document.getElementById('animMain'), renderer: 'svg', loop: true, autoplay: true, path: 'main.json' });
+                if (document.getElementById('animWaiting')) lottie.loadAnimation({ container: document.getElementById('animWaiting'), renderer: 'svg', loop: true, autoplay: true, path: 'https://assets2.lottiefiles.com/packages/lf20_puciaevh.json' });
+                if (document.getElementById('animCheckout')) lottie.loadAnimation({ container: document.getElementById('animCheckout'), renderer: 'svg', loop: true, autoplay: true, path: 'checkout.json' });
+                if (document.getElementById('animBadPay')) lottie.loadAnimation({ container: document.getElementById('animBadPay'), renderer: 'svg', loop: true, autoplay: true, path: 'https://assets2.lottiefiles.com/packages/lf20_dews0pqv.json' });
             } catch (error) {
                 document.querySelectorAll('.sticker').forEach(sticker => {
-                    if (!sticker.innerHTML || sticker.innerHTML.trim() === '') {
-                        sticker.innerHTML = '<div style="color: white; font-size: 50px; text-align: center;">🎁</div>';
-                    }
+                    if (!sticker.innerHTML || sticker.innerHTML.trim() === '') sticker.innerHTML = '<div style="color: white; font-size: 50px; text-align: center;">🎁</div>';
                 });
             }
         }
@@ -1982,33 +1762,24 @@
             const errorText = document.getElementById('errorText');
             if (!checkoutSummary || !proceedToPayBtn || !amountError || !errorText) return;
             checkoutSummary.innerHTML = '';
-            
             Object.entries(cart).forEach(([id, qty]) => {
                 const p = getProductInfo(id);
                 if (p) {
                     const game = GAMES.find(g => g.id === p.game_id);
                     const itemDiv = document.createElement('div');
                     itemDiv.className = 'checkout-item';
-                    itemDiv.innerHTML = `
-                        <span>${p.name} ×${qty} ${game ? `(${game.name})` : ''}</span>
-                        <span>${fmtRub(p.price * qty)}</span>
-                    `;
+                    itemDiv.innerHTML = `<span>${p.name} ×${qty} ${game ? `(${game.name})` : ''}</span><span>${fmtRub(p.price * qty)}</span>`;
                     checkoutSummary.appendChild(itemDiv);
                 }
             });
             const totalDiv = document.createElement('div');
             totalDiv.className = 'checkout-total';
-            totalDiv.innerHTML = `
-                <span>Итого:</span>
-                <span>${fmtRub(total)}</span>
-            `;
+            totalDiv.innerHTML = `<span>Итого:</span><span>${fmtRub(total)}</span>`;
             checkoutSummary.appendChild(totalDiv);
             if (total < 10 || total > 10000) {
                 proceedToPayBtn.disabled = true;
                 amountError.style.display = 'block';
-                errorText.textContent = total < 10
-                    ? 'Минимальная сумма заказа 10₽'
-                    : 'Максимальная сумма заказа 10000₽';
+                errorText.textContent = total < 10 ? 'Минимальная сумма заказа 10₽' : 'Максимальная сумма заказа 10000₽';
             } else {
                 proceedToPayBtn.disabled = false;
                 amountError.style.display = 'none';
@@ -2032,8 +1803,7 @@
                 currentOrderId = orderId;
                 updateOrderNumberElements(currentOrderId);
                 show('badPay');
-                const newUrl = window.location.pathname;
-                window.history.replaceState({}, '', newUrl);
+                window.history.replaceState({}, '', window.location.pathname);
             }
         }
 
@@ -2044,78 +1814,35 @@
             const navSupport = document.getElementById('navSupport');
             const navCart = document.getElementById('navCart');
             const supportDesktopBtn = document.getElementById('supportDesktopBtn');
-            const mobileNav = document.getElementById('mobileNav');
-
-            if (navSupport) {
-                navSupport.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    window.location.href = 'support';
-                });
-            }
-            if (supportDesktopBtn) {
-                supportDesktopBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    window.location.href = 'support';
-                });
-            }
-            if (navWallet) {
-                navWallet.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    window.location.href = 'wallet';
-                });
-            }
-            if (navProfile) {
-                navProfile.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    window.location.href = 'profile';
-                });
-            }
-            if (navHome) {
-                navHome.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const activeScreen = document.querySelector('.screen.active, .menu.active');
-                    if (activeScreen && activeScreen.id !== 'menu') {
-                        show('menu');
-                    }
-                    updateMobileNavActiveState();
-                });
-            }
-            if (navCart) {
-                navCart.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    document.getElementById('openCart').click();
-                });
-            }
+            if (navSupport) navSupport.addEventListener('click', (e) => { e.preventDefault(); window.location.href = 'support'; });
+            if (supportDesktopBtn) supportDesktopBtn.addEventListener('click', (e) => { e.preventDefault(); window.location.href = 'support'; });
+            if (navWallet) navWallet.addEventListener('click', (e) => { e.preventDefault(); window.location.href = 'wallet'; });
+            if (navProfile) navProfile.addEventListener('click', (e) => { e.preventDefault(); window.location.href = 'profile'; });
+            if (navHome) navHome.addEventListener('click', (e) => {
+                e.preventDefault();
+                const activeScreen = document.querySelector('.screen.active, .menu.active');
+                if (activeScreen && activeScreen.id !== 'menu') show('menu');
+                updateMobileNavActiveState();
+            });
+            if (navCart) navCart.addEventListener('click', (e) => { e.preventDefault(); document.getElementById('openCart').click(); });
         }
 
         function setupEventListeners() {
-            document.getElementById('continueBtn').addEventListener('pointerdown', function() {
-                this.classList.add('pressed');
-            });
-            document.getElementById('continueBtn').addEventListener('pointerup', function() {
-                this.classList.remove('pressed');
-            });
-            document.getElementById('continueBtn').addEventListener('pointerleave', function() {
-                this.classList.remove('pressed');
-            });
+            document.getElementById('continueBtn').addEventListener('pointerdown', function() { this.classList.add('pressed'); });
+            document.getElementById('continueBtn').addEventListener('pointerup', function() { this.classList.remove('pressed'); });
+            document.getElementById('continueBtn').addEventListener('pointerleave', function() { this.classList.remove('pressed'); });
             document.getElementById('continueBtn').addEventListener('click', function() {
                 show('load');
-                setTimeout(() => {
-                    show('intro');
-                    setTimeout(() => show('menu'), 2000);
-                }, 2500);
+                setTimeout(() => { show('intro'); setTimeout(() => show('menu'), 2000); }, 2500);
             });
-
             document.addEventListener('click', (e) => {
                 const b = e.target.closest('[data-add]');
                 if (!b) return;
-                const id = b.getAttribute('data-add');
-                addToCart(id);
+                addToCart(b.dataset.add);
                 b.style.transform = 'scale(.98)';
                 setTimeout(() => b.style.transform = '', 120);
                 if (document.getElementById('cartOverlay').classList.contains('open')) renderCart();
             });
-
             document.getElementById('openCart').addEventListener('click', () => {
                 const cartOverlay = document.getElementById('cartOverlay');
                 cartOverlay.classList.add('open');
@@ -2123,114 +1850,67 @@
                 renderCart();
                 updateMobileNavVisibility('menu');
             });
-
             const closeCart = () => {
                 const cartOverlay = document.getElementById('cartOverlay');
                 cartOverlay.classList.remove('open');
                 cartOverlay.setAttribute('aria-hidden', 'true');
                 updateMobileNavVisibility('menu');
             };
-
             document.getElementById('closeCart').addEventListener('click', closeCart);
-            document.getElementById('cartOverlay').addEventListener('click', (e) => {
-                if (e.target === document.getElementById('cartOverlay')) closeCart();
-            });
-
+            document.getElementById('cartOverlay').addEventListener('click', (e) => { if (e.target === document.getElementById('cartOverlay')) closeCart(); });
             document.getElementById('cartBody').addEventListener('click', (e) => {
                 const incBtn = e.target.closest('[data-inc]');
                 const decBtn = e.target.closest('[data-dec]');
                 if (incBtn) inc(incBtn.getAttribute('data-inc'));
                 if (decBtn) dec(decBtn.getAttribute('data-dec'));
             });
-
-            document.getElementById('checkoutBtn').addEventListener('click', () => {
-                closeCart();
-                showCheckout();
-            });
-
+            document.getElementById('checkoutBtn').addEventListener('click', () => { closeCart(); showCheckout(); });
             document.getElementById('clearCart').addEventListener('click', clearCart);
             document.getElementById('backToMenu').addEventListener('click', () => show('menu'));
             document.getElementById('toMenuFromBadPay').addEventListener('click', () => show('menu'));
-            document.getElementById('walletDesktopBtn').addEventListener('click', (e) => {
-                e.preventDefault();
-                window.location.href = 'wallet';
-            });
-
+            document.getElementById('walletDesktopBtn').addEventListener('click', (e) => { e.preventDefault(); window.location.href = 'wallet'; });
             document.getElementById('proceedToPay').addEventListener('click', async () => {
                 const total = cartSum();
                 if (total < 10 || total > 10000) return;
                 try {
-                    const orderData = {
-                        items: cart,
-                        total: total,
-                        userId: currentUser ? currentUser.id : null,
-                        timestamp: Date.now()
-                    };
+                    const orderData = { items: cart, total: total, userId: currentUser ? currentUser.id : null, timestamp: Date.now() };
                     localStorage.setItem('pending_order', JSON.stringify(orderData));
                     window.location.href = 'waitpay';
-                } catch (error) {
-                    alert('Ошибка при переходе к оплате');
-                }
+                } catch (error) { alert('Ошибка при переходе к оплате'); }
             });
         }
 
         document.addEventListener('DOMContentLoaded', async function() {
-            if (!checkAdminBypass()) {
-                checkMaintenance();
-            }
-            setInterval(() => {
-                if (sessionStorage.getItem('admin_bypass_active') !== 'true') {
-                    checkMaintenance();
-                }
-            }, 30000);
-
+            if (!checkAdminBypass()) checkMaintenance();
+            setInterval(() => { if (sessionStorage.getItem('admin_bypass_active') !== 'true') checkMaintenance(); }, 30000);
             loadCart();
             currentUser = loadUser();
-
             const showAnim = shouldShowAnimations();
-            
             if (showAnim) {
                 loadAllLottieAnimations();
                 markAnimationsShown();
             } else {
-                const hello = document.getElementById('hello');
-                const load = document.getElementById('load');
-                const intro = document.getElementById('intro');
-                if (hello) hello.style.display = 'none';
-                if (load) load.style.display = 'none';
-                if (intro) intro.style.display = 'none';
+                document.getElementById('hello').style.display = 'none';
+                document.getElementById('load').style.display = 'none';
+                document.getElementById('intro').style.display = 'none';
                 show('menu');
             }
-            
             updateBadge();
             checkAuthFromURL();
             checkPaymentResult();
-
             await loadAllProducts();
-            
-            loadGames().then(() => {
-                loadProducts();
-            });
-
+            loadGames().then(() => loadProducts());
             startAutoRefreshProducts();
             setupMobileNavigation();
             setupEventListeners();
-
-            if (showAnim) {
-                updateMobileNavVisibility('hello');
-            } else {
-                updateMobileNavVisibility('menu');
-            }
+            if (showAnim) updateMobileNavVisibility('hello');
+            else updateMobileNavVisibility('menu');
             updateMobileNavActiveState();
         });
 
         window.addEventListener('resize', () => {
-            if (PRODUCTS.length > 0) {
-                renderProducts();
-            }
-            if (currentUser) {
-                updateAuthButton();
-            }
+            if (PRODUCTS.length > 0) renderProducts();
+            if (currentUser) updateAuthButton();
             updateMobileNavActiveState();
             updateMobileNavVisibility(document.querySelector('.screen.active, .menu.active')?.id || 'menu');
         });
