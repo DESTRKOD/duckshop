@@ -3,11 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Duck Shop</title>
-    
     <link rel="icon" type="image/png" href="https://i.imgur.com/S4nWZZp.png">
     <link rel="shortcut icon" type="image/png" href="https://i.imgur.com/S4nWZZp.png">
     <link rel="apple-touch-icon" href="https://i.imgur.com/YOUhVyG.png">
-    
     <meta name="theme-color" content="#0b3c91">
     <meta name="heleket" content="642d9796" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -15,14 +13,12 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
-
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
         html, body {
             width: 100%;
             height: 100%;
@@ -30,7 +26,6 @@
             background: linear-gradient(180deg, #0b3c91 0%, #1565c0 55%, #42a5f5 100%);
             overflow: hidden;
         }
-
         .screen, .menu {
             position: absolute;
             inset: 0;
@@ -44,24 +39,20 @@
             transition: opacity .35s ease, transform .35s ease;
             padding: 20px;
         }
-
         .screen.active, .menu.active {
             opacity: 1;
             transform: translateY(0);
             pointer-events: auto;
         }
-
         .screen.leaving, .menu.leaving {
             opacity: 0;
             transform: translateY(-40px);
         }
-
         .sticker {
             width: 260px;
             height: 260px;
             margin-bottom: 20px;
         }
-
         .title {
             margin: 14px 0 20px;
             font-size: 30px;
@@ -69,7 +60,6 @@
             color: #fff;
             text-align: center;
         }
-
         .button {
             margin-top: 20px;
             padding: 20px 56px;
@@ -85,12 +75,10 @@
             min-width: 280px;
             text-align: center;
         }
-
         .button.pressed {
             transform: translateY(6px) scale(.9);
             box-shadow: 0 6px 14px rgba(0,0,0,.35);
         }
-
         .button:disabled {
             background: #cccccc;
             color: #666666;
@@ -98,12 +86,10 @@
             transform: none;
             box-shadow: 0 8px 20px rgba(0,0,0,.25);
         }
-
         .menu {
             justify-content: flex-start;
             padding: 0;
         }
-
         .menu-header {
             width: 100%;
             padding: 16px 20px;
@@ -117,7 +103,6 @@
             top: 0;
             z-index: 100;
         }
-
         .game-info {
             display: flex;
             align-items: center;
@@ -125,7 +110,6 @@
             flex: 1;
             min-width: 0;
         }
-
         .game-logo {
             width: 80px;
             height: 80px;
@@ -137,12 +121,10 @@
             box-shadow: none;
             border: none;
         }
-
         .game-selector-wrapper {
             position: relative;
             min-width: 180px;
         }
-
         .game-selector {
             width: 100%;
             padding: 12px 40px 12px 16px;
@@ -158,17 +140,14 @@
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
         }
-
         .game-selector option {
             background: #124fa5;
             color: white;
             padding: 12px;
         }
-
         .game-selector:hover {
             background: rgba(255,255,255,0.25);
         }
-
         .selector-arrow {
             position: absolute;
             right: 12px;
@@ -179,7 +158,6 @@
             pointer-events: none;
             fill: white;
         }
-
         .auth-btn, .cart-btn {
             height: 44px;
             border: 0;
@@ -195,33 +173,27 @@
             font-weight: 700;
             font-size: 15px;
         }
-
         .auth-btn {
             min-width: 44px;
             padding: 0 16px;
             gap: 8px;
             text-decoration: none;
         }
-
         .cart-btn {
             width: 44px;
             position: relative;
         }
-
         .auth-btn:hover, .cart-btn:hover {
             background: rgba(255,255,255,.20);
         }
-
         .auth-btn:active, .cart-btn:active {
             transform: scale(.97);
         }
-
         .auth-btn svg, .cart-btn svg {
             width: 22px;
             height: 22px;
             fill: #fff;
         }
-
         .cart-badge {
             position: absolute;
             top: 6px;
@@ -239,7 +211,6 @@
             justify-content: center;
             box-shadow: 0 8px 18px rgba(0,0,0,.25);
         }
-
         .cart-badge-mobile {
             position: absolute;
             top: 2px;
@@ -258,11 +229,9 @@
             box-shadow: 0 4px 12px rgba(255,45,85,0.4);
             border: 2px solid rgba(65, 105, 225, 0.4);
         }
-
         .cart-badge-mobile.show {
             display: inline-flex;
         }
-
         .menu-scroll {
             flex: 1;
             width: 100%;
@@ -270,8 +239,6 @@
             overflow-x: hidden;
             -webkit-overflow-scrolling: touch;
         }
-
-        /* Карусель баннеров */
         .banner-carousel {
             width: 100%;
             position: relative;
@@ -347,7 +314,6 @@
             width: 24px;
             border-radius: 4px;
         }
-
         .site-footer {
             background: rgba(11, 60, 145, 0.9);
             backdrop-filter: blur(8px);
@@ -357,12 +323,10 @@
             box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
             border-top: 1px solid rgba(255,255,255,0.2);
         }
-
         .footer-container {
             max-width: 800px;
             margin: 0 auto;
         }
-
         .footer-contacts {
             display: flex;
             flex-wrap: wrap;
@@ -370,7 +334,6 @@
             gap: 24px;
             margin-bottom: 20px;
         }
-
         .contact-item {
             display: flex;
             align-items: center;
@@ -384,18 +347,15 @@
             transition: all 0.2s ease;
             backdrop-filter: blur(4px);
         }
-
         .contact-item:hover {
             background: rgba(255,255,255,0.25);
             transform: translateY(-2px);
         }
-
         .contact-item svg {
             width: 20px;
             height: 20px;
             fill: white;
         }
-
         .footer-links {
             display: flex;
             flex-wrap: wrap;
@@ -403,7 +363,6 @@
             gap: 20px;
             margin-bottom: 18px;
         }
-
         .footer-link {
             background: none;
             border: none;
@@ -417,24 +376,20 @@
             text-decoration: underline;
             text-underline-offset: 3px;
         }
-
         .footer-link:hover {
             color: white;
             background: rgba(255,255,255,0.1);
             text-decoration: none;
         }
-
         .footer-copyright {
             text-align: center;
             color: rgba(255,255,255,0.6);
             font-size: 12px;
             margin-top: 12px;
         }
-
         .products-container {
             padding: 0 16px 16px 16px;
         }
-
         .shop-card {
             position: relative;
             height: 240px;
@@ -447,12 +402,10 @@
             transition: transform 0.2s ease, box-shadow 0.2s ease;
             margin-bottom: 18px;
         }
-
         .shop-card:hover {
             transform: translateY(-2px);
             box-shadow: 0 18px 36px rgba(0,0,0,.35);
         }
-
         .gift {
             position: absolute;
             top: 10px;
@@ -461,13 +414,11 @@
             height: 32px;
             z-index: 2;
         }
-
         .gift img {
             width: 100%;
             height: 100%;
             display: block;
         }
-
         .shop-top {
             position: relative;
             flex: 0 0 60%;
@@ -478,13 +429,11 @@
             padding: 12px;
             overflow: hidden;
         }
-
         .shop-top img {
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
         }
-
         .shop-name {
             font-size: 15px;
             font-weight: 700;
@@ -495,7 +444,6 @@
             gap: 8px;
             flex-wrap: nowrap;
         }
-
         .new-badge {
             display: inline-block;
             width: 48px;
@@ -506,7 +454,6 @@
             background-position: center;
             flex-shrink: 0;
         }
-
         .shop-bottom {
             flex: 0 0 40%;
             background: #fff;
@@ -516,7 +463,6 @@
             padding: 12px 14px;
             gap: 8px;
         }
-
         .shop-buy {
             min-width: 140px;
             height: 44px;
@@ -531,35 +477,29 @@
             cursor: pointer;
             transition: transform 0.15s ease, background 0.15s ease;
         }
-
         .shop-buy:hover {
             background: #333;
         }
-
         .shop-buy:active {
             transform: scale(.95);
         }
-
         .shop-buy svg {
             width: 20px;
             height: 20px;
             fill: #fff;
         }
-
         .shop-price {
             color: #fff;
             font-size: 15px;
             font-weight: 800;
             white-space: nowrap;
         }
-
         .row-two {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 18px;
             margin-bottom: 18px;
         }
-
         .cart-overlay {
             position: fixed;
             inset: 0;
@@ -570,11 +510,9 @@
             z-index: 9999;
             padding: 12px;
         }
-
         .cart-overlay.open {
             display: flex;
         }
-
         .cart-sheet {
             width: 100%;
             max-width: 540px;
@@ -589,12 +527,10 @@
             display: flex;
             flex-direction: column;
         }
-
         .cart-overlay.open .cart-sheet {
             transform: translateY(0);
             opacity: 1;
         }
-
         .cart-head {
             background: linear-gradient(180deg, #0b3c91, #124fa5);
             color: #fff;
@@ -604,13 +540,11 @@
             justify-content: space-between;
             gap: 10px;
         }
-
         .cart-head h3 {
             margin: 0;
             font-size: 20px;
             font-weight: 900;
         }
-
         .cart-close {
             width: 40px;
             height: 40px;
@@ -623,27 +557,22 @@
             cursor: pointer;
             transition: transform 0.15s ease;
         }
-
         .cart-close:active {
             transform: scale(.95);
         }
-
         .cart-body {
             flex: 1;
             overflow-y: auto;
             padding: 12px;
             max-height: 50vh;
         }
-
         .cart-body::-webkit-scrollbar {
             width: 6px;
         }
-
         .cart-body::-webkit-scrollbar-thumb {
             background-color: rgba(0,0,0,0.2);
             border-radius: 3px;
         }
-
         .cart-empty {
             padding: 18px 10px;
             text-align: center;
@@ -651,7 +580,6 @@
             font-weight: 800;
             font-size: 16px;
         }
-
         .cart-row {
             display: grid;
             grid-template-columns: 56px 1fr auto;
@@ -662,7 +590,6 @@
             background: #f6f7fb;
             margin-bottom: 8px;
         }
-
         .cart-thumb {
             width: 56px;
             height: 56px;
@@ -673,17 +600,14 @@
             justify-content: center;
             overflow: hidden;
         }
-
         .cart-thumb img {
             max-width: 92%;
             max-height: 92%;
             object-fit: contain;
         }
-
         .cart-info {
             min-width: 0;
         }
-
         .cart-name {
             font-weight: 900;
             font-size: 14px;
@@ -693,26 +617,22 @@
             text-overflow: ellipsis;
             color: #333;
         }
-
         .cart-sub {
             margin-top: 2px;
             font-size: 12px;
             font-weight: 800;
             color: rgba(0,0,0,.55);
         }
-
         .cart-game {
             font-size: 10px;
             color: #666;
             margin-top: 2px;
         }
-
         .cart-qty {
             display: flex;
             align-items: center;
             gap: 8px;
         }
-
         .qty-btn {
             width: 34px;
             height: 34px;
@@ -725,25 +645,21 @@
             cursor: pointer;
             transition: transform 0.15s ease;
         }
-
         .qty-btn:active {
             transform: scale(.95);
         }
-
         .qty-num {
             min-width: 22px;
             text-align: center;
             font-weight: 900;
             color: #333;
         }
-
         .cart-foot {
             padding: 12px;
             border-top: 1px solid rgba(0,0,0,.08);
             display: grid;
             gap: 10px;
         }
-
         .cart-total {
             display: flex;
             align-items: center;
@@ -752,13 +668,11 @@
             font-size: 16px;
             color: #333;
         }
-
         .cart-actions {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
         }
-
         .cart-action {
             height: 46px;
             border-radius: 14px;
@@ -768,21 +682,17 @@
             font-size: 15px;
             transition: transform 0.15s ease;
         }
-
         .cart-action:active {
             transform: scale(.98);
         }
-
         .btn-clear {
             background: #eef0f6;
             color: #333;
         }
-
         .btn-checkout {
             background: #000;
             color: #fff;
         }
-
         .checkout-summary {
             width: 100%;
             max-width: 400px;
@@ -792,14 +702,12 @@
             margin: 20px 0;
             color: white;
         }
-
         .checkout-item {
             display: flex;
             justify-content: space-between;
             margin-bottom: 12px;
             font-size: 16px;
         }
-
         .checkout-total {
             display: flex;
             justify-content: space-between;
@@ -809,7 +717,6 @@
             padding-top: 20px;
             border-top: 2px solid rgba(255,255,255,0.2);
         }
-
         .order-number {
             font-size: 18px;
             font-weight: 700;
@@ -821,13 +728,11 @@
             text-align: center;
             animation: pulse 2s infinite;
         }
-
         @keyframes pulse {
             0% { opacity: 0.8; }
             50% { opacity: 1; }
             100% { opacity: 0.8; }
         }
-
         .amount-error {
             color: #ff6b6b;
             font-weight: 800;
@@ -841,7 +746,6 @@
             max-width: 400px;
             width: 100%;
         }
-
         .mobile-nav {
             position: fixed;
             bottom: 16px;
@@ -860,12 +764,10 @@
             transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.4, 1), opacity 0.2s ease;
             cursor: grab;
         }
-
         .mobile-nav:active {
             cursor: grabbing;
             transform: scale(0.98);
         }
-
         .mobile-nav-item {
             display: flex;
             flex-direction: column;
@@ -884,19 +786,16 @@
             position: relative;
             text-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
-
         .mobile-nav-item svg {
             width: 24px;
             height: 24px;
             transition: transform 0.2s ease;
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
         }
-
         .mobile-nav-item span {
             font-size: 11px;
             font-weight: 700;
         }
-
         .mobile-nav-item.active {
             background: rgba(255, 255, 255, 0.2);
             color: white;
@@ -905,270 +804,215 @@
             backdrop-filter: blur(5px);
             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
-
         .mobile-nav-item.active svg {
             transform: translateY(-1px);
             filter: drop-shadow(0 3px 6px rgba(0,100,255,0.5));
         }
-
         .mobile-nav-item:active {
             transform: scale(0.92);
             background: rgba(255, 255, 255, 0.25);
         }
-
         .header-right {
             display: flex;
             align-items: center;
             gap: 8px;
             flex-shrink: 0;
         }
-
         @media (max-width: 768px) {
             .game-logo {
                 width: 60px;
                 height: 60px;
                 border-radius: 12px;
             }
-            
             .game-selector-wrapper {
                 min-width: 140px;
             }
-            
             .game-selector {
                 padding: 8px 32px 8px 12px;
                 font-size: 13px;
                 border-radius: 8px;
             }
-            
             .carousel-slide {
                 height: 180px;
             }
-            
             .menu-header .auth-btn,
             .menu-header .cart-btn {
                 display: none;
             }
-            
             .menu-scroll {
                 padding: 12px;
                 padding-bottom: 110px;
             }
-            
             .shop-card {
                 height: 220px;
                 margin-bottom: 12px;
             }
-            
             .shop-top {
                 flex: 0 0 55%;
             }
-            
             .shop-bottom {
                 flex: 0 0 45%;
                 padding: 8px 10px;
             }
-            
             .shop-name {
                 font-size: 14px;
                 gap: 6px;
             }
-            
             .new-badge {
                 width: 40px;
                 height: 40px;
             }
-            
             .shop-buy {
                 min-width: 120px;
                 height: 40px;
             }
-            
             .button {
                 padding: 16px 40px;
                 font-size: 18px;
                 min-width: 240px;
             }
-            
             .title {
                 font-size: 26px;
             }
-            
             .sticker {
                 width: 200px;
                 height: 200px;
             }
-            
             .cart-overlay {
                 padding-bottom: 95px;
             }
-            
             .row-two {
                 grid-template-columns: 1fr 1fr;
             }
-            
             .mobile-nav {
                 display: flex;
             }
-            
             .wallet-desktop {
                 display: none !important;
             }
-            
             .footer-contacts {
                 flex-direction: column;
                 align-items: center;
                 gap: 12px;
             }
         }
-
         @media (max-width: 480px) {
             .game-logo {
                 width: 50px;
                 height: 50px;
                 border-radius: 10px;
             }
-            
             .game-selector-wrapper {
                 min-width: 120px;
             }
-            
             .game-selector {
                 padding: 6px 28px 6px 10px;
                 font-size: 12px;
                 border-radius: 6px;
             }
-            
             .carousel-slide {
                 height: 140px;
             }
-            
             .row-two {
                 grid-template-columns: 1fr;
                 gap: 12px;
             }
-            
             .shop-card {
                 height: 200px;
             }
-            
             .shop-name {
                 font-size: 13px;
                 gap: 5px;
             }
-            
             .new-badge {
                 width: 36px;
                 height: 36px;
             }
-            
             .shop-buy {
                 min-width: 100px;
                 height: 36px;
             }
-            
             .button {
                 padding: 14px 32px;
                 font-size: 16px;
                 min-width: 200px;
             }
-            
             .products-container {
                 padding: 0 10px 10px 10px;
             }
-            
             .cart-overlay {
                 padding-bottom: 90px;
             }
-            
             .mobile-nav {
                 display: flex;
             }
         }
-
         @media (max-width: 360px) {
             .game-logo {
                 width: 40px;
                 height: 40px;
                 border-radius: 8px;
             }
-            
             .game-selector-wrapper {
                 min-width: 100px;
             }
-            
             .game-selector {
                 padding: 5px 24px 5px 8px;
                 font-size: 11px;
                 border-radius: 5px;
             }
-            
             .carousel-slide {
                 height: 120px;
             }
-            
             .shop-card {
                 height: 190px;
             }
-            
             .shop-top {
                 flex: 0 0 50%;
             }
-            
             .shop-bottom {
                 flex: 0 0 50%;
             }
-            
             .shop-name {
                 font-size: 12px;
                 gap: 4px;
             }
-            
             .new-badge {
                 width: 32px;
                 height: 32px;
             }
-            
             .shop-buy {
                 min-width: 90px;
                 height: 34px;
             }
-            
             .products-container {
                 padding: 0 8px 8px 8px;
             }
-            
             .cart-overlay {
                 padding-bottom: 85px;
             }
-            
             .mobile-nav {
                 display: flex;
             }
         }
-
         @media (min-width: 769px) {
             .game-logo {
                 width: 80px;
                 height: 80px;
             }
-            
             .products-container {
                 padding: 0 16px 16px 16px;
             }
-            
             .auth-btn span {
                 display: inline;
             }
-            
             .mobile-nav {
                 display: none !important;
             }
-            
             .wallet-desktop {
                 display: inline-flex !important;
             }
         }
-
         #hello .mobile-nav,
         #load .mobile-nav,
         #intro .mobile-nav,
@@ -1177,7 +1021,6 @@
         #badPay .mobile-nav {
             display: none !important;
         }
-
         .wallet-desktop {
             margin-right: 8px;
         }
@@ -1189,17 +1032,14 @@
         <div class="title">Добро пожаловать</div>
         <div class="button" id="continueBtn">Продолжить</div>
     </div>
-
     <div id="load" class="screen">
         <div id="animDownload" class="sticker"></div>
         <div class="title">Загрузка…</div>
     </div>
-
     <div id="intro" class="screen">
         <div id="animMain" class="sticker"></div>
         <div class="title">Магазин Duck Shop</div>
     </div>
-
     <div id="menu" class="menu">
         <div class="menu-header">
             <div class="game-info" id="gameInfo">
@@ -1211,7 +1051,6 @@
                     </svg>
                 </div>
             </div>
-
             <div class="header-right">
                 <button class="auth-btn wallet-desktop" id="walletDesktopBtn">
                     <svg viewBox="0 0 24 24" width="22" height="22" fill="white">
@@ -1239,18 +1078,14 @@
                 </button>
             </div>
         </div>
-
         <div class="menu-scroll">
-            <!-- КАРУСЕЛЬ БАННЕРОВ вместо игрового баннера -->
             <div class="banner-carousel" id="bannerCarousel" style="display: none;">
                 <div class="carousel-track" id="carouselTrack"></div>
                 <button class="carousel-btn prev" id="prevBanner">‹</button>
                 <button class="carousel-btn next" id="nextBanner">›</button>
                 <div class="carousel-dots" id="carouselDots"></div>
             </div>
-
             <div class="products-container" id="cardsContainer"></div>
-            
             <div class="site-footer">
                 <div class="footer-container">
                     <div class="footer-contacts">
@@ -1275,7 +1110,6 @@
             </div>
         </div>
     </div>
-
     <div id="waiting" class="screen">
         <div id="animWaiting" class="sticker"></div>
         <div class="title">Ожидайте выполнения</div>
@@ -1284,7 +1118,6 @@
         </div>
         <div class="order-number" id="waitingOrderNumber"></div>
     </div>
-
     <div id="checkout" class="screen checkout-screen">
         <div id="animCheckout" class="sticker"></div>
         <div class="title">Оформление заказа</div>
@@ -1296,14 +1129,12 @@
         <button class="button" id="proceedToPay">Оплатить корзину</button>
         <button class="button" id="backToMenu" style="margin-top: 12px; background: rgba(255,255,255,0.2); color: white;">Вернуться в меню</button>
     </div>
-
     <div id="badPay" class="screen">
         <div id="animBadPay" class="sticker"></div>
         <div class="title">Оплата не прошла</div>
         <div class="order-number" id="badPayOrderNumber"></div>
         <button class="button" id="toMenuFromBadPay">Вернуться в меню</button>
     </div>
-
     <div class="cart-overlay" id="cartOverlay" aria-hidden="true">
         <div class="cart-sheet" role="dialog" aria-modal="true">
             <div class="cart-head">
@@ -1323,7 +1154,6 @@
             </div>
         </div>
     </div>
-
     <div class="mobile-nav" id="mobileNav">
         <button class="mobile-nav-item" id="navWallet">
             <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
@@ -1357,14 +1187,12 @@
             <div class="cart-badge-mobile" id="cartBadgeMobile">0</div>
         </button>
     </div>
-
     <script>
         const API_URL = 'https://duck-shop-sever.onrender.com';
         const CART_KEY = 'duck_cart_v1';
         const USER_KEY = 'duck_user_v1';
         const SELECTED_GAME_KEY = 'duck_selected_game_v1';
         const LAST_ANIMATION_KEY = 'duck_last_animation_time';
-
         let PRODUCTS = [];
         let GAMES = [];
         let ALL_PRODUCTS = [];
@@ -1373,12 +1201,9 @@
         let currentOrderId = null;
         let currentUser = null;
         let selectedGameId = 'brawlstars';
-
-        // Переменные для карусели баннеров
         let banners = [];
         let currentBannerIndex = 0;
         let autoSlideInterval = null;
-
         const DEFAULT_PRODUCTS = [
             { id: "c30", name: "30 кристаллов", price: 200, image_url: "https://i.imgur.com/s4K0WIP.png", is_gift: false, game_id: "brawlstars", is_new: true },
             { id: "c80", name: "80 кристаллов", price: 550, image_url: "https://i.imgur.com/XbnZKDb.png", is_gift: false, game_id: "brawlstars", is_new: false },
@@ -1396,104 +1221,10 @@
             { id: "cr_gems", name: "Самоцветы x500", price: 300, image_url: "https://i.imgur.com/gems_cr.png", is_gift: false, game_id: "clashroyale", is_new: false },
             { id: "cr_pass", name: "Pass Royale", price: 800, image_url: "https://i.imgur.com/pass_cr.png", is_gift: false, game_id: "clashroyale", is_new: true }
         ];
-
         const DEFAULT_GAMES = [
-            { id: "brawlstars", name: "Brawl Stars", slug: "brawlstars", icon_url: "https://i.imgur.com/3JxvXtR.png", banner_url: "https://i.imgur.com/brawlstars_banner.jpg" },
-            { id: "clashroyale", name: "Clash Royale", slug: "clashroyale", icon_url: "https://i.imgur.com/clashroyale_icon.png", banner_url: "https://i.imgur.com/clashroyale_banner.jpg" }
+            { id: "brawlstars", name: "Brawl Stars", slug: "brawlstars", icon_url: "https://i.imgur.com/3JxvXtR.png" },
+            { id: "clashroyale", name: "Clash Royale", slug: "clashroyale", icon_url: "https://i.imgur.com/clashroyale_icon.png" }
         ];
-
-        // ---------- ЗАГРУЗКА БАННЕРОВ ----------
-        async function loadBanners() {
-            try {
-                const response = await fetch(`${API_URL}/api/banners`);
-                const data = await response.json();
-                if (data.success && data.banners) {
-                    banners = data.banners;
-                } else {
-                    banners = [];
-                }
-                renderBannerCarousel();
-            } catch (error) {
-                console.error('Ошибка загрузки баннеров:', error);
-                banners = [];
-                renderBannerCarousel();
-            }
-        }
-
-        function renderBannerCarousel() {
-            const carousel = document.getElementById('bannerCarousel');
-            const track = document.getElementById('carouselTrack');
-            const dotsContainer = document.getElementById('carouselDots');
-            if (!carousel || !track || !dotsContainer) return;
-
-            if (!banners.length) {
-                carousel.style.display = 'none';
-                if (autoSlideInterval) clearInterval(autoSlideInterval);
-                return;
-            }
-
-            carousel.style.display = 'block';
-            track.innerHTML = banners.map(banner => `
-                <div class="carousel-slide" data-link="${banner.link_url || ''}">
-                    <img src="${banner.image_url}" alt="Рекламный баннер" loading="lazy">
-                </div>
-            `).join('');
-
-            dotsContainer.innerHTML = banners.map((_, idx) => `
-                <div class="dot ${idx === currentBannerIndex ? 'active' : ''}" data-index="${idx}"></div>
-            `).join('');
-
-            updateCarouselPosition();
-
-            // Навешиваем обработчики на слайды (клик по баннеру)
-            document.querySelectorAll('.carousel-slide').forEach((slide, idx) => {
-                slide.addEventListener('click', () => {
-                    const link = banners[idx]?.link_url;
-                    if (link) window.open(link, '_blank');
-                });
-            });
-
-            // Обработчики точек
-            document.querySelectorAll('.dot').forEach(dot => {
-                dot.addEventListener('click', (e) => {
-                    const idx = parseInt(dot.dataset.index);
-                    if (!isNaN(idx)) goToBanner(idx);
-                });
-            });
-
-            if (autoSlideInterval) clearInterval(autoSlideInterval);
-            autoSlideInterval = setInterval(() => nextBanner(), 5000);
-        }
-
-        function updateCarouselPosition() {
-            const track = document.getElementById('carouselTrack');
-            if (!track) return;
-            track.style.transform = `translateX(-${currentBannerIndex * 100}%)`;
-            document.querySelectorAll('.dot').forEach((dot, idx) => {
-                if (idx === currentBannerIndex) dot.classList.add('active');
-                else dot.classList.remove('active');
-            });
-        }
-
-        function nextBanner() {
-            if (!banners.length) return;
-            currentBannerIndex = (currentBannerIndex + 1) % banners.length;
-            updateCarouselPosition();
-        }
-
-        function prevBanner() {
-            if (!banners.length) return;
-            currentBannerIndex = (currentBannerIndex - 1 + banners.length) % banners.length;
-            updateCarouselPosition();
-        }
-
-        function goToBanner(index) {
-            if (index < 0 || index >= banners.length) return;
-            currentBannerIndex = index;
-            updateCarouselPosition();
-        }
-
-        // ---------- ОСТАЛЬНАЯ ЛОГИКА (без изменений, только добавлены вызовы loadBanners) ----------
         function shouldShowAnimations() {
             const lastTime = localStorage.getItem(LAST_ANIMATION_KEY);
             if (!lastTime) return true;
@@ -1501,31 +1232,25 @@
             const minutesPassed = (now - parseInt(lastTime)) / (1000 * 60);
             return minutesPassed >= 15;
         }
-
         function markAnimationsShown() {
             localStorage.setItem(LAST_ANIMATION_KEY, Date.now().toString());
         }
-
         function fmtRub(n) {
             return `${n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} ₽`;
         }
-
         function loadCart() {
             try {
                 const raw = localStorage.getItem(CART_KEY);
                 cart = raw ? JSON.parse(raw) : {};
             } catch { cart = {}; }
         }
-
         function saveCart() {
             localStorage.setItem(CART_KEY, JSON.stringify(cart));
         }
-
         function cartCount() {
             if (!cart || typeof cart !== 'object') return 0;
             return Object.values(cart).reduce((a, b) => a + b, 0);
         }
-
         function cartSum() {
             let sum = 0;
             if (!cart || typeof cart !== 'object') return 0;
@@ -1535,11 +1260,9 @@
             }
             return sum;
         }
-
         function getProductInfo(id) {
             return ALL_PRODUCTS.find(x => x.id === id);
         }
-
         function updateBadge() {
             const n = cartCount();
             const cartBadge = document.getElementById('cartBadge');
@@ -1557,7 +1280,6 @@
                 if (cartBadgeMobile) cartBadgeMobile.classList.remove('show');
             }
         }
-
         function renderCart() {
             const cartBody = document.getElementById('cartBody');
             const cartTotalEl = document.getElementById('cartTotal');
@@ -1591,21 +1313,18 @@
             }).join('');
             cartTotalEl.textContent = fmtRub(cartSum());
         }
-
         function addToCart(id) {
             cart[id] = (cart[id] || 0) + 1;
             saveCart();
             updateBadge();
             if (document.getElementById('cartOverlay').classList.contains('open')) renderCart();
         }
-
         function inc(id) {
             cart[id] = (cart[id] || 0) + 1;
             saveCart();
             updateBadge();
             renderCart();
         }
-
         function dec(id) {
             if (!cart[id]) return;
             cart[id] -= 1;
@@ -1614,14 +1333,12 @@
             updateBadge();
             renderCart();
         }
-
         function clearCart() {
             cart = {};
             saveCart();
             updateBadge();
             renderCart();
         }
-
         function show(id) {
             const ids = ['hello', 'load', 'intro', 'menu', 'waiting', 'checkout', 'badPay'];
             const current = ids.map(x => document.getElementById(x)).find(el => el && el.classList.contains('active'));
@@ -1638,7 +1355,7 @@
                             cardsContainer.innerHTML = '<div style="color: white; text-align: center; padding: 60px; font-size: 18px;">Загрузка товаров...</div>';
                             setTimeout(() => { if (PRODUCTS.length === 0) loadProducts(); else renderProducts(); }, 300);
                         }
-                        loadBanners(); // обновляем баннеры при переходе в меню
+                        loadBanners();
                     }
                     updateMobileNavVisibility(id);
                     updateMobileNavActiveState();
@@ -1658,7 +1375,6 @@
                 updateMobileNavActiveState();
             }
         }
-
         function updateMobileNavVisibility(currentScreen) {
             const mobileNav = document.getElementById('mobileNav');
             const cartOverlay = document.getElementById('cartOverlay');
@@ -1668,7 +1384,6 @@
             const shouldShow = currentScreen === 'menu' && !cartOverlay.classList.contains('open') && !hiddenScreens.includes(currentScreen);
             mobileNav.style.display = shouldShow ? 'flex' : 'none';
         }
-
         function updateMobileNavActiveState() {
             const navItems = ['navWallet', 'navProfile', 'navHome', 'navSupport', 'navCart'].forEach(id => {
                 const el = document.getElementById(id);
@@ -1680,7 +1395,6 @@
                 if (homeBtn) homeBtn.classList.add('active');
             }
         }
-
         async function loadGames() {
             try {
                 const response = await fetch(`${API_URL}/api/games`);
@@ -1691,7 +1405,6 @@
                 renderGameSelector();
             } catch (error) { GAMES = DEFAULT_GAMES; renderGameSelector(); }
         }
-
         function updateGameHeader() {
             const gameLogo = document.getElementById('gameLogo');
             const currentGame = GAMES.find(g => g.id === selectedGameId);
@@ -1701,7 +1414,6 @@
                 gameLogo.src = '';
             }
         }
-
         function renderGameSelector() {
             const selector = document.getElementById('gameSelector');
             if (!selector) return;
@@ -1725,7 +1437,6 @@
             });
             updateGameHeader();
         }
-
         async function loadAllProducts() {
             try {
                 const response = await fetch(`${API_URL}/api/products`);
@@ -1735,13 +1446,11 @@
                 else ALL_PRODUCTS = [...DEFAULT_PRODUCTS];
             } catch (error) { ALL_PRODUCTS = [...DEFAULT_PRODUCTS]; }
         }
-
         async function loadProducts() {
             if (ALL_PRODUCTS.length === 0) await loadAllProducts();
             PRODUCTS = ALL_PRODUCTS.filter(p => p.game_id === selectedGameId);
             renderProducts();
         }
-
         function renderProducts() {
             const cardsContainer = document.getElementById('cardsContainer');
             if (!cardsContainer) return;
@@ -1800,19 +1509,15 @@
                 };
             });
         }
-
         function startAutoRefreshProducts() {
             if (productsCheckInterval) clearInterval(productsCheckInterval);
             loadProducts();
             productsCheckInterval = setInterval(loadProducts, 10000);
         }
-
         function loadUser() {
             try { const userData = localStorage.getItem(USER_KEY); return userData ? JSON.parse(userData) : null; } catch { return null; }
         }
-
         function saveUser(user) { try { localStorage.setItem(USER_KEY, JSON.stringify(user)); } catch (error) {} }
-
         function updateAuthButton() {
             const authBtn = document.getElementById('authBtn');
             const authBtnText = document.getElementById('authBtnText');
@@ -1832,14 +1537,12 @@
                 authBtn.onclick = (e) => { e.preventDefault(); window.location.href = 'reg_log'; };
             }
         }
-
         function checkAuthFromURL() {
             const urlParams = new URLSearchParams(window.location.search);
             const authToken = urlParams.get('auth');
             if (authToken) verifyAuthToken(authToken);
             else { currentUser = loadUser(); updateAuthButton(); }
         }
-
         async function verifyAuthToken(token) {
             try {
                 const response = await fetch(`${API_URL}/api/auth/check/${token}`);
@@ -1852,7 +1555,6 @@
                 } else updateAuthButton();
             } catch (error) { updateAuthButton(); }
         }
-
         function checkAdminBypass() {
             const urlParams = new URLSearchParams(window.location.search);
             const adminBypass = urlParams.get('admin_bypass');
@@ -1863,7 +1565,6 @@
             }
             return false;
         }
-
         async function checkMaintenance() {
             const hasBypassInUrl = checkAdminBypass();
             const hasBypassInStorage = sessionStorage.getItem('admin_bypass_active') === 'true';
@@ -1877,7 +1578,6 @@
                 }
             } catch (error) { console.error('Ошибка проверки статуса:', error); }
         }
-
         function loadAllLottieAnimations() {
             try {
                 if (document.getElementById('animHello')) lottie.loadAnimation({ container: document.getElementById('animHello'), renderer: 'svg', loop: true, autoplay: true, path: 'hello.json' });
@@ -1892,7 +1592,6 @@
                 });
             }
         }
-
         function showCheckout() {
             const total = cartSum();
             const checkoutSummary = document.getElementById('checkoutSummary');
@@ -1925,7 +1624,6 @@
             }
             show('checkout');
         }
-
         function updateOrderNumberElements(orderId) {
             const orderNumber = `Заказ #${orderId}`;
             ['waitingOrderNumber', 'badPayOrderNumber'].forEach(elementId => {
@@ -1933,7 +1631,6 @@
                 if (element) element.textContent = orderNumber;
             });
         }
-
         function checkPaymentResult() {
             const urlParams = new URLSearchParams(window.location.search);
             const status = urlParams.get('payment');
@@ -1945,7 +1642,6 @@
                 window.history.replaceState({}, '', window.location.pathname);
             }
         }
-
         function setupMobileNavigation() {
             const navWallet = document.getElementById('navWallet');
             const navProfile = document.getElementById('navProfile');
@@ -1965,7 +1661,6 @@
             });
             if (navCart) navCart.addEventListener('click', (e) => { e.preventDefault(); document.getElementById('openCart').click(); });
         }
-
         function setupEventListeners() {
             document.getElementById('continueBtn').addEventListener('pointerdown', function() { this.classList.add('pressed'); });
             document.getElementById('continueBtn').addEventListener('pointerup', function() { this.classList.remove('pressed'); });
@@ -2017,13 +1712,99 @@
                     window.location.href = 'waitpay';
                 } catch (error) { alert('Ошибка при переходе к оплате'); }
             });
-            // Кнопки карусели
             const prevBtn = document.getElementById('prevBanner');
             const nextBtn = document.getElementById('nextBanner');
             if (prevBtn) prevBtn.addEventListener('click', prevBanner);
             if (nextBtn) nextBtn.addEventListener('click', nextBanner);
         }
-
+        function getResponsiveBannerUrl(banner) {
+            const width = window.innerWidth;
+            if (width <= 480) {
+                return banner.mobile_url;
+            } else if (width <= 768) {
+                return banner.tablet_url;
+            } else {
+                return banner.desktop_url;
+            }
+        }
+        function updateCarouselPosition() {
+            const track = document.getElementById('carouselTrack');
+            if (!track) return;
+            track.style.transform = `translateX(-${currentBannerIndex * 100}%)`;
+            document.querySelectorAll('.dot').forEach((dot, idx) => {
+                if (idx === currentBannerIndex) dot.classList.add('active');
+                else dot.classList.remove('active');
+            });
+        }
+        function nextBanner() {
+            if (!banners.length) return;
+            currentBannerIndex = (currentBannerIndex + 1) % banners.length;
+            updateCarouselPosition();
+        }
+        function prevBanner() {
+            if (!banners.length) return;
+            currentBannerIndex = (currentBannerIndex - 1 + banners.length) % banners.length;
+            updateCarouselPosition();
+        }
+        function goToBanner(index) {
+            if (index < 0 || index >= banners.length) return;
+            currentBannerIndex = index;
+            updateCarouselPosition();
+        }
+        function renderBannerCarousel() {
+            const carousel = document.getElementById('bannerCarousel');
+            const track = document.getElementById('carouselTrack');
+            const dotsContainer = document.getElementById('carouselDots');
+            if (!carousel || !track || !dotsContainer) return;
+            if (!banners.length) {
+                carousel.style.display = 'none';
+                if (autoSlideInterval) clearInterval(autoSlideInterval);
+                return;
+            }
+            carousel.style.display = 'block';
+            track.innerHTML = banners.map(banner => {
+                const imgUrl = getResponsiveBannerUrl(banner);
+                return `
+                    <div class="carousel-slide" data-link="${banner.link_url || ''}">
+                        <img src="${imgUrl}" alt="Рекламный баннер" loading="lazy">
+                    </div>
+                `;
+            }).join('');
+            dotsContainer.innerHTML = banners.map((_, idx) => `
+                <div class="dot ${idx === currentBannerIndex ? 'active' : ''}" data-index="${idx}"></div>
+            `).join('');
+            updateCarouselPosition();
+            document.querySelectorAll('.carousel-slide').forEach((slide, idx) => {
+                slide.addEventListener('click', () => {
+                    const link = banners[idx]?.link_url;
+                    if (link) window.open(link, '_blank');
+                });
+            });
+            document.querySelectorAll('.dot').forEach(dot => {
+                dot.addEventListener('click', (e) => {
+                    const idx = parseInt(dot.dataset.index);
+                    if (!isNaN(idx)) goToBanner(idx);
+                });
+            });
+            if (autoSlideInterval) clearInterval(autoSlideInterval);
+            autoSlideInterval = setInterval(() => nextBanner(), 5000);
+        }
+        async function loadBanners() {
+            try {
+                const response = await fetch(`${API_URL}/api/banners`);
+                const data = await response.json();
+                if (data.success && data.banners) {
+                    banners = data.banners;
+                } else {
+                    banners = [];
+                }
+                renderBannerCarousel();
+            } catch (error) {
+                console.error('Ошибка загрузки баннеров:', error);
+                banners = [];
+                renderBannerCarousel();
+            }
+        }
         document.addEventListener('DOMContentLoaded', async function() {
             if (!checkAdminBypass()) checkMaintenance();
             setInterval(() => { if (sessionStorage.getItem('admin_bypass_active') !== 'true') checkMaintenance(); }, 30000);
@@ -2050,14 +1831,16 @@
             if (showAnim) updateMobileNavVisibility('hello');
             else updateMobileNavVisibility('menu');
             updateMobileNavActiveState();
-            await loadBanners(); // загружаем баннеры при старте
+            await loadBanners();
         });
-
         window.addEventListener('resize', () => {
             if (PRODUCTS.length > 0) renderProducts();
             if (currentUser) updateAuthButton();
             updateMobileNavActiveState();
             updateMobileNavVisibility(document.querySelector('.screen.active, .menu.active')?.id || 'menu');
+            if (banners.length > 0 && document.getElementById('menu').classList.contains('active')) {
+                renderBannerCarousel();
+            }
         });
     </script>
 </body>
