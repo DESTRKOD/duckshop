@@ -14,58 +14,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
     
-async function handleTelegramOAuth() {
-    
-    const urlParams = new URLSearchParams(window.location.search);
-    const tgAuth = urlParams.get('tg_auth');
-    
-    if (tgAuth === 'pending') {
-        
-        console.log('Ожидание данных авторизации...');
-        
-        window.addEventListener('message', async (event) => {
-            if (event.origin !== 'https://oauth.telegram.org') return;
-            
-            const { hash, payload, nonce, state } = event.data;
-            if (hash && payload) {
-                try {
-                    const response = await fetch(`${API_URL}/api/auth/telegram/callback`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ hash, payload, nonce, state })
-                    });
-                    
-                    const data = await response.json();
-                    if (data.success && data.user) {
-                        localStorage.setItem(USER_KEY, JSON.stringify(data.user));
-                        window.location.href = '/';
-                    }
-                } catch (err) {
-                    console.error('Ошибка:', err);
-                }
-            }
-        });
-        
-       
-        window.history.replaceState({}, '', window.location.pathname);
-    }
-    
-   
-    const authToken = urlParams.get('auth');
-    if (authToken) {
-        try {
-            const response = await fetch(`${API_URL}/api/auth/check/${authToken}`);
-            const data = await response.json();
-            if (data.success && data.authenticated && data.user) {
-                localStorage.setItem(USER_KEY, JSON.stringify(data.user));
-                window.location.href = '/';
-            }
-        } catch (err) {
-            console.error('Ошибка:', err);
-        }
-        window.history.replaceState({}, '', window.location.pathname);
-    }
-})();
     <style>
         * {
             margin: 0;
@@ -1278,6 +1226,65 @@ async function handleTelegramOAuth() {
             { id: "brawlstars", name: "Brawl Stars", slug: "brawlstars", icon_url: "https://i.imgur.com/3JxvXtR.png" },
             { id: "clashroyale", name: "Clash Royale", slug: "clashroyale", icon_url: "https://i.imgur.com/clashroyale_icon.png" }
         ];
+
+ 
+(async function handleTelegramOAuth() {
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    
+    if (urlParams.get('tg_auth') === 'pending') {
+        console.log('🔄 Ожидание данных авторизации от Telegram...');
+        
+        window.addEventListener('message', async (event) => {
+            if (event.origin !== 'https://oauth.telegram.org') return;
+            
+            const { hash, payload, nonce, state } = event.data;
+            if (hash && payload) {
+                console.log('✅ Получены данные от Telegram');
+                try {
+                    const response = await fetch(`${API_URL}/api/auth/telegram/callback`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ hash, payload, nonce, state })
+                    });
+                    
+                    const data = await response.json();
+                    if (data.success && data.user) {
+                        localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+                        console.log('✅ Пользователь авторизован, редирект...');
+                        window.location.href = '/';
+                    } else {
+                        console.error('❌ Ошибка авторизации:', data.error);
+                    }
+                } catch (err) {
+                    console.error('❌ Ошибка:', err);
+                }
+            }
+        });
+        
+        window.history.replaceState({}, '', window.location.pathname);
+    }
+  
+    const authToken = urlParams.get('auth');
+    if (authToken) {
+        console.log('🔄 Проверка токена авторизации...');
+        try {
+            const response = await fetch(`${API_URL}/api/auth/check/${authToken}`);
+            const data = await response.json();
+            if (data.success && data.authenticated && data.user) {
+                localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+                console.log('✅ Токен подтверждён, редирект...');
+                window.location.href = '/';
+            } else {
+                console.error('❌ Неверный токен');
+            }
+        } catch (err) {
+            console.error('❌ Ошибка:', err);
+        }
+        window.history.replaceState({}, '', window.location.pathname);
+    }
+})();
+
         function shouldShowAnimations() {
             const lastTime = localStorage.getItem(LAST_ANIMATION_KEY);
             if (!lastTime) return true;
