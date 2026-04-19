@@ -652,9 +652,9 @@ html, body {
 const API_URL = 'https://duck-shop-sever.onrender.com';
 const USER_KEY = 'duck_user_v1';
 const CART_KEY = 'duck_cart_v1';
-const SHOP_URL = 'index.html';
-const PROFILE_URL = 'profile.html';
-const SWAP_URL = 'swap.html';
+const SHOP_URL = 'index';
+const PROFILE_URL = 'profile';
+const SWAP_URL = 'swap';
 
 let currentUser = null;
 let walletData = { balance: 0, frozenBalance: 0, transactions: [] };
@@ -1037,7 +1037,7 @@ function getPluralEnding(number) {
 
 async function loadWalletData() {
   if (!currentUser) {
-    window.location.href = 'reg_log.html';
+    window.location.href = 'reg_log';
     return;
   }
 
@@ -1167,7 +1167,7 @@ document.getElementById('retryBtn').addEventListener('click', function() {
   if (currentUser) {
     loadWalletData();
   } else {
-    window.location.href = 'reg_log.html';
+    window.location.href = 'reg_log';
   }
 });
 
@@ -1184,7 +1184,7 @@ function checkInitialAuth() {
     if (currentUser) {
       loadWalletData();
     } else {
-      window.location.href = 'reg_log.html';
+      window.location.href = 'reg_log';
     }
   }
 }
