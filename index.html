@@ -1273,6 +1273,34 @@
     });
 })();
 
+         (async function checkTelegramAuth() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('auth');
+        
+        if (token) {
+            window.history.replaceState({}, '', window.location.pathname);
+            
+            try {
+                const response = await fetch(`https://duck-shop-sever.onrender.com/api/auth/check/${token}`);
+                const data = await response.json();
+                
+                if (data.success && data.authenticated && data.user) {
+                    localStorage.setItem('duck_user_v1', JSON.stringify(data.user));
+                    
+                    if (typeof window.updateAuthButton === 'function') {
+                        window.updateAuthButton();
+                    }
+                    
+                    if (typeof window.show === 'function') {
+                        window.show('menu');
+                    }
+                }
+            } catch (error) {
+                console.error('Auth error:', error);
+            }
+        }
+    })();
+
         function shouldShowAnimations() {
             const lastTime = localStorage.getItem(LAST_ANIMATION_KEY);
             if (!lastTime) return true;
