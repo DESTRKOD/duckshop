@@ -1,1 +1,1921 @@
-<!DOCTYPE html> <html lang="ru"> <head> <meta charset="UTF-8" /> <title>Профиль - Duck Shop</title> <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" /> <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script> <style> html, body { margin: 0; width: 100%; height: 100%; font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif; background: linear-gradient(180deg, #0b3c91 0%, #1565c0 55%, #42a5f5 100%); overflow-x: hidden; } .screen { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; opacity: 0; transform: translateY(16px); pointer-events: none; transition: opacity .35s ease, transform .35s ease; padding: 20px; box-sizing: border-box; overflow-y: auto; } .screen.active { opacity: 1; transform: translateY(0); pointer-events: auto; } .screen.leaving { opacity: 0; transform: translateY(-40px); } #loading .sticker { width: 200px; height: 200px; margin: auto; } #loading .title { color: white; font-size: 24px; font-weight: 800; text-align: center; margin-top: 20px; } .profile-screen { padding: 0; overflow-y: auto; } .profile-header { width: 100%; padding: 30px 20px 20px; text-align: center; background: linear-gradient(180deg, #0b3c91, #124fa5); color: white; box-sizing: border-box; box-shadow: 0 4px 20px rgba(0,0,0,0.2); position: relative; } .profile-header-top { display: flex; justify-content: flex-end; margin-bottom: 10px; } .edit-button { background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.3); color: white; font-size: 14px; font-weight: 600; padding: 8px 18px; border-radius: 30px; cursor: pointer; transition: all 0.2s ease; backdrop-filter: blur(10px); letter-spacing: 0.5px; } .edit-button:hover { background: rgba(255, 255, 255, 0.25); transform: translateY(-1px); } .edit-button:active { transform: scale(0.97); } .profile-avatar { width: 100px; height: 100px; border-radius: 50%; margin: 0 auto 15px; overflow: hidden; border: 4px solid rgba(255,255,255,0.3); box-shadow: 0 8px 25px rgba(0,0,0,0.3); } .profile-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; } .profile-avatar .avatar-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); font-size: 42px; color: white; font-weight: 900; border-radius: 50%; } .profile-name-row { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; } .profile-name { font-size: 26px; font-weight: 800; } .profile-id { font-size: 15px; color: rgba(255,255,255,0.9); margin-bottom: 5px; word-break: break-word; } .profile-username { font-size: 14px; color: rgba(255,255,255,0.7); margin-bottom: 12px; } .telegram-link-btn { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.3); color: white; padding: 8px 18px; border-radius: 40px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; margin-top: 5px; } .telegram-link-btn:hover { background: rgba(255,255,255,0.25); border-color: rgba(255,255,255,0.5); transform: translateY(-2px); } .telegram-link-btn.linked { background: rgba(76, 175, 80, 0.3); border-color: #4CAF50; } .telegram-link-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; } .telegram-link-btn svg { width: 18px; height: 18px; fill: white; } .profile-content { width: 100%; padding: 20px; box-sizing: border-box; overflow-y: visible; padding-bottom: 110px; } .profile-section { background: rgba(255,255,255,0.1); border-radius: 24px; padding: 20px; margin-bottom: 20px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); } .section-title { color: white; font-size: 20px; font-weight: 800; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; } .section-title span:last-child { font-size: 15px; color: rgba(255,255,255,0.8); font-weight: 600; background: rgba(255,255,255,0.1); padding: 4px 12px; border-radius: 20px; } .orders-list { display: flex; flex-direction: column; gap: 12px; } .order-item { background: rgba(255,255,255,0.08); border-radius: 16px; padding: 16px; transition: all 0.2s ease; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); } .order-item:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); border-color: rgba(255,255,255,0.15); } .order-item.grayed { background: rgba(150, 150, 150, 0.15); opacity: 0.7; } .order-header { display: flex; justify-content: space-between; margin-bottom: 10px; align-items: flex-start; gap: 10px; } .order-id { color: #ffd700; font-weight: 700; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; } .order-date { color: rgba(255,255,255,0.7); font-size: 14px; white-space: nowrap; flex-shrink: 0; } .order-details { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; } .order-total { color: white; font-weight: 700; font-size: 18px; } .order-status { padding: 6px 16px; border-radius: 30px; font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: #ffffff; backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); min-width: 100px; text-align: center; } .order-status.completed { background: rgba(76, 175, 80, 0.4); } .order-status.canceled { background: rgba(255, 107, 107, 0.4); } .order-status.manyback { background: rgba(0, 0, 0, 0.6); } .order-status.waiting { background: rgba(255, 255, 255, 0.2); } .sticker-small { width: 120px; height: 120px; margin: 0 auto 20px; } .no-orders { text-align: center; color: rgba(255,255,255,0.8); padding: 30px 0; } .no-orders-text { font-size: 18px; font-weight: 700; margin-bottom: 8px; } .no-orders-subtext { font-size: 14px; color: rgba(255,255,255,0.6); } .error-screen { text-align: center; color: white; padding: 40px 20px; } .error-icon { width: 80px; height: 80px; margin: 0 auto 20px; background-image: url('https://i.imgur.com/TdWbh8z.png'); background-size: contain; background-repeat: no-repeat; background-position: center; opacity: 0.8; } .error-title { font-size: 24px; font-weight: 800; margin-bottom: 10px; } .error-text { font-size: 16px; color: rgba(255,255,255,0.8); margin-bottom: 30px; max-width: 400px; } .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 10001; backdrop-filter: blur(8px); padding: 10px; box-sizing: border-box; } .modal-container { background: white; border-radius: 32px; width: 100%; max-width: 450px; max-height: 90vh; overflow-y: auto; box-shadow: 0 25px 50px rgba(0,0,0,0.5); margin: auto; display: flex; flex-direction: column; } .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 18px 20px; border-bottom: 1px solid rgba(0,0,0,0.08); background: white; border-radius: 32px 32px 0 0; flex-shrink: 0; } .modal-header h2 { margin: 0; font-size: 20px; font-weight: 800; color: #0b3c91; } .modal-close { background: #f0f2f5; border: none; font-size: 18px; cursor: pointer; color: #666; padding: 0; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: all 0.2s ease; flex-shrink: 0; } .modal-close:hover { background: #e0e2e5; transform: rotate(90deg); } .modal-content { display: flex; flex-direction: column; padding: 16px 20px 20px; overflow-y: auto; flex: 1; } .edit-section { background: #f8f9fc; border-radius: 18px; padding: 16px; margin-bottom: 16px; } .edit-section:last-child { margin-bottom: 0; } .edit-section-title { font-size: 15px; font-weight: 700; color: #333; margin-bottom: 14px; display: flex; align-items: center; gap: 6px; } .edit-section-title::before { content: ''; width: 4px; height: 16px; background: #ffd700; border-radius: 2px; display: inline-block; } .avatar-edit-container { display: flex; align-items: center; gap: 16px; } .current-avatar { width: 70px; height: 70px; border-radius: 50%; overflow: hidden; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: 3px solid #ffd700; box-shadow: 0 8px 20px rgba(0,0,0,0.15); flex-shrink: 0; } .current-avatar img { width: 100%; height: 100%; object-fit: cover; } .current-avatar .avatar-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 28px; color: white; font-weight: 900; } .avatar-actions { display: flex; flex-direction: column; gap: 8px; flex: 1; } .btn { padding: 10px 14px; border-radius: 14px; border: none; font-weight: 700; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s ease; } .btn-primary { background: #0b3c91; color: white; box-shadow: 0 4px 12px rgba(11, 60, 145, 0.2); } .btn-primary:hover { background: #124fa5; transform: translateY(-1px); } .btn-secondary { background: #eef0f6; color: #333; } .btn-secondary:hover { background: #e0e2e8; transform: translateY(-1px); } .btn-danger { background: #fee2e2; color: #dc2626; font-weight: 800; border: 1px solid rgba(220, 38, 38, 0.2); padding: 12px; } .btn-danger:hover { background: #fecaca; transform: translateY(-1px); } .btn-danger-small { background: #fee2e2; color: #dc2626; font-weight: 700; border: 1px solid rgba(220, 38, 38, 0.2); padding: 6px 12px; font-size: 12px; border-radius: 30px; cursor: pointer; transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 4px; } .btn-danger-small:hover { background: #fecaca; transform: translateY(-1px); } .btn-danger-small svg { width: 14px; height: 14px; fill: currentColor; } .input-group { display: flex; flex-direction: column; gap: 10px; } @media (min-width: 480px) { .input-group { flex-direction: row; align-items: center; } } .edit-input { flex: 1; padding: 12px 16px; border: 2px solid #eef0f6; border-radius: 14px; font-size: 15px; outline: none; transition: all 0.2s ease; background: white; color: #333; font-weight: 500; width: 100%; box-sizing: border-box; } .edit-input:focus { border-color: #0b3c91; } .input-hint { font-size: 12px; color: #888; margin-top: 8px; padding-left: 5px; } .telegram-status { background: #f0f2f5; border-radius: 14px; padding: 14px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; } .telegram-status.linked { background: #e6f7e6; } .telegram-info { display: flex; flex-direction: column; gap: 4px; } .telegram-name { font-weight: 700; font-size: 15px; color: #333; } .telegram-username { font-size: 13px; color: #666; } .telegram-actions { display: flex; align-items: center; } .vk-badge { display: inline-flex; align-items: center; gap: 4px; background: rgba(0, 119, 255, 0.15); border: 1px solid rgba(0, 119, 255, 0.3); border-radius: 20px; padding: 3px 10px; font-size: 11px; color: #0077FF; margin-left: 8px; } .vk-badge svg { width: 12px; height: 12px; fill: #0077FF; } .logout-section { margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(0,0,0,0.08); } .logout-section .btn-danger { width: 100%; justify-content: center; padding: 12px; font-size: 15px; } .confirm-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 10002; backdrop-filter: blur(8px); padding: 16px; box-sizing: border-box; } .confirm-container { background: white; border-radius: 28px; width: 100%; max-width: 340px; padding: 24px 20px; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.5); margin: auto; } .confirm-title { font-size: 18px; font-weight: 800; color: #333; margin-bottom: 10px; } .confirm-message { font-size: 15px; color: #666; margin-bottom: 20px; line-height: 1.5; } .confirm-actions { display: flex; gap: 10px; } .confirm-btn { flex: 1; padding: 12px; border-radius: 14px; border: none; font-weight: 700; font-size: 15px; cursor: pointer; transition: all 0.2s ease; } .confirm-btn-cancel { background: #f0f2f5; color: #333; } .confirm-btn-cancel:hover { background: #e0e2e8; } .confirm-btn-danger { background: #dc2626; color: white; } .confirm-btn-danger:hover { background: #b91c1c; } @media (max-width: 768px) { .profile-content { padding: 15px; padding-bottom: 110px; } .profile-section { padding: 16px; } .order-item { padding: 14px; } .avatar-edit-container { flex-direction: column; align-items: center; text-align: center; } .avatar-actions { width: 100%; } .sticker-small { width: 100px; height: 100px; } .modal-container { max-width: 400px; } } @media (max-width: 480px) { .profile-header { padding: 20px 15px 15px; } .profile-avatar { width: 90px; height: 90px; } .profile-avatar .avatar-placeholder { font-size: 36px; } .profile-name { font-size: 22px; } .profile-content { padding: 12px; padding-bottom: 105px; } .order-id { font-size: 14px; } .order-total { font-size: 16px; } .order-status { font-size: 12px; padding: 4px 12px; min-width: 80px; } .edit-button { padding: 6px 14px; font-size: 12px; } .modal-container { max-width: 95%; max-height: 85vh; } .modal-header { padding: 14px 16px; } .modal-header h2 { font-size: 18px; } .modal-close { width: 32px; height: 32px; font-size: 16px; } .modal-content { padding: 12px 16px 16px; } .edit-section { padding: 14px; margin-bottom: 14px; } .edit-section-title { font-size: 14px; margin-bottom: 12px; } .current-avatar { width: 60px; height: 60px; border-width: 2px; } .current-avatar .avatar-placeholder { font-size: 24px; } .btn { padding: 8px 12px; font-size: 13px; } .btn-danger-small { padding: 5px 10px; font-size: 11px; } .edit-input { padding: 10px 14px; font-size: 14px; } .input-hint { font-size: 11px; margin-top: 6px; } .telegram-status { padding: 12px; } .telegram-name { font-size: 14px; } .telegram-username { font-size: 12px; } .logout-section { margin-top: 12px; padding-top: 12px; } .logout-section .btn-danger { padding: 10px; font-size: 14px; } .confirm-container { max-width: 300px; padding: 20px 16px; } .confirm-title { font-size: 16px; } .confirm-message { font-size: 14px; margin-bottom: 16px; } .confirm-btn { padding: 10px; font-size: 14px; } } .mobile-nav { position: fixed; bottom: 16px; left: 16px; right: 16px; display: none; align-items: center; justify-content: space-around; background: rgba(65, 105, 225, 0.25); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); border-radius: 40px; padding: 8px 12px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.15); z-index: 10000; box-sizing: border-box; transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.4, 1); touch-action: pan-y; cursor: grab; } .mobile-nav:active { cursor: grabbing; transform: scale(0.98); transition: transform 0.05s ease; } @media (max-width: 768px) { .mobile-nav { display: flex; } } .mobile-nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; background: transparent; border: none; padding: 8px 10px; border-radius: 30px; min-width: 60px; cursor: pointer; transition: all 0.2s cubic-bezier(0.2, 0, 0, 1); color: rgba(255, 255, 255, 0.75); fill: rgba(255, 255, 255, 0.75); position: relative; text-shadow: 0 2px 5px rgba(0,0,0,0.2); } .mobile-nav-item svg { width: 24px; height: 24px; transition: transform 0.2s ease; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); } .mobile-nav-item span { font-size: 11px; font-weight: 700; } .mobile-nav-item.active { background: rgba(255, 255, 255, 0.2); color: white; fill: white; transform: scale(1.05); backdrop-filter: blur(5px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); } .mobile-nav-item:active { transform: scale(0.92); background: rgba(255, 255, 255, 0.25); } .mobile-nav .cart-badge-mobile { position: absolute; top: 2px; right: 6px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px; background: #ff2d55; color: #fff; font-size: 11px; font-weight: 900; display: none; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(255,45,85,0.4); border: 2px solid rgba(65, 105, 225, 0.4); } .mobile-nav .cart-badge-mobile.show { display: inline-flex; } @media (max-width: 768px) { .profile-actions .btn-back { display: none; } } </style> </head> <body> <div id="loading" class="screen active"> <div class="sticker" id="loadingAnim"></div> <div class="title">Загрузка профиля...</div> </div> <div id="profile" class="screen profile-screen"> <div class="profile-header"> <div class="profile-header-top"> <button class="edit-button" onclick="openEditModal()">✎ Изменить</button> </div> <div class="profile-avatar" id="profileAvatar"></div> <div class="profile-name-row"> <div class="profile-name" id="profileName">Пользователь</div> <span class="vk-badge" id="vkBadge" style="display: none;"> <svg viewBox="0 0 24 24"> <path d="M15.07 2H8.93C3.33 2 2 3.33 2 8.93v6.14C2 20.67 3.33 22 8.93 22h6.14c5.6 0 6.93-1.33 6.93-6.93V8.93C22 3.33 20.67 2 15.07 2zm3.54 14.2h-1.46c-.56 0-.73-.43-1.73-1.44-.86-.86-1.24-.98-1.46-.98-.3 0-.38.08-.38.47v1.23c0 .34-.11.54-1.02.54-1.5 0-3.17-.92-4.35-2.64-1.8-2.51-2.29-4.4-2.29-4.79 0-.2.08-.39.47-.39h1.46c.35 0 .48.16.61.54.68 1.83 1.8 3.43 2.27 3.43.17 0 .25-.08.25-.52v-1.82c-.06-.96-.56-1.04-.56-1.39 0-.16.13-.3.3-.3h2.3c.26 0 .35.14.35.45v2.41c0 .26.11.35.18.35.15 0 .27-.09.53-.35 1.01-1.14 1.72-2.89 1.72-2.89.1-.17.23-.26.44-.26h1.46c.45 0 .55.23.45.54-.2.9-2.13 3.24-2.13 3.24-.16.22-.21.33 0 .59.16.21.7.68 1.06 1.1.65.75 1.15 1.38 1.15 1.8.01.41-.3.6-.74.6z"/> </svg> VK ID </span> </div> <div class="profile-id" id="profileId"></div> <div class="profile-username" id="profileUsername"></div> <button class="telegram-link-btn" id="telegramLinkBtn" onclick="openTelegramLink()"> <svg viewBox="0 0 24 24"> <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/> </svg> <span id="telegramLinkText">Привязать Telegram</span> </button> </div> <div class="profile-content"> <div class="profile-section"> <div class="section-title"> <span>История заказов</span> <span id="ordersCount">0</span> </div> <div class="orders-list" id="ordersList"></div> </div> </div> </div> <div id="error" class="screen error-screen"> <div class="error-icon"></div> <div class="error-title" id="errorTitle">Ошибка загрузки</div> <div class="error-text" id="errorText">Не удалось загрузить данные профиля</div> <div style="display: flex; gap: 12px; margin-top: 20px;"> <button class="profile-btn btn-back" id="retryBtn">Повторить</button> <button class="profile-btn btn-back" onclick="location.href='index.html'">В магазин</button> </div> </div> <div id="editModal" class="modal-overlay" style="display: none;"> <div class="modal-container"> <div class="modal-header"> <h2>Редактировать профиль</h2> <button class="modal-close" onclick="closeEditModal()">×</button> </div> <div class="modal-content"> <div class="edit-section"> <div class="edit-section-title">Фото профиля</div> <div class="avatar-edit-container"> <div class="current-avatar" id="editAvatarPreview"></div> <div class="avatar-actions"> <label for="avatarUpload" class="btn btn-primary"> <svg viewBox="0 0 24 24" width="16" height="16" fill="white"> <path d="M3 17.46v3.04c0 .28.22.5.5.5h3.04c.13 0 .26-.05.35-.15L17.81 9.94l-3.75-3.75L3.15 17.1c-.1.1-.15.22-.15.36zM20.71 5.63l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83c.39-.39.39-1.02 0-1.41z"/> </svg> Загрузить </label> <input type="file" id="avatarUpload" accept="image/*" style="display: none;"> <button class="btn btn-secondary" id="removeAvatarBtn"> <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"> <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/> </svg> Удалить </button> </div> </div> </div> <div class="edit-section"> <div class="edit-section-title">Имя пользователя</div> <div class="input-group"> <input type="text" id="editUsername" class="edit-input" placeholder="Введите имя" maxlength="50"> <button class="btn btn-primary" id="saveUsernameBtn">Сохранить</button> </div> <div class="input-hint">От 2 до 50 символов</div> </div> <div class="edit-section"> <div class="edit-section-title">Telegram</div> <div id="telegramStatus" class="telegram-status"> <div class="telegram-info"> <span class="telegram-name" id="telegramName">Не привязан</span> <span class="telegram-username" id="telegramUser">—</span> </div> <div class="telegram-actions"> <button class="btn-danger-small" id="unlinkTelegramBtn" style="display: none;"> <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"> <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/> </svg> Отвязать </button> </div> </div> <button class="btn btn-primary" id="linkTelegramBtn" style="width: 100%;" onclick="generateTelegramLink()"> <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"> <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/> </svg> Привязать Telegram </button> </div> <div class="logout-section"> <button class="btn btn-danger" id="logoutBtn"> <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"> <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/> </svg> Выйти из аккаунта </button> </div> </div> </div> </div> <div id="confirmModal" class="confirm-overlay" style="display: none;"> <div class="confirm-container"> <div class="confirm-title" id="confirmTitle">Подтверждение</div> <div class="confirm-message" id="confirmMessage">Вы уверены?</div> <div class="confirm-actions"> <button class="confirm-btn confirm-btn-cancel" id="confirmCancel">Отмена</button> <button class="confirm-btn confirm-btn-danger" id="confirmOk">Да</button> </div> </div> </div> <div class="mobile-nav" id="mobileNav"> <button class="mobile-nav-item" id="navWallet"> <svg viewBox="0 0 24 24"> <path d="M21 18v1c0 1.1-0.9 2-2 2H5c-1.11 0-2-0.9-2-2V5c0-1.1 0.89-2 2-2h14c1.1 0 2 0.9 2 2v1h-9c-1.1 0-2 0.9-2 2v8c0 1.1 0.9 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-0.83 0-1.5-0.67-1.5-1.5s0.67-1.5 1.5-1.5 1.5 0.67 1.5 1.5-0.67 1.5-1.5 1.5z"/> </svg> <span>Кошелёк</span> </button> <button class="mobile-nav-item active" id="navProfile"> <svg viewBox="0 0 24 24"> <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/> </svg> <span>Профиль</span> </button> <button class="mobile-nav-item" id="navHome"> <svg viewBox="0 0 24 24"> <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/> </svg> <span>Главная</span> </button> <button class="mobile-nav-item" id="navSupport"> <svg viewBox="0 0 24 24"> <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM11 9h2v2h-2V9zm0 4h2v2h-2v-2z"/> </svg> <span>Поддержка</span> </button> <button class="mobile-nav-item" id="navCart"> <svg viewBox="0 0 24 24"> <path d="M7 18a2 2 0 1 0 0 4a2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4a2 2 0 0 0 0-4zM7.16 14h9.45a2 2 0 0 0 1.75-1.03l3.58-6.49-1.74-.99-3.58 6.49H8.53L5.21 4H1v2h3l3.6 7.59-1.35 2.44C5.52 16.37 6.48 18 8 18h12v-2H8l1.16-2z"/> </svg> <span>Корзина</span> <div class="cart-badge-mobile" id="cartBadgeMobile">0</div> </button> </div> <script> const API_URL = 'https://duck-shop-sever.onrender.com'; const USER_KEY = 'duck_user_v1'; const CART_KEY = 'duck_cart_v1'; const SHOP_URL = 'index.html'; let currentUser = null; let confirmCallback = null; let oauthWindow = null; function fmtRub(n) { return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + ' ₽'; } (function() { var urlParams = new URLSearchParams(window.location.search); var adminBypass = urlParams.get('admin_bypass'); if (adminBypass) { sessionStorage.setItem('admin_bypass_active', 'true'); sessionStorage.setItem('admin_bypass_key', adminBypass); window.history.replaceState({}, '', window.location.pathname); setTimeout(function() { var adminNote = document.createElement('div'); adminNote.style.cssText = ` position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); color: #ffd700; padding: 8px 20px; border-radius: 30px; font-size: 14px; font-weight: 600; z-index: 10000; backdrop-filter: blur(5px); border: 1px solid rgba(255,215,0,0.3); animation: fadeIn 0.3s ease; `; adminNote.textContent = '🔑 Режим администратора (техперерыв игнорируется)'; document.body.appendChild(adminNote); setTimeout(function() { adminNote.style.opacity = '0'; adminNote.style.transition = 'opacity 0.5s'; setTimeout(function() { if (adminNote.parentNode) { adminNote.parentNode.removeChild(adminNote); } }, 500); }, 4000); }, 1000); return; } if (sessionStorage.getItem('admin_bypass_active') === 'true') { return; } var xhr = new XMLHttpRequest(); xhr.open('GET', API_URL + '/api/maintenance-status', false); xhr.send(); if (xhr.status === 200) { var data = JSON.parse(xhr.responseText); if (data.maintenance) { sessionStorage.setItem('attempted_page', window.location.pathname); window.location.href = 'working.html'; } } })(); (function() { var style = document.createElement('style'); style.textContent = '@keyframes fadeIn{from{opacity:0;transform:translate(-50%,20px)}to{opacity:1;transform:translate(-50%,0)}}'; document.head.appendChild(style); })(); function showConfirm(title, message, callback) { document.getElementById('confirmTitle').textContent = title; document.getElementById('confirmMessage').textContent = message; confirmCallback = callback; document.getElementById('confirmModal').style.display = 'flex'; } function hideConfirm() { document.getElementById('confirmModal').style.display = 'none'; confirmCallback = null; } document.getElementById('confirmCancel').addEventListener('click', hideConfirm); document.getElementById('confirmOk').addEventListener('click', function() { if (confirmCallback) { confirmCallback(); } hideConfirm(); }); function loadCart() { try { return JSON.parse(localStorage.getItem(CART_KEY) || '{}'); } catch { return {}; } } function cartCount() { return Object.values(loadCart()).reduce((a, b) => a + b, 0); } function updateBadge() { const n = cartCount(); const badge = document.getElementById('cartBadgeMobile'); if (badge) { if (n > 0) { badge.classList.add('show'); badge.textContent = n; } else { badge.classList.remove('show'); } } } function loadLottieAnimations() { try { lottie.loadAnimation({ container: document.getElementById('loadingAnim'), renderer: 'svg', loop: true, autoplay: true, path: 'loading.json' }); } catch (error) { const sticker = document.getElementById('loadingAnim'); if (sticker) { sticker.innerHTML = '<div style="color: white; font-size: 50px;">⌛</div>'; } } } function loadNoOrdersAnimation() { const container = document.getElementById('noOrdersAnim'); if (!container) return; container.innerHTML = ''; try { lottie.loadAnimation({ container: container, renderer: 'svg', loop: true, autoplay: true, path: 'bad_pay.json' }); } catch (error) { container.innerHTML = '<div style="color: white; font-size: 40px;">📭</div>'; } } function showScreen(id) { ['loading', 'profile', 'error'].forEach(s => { const el = document.getElementById(s); if (el) { el.classList.remove('active', 'leaving'); } }); const next = document.getElementById(id); if (next) { next.classList.add('active'); } } function loadUser() { try { return JSON.parse(localStorage.getItem(USER_KEY)); } catch { return null; } } function saveUser(user) { try { localStorage.setItem(USER_KEY, JSON.stringify(user)); } catch (error) {} } function clearUser() { localStorage.removeItem(USER_KEY); currentUser = null; } function setupMobileNavigation() { const navWallet = document.getElementById('navWallet'); const navProfile = document.getElementById('navProfile'); const navHome = document.getElementById('navHome'); const navSupport = document.getElementById('navSupport'); const navCart = document.getElementById('navCart'); const mobileNav = document.getElementById('mobileNav'); if (navWallet) { navWallet.addEventListener('click', function(e) { e.preventDefault(); window.location.href = 'wallet.html'; }); } if (navProfile) { navProfile.addEventListener('click', function(e) { e.preventDefault(); window.location.href = 'profile.html'; }); } if (navHome) { navHome.addEventListener('click', function(e) { e.preventDefault(); window.location.href = SHOP_URL; }); } if (navSupport) { navSupport.addEventListener('click', function(e) { e.preventDefault(); window.location.href = 'support.html'; }); } if (navCart) { navCart.addEventListener('click', function(e) { e.preventDefault(); localStorage.setItem('open_cart', 'true'); window.location.href = SHOP_URL; }); } updateMobileNavActiveState(); if (mobileNav) { let isDragging = false; let startX, startY; mobileNav.addEventListener('mousedown', function(e) { isDragging = false; startX = e.clientX; startY = e.clientY; }); mobileNav.addEventListener('mousemove', function(e) { if (!startX) return; const dx = e.clientX - startX; const dy = e.clientY - startY; if (Math.abs(dx) > 5 || Math.abs(dy) > 5) { isDragging = true; } }); mobileNav.addEventListener('mouseup', function(e) { startX = null; startY = null; }); mobileNav.addEventListener('touchstart', function(e) { isDragging = false; if (e.touches.length) { startX = e.touches[0].clientX; startY = e.touches[0].clientY; } }); mobileNav.addEventListener('touchmove', function(e) { if (!startX) return; if (e.touches.length) { const dx = e.touches[0].clientX - startX; const dy = e.touches[0].clientY - startY; if (Math.abs(dx) > 5 || Math.abs(dy) > 5) { isDragging = true; } } }); mobileNav.addEventListener('touchend', function(e) { startX = null; startY = null; }); const navItems = [navWallet, navProfile, navHome, navSupport, navCart]; navItems.forEach(item => { if (item) { item.addEventListener('click', function(e) { if (isDragging) { e.preventDefault(); e.stopPropagation(); isDragging = false; } }); } }); } } function updateMobileNavActiveState() { const navItems = { wallet: document.getElementById('navWallet'), profile: document.getElementById('navProfile'), home: document.getElementById('navHome'), support: document.getElementById('navSupport'), cart: document.getElementById('navCart') }; Object.values(navItems).forEach(item => { if (item) item.classList.remove('active'); }); const currentPath = window.location.pathname; if (currentPath.includes('wallet.html')) { if (navItems.wallet) navItems.wallet.classList.add('active'); } else if (currentPath.includes('profile.html')) { if (navItems.profile) navItems.profile.classList.add('active'); } else if (currentPath.includes('support.html')) { if (navItems.support) navItems.support.classList.add('active'); } else if (currentPath.includes('index.html') || currentPath === '/' || currentPath === '') { if (navItems.home) navItems.home.classList.add('active'); } } async function loadProfileData() { if (!currentUser) { window.location.href = 'reg_log.html'; return; } showScreen('loading'); try { const response = await fetch(`${API_URL}/api/auth/profile/${currentUser.id}`); if (!response.ok) { throw new Error(`HTTP error! status: ${response.status}`); } const data = await response.json(); if (data.success && data.user) { currentUser = { ...currentUser, ...data.user }; saveUser(currentUser); updateProfileUI(currentUser); await loadOrders(data.orders || []); showScreen('profile'); } else { throw new Error(data.error || 'Ошибка загрузки профиля'); } } catch (error) { console.error('Ошибка загрузки профиля:', error); showError('Ошибка загрузки', 'Не удалось загрузить данные профиля'); } } function updateProfileUI(user) { const avatar = document.getElementById('profileAvatar'); const editAvatarPreview = document.getElementById('editAvatarPreview'); const profileName = document.getElementById('profileName'); const profileId = document.getElementById('profileId'); const profileUsername = document.getElementById('profileUsername'); const telegramLinkBtn = document.getElementById('telegramLinkBtn'); const telegramLinkText = document.getElementById('telegramLinkText'); const vkBadge = document.getElementById('vkBadge'); const telegramStatus = document.getElementById('telegramStatus'); const telegramName = document.getElementById('telegramName'); const telegramUser = document.getElementById('telegramUser'); const unlinkTelegramBtn = document.getElementById('unlinkTelegramBtn'); const linkTelegramBtn = document.getElementById('linkTelegramBtn'); if (!user) return; let displayName = user.username || 'Пользователь'; if (user.auth_provider === 'telegram') { if (user.firstName && user.lastName) { displayName = `${user.firstName} ${user.lastName}`; } else if (user.firstName) { displayName = user.firstName; } else if (user.telegramUsername) { displayName = `@${user.telegramUsername}`; } } else if (user.firstName || user.lastName) { displayName = `${user.firstName || ''} ${user.lastName || ''}`.trim() || displayName; } profileName.textContent = displayName; if (user.auth_provider === 'telegram') { profileId.textContent = `TG ID: ${user.tgId || user.id}`; profileUsername.textContent = user.telegramUsername ? `@${user.telegramUsername}` : ''; profileUsername.style.display = user.telegramUsername ? 'block' : 'none'; } else if (user.auth_provider === 'vk') { profileId.textContent = `VK ID: ${user.vkId || user.id}`; profileUsername.textContent = ''; profileUsername.style.display = 'none'; } else if (user.auth_provider === 'vk+telegram') { profileId.textContent = `ID: ${user.id} (VK + TG)`; profileUsername.textContent = user.telegramUsername ? `@${user.telegramUsername}` : ''; profileUsername.style.display = user.telegramUsername ? 'block' : 'none'; } else { profileId.textContent = `ID: ${user.id}`; profileUsername.style.display = 'none'; } if (vkBadge) { if (user.auth_provider === 'vk' || user.auth_provider === 'vk+telegram') { vkBadge.style.display = 'inline-flex'; } else { vkBadge.style.display = 'none'; } } const firstLetter = displayName.charAt(0).toUpperCase(); const avatarHtml = user.avatarUrl ? `<img src="${user.avatarUrl}" alt="${displayName}">` : `<div class="avatar-placeholder">${firstLetter}</div>`; if (avatar) avatar.innerHTML = avatarHtml; if (editAvatarPreview) editAvatarPreview.innerHTML = avatarHtml; if (user.auth_provider === 'telegram') { if (telegramLinkBtn) telegramLinkBtn.classList.add('linked'); if (telegramLinkText) telegramLinkText.textContent = 'Telegram аккаунт'; if (telegramLinkBtn) telegramLinkBtn.disabled = true; if (telegramStatus) telegramStatus.classList.add('linked'); if (telegramName) telegramName.textContent = user.firstName || user.username || 'Пользователь'; if (telegramUser) telegramUser.textContent = user.telegramUsername ? `@${user.telegramUsername}` : '—'; if (unlinkTelegramBtn) unlinkTelegramBtn.style.display = 'none'; if (linkTelegramBtn) linkTelegramBtn.style.display = 'none'; } else if (user.auth_provider === 'vk+telegram') { if (telegramLinkBtn) telegramLinkBtn.classList.add('linked'); if (telegramLinkText) telegramLinkText.textContent = 'Telegram привязан'; if (telegramLinkBtn) telegramLinkBtn.disabled = false; if (telegramStatus) telegramStatus.classList.add('linked'); if (telegramName) telegramName.textContent = user.firstName || user.username || 'Пользователь'; if (telegramUser) telegramUser.textContent = user.telegramUsername ? `@${user.telegramUsername}` : '—'; if (unlinkTelegramBtn) unlinkTelegramBtn.style.display = 'inline-flex'; if (linkTelegramBtn) linkTelegramBtn.style.display = 'none'; } else { if (telegramLinkBtn) telegramLinkBtn.classList.remove('linked'); if (telegramLinkText) telegramLinkText.textContent = 'Привязать Telegram'; if (telegramLinkBtn) telegramLinkBtn.disabled = false; if (telegramStatus) telegramStatus.classList.remove('linked'); if (telegramName) telegramName.textContent = 'Не привязан'; if (telegramUser) telegramUser.textContent = '—'; if (unlinkTelegramBtn) unlinkTelegramBtn.style.display = 'none'; if (linkTelegramBtn) linkTelegramBtn.style.display = 'block'; } } function formatDate(dateString) { const date = new Date(dateString); return date.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }); } function getDisplayStatus(status, paymentStatus, refundAmount) { if (status === 'completed') return { text: 'Завершен', className: 'completed' }; if (status === 'canceled') return { text: 'Отменен', className: 'canceled' }; if (status === 'manyback' || refundAmount > 0) return { text: 'Возврат', className: 'manyback' }; if (paymentStatus === 'pending' && status === 'new') return { text: 'Ожидает оплаты', className: 'pending' }; return { text: 'В работе', className: 'waiting' }; } async function loadOrders(orders) { const list = document.getElementById('ordersList'); const count = document.getElementById('ordersCount'); if (!list || !count) return; if (orders.length === 0) { count.textContent = '0'; list.innerHTML = ` <div class="no-orders"> <div class="sticker-small" id="noOrdersAnim"></div> <div class="no-orders-text">У вас пока нет заказов</div> <div class="no-orders-subtext">Совершите первую покупку чтобы начать историю!</div> </div> `; setTimeout(() => { loadNoOrdersAnimation(); }, 100); return; } count.textContent = orders.length; orders.sort((a, b) => new Date(b.date) - new Date(a.date)); list.innerHTML = orders.map(order => { const status = getDisplayStatus(order.status, order.paymentStatus, order.refundAmount); const isGrayed = order.status === 'canceled' || order.status === 'manyback'; return ` <div class="order-item ${isGrayed ? 'grayed' : ''}" onclick="window.location.href='moreorder.html?order=${order.id}'"> <div class="order-header"> <div class="order-id">#${order.id}</div> <div class="order-date">${formatDate(order.date)}</div> </div> <div class="order-details"> <div class="order-total">${fmtRub(order.total)}</div> <div class="order-status ${status.className}">${status.text}</div> </div> ${order.refundAmount ? `<div style="font-size: 12px; color: #9c27b0; margin-top: 8px;">Возврат: ${fmtRub(order.refundAmount)}</div>` : ''} </div> `; }).join(''); } function showError(title, message) { const errorTitle = document.getElementById('errorTitle'); const errorText = document.getElementById('errorText'); if (errorTitle) errorTitle.textContent = title; if (errorText) errorText.textContent = message; showScreen('error'); } function openEditModal() { const editUsername = document.getElementById('editUsername'); if (editUsername && currentUser) { editUsername.value = currentUser.username || ''; } const modal = document.getElementById('editModal'); if (modal) modal.style.display = 'flex'; } function closeEditModal() { const modal = document.getElementById('editModal'); if (modal) modal.style.display = 'none'; } const avatarUpload = document.getElementById('avatarUpload'); if (avatarUpload) { avatarUpload.addEventListener('change', async function(e) { const file = e.target.files[0]; if (!file || !currentUser) return; const formData = new FormData(); formData.append('avatar', file); formData.append('userId', currentUser.id); try { const response = await fetch(`${API_URL}/api/user/avatar`, { method: 'POST', body: formData }); const data = await response.json(); if (data.success) { currentUser.avatarUrl = data.avatarUrl; saveUser(currentUser); updateProfileUI(currentUser); closeEditModal(); } else { alert('Ошибка при загрузке аватарки'); } } catch (error) { alert('Ошибка сети'); } }); } const removeAvatarBtn = document.getElementById('removeAvatarBtn'); if (removeAvatarBtn) { removeAvatarBtn.addEventListener('click', async function() { if (!currentUser) return; showConfirm('Удаление фото', 'Вы уверены, что хотите удалить фото профиля?', async function() { const formData = new FormData(); formData.append('avatar', new Blob([]), 'empty'); formData.append('userId', currentUser.id); try { const response = await fetch(`${API_URL}/api/user/avatar`, { method: 'POST', body: formData }); const data = await response.json(); if (data.success) { currentUser.avatarUrl = null; saveUser(currentUser); updateProfileUI(currentUser); closeEditModal(); } } catch (error) { alert('Ошибка сети'); } }); }); } const saveUsernameBtn = document.getElementById('saveUsernameBtn'); if (saveUsernameBtn) { saveUsernameBtn.addEventListener('click', async function() { const editUsername = document.getElementById('editUsername'); if (!editUsername || !currentUser) return; const newUsername = editUsername.value.trim(); if (newUsername.length < 2 || newUsername.length > 50) { alert('Имя должно быть от 2 до 50 символов'); return; } try { const response = await fetch(`${API_URL}/api/user/username`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userId: currentUser.id, username: newUsername }) }); const data = await response.json(); if (data.success) { currentUser.username = data.username; saveUser(currentUser); updateProfileUI(currentUser); closeEditModal(); } else { alert(data.error || 'Ошибка при изменении имени'); } } catch (error) { alert('Ошибка сети'); } }); } async function generateTelegramLink() { if (!currentUser) return; if (currentUser.auth_provider === 'telegram') { alert('Вы уже авторизованы через Telegram'); return; } if (currentUser.auth_provider === 'vk+telegram') { alert('Telegram уже привязан к этому аккаунту'); return; } try { const response = await fetch(`${API_URL}/api/user/telegram-link/${currentUser.id}`); const data = await response.json(); if (data.success) { oauthWindow = window.open(data.telegramLink, 'TelegramLink', 'width=600,height=600,left=' + (screen.width/2-300) + ',top=' + (screen.height/2-300)); const messageHandler = async (event) => { if (event.origin !== 'https://oauth.telegram.org') return; const { hash, payload, nonce, state } = event.data; if (hash && payload) { window.removeEventListener('message', messageHandler); try { const verifyResponse = await fetch(`${API_URL}/api/auth/telegram/link/callback`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ hash, payload, nonce, state, userId: currentUser.id }) }); const verifyData = await verifyResponse.json(); if (verifyData.success) { currentUser = verifyData.user; saveUser(currentUser); updateProfileUI(currentUser); closeEditModal(); alert('Telegram успешно привязан!'); } else { alert('Ошибка привязки Telegram: ' + (verifyData.error || 'Неизвестная ошибка')); } } catch (err) { console.error('Ошибка:', err); alert('Ошибка при подтверждении привязки'); } finally { if (oauthWindow) oauthWindow.close(); } } }; window.addEventListener('message', messageHandler); setTimeout(() => { if (oauthWindow && !oauthWindow.closed) { oauthWindow.close(); alert('Время ожидания истекло. Попробуйте снова.'); window.removeEventListener('message', messageHandler); } }, 5 * 60 * 1000); } else { alert('Ошибка генерации ссылки'); } } catch (error) { console.error('Ошибка:', error); alert('Ошибка сети'); } } function openTelegramLink() { if (!currentUser) return; if (currentUser.auth_provider === 'telegram') { alert('Вы уже авторизованы через Telegram'); return; } if (currentUser.auth_provider === 'vk+telegram') { alert('Telegram уже привязан к этому аккаунту'); return; } generateTelegramLink(); } const unlinkTelegramBtn = document.getElementById('unlinkTelegramBtn'); if (unlinkTelegramBtn) { unlinkTelegramBtn.addEventListener('click', async function() { if (!currentUser) return; showConfirm('Отвязка Telegram', 'Вы уверены, что хотите отвязать Telegram аккаунт?', async function() { const btn = unlinkTelegramBtn; const originalText = btn.innerHTML; btn.innerHTML = 'Отвязываем...'; btn.disabled = true; try { const response = await fetch(`${API_URL}/api/user/unlink-telegram`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userId: currentUser.id }) }); const data = await response.json(); if (data.success) { currentUser.auth_provider = 'vk'; currentUser.tgId = null; currentUser.telegramUsername = null; currentUser.firstName = null; currentUser.lastName = null; if (currentUser.avatarUrl && currentUser.avatarUrl.includes('api.telegram.org')) { currentUser.avatarUrl = null; } saveUser(currentUser); updateProfileUI(currentUser); closeEditModal(); } else { alert(data.error || 'Ошибка при отвязке Telegram'); } } catch (error) { console.error('Ошибка:', error); alert('Ошибка сети при отвязке Telegram'); } finally { btn.innerHTML = originalText; btn.disabled = false; } }); }); } const logoutBtn = document.getElementById('logoutBtn'); if (logoutBtn) { logoutBtn.addEventListener('click', () => { showConfirm('Выход', 'Вы уверены, что хотите выйти из аккаунта?', function() { clearUser(); window.location.href = SHOP_URL; }); }); } const retryBtn = document.getElementById('retryBtn'); if (retryBtn) { retryBtn.addEventListener('click', () => { if (currentUser) loadProfileData(); else window.location.href = 'reg_log.html'; }); } function checkInitialAuth() { const urlParams = new URLSearchParams(window.location.search); const authToken = urlParams.get('auth'); if (authToken) { window.history.replaceState({}, '', window.location.pathname); verifyAuthToken(authToken); } else { currentUser = loadUser(); if (currentUser) loadProfileData(); else window.location.href = 'reg_log.html'; } } async function verifyAuthToken(token) { showScreen('loading'); try { const response = await fetch(`${API_URL}/api/auth/check/${token}`); const data = await response.json(); if (data.success && data.authenticated && data.user) { currentUser = data.user; saveUser(data.user); loadProfileData(); } else { showError('Ошибка авторизации', 'Не удалось войти в аккаунт'); } } catch (error) { showError('Ошибка сети', 'Не удалось подключиться к серверу'); } } document.addEventListener('DOMContentLoaded', () => { loadLottieAnimations(); updateBadge(); setTimeout(checkInitialAuth, 500); setupMobileNavigation(); updateMobileNavActiveState(); window.addEventListener('click', (e) => { const modal = document.getElementById('editModal'); if (e.target === modal) closeEditModal(); }); }); </script> </body> </html>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <title>Профиль - Duck Shop</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html, body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(180deg, #0b3c91 0%, #1565c0 55%, #42a5f5 100%);
+            overflow-x: hidden;
+        }
+        .screen {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0;
+            transform: translateY(16px);
+            pointer-events: none;
+            transition: opacity .35s ease, transform .35s ease;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+        .screen.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+        .screen.leaving {
+            opacity: 0;
+            transform: translateY(-40px);
+        }
+        #loading .sticker {
+            width: 200px;
+            height: 200px;
+            margin: auto;
+        }
+        #loading .title {
+            color: white;
+            font-size: 24px;
+            font-weight: 800;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .profile-screen {
+            padding: 0;
+            overflow-y: auto;
+        }
+        .profile-header {
+            width: 100%;
+            padding: 30px 20px 20px;
+            text-align: center;
+            background: linear-gradient(180deg, #0b3c91, #124fa5);
+            color: white;
+            box-sizing: border-box;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            position: relative;
+        }
+        .profile-header-top {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 10px;
+        }
+        .edit-button {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 8px 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(10px);
+            letter-spacing: 0.5px;
+        }
+        .edit-button:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-1px);
+        }
+        .edit-button:active {
+            transform: scale(0.97);
+        }
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            overflow: hidden;
+            border: 4px solid rgba(255,255,255,0.3);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        .profile-avatar .avatar-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-size: 42px;
+            color: white;
+            font-weight: 900;
+            border-radius: 50%;
+        }
+        .profile-name-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+        .profile-name {
+            font-size: 26px;
+            font-weight: 800;
+        }
+        .profile-id {
+            font-size: 15px;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 5px;
+            word-break: break-word;
+        }
+        .profile-username {
+            font-size: 14px;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 12px;
+        }
+        .telegram-link-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.15);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 5px;
+        }
+        .telegram-link-btn:hover {
+            background: rgba(255,255,255,0.25);
+            border-color: rgba(255,255,255,0.5);
+            transform: translateY(-2px);
+        }
+        .telegram-link-btn.linked {
+            background: rgba(76, 175, 80, 0.3);
+            border-color: #4CAF50;
+        }
+        .telegram-link-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .telegram-link-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: white;
+        }
+        .profile-content {
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-y: visible;
+            padding-bottom: 110px;
+        }
+        .profile-section {
+            background: rgba(255,255,255,0.1);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .section-title {
+            color: white;
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .section-title span:last-child {
+            font-size: 15px;
+            color: rgba(255,255,255,0.8);
+            font-weight: 600;
+            background: rgba(255,255,255,0.1);
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+        .orders-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .order-item {
+            background: rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 16px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .order-item:hover {
+            background: rgba(255,255,255,0.12);
+            transform: translateY(-2px);
+            border-color: rgba(255,255,255,0.15);
+        }
+        .order-item.grayed {
+            background: rgba(150, 150, 150, 0.15);
+            opacity: 0.7;
+        }
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .order-id {
+            color: #ffd700;
+            font-weight: 700;
+            font-size: 16px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex: 1;
+        }
+        .order-date {
+            color: rgba(255,255,255,0.7);
+            font-size: 14px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .order-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+        }
+        .order-total {
+            color: white;
+            font-weight: 700;
+            font-size: 18px;
+        }
+        .order-status {
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #ffffff;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            min-width: 100px;
+            text-align: center;
+        }
+        .order-status.completed {
+            background: rgba(76, 175, 80, 0.4);
+        }
+        .order-status.canceled {
+            background: rgba(255, 107, 107, 0.4);
+        }
+        .order-status.manyback {
+            background: rgba(0, 0, 0, 0.6);
+        }
+        .order-status.waiting {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .sticker-small {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+        }
+        .no-orders {
+            text-align: center;
+            color: rgba(255,255,255,0.8);
+            padding: 30px 0;
+        }
+        .no-orders-text {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .no-orders-subtext {
+            font-size: 14px;
+            color: rgba(255,255,255,0.6);
+        }
+        .error-screen {
+            text-align: center;
+            color: white;
+            padding: 40px 20px;
+        }
+        .error-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background-image: url('https://i.imgur.com/TdWbh8z.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0.8;
+        }
+        .error-title {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+        .error-text {
+            font-size: 16px;
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 30px;
+            max-width: 400px;
+        }
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10001;
+            backdrop-filter: blur(8px);
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .modal-container {
+            background: white;
+            border-radius: 32px;
+            width: 100%;
+            max-width: 450px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 20px;
+            border-bottom: 1px solid rgba(0,0,0,0.08);
+            background: white;
+            border-radius: 32px 32px 0 0;
+            flex-shrink: 0;
+        }
+        .modal-header h2 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 800;
+            color: #0b3c91;
+        }
+        .modal-close {
+            background: #f0f2f5;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #666;
+            padding: 0;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+        .modal-close:hover {
+            background: #e0e2e5;
+            transform: rotate(90deg);
+        }
+        .modal-content {
+            display: flex;
+            flex-direction: column;
+            padding: 16px 20px 20px;
+            overflow-y: auto;
+            flex: 1;
+        }
+        .edit-section {
+            background: #f8f9fc;
+            border-radius: 18px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .edit-section:last-child {
+            margin-bottom: 0;
+        }
+        .edit-section-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .edit-section-title::before {
+            content: '';
+            width: 4px;
+            height: 16px;
+            background: #ffd700;
+            border-radius: 2px;
+            display: inline-block;
+        }
+        .avatar-edit-container {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .current-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            overflow: hidden;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: 3px solid #ffd700;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            flex-shrink: 0;
+        }
+        .current-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .current-avatar .avatar-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: white;
+            font-weight: 900;
+        }
+        .avatar-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+        }
+        .btn {
+            padding: 10px 14px;
+            border-radius: 14px;
+            border: none;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+        .btn-primary {
+            background: #0b3c91;
+            color: white;
+            box-shadow: 0 4px 12px rgba(11, 60, 145, 0.2);
+        }
+        .btn-primary:hover {
+            background: #124fa5;
+            transform: translateY(-1px);
+        }
+        .btn-secondary {
+            background: #eef0f6;
+            color: #333;
+        }
+        .btn-secondary:hover {
+            background: #e0e2e8;
+            transform: translateY(-1px);
+        }
+        .btn-danger {
+            background: #fee2e2;
+            color: #dc2626;
+            font-weight: 800;
+            border: 1px solid rgba(220, 38, 38, 0.2);
+            padding: 12px;
+        }
+        .btn-danger:hover {
+            background: #fecaca;
+            transform: translateY(-1px);
+        }
+        .btn-danger-small {
+            background: #fee2e2;
+            color: #dc2626;
+            font-weight: 700;
+            border: 1px solid rgba(220, 38, 38, 0.2);
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .btn-danger-small:hover {
+            background: #fecaca;
+            transform: translateY(-1px);
+        }
+        .btn-danger-small svg {
+            width: 14px;
+            height: 14px;
+            fill: currentColor;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        @media (min-width: 480px) {
+            .input-group {
+                flex-direction: row;
+                align-items: center;
+            }
+        }
+        .edit-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #eef0f6;
+            border-radius: 14px;
+            font-size: 15px;
+            outline: none;
+            transition: all 0.2s ease;
+            background: white;
+            color: #333;
+            font-weight: 500;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .edit-input:focus {
+            border-color: #0b3c91;
+        }
+        .input-hint {
+            font-size: 12px;
+            color: #888;
+            margin-top: 8px;
+            padding-left: 5px;
+        }
+        .telegram-status {
+            background: #f0f2f5;
+            border-radius: 14px;
+            padding: 14px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .telegram-status.linked {
+            background: #e6f7e6;
+        }
+        .telegram-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .telegram-name {
+            font-weight: 700;
+            font-size: 15px;
+            color: #333;
+        }
+        .telegram-username {
+            font-size: 13px;
+            color: #666;
+        }
+        .telegram-actions {
+            display: flex;
+            align-items: center;
+        }
+        .vk-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(0, 119, 255, 0.15);
+            border: 1px solid rgba(0, 119, 255, 0.3);
+            border-radius: 20px;
+            padding: 3px 10px;
+            font-size: 11px;
+            color: #0077FF;
+            margin-left: 8px;
+        }
+        .vk-badge svg {
+            width: 12px;
+            height: 12px;
+            fill: #0077FF;
+        }
+        .logout-section {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(0,0,0,0.08);
+        }
+        .logout-section .btn-danger {
+            width: 100%;
+            justify-content: center;
+            padding: 12px;
+            font-size: 15px;
+        }
+        .confirm-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10002;
+            backdrop-filter: blur(8px);
+            padding: 16px;
+            box-sizing: border-box;
+        }
+        .confirm-container {
+            background: white;
+            border-radius: 28px;
+            width: 100%;
+            max-width: 340px;
+            padding: 24px 20px;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            margin: auto;
+        }
+        .confirm-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .confirm-message {
+            font-size: 15px;
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        .confirm-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .confirm-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 14px;
+            border: none;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .confirm-btn-cancel {
+            background: #f0f2f5;
+            color: #333;
+        }
+        .confirm-btn-cancel:hover {
+            background: #e0e2e8;
+        }
+        .confirm-btn-danger {
+            background: #dc2626;
+            color: white;
+        }
+        .confirm-btn-danger:hover {
+            background: #b91c1c;
+        }
+        @media (max-width: 768px) {
+            .profile-content {
+                padding: 15px;
+                padding-bottom: 110px;
+            }
+            .profile-section {
+                padding: 16px;
+            }
+            .order-item {
+                padding: 14px;
+            }
+            .avatar-edit-container {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .avatar-actions {
+                width: 100%;
+            }
+            .sticker-small {
+                width: 100px;
+                height: 100px;
+            }
+            .modal-container {
+                max-width: 400px;
+            }
+        }
+        @media (max-width: 480px) {
+            .profile-header {
+                padding: 20px 15px 15px;
+            }
+            .profile-avatar {
+                width: 90px;
+                height: 90px;
+            }
+            .profile-avatar .avatar-placeholder {
+                font-size: 36px;
+            }
+            .profile-name {
+                font-size: 22px;
+            }
+            .profile-content {
+                padding: 12px;
+                padding-bottom: 105px;
+            }
+            .order-id {
+                font-size: 14px;
+            }
+            .order-total {
+                font-size: 16px;
+            }
+            .order-status {
+                font-size: 12px;
+                padding: 4px 12px;
+                min-width: 80px;
+            }
+            .edit-button {
+                padding: 6px 14px;
+                font-size: 12px;
+            }
+            .modal-container {
+                max-width: 95%;
+                max-height: 85vh;
+            }
+            .modal-header {
+                padding: 14px 16px;
+            }
+            .modal-header h2 {
+                font-size: 18px;
+            }
+            .modal-close {
+                width: 32px;
+                height: 32px;
+                font-size: 16px;
+            }
+            .modal-content {
+                padding: 12px 16px 16px;
+            }
+            .edit-section {
+                padding: 14px;
+                margin-bottom: 14px;
+            }
+            .edit-section-title {
+                font-size: 14px;
+                margin-bottom: 12px;
+            }
+            .current-avatar {
+                width: 60px;
+                height: 60px;
+                border-width: 2px;
+            }
+            .current-avatar .avatar-placeholder {
+                font-size: 24px;
+            }
+            .btn {
+                padding: 8px 12px;
+                font-size: 13px;
+            }
+            .btn-danger-small {
+                padding: 5px 10px;
+                font-size: 11px;
+            }
+            .edit-input {
+                padding: 10px 14px;
+                font-size: 14px;
+            }
+            .input-hint {
+                font-size: 11px;
+                margin-top: 6px;
+            }
+            .telegram-status {
+                padding: 12px;
+            }
+            .telegram-name {
+                font-size: 14px;
+            }
+            .telegram-username {
+                font-size: 12px;
+            }
+            .logout-section {
+                margin-top: 12px;
+                padding-top: 12px;
+            }
+            .logout-section .btn-danger {
+                padding: 10px;
+                font-size: 14px;
+            }
+            .confirm-container {
+                max-width: 300px;
+                padding: 20px 16px;
+            }
+            .confirm-title {
+                font-size: 16px;
+            }
+            .confirm-message {
+                font-size: 14px;
+                margin-bottom: 16px;
+            }
+            .confirm-btn {
+                padding: 10px;
+                font-size: 14px;
+            }
+        }
+        .mobile-nav {
+            position: fixed;
+            bottom: 16px;
+            left: 16px;
+            right: 16px;
+            display: none;
+            align-items: center;
+            justify-content: space-around;
+            background: rgba(65, 105, 225, 0.25);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-radius: 40px;
+            padding: 8px 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.15);
+            z-index: 10000;
+            box-sizing: border-box;
+            transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.4, 1);
+            touch-action: pan-y;
+            cursor: grab;
+        }
+        .mobile-nav:active {
+            cursor: grabbing;
+            transform: scale(0.98);
+            transition: transform 0.05s ease;
+        }
+        @media (max-width: 768px) {
+            .mobile-nav {
+                display: flex;
+            }
+        }
+        .mobile-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            background: transparent;
+            border: none;
+            padding: 8px 10px;
+            border-radius: 30px;
+            min-width: 60px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+            color: rgba(255, 255, 255, 0.75);
+            fill: rgba(255, 255, 255, 0.75);
+            position: relative;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .mobile-nav-item svg {
+            width: 24px;
+            height: 24px;
+            transition: transform 0.2s ease;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+        .mobile-nav-item span {
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .mobile-nav-item.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            fill: white;
+            transform: scale(1.05);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .mobile-nav-item:active {
+            transform: scale(0.92);
+            background: rgba(255, 255, 255, 0.25);
+        }
+        .mobile-nav .cart-badge-mobile {
+            position: absolute;
+            top: 2px;
+            right: 6px;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 5px;
+            border-radius: 999px;
+            background: #ff2d55;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 900;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(255,45,85,0.4);
+            border: 2px solid rgba(65, 105, 225, 0.4);
+        }
+        .mobile-nav .cart-badge-mobile.show {
+            display: inline-flex;
+        }
+        @media (max-width: 768px) {
+            .profile-actions .btn-back {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+<div id="loading" class="screen active">
+    <div class="sticker" id="loadingAnim"></div>
+    <div class="title">Загрузка профиля...</div>
+</div>
+
+<div id="profile" class="screen profile-screen">
+    <div class="profile-header">
+        <div class="profile-header-top">
+            <button class="edit-button" onclick="openEditModal()">✎ Изменить</button>
+        </div>
+        <div class="profile-avatar" id="profileAvatar"></div>
+        <div class="profile-name-row">
+            <div class="profile-name" id="profileName">Пользователь</div>
+            <span class="vk-badge" id="vkBadge" style="display: none;">
+                <svg viewBox="0 0 24 24">
+                    <path d="M15.07 2H8.93C3.33 2 2 3.33 2 8.93v6.14C2 20.67 3.33 22 8.93 22h6.14c5.6 0 6.93-1.33 6.93-6.93V8.93C22 3.33 20.67 2 15.07 2zm3.54 14.2h-1.46c-.56 0-.73-.43-1.73-1.44-.86-.86-1.24-.98-1.46-.98-.3 0-.38.08-.38.47v1.23c0 .34-.11.54-1.02.54-1.5 0-3.17-.92-4.35-2.64-1.8-2.51-2.29-4.4-2.29-4.79 0-.2.08-.39.47-.39h1.46c.35 0 .48.16.61.54.68 1.83 1.8 3.43 2.27 3.43.17 0 .25-.08.25-.52v-1.82c-.06-.96-.56-1.04-.56-1.39 0-.16.13-.3.3-.3h2.3c.26 0 .35.14.35.45v2.41c0 .26.11.35.18.35.15 0 .27-.09.53-.35 1.01-1.14 1.72-2.89 1.72-2.89.1-.17.23-.26.44-.26h1.46c.45 0 .55.23.45.54-.2.9-2.13 3.24-2.13 3.24-.16.22-.21.33 0 .59.16.21.7.68 1.06 1.1.65.75 1.15 1.38 1.15 1.8.01.41-.3.6-.74.6z"/>
+                </svg>
+                VK ID
+            </span>
+        </div>
+        <div class="profile-id" id="profileId"></div>
+        <div class="profile-username" id="profileUsername"></div>
+        <button class="telegram-link-btn" id="telegramLinkBtn">
+            <svg viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+            </svg>
+            <span id="telegramLinkText">Привязать Telegram</span>
+        </button>
+    </div>
+
+    <div class="profile-content">
+        <div class="profile-section">
+            <div class="section-title">
+                <span>История заказов</span>
+                <span id="ordersCount">0</span>
+            </div>
+            <div class="orders-list" id="ordersList"></div>
+        </div>
+    </div>
+</div>
+
+<div id="error" class="screen error-screen">
+    <div class="error-icon"></div>
+    <div class="error-title" id="errorTitle">Ошибка загрузки</div>
+    <div class="error-text" id="errorText">Не удалось загрузить данные профиля</div>
+    <div style="display: flex; gap: 12px; margin-top: 20px;">
+        <button class="profile-btn btn-back" id="retryBtn">Повторить</button>
+        <button class="profile-btn btn-back" onclick="location.href='index.html'">В магазин</button>
+    </div>
+</div>
+
+<div id="editModal" class="modal-overlay" style="display: none;">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h2>Редактировать профиль</h2>
+            <button class="modal-close" onclick="closeEditModal()">×</button>
+        </div>
+        <div class="modal-content">
+            <div class="edit-section">
+                <div class="edit-section-title">Фото профиля</div>
+                <div class="avatar-edit-container">
+                    <div class="current-avatar" id="editAvatarPreview"></div>
+                    <div class="avatar-actions">
+                        <label for="avatarUpload" class="btn btn-primary">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="white">
+                                <path d="M3 17.46v3.04c0 .28.22.5.5.5h3.04c.13 0 .26-.05.35-.15L17.81 9.94l-3.75-3.75L3.15 17.1c-.1.1-.15.22-.15.36zM20.71 5.63l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83c.39-.39.39-1.02 0-1.41z"/>
+                            </svg>
+                            Загрузить
+                        </label>
+                        <input type="file" id="avatarUpload" accept="image/*" style="display: none;">
+                        <button class="btn btn-secondary" id="removeAvatarBtn">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                            </svg>
+                            Удалить
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="edit-section">
+                <div class="edit-section-title">Имя пользователя</div>
+                <div class="input-group">
+                    <input type="text" id="editUsername" class="edit-input" placeholder="Введите имя" maxlength="50">
+                    <button class="btn btn-primary" id="saveUsernameBtn">Сохранить</button>
+                </div>
+                <div class="input-hint">От 2 до 50 символов</div>
+            </div>
+            <div class="edit-section">
+                <div class="edit-section-title">Telegram</div>
+                <div id="telegramStatus" class="telegram-status">
+                    <div class="telegram-info">
+                        <span class="telegram-name" id="telegramName">Не привязан</span>
+                        <span class="telegram-username" id="telegramUser">—</span>
+                    </div>
+                    <div class="telegram-actions">
+                        <button class="btn-danger-small" id="unlinkTelegramBtn" style="display: none;">
+                            <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
+                                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                            </svg>
+                            Отвязать
+                        </button>
+                    </div>
+                </div>
+                <button class="btn btn-primary" id="linkTelegramBtn" style="width: 100%;">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+                    </svg>
+                    Привязать Telegram
+                </button>
+            </div>
+            <div class="logout-section">
+                <button class="btn btn-danger" id="logoutBtn">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                        <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
+                    </svg>
+                    Выйти из аккаунта
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="confirmModal" class="confirm-overlay" style="display: none;">
+    <div class="confirm-container">
+        <div class="confirm-title" id="confirmTitle">Подтверждение</div>
+        <div class="confirm-message" id="confirmMessage">Вы уверены?</div>
+        <div class="confirm-actions">
+            <button class="confirm-btn confirm-btn-cancel" id="confirmCancel">Отмена</button>
+            <button class="confirm-btn confirm-btn-danger" id="confirmOk">Да</button>
+        </div>
+    </div>
+</div>
+
+<div class="mobile-nav" id="mobileNav">
+    <button class="mobile-nav-item" id="navWallet">
+        <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-0.9 2-2 2H5c-1.11 0-2-0.9-2-2V5c0-1.1 0.89-2 2-2h14c1.1 0 2 0.9 2 2v1h-9c-1.1 0-2 0.9-2 2v8c0 1.1 0.9 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-0.83 0-1.5-0.67-1.5-1.5s0.67-1.5 1.5-1.5 1.5 0.67 1.5 1.5-0.67 1.5-1.5 1.5z"/></svg>
+        <span>Кошелёк</span>
+    </button>
+    <button class="mobile-nav-item active" id="navProfile">
+        <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+        <span>Профиль</span>
+    </button>
+    <button class="mobile-nav-item" id="navHome">
+        <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        <span>Главная</span>
+    </button>
+    <button class="mobile-nav-item" id="navSupport">
+        <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zM4 6h16v2l-8 5-8-5V6z"/></svg>
+        <span>Поддержка</span>
+    </button>
+    <button class="mobile-nav-item" id="navCart">
+        <svg viewBox="0 0 24 24"><path d="M7 18a2 2 0 1 0 0 4a2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4a2 2 0 0 0 0-4zM7.16 14h9.45a2 2 0 0 0 1.75-1.03l3.58-6.49-1.74-.99-3.58 6.49H8.53L5.21 4H1v2h3l3.6 7.59-1.35 2.44C5.52 16.37 6.48 18 8 18h12v-2H8l1.16-2z"/></svg>
+        <span>Корзина</span>
+        <div class="cart-badge-mobile" id="cartBadgeMobile">0</div>
+    </button>
+</div>
+
+<script>
+    const API_URL = 'https://duck-shop-sever.onrender.com';
+    const USER_KEY = 'duck_user_v1';
+    const CART_KEY = 'duck_cart_v1';
+    const SHOP_URL = 'index.html';
+    let currentUser = null;
+    let confirmCallback = null;
+    let oauthWindow = null;
+
+    function fmtRub(n) {
+        if (!n && n !== 0) return '0 ₽';
+        return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + ' ₽';
+    }
+
+    function showConfirm(title, message, callback) {
+        document.getElementById('confirmTitle').textContent = title;
+        document.getElementById('confirmMessage').textContent = message;
+        confirmCallback = callback;
+        document.getElementById('confirmModal').style.display = 'flex';
+    }
+
+    function hideConfirm() {
+        document.getElementById('confirmModal').style.display = 'none';
+        confirmCallback = null;
+    }
+
+    document.getElementById('confirmCancel').addEventListener('click', hideConfirm);
+    document.getElementById('confirmOk').addEventListener('click', function() {
+        if (confirmCallback) {
+            confirmCallback();
+        }
+        hideConfirm();
+    });
+
+    function loadCart() {
+        try {
+            return JSON.parse(localStorage.getItem(CART_KEY) || '{}');
+        } catch {
+            return {};
+        }
+    }
+
+    function cartCount() {
+        return Object.values(loadCart()).reduce((a, b) => a + b, 0);
+    }
+
+    function updateBadge() {
+        const n = cartCount();
+        const badge = document.getElementById('cartBadgeMobile');
+        if (badge) {
+            if (n > 0) {
+                badge.classList.add('show');
+                badge.textContent = n;
+            } else {
+                badge.classList.remove('show');
+            }
+        }
+    }
+
+    function loadLottieAnimations() {
+        try {
+            lottie.loadAnimation({
+                container: document.getElementById('loadingAnim'),
+                renderer: 'svg',
+                loop: true,
+                autoplay: true,
+                path: 'loading.json'
+            });
+        } catch (error) {
+            const sticker = document.getElementById('loadingAnim');
+            if (sticker) {
+                sticker.innerHTML = '<div style="color: white; font-size: 50px;">⌛</div>';
+            }
+        }
+    }
+
+    function loadNoOrdersAnimation() {
+        const container = document.getElementById('noOrdersAnim');
+        if (!container) return;
+        container.innerHTML = '';
+        try {
+            lottie.loadAnimation({
+                container: container,
+                renderer: 'svg',
+                loop: true,
+                autoplay: true,
+                path: 'bad_pay.json'
+            });
+        } catch (error) {
+            container.innerHTML = '<div style="color: white; font-size: 40px;">📭</div>';
+        }
+    }
+
+    function showScreen(id) {
+        ['loading', 'profile', 'error'].forEach(s => {
+            const el = document.getElementById(s);
+            if (el) {
+                el.classList.remove('active', 'leaving');
+            }
+        });
+        const next = document.getElementById(id);
+        if (next) {
+            next.classList.add('active');
+        }
+    }
+
+    function loadUser() {
+        try {
+            return JSON.parse(localStorage.getItem(USER_KEY));
+        } catch {
+            return null;
+        }
+    }
+
+    function saveUser(user) {
+        try {
+            localStorage.setItem(USER_KEY, JSON.stringify(user));
+        } catch (error) {}
+    }
+
+    function clearUser() {
+        localStorage.removeItem(USER_KEY);
+        currentUser = null;
+    }
+
+    function setupMobileNavigation() {
+        const navWallet = document.getElementById('navWallet');
+        const navProfile = document.getElementById('navProfile');
+        const navHome = document.getElementById('navHome');
+        const navSupport = document.getElementById('navSupport');
+        const navCart = document.getElementById('navCart');
+        const mobileNav = document.getElementById('mobileNav');
+
+        if (navWallet) {
+            navWallet.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location.href = 'wallet.html';
+            });
+        }
+        if (navProfile) {
+            navProfile.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location.href = 'profile.html';
+            });
+        }
+        if (navHome) {
+            navHome.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location.href = SHOP_URL;
+            });
+        }
+        if (navSupport) {
+            navSupport.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location.href = 'support.html';
+            });
+        }
+        if (navCart) {
+            navCart.addEventListener('click', function(e) {
+                e.preventDefault();
+                localStorage.setItem('open_cart', 'true');
+                window.location.href = SHOP_URL;
+            });
+        }
+
+        updateMobileNavActiveState();
+
+        if (mobileNav) {
+            let isDragging = false;
+            let startX, startY;
+
+            mobileNav.addEventListener('mousedown', function(e) {
+                isDragging = false;
+                startX = e.clientX;
+                startY = e.clientY;
+            });
+            mobileNav.addEventListener('mousemove', function(e) {
+                if (!startX) return;
+                const dx = e.clientX - startX;
+                const dy = e.clientY - startY;
+                if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+                    isDragging = true;
+                }
+            });
+            mobileNav.addEventListener('mouseup', function(e) {
+                startX = null;
+                startY = null;
+            });
+            mobileNav.addEventListener('touchstart', function(e) {
+                isDragging = false;
+                if (e.touches.length) {
+                    startX = e.touches[0].clientX;
+                    startY = e.touches[0].clientY;
+                }
+            });
+            mobileNav.addEventListener('touchmove', function(e) {
+                if (!startX) return;
+                if (e.touches.length) {
+                    const dx = e.touches[0].clientX - startX;
+                    const dy = e.touches[0].clientY - startY;
+                    if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+                        isDragging = true;
+                    }
+                }
+            });
+            mobileNav.addEventListener('touchend', function(e) {
+                startX = null;
+                startY = null;
+            });
+
+            const navItems = [navWallet, navProfile, navHome, navSupport, navCart];
+            navItems.forEach(item => {
+                if (item) {
+                    item.addEventListener('click', function(e) {
+                        if (isDragging) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            isDragging = false;
+                        }
+                    });
+                }
+            });
+        }
+    }
+
+    function updateMobileNavActiveState() {
+        const navItems = {
+            wallet: document.getElementById('navWallet'),
+            profile: document.getElementById('navProfile'),
+            home: document.getElementById('navHome'),
+            support: document.getElementById('navSupport'),
+            cart: document.getElementById('navCart')
+        };
+        Object.values(navItems).forEach(item => {
+            if (item) item.classList.remove('active');
+        });
+        const currentPath = window.location.pathname;
+        if (currentPath.includes('wallet.html')) {
+            if (navItems.wallet) navItems.wallet.classList.add('active');
+        } else if (currentPath.includes('profile.html')) {
+            if (navItems.profile) navItems.profile.classList.add('active');
+        } else if (currentPath.includes('support.html')) {
+            if (navItems.support) navItems.support.classList.add('active');
+        } else if (currentPath.includes('index.html') || currentPath === '/' || currentPath === '') {
+            if (navItems.home) navItems.home.classList.add('active');
+        }
+    }
+
+    async function loadProfileData() {
+        if (!currentUser) {
+            window.location.href = 'reg_log.html';
+            return;
+        }
+
+        showScreen('loading');
+
+        try {
+            const response = await fetch(`${API_URL}/api/auth/profile/${currentUser.id}`);
+
+            if (response.status === 404) {
+                console.error('User not found, redirecting to login');
+                clearUser();
+                window.location.href = 'reg_log.html';
+                return;
+            }
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            if (data.success && data.user) {
+                currentUser = { ...currentUser, ...data.user };
+                saveUser(currentUser);
+                updateProfileUI(currentUser);
+                await loadOrders(data.orders || []);
+                showScreen('profile');
+                updateBadge();
+            } else {
+                throw new Error(data.error || 'Ошибка загрузки профиля');
+            }
+        } catch (error) {
+            console.error('Error loading profile:', error);
+            if (error.message === 'User not found' || error.message.includes('404')) {
+                clearUser();
+                window.location.href = 'reg_log.html';
+            } else {
+                showError('Ошибка загрузки', 'Не удалось загрузить данные профиля');
+            }
+        }
+    }
+
+    function updateProfileUI(user) {
+        if (!user) return;
+
+        const avatar = document.getElementById('profileAvatar');
+        const editAvatarPreview = document.getElementById('editAvatarPreview');
+        const profileName = document.getElementById('profileName');
+        const profileId = document.getElementById('profileId');
+        const profileUsername = document.getElementById('profileUsername');
+        const telegramLinkBtn = document.getElementById('telegramLinkBtn');
+        const telegramLinkText = document.getElementById('telegramLinkText');
+        const vkBadge = document.getElementById('vkBadge');
+        const telegramStatus = document.getElementById('telegramStatus');
+        const telegramName = document.getElementById('telegramName');
+        const telegramUser = document.getElementById('telegramUser');
+        const unlinkTelegramBtn = document.getElementById('unlinkTelegramBtn');
+        const linkTelegramBtn = document.getElementById('linkTelegramBtn');
+
+        let displayName = user.username || 'Пользователь';
+
+        if (user.auth_provider === 'telegram') {
+            if (user.firstName && user.lastName) {
+                displayName = `${user.firstName} ${user.lastName}`;
+            } else if (user.firstName) {
+                displayName = user.firstName;
+            } else if (user.telegramUsername) {
+                displayName = `@${user.telegramUsername}`;
+            }
+        } else if (user.firstName || user.lastName) {
+            displayName = `${user.firstName || ''} ${user.lastName || ''}`.trim() || displayName;
+        }
+
+        profileName.textContent = displayName;
+
+        if (user.auth_provider === 'telegram') {
+            profileId.textContent = `TG ID: ${user.tgId || user.id}`;
+            profileUsername.textContent = user.telegramUsername ? `@${user.telegramUsername}` : '';
+            profileUsername.style.display = user.telegramUsername ? 'block' : 'none';
+        } else if (user.auth_provider === 'vk') {
+            profileId.textContent = `VK ID: ${user.vkId || user.id}`;
+            profileUsername.textContent = '';
+            profileUsername.style.display = 'none';
+        } else if (user.auth_provider === 'vk+telegram') {
+            profileId.textContent = `ID: ${user.id} (VK + TG)`;
+            profileUsername.textContent = user.telegramUsername ? `@${user.telegramUsername}` : '';
+            profileUsername.style.display = user.telegramUsername ? 'block' : 'none';
+        } else {
+            profileId.textContent = `ID: ${user.id}`;
+            profileUsername.style.display = 'none';
+        }
+
+        if (vkBadge) {
+            if (user.auth_provider === 'vk' || user.auth_provider === 'vk+telegram') {
+                vkBadge.style.display = 'inline-flex';
+            } else {
+                vkBadge.style.display = 'none';
+            }
+        }
+
+        const firstLetter = displayName.charAt(0).toUpperCase();
+        const avatarHtml = user.avatarUrl ? `<img src="${user.avatarUrl}" alt="${displayName}">` : `<div class="avatar-placeholder">${firstLetter}</div>`;
+
+        if (avatar) avatar.innerHTML = avatarHtml;
+        if (editAvatarPreview) editAvatarPreview.innerHTML = avatarHtml;
+
+        if (user.auth_provider === 'telegram') {
+            if (telegramLinkBtn) telegramLinkBtn.classList.add('linked');
+            if (telegramLinkText) telegramLinkText.textContent = 'Telegram аккаунт';
+            if (telegramLinkBtn) telegramLinkBtn.disabled = true;
+            if (telegramStatus) telegramStatus.classList.add('linked');
+            if (telegramName) telegramName.textContent = user.firstName || user.username || 'Пользователь';
+            if (telegramUser) telegramUser.textContent = user.telegramUsername ? `@${user.telegramUsername}` : '—';
+            if (unlinkTelegramBtn) unlinkTelegramBtn.style.display = 'none';
+            if (linkTelegramBtn) linkTelegramBtn.style.display = 'none';
+        } else if (user.auth_provider === 'vk+telegram') {
+            if (telegramLinkBtn) telegramLinkBtn.classList.add('linked');
+            if (telegramLinkText) telegramLinkText.textContent = 'Telegram привязан';
+            if (telegramLinkBtn) telegramLinkBtn.disabled = false;
+            if (telegramStatus) telegramStatus.classList.add('linked');
+            if (telegramName) telegramName.textContent = user.firstName || user.username || 'Пользователь';
+            if (telegramUser) telegramUser.textContent = user.telegramUsername ? `@${user.telegramUsername}` : '—';
+            if (unlinkTelegramBtn) unlinkTelegramBtn.style.display = 'inline-flex';
+            if (linkTelegramBtn) linkTelegramBtn.style.display = 'none';
+        } else {
+            if (telegramLinkBtn) telegramLinkBtn.classList.remove('linked');
+            if (telegramLinkText) telegramLinkText.textContent = 'Привязать Telegram';
+            if (telegramLinkBtn) telegramLinkBtn.disabled = false;
+            if (telegramStatus) telegramStatus.classList.remove('linked');
+            if (telegramName) telegramName.textContent = 'Не привязан';
+            if (telegramUser) telegramUser.textContent = '—';
+            if (unlinkTelegramBtn) unlinkTelegramBtn.style.display = 'none';
+            if (linkTelegramBtn) linkTelegramBtn.style.display = 'block';
+        }
+    }
+
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('ru-RU', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    }
+
+    function getDisplayStatus(status, paymentStatus, refundAmount) {
+        if (status === 'completed') return { text: 'Завершен', className: 'completed' };
+        if (status === 'canceled') return { text: 'Отменен', className: 'canceled' };
+        if (status === 'manyback' || refundAmount > 0) return { text: 'Возврат', className: 'manyback' };
+        if (paymentStatus === 'pending' && status === 'new') return { text: 'Ожидает оплаты', className: 'pending' };
+        return { text: 'В работе', className: 'waiting' };
+    }
+
+    async function loadOrders(orders) {
+        const list = document.getElementById('ordersList');
+        const count = document.getElementById('ordersCount');
+        if (!list || !count) return;
+
+        if (!orders || orders.length === 0) {
+            count.textContent = '0';
+            list.innerHTML = `
+                <div class="no-orders">
+                    <div class="sticker-small" id="noOrdersAnim"></div>
+                    <div class="no-orders-text">У вас пока нет заказов</div>
+                    <div class="no-orders-subtext">Совершите первую покупку чтобы начать историю!</div>
+                </div>
+            `;
+            setTimeout(() => {
+                loadNoOrdersAnimation();
+            }, 100);
+            return;
+        }
+
+        count.textContent = orders.length;
+        orders.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        list.innerHTML = orders.map(order => {
+            const status = getDisplayStatus(order.status, order.paymentStatus, order.refundAmount);
+            const isGrayed = order.status === 'canceled' || order.status === 'manyback';
+            return `
+                <div class="order-item ${isGrayed ? 'grayed' : ''}" onclick="window.location.href='moreorder.html?order=${order.id}'">
+                    <div class="order-header">
+                        <div class="order-id">#${order.id}</div>
+                        <div class="order-date">${formatDate(order.date)}</div>
+                    </div>
+                    <div class="order-details">
+                        <div class="order-total">${fmtRub(order.total)}</div>
+                        <div class="order-status ${status.className}">${status.text}</div>
+                    </div>
+                    ${order.refundAmount ? `<div style="font-size: 12px; color: #9c27b0; margin-top: 8px;">Возврат: ${fmtRub(order.refundAmount)}</div>` : ''}
+                </div>
+            `;
+        }).join('');
+    }
+
+    function showError(title, message) {
+        const errorTitle = document.getElementById('errorTitle');
+        const errorText = document.getElementById('errorText');
+        if (errorTitle) errorTitle.textContent = title;
+        if (errorText) errorText.textContent = message;
+        showScreen('error');
+    }
+
+    function openEditModal() {
+        const editUsername = document.getElementById('editUsername');
+        if (editUsername && currentUser) {
+            editUsername.value = currentUser.username || '';
+        }
+        const modal = document.getElementById('editModal');
+        if (modal) modal.style.display = 'flex';
+    }
+
+    function closeEditModal() {
+        const modal = document.getElementById('editModal');
+        if (modal) modal.style.display = 'none';
+    }
+
+    const avatarUpload = document.getElementById('avatarUpload');
+    if (avatarUpload) {
+        avatarUpload.addEventListener('change', async function(e) {
+            const file = e.target.files[0];
+            if (!file || !currentUser) return;
+
+            const formData = new FormData();
+            formData.append('avatar', file);
+            formData.append('userId', currentUser.id);
+
+            try {
+                const response = await fetch(`${API_URL}/api/user/avatar`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                if (data.success) {
+                    currentUser.avatarUrl = data.avatarUrl;
+                    saveUser(currentUser);
+                    updateProfileUI(currentUser);
+                    closeEditModal();
+                } else {
+                    alert('Ошибка при загрузке аватарки');
+                }
+            } catch (error) {
+                alert('Ошибка сети');
+            }
+        });
+    }
+
+    const removeAvatarBtn = document.getElementById('removeAvatarBtn');
+    if (removeAvatarBtn) {
+        removeAvatarBtn.addEventListener('click', async function() {
+            if (!currentUser) return;
+
+            showConfirm('Удаление фото', 'Вы уверены, что хотите удалить фото профиля?', async function() {
+                const formData = new FormData();
+                formData.append('avatar', new Blob([]), 'empty');
+                formData.append('userId', currentUser.id);
+
+                try {
+                    const response = await fetch(`${API_URL}/api/user/avatar`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        currentUser.avatarUrl = null;
+                        saveUser(currentUser);
+                        updateProfileUI(currentUser);
+                        closeEditModal();
+                    }
+                } catch (error) {
+                    alert('Ошибка сети');
+                }
+            });
+        });
+    }
+
+    const saveUsernameBtn = document.getElementById('saveUsernameBtn');
+    if (saveUsernameBtn) {
+        saveUsernameBtn.addEventListener('click', async function() {
+            const editUsername = document.getElementById('editUsername');
+            if (!editUsername || !currentUser) return;
+
+            const newUsername = editUsername.value.trim();
+            if (newUsername.length < 2 || newUsername.length > 50) {
+                alert('Имя должно быть от 2 до 50 символов');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/api/user/username`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: currentUser.id, username: newUsername })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    currentUser.username = data.username;
+                    saveUser(currentUser);
+                    updateProfileUI(currentUser);
+                    closeEditModal();
+                } else {
+                    alert(data.error || 'Ошибка при изменении имени');
+                }
+            } catch (error) {
+                alert('Ошибка сети');
+            }
+        });
+    }
+
+    async function generateTelegramLink() {
+        if (!currentUser) return;
+        if (currentUser.auth_provider === 'telegram') {
+            alert('Вы уже авторизованы через Telegram');
+            return;
+        }
+        if (currentUser.auth_provider === 'vk+telegram') {
+            alert('Telegram уже привязан к этому аккаунту');
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_URL}/api/user/telegram-link/${currentUser.id}`);
+            const data = await response.json();
+
+            if (data.success && data.telegramLink) {
+                const width = 600;
+                const height = 700;
+                const left = (screen.width - width) / 2;
+                const top = (screen.height - height) / 2;
+
+                oauthWindow = window.open(
+                    data.telegramLink,
+                    'TelegramLink',
+                    `width=${width},height=${height},left=${left},top=${top},popup=1`
+                );
+
+                const messageHandler = async (event) => {
+                    if (event.origin !== window.location.origin) return;
+                    if (event.data && event.data.type === 'telegram_linked' && event.data.user) {
+                        window.removeEventListener('message', messageHandler);
+                        currentUser = event.data.user;
+                        saveUser(currentUser);
+                        updateProfileUI(currentUser);
+                        closeEditModal();
+                        alert('Telegram успешно привязан!');
+                        if (oauthWindow) oauthWindow.close();
+                    }
+                };
+
+                window.addEventListener('message', messageHandler);
+
+                setTimeout(() => {
+                    if (oauthWindow && !oauthWindow.closed) {
+                        oauthWindow.close();
+                        window.removeEventListener('message', messageHandler);
+                        alert('Время ожидания истекло. Попробуйте снова.');
+                    }
+                }, 5 * 60 * 1000);
+            } else {
+                alert('Ошибка генерации ссылки');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Ошибка сети');
+        }
+    }
+
+    function openTelegramLink() {
+        if (!currentUser) return;
+        if (currentUser.auth_provider === 'telegram') {
+            alert('Вы уже авторизованы через Telegram');
+            return;
+        }
+        if (currentUser.auth_provider === 'vk+telegram') {
+            alert('Telegram уже привязан к этому аккаунту');
+            return;
+        }
+        generateTelegramLink();
+    }
+
+    const telegramLinkBtn = document.getElementById('telegramLinkBtn');
+    if (telegramLinkBtn) {
+        telegramLinkBtn.addEventListener('click', openTelegramLink);
+    }
+
+    const linkTelegramBtn = document.getElementById('linkTelegramBtn');
+    if (linkTelegramBtn) {
+        linkTelegramBtn.addEventListener('click', openTelegramLink);
+    }
+
+    const unlinkTelegramBtn = document.getElementById('unlinkTelegramBtn');
+    if (unlinkTelegramBtn) {
+        unlinkTelegramBtn.addEventListener('click', async function() {
+            if (!currentUser) return;
+
+            showConfirm('Отвязка Telegram', 'Вы уверены, что хотите отвязать Telegram аккаунт?', async function() {
+                const btn = unlinkTelegramBtn;
+                const originalText = btn.innerHTML;
+                btn.innerHTML = 'Отвязываем...';
+                btn.disabled = true;
+
+                try {
+                    const response = await fetch(`${API_URL}/api/user/unlink-telegram`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ userId: currentUser.id })
+                    });
+                    const data = await response.json();
+
+                    if (data.success) {
+                        currentUser.auth_provider = 'vk';
+                        currentUser.tgId = null;
+                        currentUser.telegramUsername = null;
+                        currentUser.firstName = null;
+                        currentUser.lastName = null;
+
+                        if (currentUser.avatarUrl && currentUser.avatarUrl.includes('api.telegram.org')) {
+                            currentUser.avatarUrl = null;
+                        }
+
+                        saveUser(currentUser);
+                        updateProfileUI(currentUser);
+                        closeEditModal();
+                        alert('Telegram отвязан');
+                    } else {
+                        alert(data.error || 'Ошибка при отвязке Telegram');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Ошибка сети при отвязке Telegram');
+                } finally {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }
+            });
+        });
+    }
+
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            showConfirm('Выход', 'Вы уверены, что хотите выйти из аккаунта?', function() {
+                clearUser();
+                window.location.href = SHOP_URL;
+            });
+        });
+    }
+
+    const retryBtn = document.getElementById('retryBtn');
+    if (retryBtn) {
+        retryBtn.addEventListener('click', () => {
+            if (currentUser) {
+                loadProfileData();
+            } else {
+                window.location.href = 'reg_log.html';
+            }
+        });
+    }
+
+    function checkInitialAuth() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const authToken = urlParams.get('auth');
+
+        if (authToken) {
+            window.history.replaceState({}, '', window.location.pathname);
+            verifyAuthToken(authToken);
+        } else {
+            currentUser = loadUser();
+            if (currentUser) {
+                loadProfileData();
+            } else {
+                window.location.href = 'reg_log.html';
+            }
+        }
+    }
+
+    async function verifyAuthToken(token) {
+        showScreen('loading');
+        try {
+            const response = await fetch(`${API_URL}/api/auth/check/${token}`);
+            const data = await response.json();
+
+            if (data.success && data.authenticated && data.user) {
+                currentUser = data.user;
+                saveUser(data.user);
+                loadProfileData();
+            } else {
+                if (data.expired) {
+                    showError('Ссылка устарела', 'Попробуйте войти снова');
+                    setTimeout(() => {
+                        window.location.href = 'reg_log.html';
+                    }, 3000);
+                } else {
+                    showError('Ошибка авторизации', 'Не удалось войти в аккаунт');
+                }
+            }
+        } catch (error) {
+            console.error('Auth error:', error);
+            showError('Ошибка сети', 'Не удалось подключиться к серверу');
+        }
+    }
+
+    function checkMaintenanceAndAdmin() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const adminBypass = urlParams.get('admin_bypass');
+
+        if (adminBypass) {
+            sessionStorage.setItem('admin_bypass_active', 'true');
+            sessionStorage.setItem('admin_bypass_key', adminBypass);
+            window.history.replaceState({}, '', window.location.pathname);
+            setTimeout(function() {
+                var adminNote = document.createElement('div');
+                adminNote.style.cssText = `
+                    position: fixed;
+                    bottom: 100px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: rgba(0,0,0,0.8);
+                    color: #ffd700;
+                    padding: 8px 20px;
+                    border-radius: 30px;
+                    font-size: 14px;
+                    font-weight: 600;
+                    z-index: 10000;
+                    backdrop-filter: blur(5px);
+                    border: 1px solid rgba(255,215,0,0.3);
+                    animation: fadeIn 0.3s ease;
+                `;
+                adminNote.textContent = '🔑 Режим администратора (техперерыв игнорируется)';
+                document.body.appendChild(adminNote);
+                setTimeout(function() {
+                    adminNote.style.opacity = '0';
+                    adminNote.style.transition = 'opacity 0.5s';
+                    setTimeout(function() {
+                        if (adminNote.parentNode) {
+                            adminNote.parentNode.removeChild(adminNote);
+                        }
+                    }, 500);
+                }, 4000);
+            }, 1000);
+            return true;
+        }
+
+        if (sessionStorage.getItem('admin_bypass_active') === 'true') {
+            return true;
+        }
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', API_URL + '/api/maintenance-status', false);
+        xhr.send();
+
+        if (xhr.status === 200) {
+            const data = JSON.parse(xhr.responseText);
+            if (data.maintenance) {
+                sessionStorage.setItem('attempted_page', window.location.pathname);
+                window.location.href = 'working.html';
+                return true;
+            }
+        }
+        return false;
+    }
+
+    (function addFadeInStyle() {
+        const style = document.createElement('style');
+        style.textContent = '@keyframes fadeIn{from{opacity:0;transform:translate(-50%,20px)}to{opacity:1;transform:translate(-50%,0)}}';
+        document.head.appendChild(style);
+    })();
+
+    document.addEventListener('DOMContentLoaded', () => {
+        if (checkMaintenanceAndAdmin()) return;
+
+        loadLottieAnimations();
+        updateBadge();
+        setupMobileNavigation();
+        setTimeout(checkInitialAuth, 100);
+    });
+</script>
+</body>
+</html>
