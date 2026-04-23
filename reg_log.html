@@ -1,1 +1,392 @@
-<html lang="ru"> <head> <meta charset="UTF-8" /> <title>Вход / Регистрация - Duck Shop</title> <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" /> <link rel="icon" type="image/png" href="https://i.imgur.com/S4nWZZp.png"/> <link rel="shortcut icon" type="image/png" href="https://i.imgur.com/S4nWZZp.png"/><link rel="apple-touch-icon" href="https://i.imgur.com/YOUhVyG.png"/> <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script> <style> html, body { margin: 0; padding: 0; width: 100%; min-height: 100vh; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: linear-gradient(180deg, #0b3c91 0%, #1565c0 55%, #42a5f5 100%); display: flex; align-items: center; justify-content: center; overflow-x: hidden; } .auth-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; width: 100%; max-width: 400px; margin: 0 auto; min-height: 100vh; } .auth-content { width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; } .auth-sticker { width: 160px; height: 160px; margin-bottom: 20px; } @media (max-width: 480px) { .auth-sticker { width: 140px; height: 140px; margin-bottom: 15px; } } .auth-title { font-size: 32px; font-weight: 700; color: white; margin-bottom: 8px; text-align: center; text-shadow: 0 4px 12px rgba(0,0,0,0.2); width: 100%; } .auth-subtitle { font-size: 16px; color: rgba(255,255,255,0.9); margin-bottom: 32px; text-align: center; max-width: 280px; line-height: 1.5; } .telegram-link { display: flex; align-items: center; justify-content: center; gap: 14px; width: 100%; max-width: 320px; height: 60px; border-radius: 18px; background: #27A7E7; color: white; font-weight: 600; font-size: 18px; text-decoration: none; box-shadow: 0 8px 20px rgba(0,0,0,0.25); transition: transform 0.15s ease, box-shadow 0.15s ease; margin: 0 auto; border: none; cursor: pointer; padding: 0 20px; box-sizing: border-box; } .telegram-link:active { transform: scale(0.98); } .telegram-link svg { width: 24px; height: 24px; fill: white; flex-shrink: 0; } .telegram-link span { white-space: nowrap; } .loading-spinner { display: none; width: 48px; height: 48px; border: 4px solid rgba(255,255,255,0.2); border-top-color: white; border-radius: 50%; animation: spin 1s linear infinite; margin: 20px auto; } @keyframes spin { to { transform: rotate(360deg); } } .back-link { margin-top: 30px; color: rgba(255,255,255,0.6); text-decoration: none; font-size: 15px; transition: color 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 0; width: 100%; } .back-link:hover { color: white; } .back-link svg { width: 18px; height: 18px; fill: currentColor; } @media (max-width: 380px) { .auth-title { font-size: 28px; } .auth-subtitle { font-size: 14px; margin-bottom: 24px; } .telegram-link { height: 54px; font-size: 16px; } .telegram-link svg { width: 22px; height: 22px; } } </style> </head> <body> <div class="auth-screen"> <div class="auth-content"> <div id="lottie-animation" class="auth-sticker"></div> <div class="auth-title">Добро пожаловать</div> <div class="auth-subtitle">Войдите или зарегистрируйтесь через Telegram</div> <button class="telegram-link" id="telegramLink"> <svg viewBox="0 0 24 24"> <path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/> </svg> <span>Войти через Telegram</span> </button> <div class="loading-spinner" id="loadingSpinner"></div> </div> <a href="/" class="back-link"> <svg viewBox="0 0 24 24"> <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/> </svg> <span>Вернуться в магазин</span> </a> </div> <script> const API_URL = 'https://duck-shop-sever.onrender.com'; const USER_KEY = 'duck_user_v1'; let oauthWindow = null; let isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream; (function checkExistingAuth() { const savedUser = localStorage.getItem(USER_KEY); if (savedUser) { window.location.href = '/'; return; } })(); (function() { var urlParams = new URLSearchParams(window.location.search); var adminBypass = urlParams.get('admin_bypass'); var authToken = urlParams.get('auth'); if (authToken) { verifyAuthToken(authToken); return; } if (adminBypass) { sessionStorage.setItem('admin_bypass_active', 'true'); sessionStorage.setItem('admin_bypass_key', adminBypass); window.history.replaceState({}, '', window.location.pathname); setTimeout(function() { var adminNote = document.createElement('div'); adminNote.style.cssText = ` position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); color: #ffd700; padding: 8px 20px; border-radius: 30px; font-size: 14px; font-weight: 600; z-index: 10000; backdrop-filter: blur(5px); border: 1px solid rgba(255,215,0,0.3); animation: fadeIn 0.3s ease; `; adminNote.textContent = '🔑 Режим администратора (техперерыв игнорируется)'; document.body.appendChild(adminNote); setTimeout(function() { adminNote.style.opacity = '0'; adminNote.style.transition = 'opacity 0.5s'; setTimeout(function() { if (adminNote.parentNode) { adminNote.parentNode.removeChild(adminNote); } }, 500); }, 4000); }, 1000); return; } if (sessionStorage.getItem('admin_bypass_active') === 'true') { return; } var xhr = new XMLHttpRequest(); xhr.open('GET', API_URL + '/api/maintenance-status', false); xhr.send(); if (xhr.status === 200) { var data = JSON.parse(xhr.responseText); if (data.maintenance) { sessionStorage.setItem('attempted_page', window.location.pathname); window.location.href = 'working'; } } })(); (function() { var style = document.createElement('style'); style.textContent = '@keyframes fadeIn{from{opacity:0;transform:translate(-50%,20px)}to{opacity:1;transform:translate(-50%,0)}}'; document.head.appendChild(style); })(); function initLottie() { try { lottie.loadAnimation({ container: document.getElementById('lottie-animation'), renderer: 'svg', loop: true, autoplay: true, path: 'reg_log.json' }); } catch (e) { console.log('Lottie не загрузилась'); } } function hideSpinner() { const spinner = document.getElementById('loadingSpinner'); if (spinner) spinner.style.display = 'none'; } function showSpinner() { const spinner = document.getElementById('loadingSpinner'); if (spinner) spinner.style.display = 'block'; } async function startTelegramOAuth() { showSpinner(); try { const response = await fetch(`${API_URL}/api/auth/telegram/start`); const data = await response.json(); if (data.success) { if (isIOS) { window.location.href = data.url; } else { oauthWindow = window.open(data.url, 'TelegramAuth', 'width=600,height=600,left=' + (screen.width/2-300) + ',top=' + (screen.height/2-300)); const messageHandler = async (event) => { if (event.origin !== 'https://oauth.telegram.org') return; const { hash, payload, nonce, state } = event.data; if (hash && payload) { window.removeEventListener('message', messageHandler); try { const verifyResponse = await fetch(`${API_URL}/api/auth/telegram/callback`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ hash, payload, nonce, state }) }); const verifyData = await verifyResponse.json(); if (verifyData.success) { localStorage.setItem(USER_KEY, JSON.stringify(verifyData.user)); window.location.href = '/'; } else { alert('Ошибка авторизации: ' + (verifyData.error || 'Неизвестная ошибка')); hideSpinner(); } } catch (err) { console.error('Ошибка верификации:', err); alert('Ошибка при подтверждении авторизации'); hideSpinner(); } finally { if (oauthWindow) oauthWindow.close(); } } }; window.addEventListener('message', messageHandler); setTimeout(() => { if (oauthWindow && !oauthWindow.closed) { oauthWindow.close(); hideSpinner(); alert('Время ожидания истекло. Попробуйте снова.'); window.removeEventListener('message', messageHandler); } }, 5 * 60 * 1000); } } } catch (error) { console.error('Ошибка:', error); alert('Ошибка при запуске авторизации'); hideSpinner(); } } async function verifyAuthToken(token) { showSpinner(); try { const response = await fetch(`${API_URL}/api/auth/check/${token}`); const data = await response.json(); if (data.success && data.authenticated && data.user) { localStorage.setItem(USER_KEY, JSON.stringify(data.user)); window.location.href = '/'; } else { hideSpinner(); if (data.expired) { alert('Ссылка устарела. Попробуйте войти снова.'); } else { alert('Ошибка авторизации'); } } } catch (error) { console.error('Ошибка:', error); hideSpinner(); alert('Ошибка сети'); } } document.getElementById('telegramLink').addEventListener('click', function(e) { e.preventDefault(); startTelegramOAuth(); }); document.addEventListener('DOMContentLoaded', () => { initLottie(); hideSpinner(); }); </script> </body> </html>
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <title>Вход / Регистрация - Duck Shop</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <link rel="icon" type="image/png" href="https://i.imgur.com/S4nWZZp.png"/>
+    <link rel="shortcut icon" type="image/png" href="https://i.imgur.com/S4nWZZp.png"/>
+    <link rel="apple-touch-icon" href="https://i.imgur.com/YOUhVyG.png"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            min-height: 100vh;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(180deg, #0b3c91 0%, #1565c0 55%, #42a5f5 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+        .auth-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            min-height: 100vh;
+        }
+        .auth-content {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+        }
+        .auth-sticker {
+            width: 160px;
+            height: 160px;
+            margin-bottom: 20px;
+        }
+        @media (max-width: 480px) {
+            .auth-sticker {
+                width: 140px;
+                height: 140px;
+                margin-bottom: 15px;
+            }
+        }
+        .auth-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 8px;
+            text-align: center;
+            text-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            width: 100%;
+        }
+        .auth-subtitle {
+            font-size: 16px;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 32px;
+            text-align: center;
+            max-width: 280px;
+            line-height: 1.5;
+        }
+        .telegram-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            width: 100%;
+            max-width: 320px;
+            height: 60px;
+            border-radius: 18px;
+            background: #27A7E7;
+            color: white;
+            font-weight: 600;
+            font-size: 18px;
+            text-decoration: none;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            margin: 0 auto;
+            border: none;
+            cursor: pointer;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+        .telegram-link:active {
+            transform: scale(0.98);
+        }
+        .telegram-link svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
+            flex-shrink: 0;
+        }
+        .telegram-link span {
+            white-space: nowrap;
+        }
+        .loading-spinner {
+            display: none;
+            width: 48px;
+            height: 48px;
+            border: 4px solid rgba(255,255,255,0.2);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .back-link {
+            margin-top: 30px;
+            color: rgba(255,255,255,0.6);
+            text-decoration: none;
+            font-size: 15px;
+            transition: color 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 0;
+            width: 100%;
+        }
+        .back-link:hover {
+            color: white;
+        }
+        .back-link svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+        @media (max-width: 380px) {
+            .auth-title {
+                font-size: 28px;
+            }
+            .auth-subtitle {
+                font-size: 14px;
+                margin-bottom: 24px;
+            }
+            .telegram-link {
+                height: 54px;
+                font-size: 16px;
+            }
+            .telegram-link svg {
+                width: 22px;
+                height: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-screen">
+        <div class="auth-content">
+            <div id="lottie-animation" class="auth-sticker"></div>
+            <div class="auth-title">Добро пожаловать</div>
+            <div class="auth-subtitle">Войдите или зарегистрируйтесь через Telegram</div>
+            <button class="telegram-link" id="telegramLink">
+                <svg viewBox="0 0 24 24">
+                    <path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/>
+                </svg>
+                <span>Войти через Telegram</span>
+            </button>
+            <div class="loading-spinner" id="loadingSpinner"></div>
+        </div>
+        <a href="/" class="back-link">
+            <svg viewBox="0 0 24 24">
+                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+            </svg>
+            <span>Вернуться в магазин</span>
+        </a>
+    </div>
+
+    <script>
+        const API_URL = 'https://duck-shop-sever.onrender.com';
+        const USER_KEY = 'duck_user_v1';
+        let oauthWindow = null;
+        let messageHandler = null;
+
+        function initLottie() {
+            try {
+                lottie.loadAnimation({
+                    container: document.getElementById('lottie-animation'),
+                    renderer: 'svg',
+                    loop: true,
+                    autoplay: true,
+                    path: 'reg_log.json'
+                });
+            } catch (e) {
+                console.log('Lottie not loaded');
+            }
+        }
+
+        function hideSpinner() {
+            const spinner = document.getElementById('loadingSpinner');
+            if (spinner) spinner.style.display = 'none';
+        }
+
+        function showSpinner() {
+            const spinner = document.getElementById('loadingSpinner');
+            if (spinner) spinner.style.display = 'block';
+        }
+
+        async function verifyAuthToken(token) {
+            showSpinner();
+            try {
+                const response = await fetch(`${API_URL}/api/auth/check/${token}`);
+                const data = await response.json();
+                if (data.success && data.authenticated && data.user) {
+                    localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+                    window.location.href = '/';
+                } else {
+                    hideSpinner();
+                    if (data.expired) {
+                        alert('Ссылка устарела. Попробуйте войти снова.');
+                    } else {
+                        alert('Ошибка авторизации');
+                    }
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                hideSpinner();
+                alert('Ошибка сети');
+            }
+        }
+
+        async function startTelegramOAuth() {
+            showSpinner();
+            try {
+                const response = await fetch(`${API_URL}/api/auth/telegram/start`);
+                const data = await response.json();
+                if (data.success && data.url) {
+                    const width = 600;
+                    const height = 700;
+                    const left = (screen.width - width) / 2;
+                    const top = (screen.height - height) / 2;
+                    
+                    oauthWindow = window.open(
+                        data.url,
+                        'TelegramAuth',
+                        `width=${width},height=${height},left=${left},top=${top},popup=1`
+                    );
+                    
+                    if (messageHandler) {
+                        window.removeEventListener('message', messageHandler);
+                    }
+                    
+                    messageHandler = async (event) => {
+                        if (event.origin !== window.location.origin) return;
+                        if (event.data && event.data.type === 'telegram_auth' && event.data.token) {
+                            window.removeEventListener('message', messageHandler);
+                            await verifyAuthToken(event.data.token);
+                        }
+                    };
+                    
+                    window.addEventListener('message', messageHandler);
+                    
+                    const checkPopupClosed = setInterval(() => {
+                        if (oauthWindow && oauthWindow.closed) {
+                            clearInterval(checkPopupClosed);
+                            window.removeEventListener('message', messageHandler);
+                            hideSpinner();
+                        }
+                    }, 500);
+                    
+                    setTimeout(() => {
+                        if (oauthWindow && !oauthWindow.closed) {
+                            oauthWindow.close();
+                            window.removeEventListener('message', messageHandler);
+                            hideSpinner();
+                            alert('Время ожидания истекло. Попробуйте снова.');
+                        }
+                    }, 5 * 60 * 1000);
+                } else {
+                    throw new Error('No URL returned');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                hideSpinner();
+                alert('Ошибка при запуске авторизации');
+            }
+        }
+
+        function checkExistingAuth() {
+            const savedUser = localStorage.getItem(USER_KEY);
+            if (savedUser) {
+                window.location.href = '/';
+                return true;
+            }
+            return false;
+        }
+
+        function checkMaintenanceAndAdmin() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const adminBypass = urlParams.get('admin_bypass');
+            const authToken = urlParams.get('auth');
+            
+            if (authToken) {
+                verifyAuthToken(authToken);
+                return true;
+            }
+            
+            if (adminBypass) {
+                sessionStorage.setItem('admin_bypass_active', 'true');
+                sessionStorage.setItem('admin_bypass_key', adminBypass);
+                window.history.replaceState({}, '', window.location.pathname);
+                setTimeout(function() {
+                    var adminNote = document.createElement('div');
+                    adminNote.style.cssText = `
+                        position: fixed;
+                        bottom: 100px;
+                        left: 50%;
+                        transform: translateX(-50%);
+                        background: rgba(0,0,0,0.8);
+                        color: #ffd700;
+                        padding: 8px 20px;
+                        border-radius: 30px;
+                        font-size: 14px;
+                        font-weight: 600;
+                        z-index: 10000;
+                        backdrop-filter: blur(5px);
+                        border: 1px solid rgba(255,215,0,0.3);
+                        animation: fadeIn 0.3s ease;
+                    `;
+                    adminNote.textContent = '🔑 Режим администратора (техперерыв игнорируется)';
+                    document.body.appendChild(adminNote);
+                    setTimeout(function() {
+                        adminNote.style.opacity = '0';
+                        adminNote.style.transition = 'opacity 0.5s';
+                        setTimeout(function() {
+                            if (adminNote.parentNode) {
+                                adminNote.parentNode.removeChild(adminNote);
+                            }
+                        }, 500);
+                    }, 4000);
+                }, 1000);
+                return true;
+            }
+            
+            if (sessionStorage.getItem('admin_bypass_active') === 'true') {
+                return true;
+            }
+            
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', API_URL + '/api/maintenance-status', false);
+            xhr.send();
+            if (xhr.status === 200) {
+                const data = JSON.parse(xhr.responseText);
+                if (data.maintenance) {
+                    sessionStorage.setItem('attempted_page', window.location.pathname);
+                    window.location.href = 'working';
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        (function addFadeInStyle() {
+            const style = document.createElement('style');
+            style.textContent = '@keyframes fadeIn{from{opacity:0;transform:translate(-50%,20px)}to{opacity:1;transform:translate(-50%,0)}}';
+            document.head.appendChild(style);
+        })();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (checkExistingAuth()) return;
+            if (checkMaintenanceAndAdmin()) return;
+            
+            initLottie();
+            hideSpinner();
+            
+            document.getElementById('telegramLink').addEventListener('click', function(e) {
+                e.preventDefault();
+                startTelegramOAuth();
+            });
+        });
+    </script>
+</body>
+</html>
