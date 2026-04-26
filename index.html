@@ -14,194 +14,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
     
-    <!-- БЛОКИРАТОР КОНСОЛИ РАЗРАБОТЧИКА -->
-    <script>
-    (function() {
-        'use strict';
-        
-        let devtoolsOpened = false;
-        let devtoolsCheckInterval = null;
-        let overlayShown = false;
-        
-        function showDevtoolsWarning() {
-            if (overlayShown) return;
-            overlayShown = true;
-            
-            const overlay = document.createElement('div');
-            overlay.id = 'devtools-overlay';
-            overlay.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0,0,0,0.95);
-                z-index: 999999;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                flex-direction: column;
-                color: white;
-                font-family: system-ui, -apple-system, sans-serif;
-                text-align: center;
-                backdrop-filter: blur(10px);
-                animation: fadeIn 0.3s ease;
-            `;
-            
-            overlay.innerHTML = `
-                <style>
-                    @keyframes fadeIn {
-                        from { opacity: 0; }
-                        to { opacity: 1; }
-                    }
-                    @keyframes shake {
-                        0%, 100% { transform: translateX(0); }
-                        25% { transform: translateX(-10px); }
-                        75% { transform: translateX(10px); }
-                    }
-                    .warning-icon {
-                        font-size: 80px;
-                        margin-bottom: 20px;
-                        animation: shake 0.5s ease;
-                    }
-                    .warning-title {
-                        font-size: 28px;
-                        font-weight: 800;
-                        margin-bottom: 15px;
-                        color: #ff4444;
-                    }
-                    .warning-text {
-                        font-size: 18px;
-                        margin-bottom: 15px;
-                        max-width: 80%;
-                        line-height: 1.5;
-                    }
-                    .warning-subtext {
-                        font-size: 14px;
-                        color: #888;
-                        margin-top: 20px;
-                    }
-                    .close-hint {
-                        margin-top: 30px;
-                        padding: 12px 24px;
-                        background: rgba(255,255,255,0.1);
-                        border-radius: 30px;
-                        font-size: 14px;
-                        display: inline-block;
-                    }
-                </style>
-                <div class="warning-icon">⚠️</div>
-                <div class="warning-title">Инструменты разработчика обнаружены!</div>
-                <div class="warning-text">
-                    Пожалуйста, закройте консоль разработчика<br>
-                    (F12, Ctrl+Shift+I, Cmd+Option+I)
-                </div>
-                <div class="warning-subtext">
-                    Для безопасности и стабильности работы магазина
-                </div>
-                <div class="close-hint">
-                    🔒 Закройте инструменты разработчика для продолжения
-                </div>
-            `;
-            
-            document.body.appendChild(overlay);
-            document.body.style.overflow = 'hidden';
-            
-            const checkClosed = setInterval(() => {
-                if (!isDevtoolsOpen()) {
-                    clearInterval(checkClosed);
-                    if (overlay && overlay.parentNode) {
-                        overlay.style.opacity = '0';
-                        setTimeout(() => {
-                            if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
-                            document.body.style.overflow = '';
-                            overlayShown = false;
-                            devtoolsOpened = false;
-                        }, 300);
-                    }
-                }
-            }, 500);
-        }
-        
-        function isDevtoolsOpen() {
-            const threshold = 160;
-            const widthThreshold = window.outerWidth - window.innerWidth > threshold;
-            const heightThreshold = window.outerHeight - window.innerHeight > threshold;
-            
-            if (widthThreshold || heightThreshold) return true;
-            
-            let startTime = performance.now();
-            debugger;
-            let endTime = performance.now();
-            if (endTime - startTime > 100) return true;
-            
-            const consoleMethods = ['log', 'info', 'warn', 'error', 'debug'];
-            for (let method of consoleMethods) {
-                if (console[method].toString().includes('native code') === false) {
-                    return true;
-                }
-            }
-            
-            const element = new Image();
-            Object.defineProperty(element, 'id', {
-                get: function() {
-                    return true;
-                }
-            });
-            
-            if (console.log(element) !== undefined) return true;
-            
-            return false;
-        }
-        
-        function startDevtoolsDetection() {
-            if (devtoolsCheckInterval) clearInterval(devtoolsCheckInterval);
-            
-            devtoolsCheckInterval = setInterval(() => {
-                const isOpen = isDevtoolsOpen();
-                
-                if (isOpen && !devtoolsOpened) {
-                    devtoolsOpened = true;
-                    showDevtoolsWarning();
-                } else if (!isOpen && devtoolsOpened && !overlayShown) {
-                    devtoolsOpened = false;
-                }
-            }, 1000);
-        }
-        
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', startDevtoolsDetection);
-        } else {
-            startDevtoolsDetection();
-        }
-        
-        document.addEventListener('contextmenu', function(e) {
-            if (e.target.closest('.shop-card, .button, .cart-btn, .auth-btn')) return;
-            e.preventDefault();
-            return false;
-        });
-        
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'F12') {
-                e.preventDefault();
-                return false;
-            }
-            if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'I' || e.key === 'i')) {
-                e.preventDefault();
-                return false;
-            }
-            if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'J' || e.key === 'j')) {
-                e.preventDefault();
-                return false;
-            }
-            if ((e.ctrlKey || e.metaKey) && (e.key === 'U' || e.key === 'u')) {
-                e.preventDefault();
-                return false;
-            }
-        });
-    })();
-    </script>
-    
     <style>
         * {
             margin: 0;
@@ -633,16 +445,6 @@
             gap: 8px;
             flex-wrap: nowrap;
         }
-        .new-badge {
-            display: inline-block;
-            width: 48px;
-            height: 48px;
-            background-image: url('https://i.imgur.com/1sZVCJT.png');
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            flex-shrink: 0;
-        }
         .shop-bottom {
             flex: 0 0 40%;
             background: #fff;
@@ -1047,10 +849,6 @@
                 font-size: 14px;
                 gap: 6px;
             }
-            .new-badge {
-                width: 40px;
-                height: 40px;
-            }
             .shop-buy {
                 min-width: 120px;
                 height: 40px;
@@ -1113,10 +911,6 @@
                 font-size: 13px;
                 gap: 5px;
             }
-            .new-badge {
-                width: 36px;
-                height: 36px;
-            }
             .shop-buy {
                 min-width: 100px;
                 height: 36px;
@@ -1165,10 +959,6 @@
             .shop-name {
                 font-size: 12px;
                 gap: 4px;
-            }
-            .new-badge {
-                width: 32px;
-                height: 32px;
             }
             .shop-buy {
                 min-width: 90px;
@@ -1394,102 +1184,126 @@
         let currentBannerIndex = 0;
         let autoSlideInterval = null;
         const DEFAULT_PRODUCTS = [
-            { id: "c30", name: "30 кристаллов", price: 200, image_url: "https://i.imgur.com/s4K0WIP.png", is_gift: false, game_id: "brawlstars", is_new: true },
+            { id: "c30", name: "30 кристаллов", price: 200, image_url: "https://i.imgur.com/s4K0WIP.png", is_gift: false, game_id: "brawlstars", is_new: false },
             { id: "c80", name: "80 кристаллов", price: 550, image_url: "https://i.imgur.com/XbnZKDb.png", is_gift: false, game_id: "brawlstars", is_new: false },
             { id: "c170", name: "170 кристаллов", price: 950, image_url: "https://i.imgur.com/X0JCmMQ.png", is_gift: false, game_id: "brawlstars", is_new: false },
             { id: "c360", name: "360 кристаллов", price: 1900, image_url: "https://i.imgur.com/7z8z9Rw.png", is_gift: false, game_id: "brawlstars", is_new: false },
             { id: "c950", name: "950 кристаллов", price: 4600, image_url: "https://i.imgur.com/zzBuIxF.png", is_gift: false, game_id: "brawlstars", is_new: false },
             { id: "c2000", name: "2000 кристаллов", price: 9000, image_url: "https://i.imgur.com/FTVnycE.png", is_gift: false, game_id: "brawlstars", is_new: false },
-            { id: "bp", name: "Brawl Pass", price: 900, image_url: "https://i.imgur.com/FaFAL6l.png", is_gift: false, game_id: "brawlstars", is_new: true },
+            { id: "bp", name: "Brawl Pass", price: 900, image_url: "https://i.imgur.com/FaFAL6l.png", is_gift: false, game_id: "brawlstars", is_new: false },
             { id: "bpplus", name: "Brawl Pass Plus", price: 1200, image_url: "https://i.imgur.com/21InnIc.png", is_gift: false, game_id: "brawlstars", is_new: false },
             { id: "up", name: "Улучшение до БП+", price: 550, image_url: "https://i.imgur.com/yhaR5Ho.png", is_gift: false, game_id: "brawlstars", is_new: false },
             { id: "bp_g", name: "Brawl Pass", price: 950, image_url: "https://i.imgur.com/FaFAL6l.png", is_gift: true, game_id: "brawlstars", is_new: false },
             { id: "bpp_g", name: "Brawl Pass Plus", price: 1250, image_url: "https://i.imgur.com/21InnIc.png", is_gift: true, game_id: "brawlstars", is_new: false },
-            { id: "pro", name: "Pro Pass", price: 2200, image_url: "https://i.imgur.com/6808Xnp.png", is_gift: false, game_id: "brawlstars", is_new: true },
-            { id: "cr_gold", name: "Золото x10000", price: 150, image_url: "https://i.imgur.com/gold_cr.png", is_gift: false, game_id: "clashroyale", is_new: true },
+            { id: "pro", name: "Pro Pass", price: 2200, image_url: "https://i.imgur.com/6808Xnp.png", is_gift: false, game_id: "brawlstars", is_new: false },
+            { id: "cr_gold", name: "Золото x10000", price: 150, image_url: "https://i.imgur.com/gold_cr.png", is_gift: false, game_id: "clashroyale", is_new: false },
             { id: "cr_gems", name: "Самоцветы x500", price: 300, image_url: "https://i.imgur.com/gems_cr.png", is_gift: false, game_id: "clashroyale", is_new: false },
-            { id: "cr_pass", name: "Pass Royale", price: 800, image_url: "https://i.imgur.com/pass_cr.png", is_gift: false, game_id: "clashroyale", is_new: true }
+            { id: "cr_pass", name: "Pass Royale", price: 800, image_url: "https://i.imgur.com/pass_cr.png", is_gift: false, game_id: "clashroyale", is_new: false }
         ];
         const DEFAULT_GAMES = [
             { id: "brawlstars", name: "Brawl Stars", slug: "brawlstars", icon_url: "https://i.imgur.com/3JxvXtR.png" },
             { id: "clashroyale", name: "Clash Royale", slug: "clashroyale", icon_url: "https://i.imgur.com/clashroyale_icon.png" }
         ];
 
- 
-(async function handleTelegramOAuth() {
-    const urlParams = new URLSearchParams(window.location.search);
-    
-    if (urlParams.get('tg_auth') === 'pending') {
-        console.log('⏳ Telegram auth in progress...');
-        
-        const checkInterval = setInterval(() => {
-            const currentParams = new URLSearchParams(window.location.search);
-            const token = currentParams.get('auth');
-            
-            if (token) {
-                clearInterval(checkInterval);
-                console.log('✅ Token received in main window');
-                verifyAuthToken(token);
-            }
-        }, 500);
-        
-        setTimeout(() => {
-            clearInterval(checkInterval);
-            if (!window.location.search.includes('auth')) {
-                console.log('❌ Auth timeout');
-            }
-        }, 30000);
-        
-        window.history.replaceState({}, '', window.location.pathname);
-    }
-    
-    const authToken = urlParams.get('auth');
-    if (authToken) {
-        console.log('🔄 Auth token found, verifying...');
-        window.history.replaceState({}, '', window.location.pathname);
-        await verifyAuthToken(authToken);
-        return;
-    }
-    
-    window.addEventListener('message', (event) => {
-        if (event.origin !== window.location.origin) return;
-        
-        if (event.data && event.data.type === 'telegram_auth' && event.data.token) {
-            console.log('✅ Token received via postMessage');
-            verifyAuthToken(event.data.token);
-        }
-    });
-})();
-
-         (async function checkTelegramAuth() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const token = urlParams.get('auth');
-        
-        if (token) {
-            window.history.replaceState({}, '', window.location.pathname);
-            
-            try {
-                const response = await fetch(`https://duck-shop-sever.onrender.com/api/auth/check/${token}`, {
-                    credentials: 'include'
-                });
-                const data = await response.json();
-                
-                if (data.success && data.authenticated && data.user) {
-                    localStorage.setItem('duck_user_v1', JSON.stringify(data.user));
+        (async function handleTelegramOAuth() {
+            const hash = window.location.hash;
+            if (hash && hash.startsWith('#tgAuthResult=')) {
+                console.log('Найдены данные авторизации в хэше');
+                const tgAuthData = hash.replace('#tgAuthResult=', '');
+                try {
+                    const decodedData = atob(tgAuthData);
+                    const authData = JSON.parse(decodedData);
+                    console.log('Данные от Telegram:', authData);
                     
-                    if (typeof window.updateAuthButton === 'function') {
-                        window.updateAuthButton();
-                    }
+                    const response = await fetch(`${API_URL}/api/auth/telegram/verify`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include',
+                        body: JSON.stringify(authData)
+                    });
                     
-                    if (typeof window.show === 'function') {
-                        window.show('menu');
+                    const result = await response.json();
+                    
+                    if (result.success && result.token) {
+                        localStorage.setItem(USER_KEY, JSON.stringify(result.user));
+                        window.location.href = '/?auth=' + result.token;
+                    } else {
+                        console.error('Ошибка верификации:', result.error);
+                        alert('Ошибка авторизации: ' + (result.error || 'Неизвестная ошибка'));
+                        window.location.href = '/reg_log.html';
                     }
+                } catch (error) {
+                    console.error('Ошибка обработки данных:', error);
+                    alert('Ошибка обработки данных авторизации');
+                    window.location.href = '/reg_log.html';
                 }
-            } catch (error) {
-                console.error('Auth error:', error);
+                window.location.hash = '';
+                return;
             }
-        }
-    })();
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            if (urlParams.get('tg_auth') === 'pending') {
+                console.log('Telegram auth in progress...');
+                const checkInterval = setInterval(() => {
+                    const currentParams = new URLSearchParams(window.location.search);
+                    const token = currentParams.get('auth');
+                    if (token) {
+                        clearInterval(checkInterval);
+                        console.log('Token received in main window');
+                        verifyAuthToken(token);
+                    }
+                }, 500);
+                setTimeout(() => {
+                    clearInterval(checkInterval);
+                    if (!window.location.search.includes('auth')) {
+                        console.log('Auth timeout');
+                    }
+                }, 30000);
+                window.history.replaceState({}, '', window.location.pathname);
+            }
+            
+            const authToken = urlParams.get('auth');
+            if (authToken) {
+                console.log('Auth token found, verifying...');
+                window.history.replaceState({}, '', window.location.pathname);
+                await verifyAuthToken(authToken);
+                return;
+            }
+            
+            window.addEventListener('message', (event) => {
+                if (event.origin !== window.location.origin) return;
+                if (event.data && event.data.type === 'telegram_auth' && event.data.token) {
+                    console.log('Token received via postMessage');
+                    verifyAuthToken(event.data.token);
+                }
+            });
+        })();
+
+        (async function checkTelegramAuth() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('auth');
+            if (token) {
+                window.history.replaceState({}, '', window.location.pathname);
+                try {
+                    const response = await fetch(`https://duck-shop-sever.onrender.com/api/auth/check/${token}`, {
+                        credentials: 'include'
+                    });
+                    const data = await response.json();
+                    if (data.success && data.authenticated && data.user) {
+                        localStorage.setItem('duck_user_v1', JSON.stringify(data.user));
+                        if (typeof window.updateAuthButton === 'function') {
+                            window.updateAuthButton();
+                        }
+                        if (typeof window.show === 'function') {
+                            window.show('menu');
+                        }
+                    }
+                } catch (error) {
+                    console.error('Auth error:', error);
+                }
+            }
+        })();
 
         function shouldShowAnimations() {
             const lastTime = localStorage.getItem(LAST_ANIMATION_KEY);
@@ -1498,25 +1312,31 @@
             const minutesPassed = (now - parseInt(lastTime)) / (1000 * 60);
             return minutesPassed >= 15;
         }
+        
         function markAnimationsShown() {
             localStorage.setItem(LAST_ANIMATION_KEY, Date.now().toString());
         }
+        
         function fmtRub(n) {
             return `${n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} ₽`;
         }
+        
         function loadCart() {
             try {
                 const raw = localStorage.getItem(CART_KEY);
                 cart = raw ? JSON.parse(raw) : {};
             } catch { cart = {}; }
         }
+        
         function saveCart() {
             localStorage.setItem(CART_KEY, JSON.stringify(cart));
         }
+        
         function cartCount() {
             if (!cart || typeof cart !== 'object') return 0;
             return Object.values(cart).reduce((a, b) => a + b, 0);
         }
+        
         function cartSum() {
             let sum = 0;
             if (!cart || typeof cart !== 'object') return 0;
@@ -1526,9 +1346,11 @@
             }
             return sum;
         }
+        
         function getProductInfo(id) {
             return ALL_PRODUCTS.find(x => x.id === id);
         }
+        
         function updateBadge() {
             const n = cartCount();
             const cartBadge = document.getElementById('cartBadge');
@@ -1546,6 +1368,7 @@
                 if (cartBadgeMobile) cartBadgeMobile.classList.remove('show');
             }
         }
+        
         function renderCart() {
             const cartBody = document.getElementById('cartBody');
             const cartTotalEl = document.getElementById('cartTotal');
@@ -1579,18 +1402,21 @@
             }).join('');
             cartTotalEl.textContent = fmtRub(cartSum());
         }
+        
         function addToCart(id) {
             cart[id] = (cart[id] || 0) + 1;
             saveCart();
             updateBadge();
             if (document.getElementById('cartOverlay').classList.contains('open')) renderCart();
         }
+        
         function inc(id) {
             cart[id] = (cart[id] || 0) + 1;
             saveCart();
             updateBadge();
             renderCart();
         }
+        
         function dec(id) {
             if (!cart[id]) return;
             cart[id] -= 1;
@@ -1599,12 +1425,14 @@
             updateBadge();
             renderCart();
         }
+        
         function clearCart() {
             cart = {};
             saveCart();
             updateBadge();
             renderCart();
         }
+        
         function show(id) {
             const ids = ['hello', 'load', 'intro', 'menu', 'waiting', 'checkout', 'badPay'];
             const current = ids.map(x => document.getElementById(x)).find(el => el && el.classList.contains('active'));
@@ -1641,6 +1469,7 @@
                 updateMobileNavActiveState();
             }
         }
+        
         function updateMobileNavVisibility(currentScreen) {
             const mobileNav = document.getElementById('mobileNav');
             const cartOverlay = document.getElementById('cartOverlay');
@@ -1650,6 +1479,7 @@
             const shouldShow = currentScreen === 'menu' && !cartOverlay.classList.contains('open') && !hiddenScreens.includes(currentScreen);
             mobileNav.style.display = shouldShow ? 'flex' : 'none';
         }
+        
         function updateMobileNavActiveState() {
             const navItems = ['navWallet', 'navProfile', 'navHome', 'navSupport', 'navCart'].forEach(id => {
                 const el = document.getElementById(id);
@@ -1661,6 +1491,7 @@
                 if (homeBtn) homeBtn.classList.add('active');
             }
         }
+        
         async function loadGames() {
             try {
                 const response = await fetch(`${API_URL}/api/games`, {
@@ -1673,6 +1504,7 @@
                 renderGameSelector();
             } catch (error) { GAMES = DEFAULT_GAMES; renderGameSelector(); }
         }
+        
         function updateGameHeader() {
             const gameLogo = document.getElementById('gameLogo');
             const currentGame = GAMES.find(g => g.id === selectedGameId);
@@ -1682,6 +1514,7 @@
                 gameLogo.src = '';
             }
         }
+        
         function renderGameSelector() {
             const selector = document.getElementById('gameSelector');
             if (!selector) return;
@@ -1705,6 +1538,7 @@
             });
             updateGameHeader();
         }
+        
         async function loadAllProducts() {
             try {
                 const response = await fetch(`${API_URL}/api/products`, {
@@ -1716,11 +1550,13 @@
                 else ALL_PRODUCTS = [...DEFAULT_PRODUCTS];
             } catch (error) { ALL_PRODUCTS = [...DEFAULT_PRODUCTS]; }
         }
+        
         async function loadProducts() {
             if (ALL_PRODUCTS.length === 0) await loadAllProducts();
             PRODUCTS = ALL_PRODUCTS.filter(p => p.game_id === selectedGameId);
             renderProducts();
         }
+        
         function renderProducts() {
             const cardsContainer = document.getElementById('cardsContainer');
             if (!cardsContainer) return;
@@ -1738,7 +1574,7 @@
                         ${p.is_gift ? '<div class="gift"><img src="https://i.imgur.com/Tdajl7F.png" alt="🎁"></div>' : ''}
                         <div class="shop-top"><img src="${p.image_url}" alt="${p.name}" loading="lazy"></div>
                         <div class="shop-bottom">
-                            <div class="shop-name">${p.name}${p.is_new ? '<div class="new-badge"></div>' : ''}</div>
+                            <div class="shop-name">${p.name}</div>
                             <button class="shop-buy" type="button" data-add="${p.id}">
                                 <svg viewBox="0 0 24 24"><path d="M7 18a2 2 0 1 0 0 4a2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4a2 2 0 0 0 0-4zM7.16 14h9.45a2 2 0 0 0 1.75-1.03l3.58-6.49-1.74-.99-3.58 6.49H8.53L5.21 4H1v2h3l3.6 7.59-1.35 2.44C5.52 16.37 6.48 18 8 18h12v-2H8l1.16-2z"/></svg>
                                 <div class="shop-price">${fmtRub(p.price)}</div>
@@ -1758,7 +1594,7 @@
                                 ${p.is_gift ? '<div class="gift"><img src="https://i.imgur.com/Tdajl7F.png" alt="🎁"></div>' : ''}
                                 <div class="shop-top"><img src="${p.image_url}" alt="${p.name}" loading="lazy"></div>
                                 <div class="shop-bottom">
-                                    <div class="shop-name">${p.name}${p.is_new ? '<div class="new-badge"></div>' : ''}</div>
+                                    <div class="shop-name">${p.name}</div>
                                     <button class="shop-buy" type="button" data-add="${p.id}">
                                         <svg viewBox="0 0 24 24"><path d="M7 18a2 2 0 1 0 0 4a2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4a2 2 0 0 0 0-4zM7.16 14h9.45a2 2 0 0 0 1.75-1.03l3.58-6.49-1.74-.99-3.58 6.49H8.53L5.21 4H1v2h3l3.6 7.59-1.35 2.44C5.52 16.37 6.48 18 8 18h12v-2H8l1.16-2z"/></svg>
                                         <div class="shop-price">${fmtRub(p.price)}</div>
@@ -1779,15 +1615,19 @@
                 };
             });
         }
+        
         function startAutoRefreshProducts() {
             if (productsCheckInterval) clearInterval(productsCheckInterval);
             loadProducts();
             productsCheckInterval = setInterval(loadProducts, 10000);
         }
+        
         function loadUser() {
             try { const userData = localStorage.getItem(USER_KEY); return userData ? JSON.parse(userData) : null; } catch { return null; }
         }
+        
         function saveUser(user) { try { localStorage.setItem(USER_KEY, JSON.stringify(user)); } catch (error) {} }
+        
         function updateAuthButton() {
             const authBtn = document.getElementById('authBtn');
             const authBtnText = document.getElementById('authBtnText');
@@ -1807,12 +1647,14 @@
                 authBtn.onclick = (e) => { e.preventDefault(); window.location.href = 'reg_log'; };
             }
         }
+        
         function checkAuthFromURL() {
             const urlParams = new URLSearchParams(window.location.search);
             const authToken = urlParams.get('auth');
             if (authToken) verifyAuthToken(authToken);
             else { currentUser = loadUser(); updateAuthButton(); }
         }
+        
         async function verifyAuthToken(token) {
             try {
                 const response = await fetch(`${API_URL}/api/auth/check/${token}`, {
@@ -1827,6 +1669,7 @@
                 } else updateAuthButton();
             } catch (error) { updateAuthButton(); }
         }
+        
         function checkAdminBypass() {
             const urlParams = new URLSearchParams(window.location.search);
             const adminBypass = urlParams.get('admin_bypass');
@@ -1837,6 +1680,7 @@
             }
             return false;
         }
+        
         async function checkMaintenance() {
             const hasBypassInUrl = checkAdminBypass();
             const hasBypassInStorage = sessionStorage.getItem('admin_bypass_active') === 'true';
@@ -1850,6 +1694,7 @@
                 }
             } catch (error) { console.error('Ошибка проверки статуса:', error); }
         }
+        
         function loadAllLottieAnimations() {
             try {
                 if (document.getElementById('animHello')) lottie.loadAnimation({ container: document.getElementById('animHello'), renderer: 'svg', loop: true, autoplay: true, path: 'hello.json' });
@@ -1864,6 +1709,7 @@
                 });
             }
         }
+        
         function showCheckout() {
             const total = cartSum();
             const checkoutSummary = document.getElementById('checkoutSummary');
@@ -1896,6 +1742,7 @@
             }
             show('checkout');
         }
+        
         function updateOrderNumberElements(orderId) {
             const orderNumber = `Заказ #${orderId}`;
             ['waitingOrderNumber', 'badPayOrderNumber'].forEach(elementId => {
@@ -1903,6 +1750,7 @@
                 if (element) element.textContent = orderNumber;
             });
         }
+        
         function checkPaymentResult() {
             const urlParams = new URLSearchParams(window.location.search);
             const status = urlParams.get('payment');
@@ -1914,6 +1762,7 @@
                 window.history.replaceState({}, '', window.location.pathname);
             }
         }
+        
         function setupMobileNavigation() {
             const navWallet = document.getElementById('navWallet');
             const navProfile = document.getElementById('navProfile');
@@ -1933,6 +1782,7 @@
             });
             if (navCart) navCart.addEventListener('click', (e) => { e.preventDefault(); document.getElementById('openCart').click(); });
         }
+        
         function setupEventListeners() {
             document.getElementById('continueBtn').addEventListener('pointerdown', function() { this.classList.add('pressed'); });
             document.getElementById('continueBtn').addEventListener('pointerup', function() { this.classList.remove('pressed'); });
@@ -1989,6 +1839,7 @@
             if (prevBtn) prevBtn.addEventListener('click', prevBanner);
             if (nextBtn) nextBtn.addEventListener('click', nextBanner);
         }
+        
         function getResponsiveBannerUrl(banner) {
             const width = window.innerWidth;
             if (width <= 480) {
@@ -1999,6 +1850,7 @@
                 return banner.desktop_url;
             }
         }
+        
         function updateCarouselPosition() {
             const track = document.getElementById('carouselTrack');
             if (!track) return;
@@ -2008,21 +1860,25 @@
                 else dot.classList.remove('active');
             });
         }
+        
         function nextBanner() {
             if (!banners.length) return;
             currentBannerIndex = (currentBannerIndex + 1) % banners.length;
             updateCarouselPosition();
         }
+        
         function prevBanner() {
             if (!banners.length) return;
             currentBannerIndex = (currentBannerIndex - 1 + banners.length) % banners.length;
             updateCarouselPosition();
         }
+        
         function goToBanner(index) {
             if (index < 0 || index >= banners.length) return;
             currentBannerIndex = index;
             updateCarouselPosition();
         }
+        
         function renderBannerCarousel() {
             const carousel = document.getElementById('bannerCarousel');
             const track = document.getElementById('carouselTrack');
@@ -2061,6 +1917,7 @@
             if (autoSlideInterval) clearInterval(autoSlideInterval);
             autoSlideInterval = setInterval(() => nextBanner(), 5000);
         }
+        
         async function loadBanners() {
             try {
                 const response = await fetch(`${API_URL}/api/banners`);
@@ -2077,6 +1934,7 @@
                 renderBannerCarousel();
             }
         }
+        
         document.addEventListener('DOMContentLoaded', async function() {
             if (!checkAdminBypass()) checkMaintenance();
             setInterval(() => { if (sessionStorage.getItem('admin_bypass_active') !== 'true') checkMaintenance(); }, 30000);
@@ -2105,6 +1963,7 @@
             updateMobileNavActiveState();
             await loadBanners();
         });
+        
         window.addEventListener('resize', () => {
             if (PRODUCTS.length > 0) renderProducts();
             if (currentUser) updateAuthButton();
