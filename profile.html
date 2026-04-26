@@ -1400,7 +1400,8 @@
         const telegramName = document.getElementById('telegramName');
         const telegramUser = document.getElementById('telegramUser');
         const unlinkTelegramBtn = document.getElementById('unlinkTelegramBtn');
-        const linkTelegramBtn = document.getElementById('linkTelegramBtn');
+        const telegramLinkBtn = document.getElementById('telegramLinkBtn');
+
 
         let displayName = user.username || 'Пользователь';
 
@@ -1717,98 +1718,62 @@
         }
     }
 
-    function openTelegramLink() {
-        if (!currentUser) return;
-        if (currentUser.auth_provider === 'telegram') {
-            alert('Вы уже авторизованы через Telegram');
-            return;
-        }
-        if (currentUser.auth_provider === 'vk+telegram') {
-            alert('Telegram уже привязан к этому аккаунту');
-            return;
-        }
-        generateTelegramLink();
+    async function linkTelegram() {
+    if (!currentUser) {
+        alert('Сначала войдите в аккаунт');
+        window.location.href = 'reg_log.html';
+        return;
     }
-
-    const telegramLinkBtn = document.getElementById('telegramLinkBtn');
-    if (telegramLinkBtn) {
-        telegramLinkBtn.addEventListener('click', openTelegramLink);
-    }
-
-    const linkTelegramBtn = document.getElementById('linkTelegramBtn');
-    if (linkTelegramBtn) {
-        linkTelegramBtn.addEventListener('click', openTelegramLink);
-    }
-
-    const unlinkTelegramBtn = document.getElementById('unlinkTelegramBtn');
-    if (unlinkTelegramBtn) {
-        unlinkTelegramBtn.addEventListener('click', async function() {
-            if (!currentUser) return;
-
-            showConfirm('Отвязка Telegram', 'Вы уверены, что хотите отвязать Telegram аккаунт?', async function() {
-                const btn = unlinkTelegramBtn;
-                const originalText = btn.innerHTML;
-                btn.innerHTML = 'Отвязываем...';
-                btn.disabled = true;
-
-                try {
-                    const response = await fetch(`${API_URL}/api/user/unlink-telegram`, {
+    
+    try {
+        const response = await fetch(`${API_URL}/api/auth/telegram/start`);
+        const data = await response.json();
+        
+        if (data.success && data.url) {
+            const width = 600;
+            const height = 700;
+            const left = (screen.width - width) / 2;
+            const top = (screen.height - height) / 2;
+            
+            const tgWindow = window.open(data.url, 'TelegramAuth', `width=${width},height=${height},left=${left},top=${top}`);
+            
+            const messageHandler = async (event) => {
+                if (event.origin !== window.location.origin) return;
+                
+                if (event.data && event.data.type === 'telegram_auth' && event.data.userData) {
+                    window.removeEventListener('message', messageHandler);
+                    
+                    const linkResponse = await fetch(`${API_URL}/api/auth/telegram/link`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ userId: currentUser.id }),
-                        credentials: 'include'
+                        credentials: 'include',
+                        body: JSON.stringify({
+                            userId: currentUser.id,
+                            ...event.data.userData
+                        })
                     });
-                    const data = await response.json();
-
-                    if (data.success) {
-                        currentUser.auth_provider = 'vk';
-                        currentUser.tgId = null;
-                        currentUser.telegramUsername = null;
-                        currentUser.firstName = null;
-                        currentUser.lastName = null;
-
-                        if (currentUser.avatarUrl && currentUser.avatarUrl.includes('api.telegram.org')) {
-                            currentUser.avatarUrl = null;
-                        }
-
+                    
+                    const result = await linkResponse.json();
+                    
+                    if (result.success) {
+                        currentUser = result.user;
                         saveUser(currentUser);
-                        updateProfileUI(currentUser);
-                        closeEditModal();
-                        alert('Telegram отвязан');
+                        alert('Telegram успешно привязан!');
+                        if (tgWindow) tgWindow.close();
+                        location.reload();
                     } else {
-                        alert(data.error || 'Ошибка при отвязке Telegram');
+                        alert('Ошибка привязки: ' + result.error);
                     }
-                } catch (error) {
-                    console.error('Error:', error);
-                    alert('Ошибка сети при отвязке Telegram');
-                } finally {
-                    btn.innerHTML = originalText;
-                    btn.disabled = false;
                 }
-            });
-        });
+            };
+            
+            window.addEventListener('message', messageHandler);
+        }
+    } catch (error) {
+        console.error('Ошибка привязки:', error);
+        alert('Ошибка привязки Telegram');
     }
-
-    const logoutBtn = document.getElementById('logoutBtn');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', () => {
-            showConfirm('Выход', 'Вы уверены, что хотите выйти из аккаунта?', function() {
-                clearUser();
-                window.location.href = SHOP_URL;
-            });
-        });
-    }
-
-    const retryBtn = document.getElementById('retryBtn');
-    if (retryBtn) {
-        retryBtn.addEventListener('click', () => {
-            if (currentUser) {
-                loadProfileData();
-            } else {
-                window.location.href = 'reg_log.html';
-            }
-        });
-    }
+}
 
     function checkInitialAuth() {
         const urlParams = new URLSearchParams(window.location.search);
@@ -1920,6 +1885,17 @@
         style.textContent = '@keyframes fadeIn{from{opacity:0;transform:translate(-50%,20px)}to{opacity:1;transform:translate(-50%,0)}}';
         document.head.appendChild(style);
     })();
+
+      
+    const tgLinkBtn = document.getElementById('telegramLinkBtn');
+    if (tgLinkBtn) {
+        tgLinkBtn.addEventListener('click', linkTelegram);
+    }
+
+    const linkTgBtn = document.getElementById('linkTelegramBtn');
+    if (linkTgBtn) {
+        linkTgBtn.addEventListener('click', linkTelegram);
+    }
 
     document.addEventListener('DOMContentLoaded', () => {
         if (checkMaintenanceAndAdmin()) return;
