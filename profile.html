@@ -1208,7 +1208,13 @@
         } catch (error) {}
     }
 
-    function clearUser() {
+    async function clearUser() {
+        try {
+            await fetch(`${API_URL}/api/auth/logout`, {
+                method: 'POST',
+                credentials: 'include'
+            });
+        } catch (error) {}
         localStorage.removeItem(USER_KEY);
         currentUser = null;
     }
@@ -1351,7 +1357,7 @@
 
             if (response.status === 404) {
                 console.error('User not found, redirecting to login');
-                clearUser();
+                await clearUser();
                 window.location.href = 'reg_log.html';
                 return;
             }
@@ -1375,7 +1381,7 @@
         } catch (error) {
             console.error('Error loading profile:', error);
             if (error.message === 'User not found' || error.message.includes('404')) {
-                clearUser();
+                await clearUser();
                 window.location.href = 'reg_log.html';
             } else {
                 showError('Ошибка загрузки', 'Не удалось загрузить данные профиля');
@@ -1401,18 +1407,6 @@
         const telegramLinkText = document.getElementById('telegramLinkText');
 
         let displayName = user.username || 'Пользователь';
-
-        if (user.auth_provider === 'telegram') {
-            if (user.firstName && user.lastName) {
-                displayName = `${user.firstName} ${user.lastName}`;
-            } else if (user.firstName) {
-                displayName = user.firstName;
-            } else if (user.telegramUsername) {
-                displayName = `@${user.telegramUsername}`;
-            }
-        } else if (user.firstName || user.lastName) {
-            displayName = `${user.firstName || ''} ${user.lastName || ''}`.trim() || displayName;
-        }
 
         profileName.textContent = displayName;
 
@@ -1653,6 +1647,11 @@
                 alert('Ошибка сети');
             }
         });
+    }
+
+    async function linkVK() {
+        if (!currentUser) return;
+        window.location.href = `${API_URL}/api/auth/vk`;
     }
 
     async function linkTelegram() {
