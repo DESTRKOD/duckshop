@@ -233,21 +233,21 @@
         }
 
         async function startTelegramOAuth() {
-            showSpinner();
-            try {
-                const response = await fetch(`${API_URL}/api/auth/telegram/start`);
-                const data = await response.json();
-                if (data.success && data.url) {
-                    window.location.href = data.url;
-                } else {
-                    throw new Error('No URL returned');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                hideSpinner();
-                alert('Ошибка при запуске авторизации');
-            }
+    showSpinner();
+    try {
+        const response = await fetch(`${API_URL}/api/auth/telegram/start`);
+        const data = await response.json();
+        if (data.success && data.url) {
+            window.location.href = data.url; // ✅ В URL уже есть force_login=1
+        } else {
+            throw new Error('No URL returned');
         }
+    } catch (error) {
+        console.error('Error:', error);
+        hideSpinner();
+        alert('Ошибка при запуске авторизации');
+    }
+}
 
         function checkExistingAuth() {
             const savedUser = localStorage.getItem(USER_KEY);
