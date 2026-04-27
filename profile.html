@@ -144,40 +144,6 @@
             color: rgba(255,255,255,0.7);
             margin-bottom: 12px;
         }
-        .telegram-link-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(255,255,255,0.15);
-            border: 2px solid rgba(255,255,255,0.3);
-            color: white;
-            padding: 8px 18px;
-            border-radius: 40px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            margin-top: 5px;
-        }
-        .telegram-link-btn:hover {
-            background: rgba(255,255,255,0.25);
-            border-color: rgba(255,255,255,0.5);
-            transform: translateY(-2px);
-        }
-        .telegram-link-btn.linked {
-            background: rgba(76, 175, 80, 0.3);
-            border-color: #4CAF50;
-        }
-        .telegram-link-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-        .telegram-link-btn svg {
-            width: 18px;
-            height: 18px;
-            fill: white;
-        }
         .profile-content {
             width: 100%;
             padding: 20px;
@@ -566,53 +532,6 @@
             margin-top: 8px;
             padding-left: 5px;
         }
-        .telegram-status {
-            background: #f0f2f5;
-            border-radius: 14px;
-            padding: 14px;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .telegram-status.linked {
-            background: #e6f7e6;
-        }
-        .telegram-info {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-        .telegram-name {
-            font-weight: 700;
-            font-size: 15px;
-            color: #333;
-        }
-        .telegram-username {
-            font-size: 13px;
-            color: #666;
-        }
-        .telegram-actions {
-            display: flex;
-            align-items: center;
-        }
-        .vk-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            background: rgba(0, 119, 255, 0.15);
-            border: 1px solid rgba(0, 119, 255, 0.3);
-            border-radius: 20px;
-            padding: 3px 10px;
-            font-size: 11px;
-            color: #0077FF;
-            margin-left: 8px;
-        }
-        .vk-badge svg {
-            width: 12px;
-            height: 12px;
-            fill: #0077FF;
-        }
         .logout-section {
             margin-top: 16px;
             padding-top: 16px;
@@ -799,15 +718,6 @@
                 font-size: 11px;
                 margin-top: 6px;
             }
-            .telegram-status {
-                padding: 12px;
-            }
-            .telegram-name {
-                font-size: 14px;
-            }
-            .telegram-username {
-                font-size: 12px;
-            }
             .logout-section {
                 margin-top: 12px;
                 padding-top: 12px;
@@ -944,21 +854,9 @@
         <div class="profile-avatar" id="profileAvatar"></div>
         <div class="profile-name-row">
             <div class="profile-name" id="profileName">Пользователь</div>
-            <span class="vk-badge" id="vkBadge" style="display: none;">
-                <svg viewBox="0 0 24 24">
-                    <path d="M15.07 2H8.93C3.33 2 2 3.33 2 8.93v6.14C2 20.67 3.33 22 8.93 22h6.14c5.6 0 6.93-1.33 6.93-6.93V8.93C22 3.33 20.67 2 15.07 2zm3.54 14.2h-1.46c-.56 0-.73-.43-1.73-1.44-.86-.86-1.24-.98-1.46-.98-.3 0-.38.08-.38.47v1.23c0 .34-.11.54-1.02.54-1.5 0-3.17-.92-4.35-2.64-1.8-2.51-2.29-4.4-2.29-4.79 0-.2.08-.39.47-.39h1.46c.35 0 .48.16.61.54.68 1.83 1.8 3.43 2.27 3.43.17 0 .25-.08.25-.52v-1.82c-.06-.96-.56-1.04-.56-1.39 0-.16.13-.3.3-.3h2.3c.26 0 .35.14.35.45v2.41c0 .26.11.35.18.35.15 0 .27-.09.53-.35 1.01-1.14 1.72-2.89 1.72-2.89.1-.17.23-.26.44-.26h1.46c.45 0 .55.23.45.54-.2.9-2.13 3.24-2.13 3.24-.16.22-.21.33 0 .59.16.21.7.68 1.06 1.1.65.75 1.15 1.38 1.15 1.8.01.41-.3.6-.74.6z"/>
-                </svg>
-                VK ID
-            </span>
         </div>
         <div class="profile-id" id="profileId"></div>
         <div class="profile-username" id="profileUsername"></div>
-        <button class="telegram-link-btn" id="telegramLinkBtn">
-            <svg viewBox="0 0 24 24">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
-            </svg>
-            <span id="telegramLinkText">Привязать Telegram</span>
-        </button>
     </div>
 
     <div class="profile-content">
@@ -1018,29 +916,6 @@
                 </div>
                 <div class="input-hint">От 2 до 50 символов</div>
             </div>
-            <div class="edit-section">
-                <div class="edit-section-title">Telegram</div>
-                <div id="telegramStatus" class="telegram-status">
-                    <div class="telegram-info">
-                        <span class="telegram-name" id="telegramName">Не привязан</span>
-                        <span class="telegram-username" id="telegramUser">—</span>
-                    </div>
-                    <div class="telegram-actions">
-                        <button class="btn-danger-small" id="unlinkTelegramBtn" style="display: none;">
-                            <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
-                                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
-                            </svg>
-                            Отвязать
-                        </button>
-                    </div>
-                </div>
-                <button class="btn btn-primary" id="linkTelegramBtn" style="width: 100%;">
-                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
-                    </svg>
-                    Привязать Telegram
-                </button>
-            </div>
             <div class="logout-section">
                 <button class="btn btn-danger" id="logoutBtn">
                     <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
@@ -1095,7 +970,6 @@
     const SHOP_URL = 'index.html';
     let currentUser = null;
     let confirmCallback = null;
-    let oauthWindow = null;
 
     function fmtRub(n) {
         if (!n && n !== 0) return '0 ₽';
@@ -1210,13 +1084,23 @@
 
     async function clearUser() {
         try {
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.disabled = true;
+                logoutBtn.innerHTML = 'Выхожу...';
+            }
+            
             await fetch(`${API_URL}/api/auth/logout`, {
                 method: 'POST',
                 credentials: 'include'
             });
-        } catch (error) {}
+        } catch (error) {
+            console.error('Ошибка при выходе:', error);
+        }
+        
         localStorage.removeItem(USER_KEY);
         currentUser = null;
+        window.location.href = 'reg_log.html';
     }
 
     function setupMobileNavigation() {
@@ -1330,11 +1214,12 @@
         Object.values(navItems).forEach(item => {
             if (item) item.classList.remove('active');
         });
+        
         const currentPath = window.location.pathname;
-        if (currentPath.includes('wallet.html')) {
-            if (navItems.wallet) navItems.wallet.classList.add('active');
-        } else if (currentPath.includes('profile.html')) {
+        if (currentPath.includes('profile.html')) {
             if (navItems.profile) navItems.profile.classList.add('active');
+        } else if (currentPath.includes('wallet.html')) {
+            if (navItems.wallet) navItems.wallet.classList.add('active');
         } else if (currentPath.includes('support.html')) {
             if (navItems.support) navItems.support.classList.add('active');
         } else if (currentPath.includes('index.html') || currentPath === '/' || currentPath === '') {
@@ -1358,7 +1243,6 @@
             if (response.status === 404) {
                 console.error('User not found, redirecting to login');
                 await clearUser();
-                window.location.href = 'reg_log.html';
                 return;
             }
 
@@ -1382,7 +1266,6 @@
             console.error('Error loading profile:', error);
             if (error.message === 'User not found' || error.message.includes('404')) {
                 await clearUser();
-                window.location.href = 'reg_log.html';
             } else {
                 showError('Ошибка загрузки', 'Не удалось загрузить данные профиля');
             }
@@ -1397,29 +1280,12 @@
         const profileName = document.getElementById('profileName');
         const profileId = document.getElementById('profileId');
         const profileUsername = document.getElementById('profileUsername');
-        const vkBadge = document.getElementById('vkBadge');
-        const telegramStatus = document.getElementById('telegramStatus');
-        const telegramName = document.getElementById('telegramName');
-        const telegramUser = document.getElementById('telegramUser');
-        const unlinkTelegramBtn = document.getElementById('unlinkTelegramBtn');
-        const linkTelegramBtn = document.getElementById('linkTelegramBtn');
-        const telegramLinkBtn = document.getElementById('telegramLinkBtn');
-        const telegramLinkText = document.getElementById('telegramLinkText');
 
         let displayName = user.username || 'Пользователь';
-
         profileName.textContent = displayName;
 
         if (user.auth_provider === 'telegram') {
             profileId.textContent = `TG ID: ${user.tgId || user.id}`;
-            profileUsername.textContent = user.telegramUsername ? `@${user.telegramUsername}` : '';
-            profileUsername.style.display = user.telegramUsername ? 'block' : 'none';
-        } else if (user.auth_provider === 'vk') {
-            profileId.textContent = `VK ID: ${user.vkId || user.id}`;
-            profileUsername.textContent = '';
-            profileUsername.style.display = 'none';
-        } else if (user.auth_provider === 'vk+telegram') {
-            profileId.textContent = `ID: ${user.id} (VK + TG)`;
             profileUsername.textContent = user.telegramUsername ? `@${user.telegramUsername}` : '';
             profileUsername.style.display = user.telegramUsername ? 'block' : 'none';
         } else {
@@ -1427,48 +1293,11 @@
             profileUsername.style.display = 'none';
         }
 
-        if (vkBadge) {
-            if (user.auth_provider === 'vk' || user.auth_provider === 'vk+telegram') {
-                vkBadge.style.display = 'inline-flex';
-            } else {
-                vkBadge.style.display = 'none';
-            }
-        }
-
         const firstLetter = displayName.charAt(0).toUpperCase();
         const avatarHtml = user.avatarUrl ? `<img src="${user.avatarUrl}" alt="${displayName}">` : `<div class="avatar-placeholder">${firstLetter}</div>`;
 
         if (avatar) avatar.innerHTML = avatarHtml;
         if (editAvatarPreview) editAvatarPreview.innerHTML = avatarHtml;
-
-        if (user.auth_provider === 'telegram') {
-            if (telegramLinkBtn) telegramLinkBtn.classList.add('linked');
-            if (telegramLinkText) telegramLinkText.textContent = 'Telegram аккаунт';
-            if (telegramLinkBtn) telegramLinkBtn.disabled = true;
-            if (telegramStatus) telegramStatus.classList.add('linked');
-            if (telegramName) telegramName.textContent = user.firstName || user.username || 'Пользователь';
-            if (telegramUser) telegramUser.textContent = user.telegramUsername ? `@${user.telegramUsername}` : '—';
-            if (unlinkTelegramBtn) unlinkTelegramBtn.style.display = 'none';
-            if (linkTelegramBtn) linkTelegramBtn.style.display = 'none';
-        } else if (user.auth_provider === 'vk+telegram') {
-            if (telegramLinkBtn) telegramLinkBtn.classList.add('linked');
-            if (telegramLinkText) telegramLinkText.textContent = 'Telegram привязан';
-            if (telegramLinkBtn) telegramLinkBtn.disabled = false;
-            if (telegramStatus) telegramStatus.classList.add('linked');
-            if (telegramName) telegramName.textContent = user.firstName || user.username || 'Пользователь';
-            if (telegramUser) telegramUser.textContent = user.telegramUsername ? `@${user.telegramUsername}` : '—';
-            if (unlinkTelegramBtn) unlinkTelegramBtn.style.display = 'inline-flex';
-            if (linkTelegramBtn) linkTelegramBtn.style.display = 'none';
-        } else {
-            if (telegramLinkBtn) telegramLinkBtn.classList.remove('linked');
-            if (telegramLinkText) telegramLinkText.textContent = 'Привязать Telegram';
-            if (telegramLinkBtn) telegramLinkBtn.disabled = false;
-            if (telegramStatus) telegramStatus.classList.remove('linked');
-            if (telegramName) telegramName.textContent = 'Не привязан';
-            if (telegramUser) telegramUser.textContent = '—';
-            if (unlinkTelegramBtn) unlinkTelegramBtn.style.display = 'none';
-            if (linkTelegramBtn) linkTelegramBtn.style.display = 'block';
-        }
     }
 
     function formatDate(dateString) {
@@ -1585,39 +1414,6 @@
         });
     }
 
-
-    const logoutBtn = document.getElementById('logoutBtn');
-if (logoutBtn) {
-    logoutBtn.addEventListener('click', () => {
-        showConfirm('Выход', 'Вы уверены, что хотите выйти из аккаунта?', async function() {
-            try {
-                // Показываем индикатор загрузки на кнопке
-                logoutBtn.disabled = true;
-                logoutBtn.innerHTML = 'Выхожу...';
-                
-                // Отправляем запрос на сервер
-                const response = await fetch(`${API_URL}/api/auth/logout`, {
-                    method: 'POST',
-                    credentials: 'include'
-                });
-                
-                // Очищаем локальное хранилище
-                localStorage.removeItem(USER_KEY);
-                currentUser = null;
-                
-                // Редирект на страницу входа
-                window.location.href = 'reg_log.html';
-            } catch (error) {
-                console.error('Ошибка при выходе:', error);
-                // Даже если ошибка, все равно чистим локально и редиректим
-                localStorage.removeItem(USER_KEY);
-                currentUser = null;
-                window.location.href = 'reg_log.html';
-            }
-        });
-    });
-}
-
     const removeAvatarBtn = document.getElementById('removeAvatarBtn');
     if (removeAvatarBtn) {
         removeAvatarBtn.addEventListener('click', async function() {
@@ -1680,68 +1476,6 @@ if (logoutBtn) {
                 alert('Ошибка сети');
             }
         });
-    }
-
-    async function linkVK() {
-        if (!currentUser) return;
-        window.location.href = `${API_URL}/api/auth/vk`;
-    }
-
-    async function linkTelegram() {
-        if (!currentUser) {
-            alert('Сначала войдите в аккаунт');
-            window.location.href = 'reg_log.html';
-            return;
-        }
-        
-        try {
-            const response = await fetch(`${API_URL}/api/auth/telegram/start`);
-            const data = await response.json();
-            
-            if (data.success && data.url) {
-                const width = 600;
-                const height = 700;
-                const left = (screen.width - width) / 2;
-                const top = (screen.height - height) / 2;
-                
-                const tgWindow = window.open(data.url, 'TelegramAuth', `width=${width},height=${height},left=${left},top=${top}`);
-                
-                const messageHandler = async (event) => {
-                    if (event.origin !== window.location.origin) return;
-                    
-                    if (event.data && event.data.type === 'telegram_auth' && event.data.userData) {
-                        window.removeEventListener('message', messageHandler);
-                        
-                        const linkResponse = await fetch(`${API_URL}/api/auth/telegram/link`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            credentials: 'include',
-                            body: JSON.stringify({
-                                userId: currentUser.id,
-                                ...event.data.userData
-                            })
-                        });
-                        
-                        const result = await linkResponse.json();
-                        
-                        if (result.success) {
-                            currentUser = result.user;
-                            saveUser(currentUser);
-                            alert('Telegram успешно привязан!');
-                            if (tgWindow) tgWindow.close();
-                            location.reload();
-                        } else {
-                            alert('Ошибка привязки: ' + result.error);
-                        }
-                    }
-                };
-                
-                window.addEventListener('message', messageHandler);
-            }
-        } catch (error) {
-            console.error('Ошибка привязки:', error);
-            alert('Ошибка привязки Telegram');
-        }
     }
 
     function checkInitialAuth() {
@@ -1855,14 +1589,13 @@ if (logoutBtn) {
         document.head.appendChild(style);
     })();
 
-    const tgLinkBtn = document.getElementById('telegramLinkBtn');
-    if (tgLinkBtn) {
-        tgLinkBtn.addEventListener('click', linkTelegram);
-    }
-
-    const linkTgBtn = document.getElementById('linkTelegramBtn');
-    if (linkTgBtn) {
-        linkTgBtn.addEventListener('click', linkTelegram);
+    const logoutButton = document.getElementById('logoutBtn');
+    if (logoutButton) {
+        logoutButton.addEventListener('click', () => {
+            showConfirm('Выход', 'Вы уверены, что хотите выйти из аккаунта?', async function() {
+                await clearUser();
+            });
+        });
     }
 
     document.addEventListener('DOMContentLoaded', () => {
