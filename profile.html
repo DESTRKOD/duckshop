@@ -1585,6 +1585,39 @@
         });
     }
 
+
+    const logoutBtn = document.getElementById('logoutBtn');
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+        showConfirm('Выход', 'Вы уверены, что хотите выйти из аккаунта?', async function() {
+            try {
+                // Показываем индикатор загрузки на кнопке
+                logoutBtn.disabled = true;
+                logoutBtn.innerHTML = 'Выхожу...';
+                
+                // Отправляем запрос на сервер
+                const response = await fetch(`${API_URL}/api/auth/logout`, {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+                
+                // Очищаем локальное хранилище
+                localStorage.removeItem(USER_KEY);
+                currentUser = null;
+                
+                // Редирект на страницу входа
+                window.location.href = 'reg_log.html';
+            } catch (error) {
+                console.error('Ошибка при выходе:', error);
+                // Даже если ошибка, все равно чистим локально и редиректим
+                localStorage.removeItem(USER_KEY);
+                currentUser = null;
+                window.location.href = 'reg_log.html';
+            }
+        });
+    });
+}
+
     const removeAvatarBtn = document.getElementById('removeAvatarBtn');
     if (removeAvatarBtn) {
         removeAvatarBtn.addEventListener('click', async function() {
